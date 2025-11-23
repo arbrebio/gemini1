@@ -280,7 +280,15 @@ const translations: Record<Language, Record<string, any>> = {
     },
     errors: {
       pageNotFound: 'Page Not Found',
+      pageNotFoundDesc: "The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.",
+      pageNotFoundMetaDesc: "The page you're looking for doesn't exist. Return to our homepage or contact us for assistance.",
+      needHelp: 'Need help?',
+      contactUs: 'Contact us',
       serverError: 'Server Error',
+      serverErrorDesc: "We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.",
+      serverErrorMetaDesc: "We're experiencing technical difficulties. Please try again later or contact our support team.",
+      stillHavingIssues: 'Still having issues?',
+      contactSupport: 'Contact support',
       networkError: 'Network Error',
       tryAgain: 'Try Again',
       goHome: 'Go Home'
@@ -976,7 +984,15 @@ const translations: Record<Language, Record<string, any>> = {
     },
     errors: {
       pageNotFound: 'Page Non Trouvée',
+      pageNotFoundDesc: "La page que vous recherchez n'existe pas. Elle a peut-être été déplacée, supprimée ou vous avez entré une mauvaise URL.",
+      pageNotFoundMetaDesc: "La page que vous recherchez n'existe pas. Retournez à notre page d'accueil ou contactez-nous pour obtenir de l'aide.",
+      needHelp: 'Besoin d\'aide?',
+      contactUs: 'Contactez-nous',
       serverError: 'Erreur Serveur',
+      serverErrorDesc: "Nous rencontrons des difficultés techniques. Notre équipe a été notifiée et travaille à résoudre le problème.",
+      serverErrorMetaDesc: "Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard ou contacter notre équipe d'assistance.",
+      stillHavingIssues: 'Toujours des problèmes?',
+      contactSupport: 'Contacter le support',
       networkError: 'Erreur Réseau',
       tryAgain: 'Réessayer',
       goHome: 'Accueil'
@@ -1511,7 +1527,15 @@ const translations: Record<Language, Record<string, any>> = {
     },
     errors: {
       pageNotFound: 'Página No Encontrada',
+      pageNotFoundDesc: "La página que buscas no existe. Puede haber sido movida, eliminada o ingresaste una URL incorrecta.",
+      pageNotFoundMetaDesc: "La página que buscas no existe. Regresa a nuestra página de inicio o contáctanos para obtener ayuda.",
+      needHelp: '¿Necesitas ayuda?',
+      contactUs: 'Contáctanos',
       serverError: 'Error del Servidor',
+      serverErrorDesc: "Estamos experimentando dificultades técnicas. Nuestro equipo ha sido notificado y está trabajando para resolver el problema.",
+      serverErrorMetaDesc: "Estamos experimentando dificultades técnicas. Por favor inténtalo de nuevo más tarde o contacta a nuestro equipo de soporte.",
+      stillHavingIssues: '¿Aún tienes problemas?',
+      contactSupport: 'Contactar soporte',
       networkError: 'Error de Red',
       tryAgain: 'Intentar de Nuevo',
       goHome: 'Ir al Inicio'
@@ -1885,11 +1909,19 @@ const translations: Record<Language, Record<string, any>> = {
       cookies: 'Koekies'
     },
     errors: {
-      pageNotFound: 'Bladsy Nie Gevind Nie',
+      pageNotFound: 'Bladsy Nie Gevind',
+      pageNotFoundDesc: "Die bladsy wat jy soek bestaan nie. Dit is dalk verskuif, verwyder, of jy het die verkeerde URL ingevoer.",
+      pageNotFoundMetaDesc: "Die bladsy wat jy soek bestaan nie. Keer terug na ons tuisblad of kontak ons vir hulp.",
+      needHelp: 'Benodig hulp?',
+      contactUs: 'Kontak ons',
       serverError: 'Bediener Fout',
+      serverErrorDesc: "Ons ondervind tegnies probleme. Ons span is in kennis gestel en werk daaraan om die probleem op te los.",
+      serverErrorMetaDesc: "Ons ondervind tegniese probleme. Probeer asseblief later weer of kontak ons ondersteuningspan.",
+      stillHavingIssues: 'Steeds probleme?',
+      contactSupport: 'Kontak ondersteuning',
       networkError: 'Netwerk Fout',
       tryAgain: 'Probeer Weer',
-      goHome: 'Gaan Huis Toe'
+      goHome: 'Tuisblad'
     },
     validation: {
       required: 'Hierdie veld is verplig',
