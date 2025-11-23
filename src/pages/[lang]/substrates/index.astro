@@ -12,45 +12,45 @@ const solutions = [
     title: "Growing Solutions",
     description: "Premium organic coco peat and coir products engineered for maximum yield and optimal crop health.",
     image: "https://imgur.com/KAh1QAU.jpg",
-    link: "/substrates/growing-solutions",
+    link: `/${lang}/substrates/growing-solutions`,
     features: [
-      "Superior water retention",
-      "Optimal aeration",
-      "pH balanced",
-      "100% organic"
+      t('pages.substrates.features.waterRetention'),
+      t('pages.substrates.features.aeration'),
+      t('pages.substrates.features.phBalanced'),
+      t('pages.substrates.features.organic')
     ]
   }
 ];
 
 const benefits = [
   {
-    title: "Quality Assured",
-    description: "All products undergo rigorous testing and meet international quality standards",
+    title: t('pages.substrates.benefits.quality'),
+    description: t('pages.substrates.benefits.qualityDesc'),
     icon: "🏅"
   },
   {
-    title: "Sustainable",
-    description: "Environmentally responsible production methods and materials",
+    title: t('pages.substrates.benefits.sustainable'),
+    description: t('pages.substrates.benefits.sustainableDesc'),
     icon: "🌱"
   },
   {
-    title: "Expert Support",
-    description: "Technical guidance and support from our agricultural specialists",
+    title: t('pages.substrates.benefits.support'),
+    description: t('pages.substrates.benefits.supportDesc'),
     icon: "👨‍🌾"
   }
 ];
 ---
 
 <Layout
-  title="Growing Solutions & Soil Amendments"
-  description="Discover Arbre Bio Africa's premium growing solutions and soil amendments. Engineered for optimal plant growth and sustainable agriculture."
+  title={t('pages.substrates.hero.title')}
+  description={t('pages.substrates.hero.description')}
 >
   <!-- Hero Section -->
   <section class="relative h-[50vh] flex items-center">
     <div class="absolute inset-0 z-0">
       <img 
         src="https://imgur.com/BAlwmPw.jpg"
-        alt="Premium Growing Solutions" 
+        alt={t('pages.substrates.hero.title')} 
         class="w-full h-full object-cover"
       />
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -58,17 +58,17 @@ const benefits = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Premium Growing Solutions
-          <span class="block text-2xl md:text-3xl mt-2">For Professional Agriculture</span>
+          {t('pages.substrates.hero.title')}
+          <span class="block text-2xl md:text-3xl mt-2">{t('pages.substrates.hero.subtitle')}</span>
         </h1>
         <p class="text-xl text-white mb-8">
-          Engineered for maximum yield and sustainable growth
+          {t('pages.substrates.hero.description')}
         </p>
         <a 
           href="#solutions"
           class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 inline-block"
         >
-          Explore Solutions
+          {t('pages.substrates.hero.explore')}
         </a>
       </div>
     </div>
@@ -92,7 +92,7 @@ const benefits = [
   <!-- Solutions Section -->
   <section id="solutions" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Solutions</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('services.title')}</h2>
       
       {solutions.map((solution, index) => (
         <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
@@ -116,7 +116,7 @@ const benefits = [
                 href={solution.link}
                 class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors"
               >
-                Learn More
+                {t('services.learnMore')}
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
@@ -138,14 +138,14 @@ const benefits = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Growing Operation?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{t('cta.title')}</h2>
+      <p class="text-xl text-white mb-8">{t('cta.subtitle')}</p>
       <div class="flex flex-wrap justify-center gap-4">
         <a 
-          href="/contact" 
+          href={`/${lang}/contact`}
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
         >
-          Get Started
+          {t('cta.consultation')}
         </a>
         <a 
           href="https://wa.me/2250799295643" 
@@ -154,7 +154,7 @@ const benefits = [
           class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
         >
           <i class="fab fa-whatsapp mr-2"></i>
-          Chat on WhatsApp
+          {t('cta.whatsapp')}
         </a>
       </div>
     </div>
