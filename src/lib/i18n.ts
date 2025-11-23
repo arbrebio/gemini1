@@ -162,6 +162,8 @@ const translations: Record<Language, Record<string, any>> = {
     contact: {
       title: 'Contact Us',
       subtitle: 'Get expert advice on transforming your agricultural business',
+      metaTitle: 'Contact Us - Get Expert Agricultural Solutions',
+      metaDescription: 'Contact Arbre Bio Africa for expert consultation on greenhouse technology, irrigation systems, and precision farming solutions. Transform your agricultural business today.',
       form: {
         title: 'Send Us a Message',
         firstname: 'First Name',
@@ -171,12 +173,28 @@ const translations: Record<Language, Record<string, any>> = {
         interest: 'I\'m interested in',
         message: 'Message',
         required: '*',
-        submit: 'Send Message'
+        submit: 'Send Message',
+        selectOption: 'Select an option',
+        options: {
+          greenhouses: 'Greenhouses',
+          irrigation: 'Irrigation Systems',
+          growing: 'Growing Media',
+          project: 'Project Management',
+          other: 'Other'
+        },
+        helpText: 'We\'ll respond within 24-48 hours',
+        successMessage: 'Thank you for your message! We\'ll get back to you soon.',
+        errorMessage: 'An error occurred. Please try again.'
       },
       offices: 'Our Offices',
+      officeHours: {
+        abidjan: 'Monday - Friday: 8:00 AM - 6:00 PM',
+        capetown: 'Monday - Friday: 8:30 AM - 5:00 PM'
+      },
       whatsapp: {
         title: 'Need Immediate Assistance?',
-        subtitle: 'Chat with our agricultural experts on WhatsApp for quick responses.'
+        subtitle: 'Chat with our agricultural experts on WhatsApp for quick responses.',
+        button: 'Chat on WhatsApp'
       }
     },
     blog: {
@@ -828,6 +846,8 @@ const translations: Record<Language, Record<string, any>> = {
     contact: {
       title: 'Nous Contacter',
       subtitle: 'Obtenez des conseils d\'experts pour transformer votre entreprise agricole',
+      metaTitle: 'Nous Contacter - Obtenez des Solutions Agricoles Expertes',
+      metaDescription: 'Contactez Arbre Bio Africa pour une consultation experte sur la technologie de serre, les systèmes d\'irrigation et les solutions d\'agriculture de précision. Transformez votre entreprise agricole aujourd\'hui.',
       form: {
         title: 'Envoyez-Nous un Message',
         firstname: 'Prénom',
@@ -837,12 +857,28 @@ const translations: Record<Language, Record<string, any>> = {
         interest: 'Je suis intéressé par',
         message: 'Message',
         required: '*',
-        submit: 'Envoyer le Message'
+        submit: 'Envoyer le Message',
+        selectOption: 'Sélectionnez une option',
+        options: {
+          greenhouses: 'Serres',
+          irrigation: 'Systèmes d\'Irrigation',
+          growing: 'Substrats de Culture',
+          project: 'Gestion de Projet',
+          other: 'Autre'
+        },
+        helpText: 'Nous répondrons dans les 24-48 heures',
+        successMessage: 'Merci pour votre message! Nous vous répondrons bientôt.',
+        errorMessage: 'Une erreur s\'est produite. Veuillez réessayer.'
       },
       offices: 'Nos Bureaux',
+      officeHours: {
+        abidjan: 'Lundi - Vendredi: 8h00 - 18h00',
+        capetown: 'Lundi - Vendredi: 8h30 - 17h00'
+      },
       whatsapp: {
         title: 'Besoin d\'Assistance Immédiate?',
-        subtitle: 'Discutez avec nos experts agricoles sur WhatsApp pour des réponses rapides.'
+        subtitle: 'Discutez avec nos experts agricoles sur WhatsApp pour des réponses rapides.',
+        button: 'Discuter sur WhatsApp'
       }
     },
     blog: {
@@ -1333,6 +1369,8 @@ const translations: Record<Language, Record<string, any>> = {
     contact: {
       title: 'Contáctanos',
       subtitle: 'Obtén asesoramiento experto para transformar tu negocio agrícola',
+      metaTitle: 'Contáctanos - Obtén Soluciones Agrícolas Expertas',
+      metaDescription: 'Contacta a Arbre Bio Africa para consultoría experta en tecnología de invernaderos, sistemas de riego y soluciones de agricultura de precisión. Transforma tu negocio agrícola hoy.',
       form: {
         title: 'Envíanos un Mensaje',
         firstname: 'Nombre',
@@ -1342,12 +1380,28 @@ const translations: Record<Language, Record<string, any>> = {
         interest: 'Estoy interesado en',
         message: 'Mensaje',
         required: '*',
-        submit: 'Enviar Mensaje'
+        submit: 'Enviar Mensaje',
+        selectOption: 'Selecciona una opción',
+        options: {
+          greenhouses: 'Invernaderos',
+          irrigation: 'Sistemas de Riego',
+          growing: 'Medios de Cultivo',
+          project: 'Gestión de Proyectos',
+          other: 'Otro'
+        },
+        helpText: 'Responderemos en 24-48 horas',
+        successMessage: '¡Gracias por tu mensaje! Te responderemos pronto.',
+        errorMessage: 'Ocurrió un error. Por favor, inténtalo de nuevo.'
       },
       offices: 'Nuestras Oficinas',
+      officeHours: {
+        abidjan: 'Lunes - Viernes: 8:00 AM - 6:00 PM',
+        capetown: 'Lunes - Viernes: 8:30 AM - 5:00 PM'
+      },
       whatsapp: {
         title: '¿Necesitas Asistencia Inmediata?',
-        subtitle: 'Chatea con nuestros expertos agrícolas en WhatsApp para respuestas rápidas.'
+        subtitle: 'Chatea con nuestros expertos agrícolas en WhatsApp para respuestas rápidas.',
+        button: 'Chatear en WhatsApp'
       }
     },
     blog: {
@@ -1678,6 +1732,8 @@ const translations: Record<Language, Record<string, any>> = {
     contact: {
       title: 'Kontak Ons',
       subtitle: 'Kry deskundige advies om jou landboubesigheid te transformeer',
+      metaTitle: 'Kontak Ons - Kry Deskundige Landbou Oplossings',
+      metaDescription: 'Kontak Arbre Bio Africa vir deskundige konsultasie oor kweekhuis tegnologie, besproeiingstelsels en presisie boerdery oplossings. Transformeer jou landboubesigheid vandag.',
       form: {
         title: 'Stuur Vir Ons \'n Boodskap',
         firstname: 'Voornaam',
@@ -1687,12 +1743,28 @@ const translations: Record<Language, Record<string, any>> = {
         interest: 'Ek stel belang in',
         message: 'Boodskap',
         required: '*',
-        submit: 'Stuur Boodskap'
+        submit: 'Stuur Boodskap',
+        selectOption: 'Kies \'n opsie',
+        options: {
+          greenhouses: 'Kweekhuise',
+          irrigation: 'Besproeiingstelsels',
+          growing: 'Groeimediums',
+          project: 'Projekbestuur',
+          other: 'Ander'
+        },
+        helpText: 'Ons sal binne 24-48 uur reageer',
+        successMessage: 'Dankie vir jou boodskap! Ons sal binnekort antwoord.',
+        errorMessage: '\'n Fout het voorgekom. Probeer asseblief weer.'
       },
       offices: 'Ons Kantore',
+      officeHours: {
+        abidjan: 'Maandag - Vrydag: 8:00 VM - 6:00 NM',
+        capetown: 'Maandag - Vrydag: 8:30 VM - 5:00 NM'
+      },
       whatsapp: {
         title: 'Benodig Onmiddellike Hulp?',
-        subtitle: 'Gesels met ons landboukundiges op WhatsApp vir vinnige antwoorde.'
+        subtitle: 'Gesels met ons landboukundiges op WhatsApp vir vinnige antwoorde.',
+        button: 'Gesels op WhatsApp'
       }
     },
     blog: {
