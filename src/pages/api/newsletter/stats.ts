@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
-
-// Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com'; // Ensure this is the correct email
+import { z } from 'zod';
+import { config } from '../../../lib/config';
 
 // This endpoint is for admin use only
 export const GET: APIRoute = async ({ request }) => {

@@ -3,6 +3,7 @@ import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
 import { sanitizeInput, globalRateLimiter } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
+import { config } from '../../lib/config';
 
 // Enhanced validation schema
 const contactSchema = z.object({
@@ -32,10 +33,10 @@ const contactSchema = z.object({
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting
-    const clientIP = request.headers.get('x-forwarded-for') || 
-                    request.headers.get('x-real-ip') || 
-                    'unknown';
-    
+    const clientIP = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+
     if (!globalRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse(
         'Too many requests. Please try again later.',
@@ -43,7 +44,7 @@ export const POST: APIRoute = async ({ request }) => {
         'RATE_LIMIT_EXCEEDED'
       );
     }
-    
+
     const data = await request.json();
 
     // Validate and sanitize input
@@ -56,9 +57,9 @@ export const POST: APIRoute = async ({ request }) => {
         'VALIDATION_ERROR'
       );
     }
-    
+
     const { firstName, lastName, email, phone, interest, message } = validationResult.data;
-    
+
     // Additional sanitization
     const sanitizedData = {
       firstName: sanitizeInput(firstName, 50),
@@ -81,8 +82,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Initialize SendGrid
     sgMail.setApiKey(sendgridKey);
-    
-    const adminEmail = 'farms@arbrebio.com'; // Ensure this is the correct email
+
+    const adminEmail = config.contact.adminEmail;
+    const senderName = config.contact.senderName;
 
     // Send email
     await sgMail.send({
@@ -117,7 +119,7 @@ export const POST: APIRoute = async ({ request }) => {
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             
             <p style="color: #666; font-size: 12px;">
-              This email was sent from the contact form on arbrebio.com<br>
+              This email was sent from the contact form on ${config.site.url}<br>
               Timestamp: ${new Date().toISOString()}<br>
               IP: ${clientIP}
             </p>
@@ -135,7 +137,7 @@ export const POST: APIRoute = async ({ request }) => {
       to: sanitizedData.email,
       from: {
         email: adminEmail,
-        name: 'Arbre Bio Africa'
+        name: senderName
       },
       subject: 'Thank you for contacting Arbre Bio Africa',
       html: `
@@ -156,16 +158,16 @@ export const POST: APIRoute = async ({ request }) => {
             
             <p>For immediate assistance, you can:</p>
             <ul>
-              <li>Call us at: +225 21 21 80 69 50</li>
-              <li>WhatsApp: +225 07 99 29 56 43</li>
+              <li>Call us at: ${config.contact.offices[0].phone}</li>
+              <li>WhatsApp: ${config.contact.whatsappNumber}</li>
             </ul>
             
-            <p>Best regards,<br>The Arbre Bio Africa Team</p>
+            <p>Best regards,<br>The ${senderName} Team</p>
             
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             
             <p style="color: #666; font-size: 12px;">
-              Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire<br>
+              ${senderName} | ${config.contact.offices[0].address} | ${config.contact.offices[0].city}, ${config.contact.offices[0].country}<br>
               This is an automated response. Please do not reply to this email.
             </p>
           </body>

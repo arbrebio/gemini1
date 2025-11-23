@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
 import * as sgMail from '@sendgrid/mail';
+import { config } from '../../../lib/config';
 
 // Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com'; // Ensure this is the correct email
 const SENDER_NAME = 'Arbre Bio Africa';
 
 // This endpoint is for admin use only

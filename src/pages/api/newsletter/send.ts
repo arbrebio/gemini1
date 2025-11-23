@@ -2,10 +2,7 @@ import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
 import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
-
-// Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com'; // Ensure this is the correct email
-const SENDER_NAME = 'Arbre Bio Africa';
+import { config } from '../../../lib/config';
 
 // Validation schema for newsletter sending
 const sendNewsletterSchema = z.object({
@@ -66,14 +63,17 @@ export const POST: APIRoute = async ({ request }) => {
     // Initialize SendGrid
     sgMail.setApiKey(sendgridKey);
 
+    const adminEmail = config.contact.adminEmail;
+    const senderName = config.contact.senderName;
+
     // Send newsletter to all subscribers
     // In production, you should use batch sending or a queue for large subscriber lists
     const emailPromises = subscribers.map(subscriber => {
       return sgMail.send({
         to: subscriber.email,
         from: {
-          email: ADMIN_EMAIL,
-          name: SENDER_NAME
+          email: adminEmail,
+          name: senderName
         },
         subject: validatedData.subject,
         html: createNewsletterHtml(validatedData.content, subscriber),
@@ -91,13 +91,13 @@ export const POST: APIRoute = async ({ request }) => {
     // Also send a copy to the admin
     emailPromises.push(
       sgMail.send({
-        to: ADMIN_EMAIL,
+        to: adminEmail,
         from: {
-          email: ADMIN_EMAIL,
-          name: SENDER_NAME
+          email: adminEmail,
+          name: senderName
         },
         subject: `[COPY] ${validatedData.subject}`,
-        html: createNewsletterHtml(validatedData.content, { full_name: 'Admin', email: ADMIN_EMAIL }),
+        html: createNewsletterHtml(validatedData.content, { full_name: 'Admin', email: adminEmail }),
         trackingSettings: {
           clickTracking: { enable: true },
           openTracking: { enable: true }
@@ -142,7 +142,7 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 function createNewsletterHtml(content: string, subscriber: { full_name?: string, email: string }) {
-  const unsubscribeUrl = `https://arbrebio.com/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
+  const unsubscribeUrl = `${config.site.url}/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
 
   return `
     <!DOCTYPE html>
@@ -166,7 +166,7 @@ function createNewsletterHtml(content: string, subscriber: { full_name?: string,
           <p>Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire</p>
           <p>
             <a href="${unsubscribeUrl}" style="color: #666;">Unsubscribe</a> |
-            <a href="https://arbrebio.ci/privacy" style="color: #666;">Privacy Policy</a>
+            <a href="${config.site.url}/privacy" style="color: #666;">Privacy Policy</a>
           </p>
         </footer>
       </body>

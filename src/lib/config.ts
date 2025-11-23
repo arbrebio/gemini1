@@ -3,14 +3,14 @@ export const config = {
   // Site information
   site: {
     name: 'Arbre Bio Africa',
-    url: 'https://arbrebio.com',
+    url: import.meta.env.SITE_URL || 'https://arbrebio.com',
     description: 'Leading provider of precision farming solutions in Africa'
   },
-  
+
   // Contact information
   contact: {
-    adminEmail: 'farms@arbrebio.com',
-    senderName: 'Arbre Bio Africa',
+    adminEmail: import.meta.env.PUBLIC_ADMIN_EMAIL || 'farms@arbrebio.com',
+    senderName: import.meta.env.PUBLIC_SENDER_NAME || 'Arbre Bio Africa',
     whatsappNumber: '+2250799295643',
     offices: [
       {
@@ -18,7 +18,7 @@ export const config = {
         country: 'Côte d\'Ivoire',
         address: 'Cocody Riviera 3, Jacque Prevert 2',
         phone: '+225 21 21 80 69 50',
-        email: 'farms@arbrebio.com',
+        email: import.meta.env.PUBLIC_ADMIN_EMAIL || 'farms@arbrebio.com',
         hours: 'Monday - Friday: 8:00 AM - 6:00 PM'
       },
       {
@@ -31,7 +31,7 @@ export const config = {
       }
     ]
   },
-  
+
   // Social media links
   social: {
     facebook: 'https://facebook.com/arbrebio',
@@ -41,7 +41,7 @@ export const config = {
     youtube: 'https://youtube.com/arbrebio',
     tiktok: 'https://tiktok.com/@arbrebio'
   },
-  
+
   // Company information
   company: {
     foundedYear: 2020,

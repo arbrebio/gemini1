@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
 import * as sgMail from '@sendgrid/mail';
+import { z } from 'zod';
+import { config } from '../../../lib/config';
 
 // Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com';
 const SENDER_NAME = 'Arbre Bio Africa';
 
 export const GET: APIRoute = async ({ request }) => {
@@ -73,9 +74,9 @@ async function notifyAdminAboutUnsubscribe(user: any) {
   sgMail.setApiKey(sendgridKey);
 
   await sgMail.send({
-    to: ADMIN_EMAIL,
+    to: config.contact.adminEmail,
     from: {
-      email: ADMIN_EMAIL,
+      email: config.contact.adminEmail,
       name: SENDER_NAME
     },
     subject: 'Newsletter Unsubscription',

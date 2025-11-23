@@ -4,10 +4,7 @@ import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
 import { sanitizeInput, globalRateLimiter } from '../../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../../lib/errorHandling';
-
-// Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com';
-const SENDER_NAME = 'Arbre Bio Africa';
+import { config } from '../../../lib/config';
 
 // Enhanced validation schema
 const subscribeSchema = z.object({
@@ -30,10 +27,10 @@ const subscribeSchema = z.object({
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting
-    const clientIP = request.headers.get('x-forwarded-for') || 
-                    request.headers.get('x-real-ip') || 
-                    'unknown';
-    
+    const clientIP = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+
     if (!globalRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse(
         'Too many requests. Please try again later.',
@@ -41,30 +38,30 @@ export const POST: APIRoute = async ({ request }) => {
         'RATE_LIMIT_EXCEEDED'
       );
     }
-    
+
     const data = await request.json();
-    
+
     // Validate input data
     const validatedData = subscribeSchema.parse(data);
-    
+
     // Additional sanitization
     const sanitizedData = {
       email: sanitizeInput(validatedData.email, 100),
       full_name: validatedData.full_name ? sanitizeInput(validatedData.full_name, 100) : undefined,
       source: sanitizeInput(validatedData.source, 50)
     };
-    
+
     // Check if email already exists
     const { data: existingUser, error: lookupError } = await supabase
       .from('newsletter_subscribers')
       .select('id, email, status, confirmed')
       .eq('email', sanitizedData.email)
       .single();
-    
+
     if (lookupError && lookupError.code !== 'PGRST116') {
       throw new Error('Error checking existing subscription');
     }
-    
+
     // If user exists and is already confirmed, return success
     if (existingUser && existingUser.confirmed && existingUser.status === 'active') {
       return createSuccessResponse(
@@ -72,7 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
         'You are already subscribed to our newsletter'
       );
     }
-    
+
     // If user exists but is not confirmed or is unsubscribed, update their record
     if (existingUser) {
       const { data: updatedUser, error: updateError } = await supabase
@@ -87,18 +84,18 @@ export const POST: APIRoute = async ({ request }) => {
         .eq('id', existingUser.id)
         .select()
         .single();
-      
+
       if (updateError) throw updateError;
-      
+
       // Send confirmation email
       await sendConfirmationEmail(updatedUser);
-      
+
       return createSuccessResponse(
         null,
         'Please check your email to confirm your subscription'
       );
     }
-    
+
     // Create new subscriber
     const { data: newUser, error: insertError } = await supabase
       .from('newsletter_subscribers')
@@ -109,20 +106,20 @@ export const POST: APIRoute = async ({ request }) => {
       }])
       .select()
       .single();
-    
+
     if (insertError) throw insertError;
-    
+
     // Send confirmation email
     await sendConfirmationEmail(newUser);
-    
+
     // Notify admin about new subscriber
     await notifyAdmin(newUser);
-    
+
     return createSuccessResponse(
       null,
       'Please check your email to confirm your subscription'
     );
-    
+
   } catch (error) {
     return handleApiError(error);
   }
@@ -134,16 +131,18 @@ async function sendConfirmationEmail(user: any) {
     console.warn('SendGrid API key is not properly configured');
     return;
   }
-  
+
   sgMail.setApiKey(sendgridKey);
-  
-  const confirmationUrl = `https://arbrebio.com/newsletter/confirm?token=${user.confirmation_token}`;
-  
+
+  const adminEmail = config.contact.adminEmail;
+  const senderName = config.contact.senderName;
+  const confirmationUrl = `${config.site.url}/newsletter/confirm?token=${user.confirmation_token}`;
+
   await sgMail.send({
     to: user.email, // Send confirmation to subscriber
     from: {
-      email: ADMIN_EMAIL,
-      name: SENDER_NAME
+      email: adminEmail,
+      name: senderName
     },
     subject: 'Confirm Your Subscription to Arbre Bio Africa',
     html: `
@@ -196,14 +195,17 @@ async function notifyAdmin(user: any) {
     console.warn('SendGrid API key is not properly configured');
     return;
   }
-  
+
   sgMail.setApiKey(sendgridKey);
-  
+
+  const adminEmail = config.contact.adminEmail;
+  const senderName = config.contact.senderName;
+
   await sgMail.send({
-    to: ADMIN_EMAIL, // Send notification to admin
+    to: adminEmail, // Send notification to admin
     from: {
-      email: ADMIN_EMAIL,
-      name: SENDER_NAME
+      email: adminEmail,
+      name: senderName
     },
     subject: 'New Newsletter Subscriber',
     html: `

@@ -1,10 +1,9 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
-import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
-
-// Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com'; // Ensure this is the correct email
+import * as sgMail from '@sendgrid/mail';
+import { sanitizeInput } from '../../../lib/securityHeaders';
+import { config } from '../../../lib/config';
 const SENDER_NAME = 'Arbre Bio Africa';
 
 // Validation schema for admin actions

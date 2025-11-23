@@ -1,10 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
 import * as sgMail from '@sendgrid/mail';
-
-// Email configuration
-const ADMIN_EMAIL = 'farms@arbrebio.com';
-const SENDER_NAME = 'Arbre Bio Africa';
+import { config } from '../../../lib/config';
 
 export const GET: APIRoute = async ({ request }) => {
   try {
@@ -49,11 +46,14 @@ export const GET: APIRoute = async ({ request }) => {
     if (sendgridKey && !sendgridKey.startsWith('SG.')) {
       sgMail.setApiKey(sendgridKey);
 
+      const adminEmail = config.contact.adminEmail;
+      const senderName = config.contact.senderName;
+
       await sgMail.send({
-        to: [data.email, ADMIN_EMAIL],
+        to: [data.email, adminEmail],
         from: {
-          email: ADMIN_EMAIL,
-          name: SENDER_NAME
+          email: adminEmail,
+          name: senderName
         },
         subject: 'Welcome to Arbre Bio Africa\'s Community',
         html: `
@@ -86,10 +86,10 @@ export const GET: APIRoute = async ({ request }) => {
                   <li>Exclusive offers and early access to new products</li>
                 </ul>
                 
-                <p>We're here to support your agricultural journey. If you have any questions or need assistance, don't hesitate to reach out to us at <a href="mailto:farms@arbrebio.com" style="color: #194642;">farms@arbrebio.com</a></p>
+                <p>We're here to support your agricultural journey. If you have any questions or need assistance, don't hesitate to reach out to us at <a href="mailto:${adminEmail}" style="color: #194642;">${adminEmail}</a></p>
                 
                 <div style="margin: 30px 0; text-align: center;">
-                  <a href="https://arbrebio.com/contact" style="background-color: #194642; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Contact Our Experts</a>
+                  <a href="${config.site.url}/contact" style="background-color: #194642; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Contact Our Experts</a>
                 </div>
               </main>
               
@@ -97,8 +97,8 @@ export const GET: APIRoute = async ({ request }) => {
                 <p>This email was sent to ${data.email}</p>
                 <p>Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire</p>
                 <p>
-                  <a href="https://arbrebio.com/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}&token=${token}" style="color: #666;">Unsubscribe</a> |
-                  <a href="https://arbrebio.com/privacy" style="color: #666;">Privacy Policy</a>
+                  <a href="${config.site.url}/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}&token=${token}" style="color: #666;">Unsubscribe</a> |
+                  <a href="${config.site.url}/privacy" style="color: #666;">Privacy Policy</a>
                 </p>
               </footer>
             </body>

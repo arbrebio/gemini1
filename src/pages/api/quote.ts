@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
 import { config } from '../../lib/config';
+import { sanitizeInput, globalRateLimiter } from '../../lib/securityHeaders';
+import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
 
 // Validation schema for quote requests
 const quoteSchema = z.object({
@@ -20,91 +22,113 @@ const quoteSchema = z.object({
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // Rate limiting
+    const clientIP = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+
+    if (!globalRateLimiter.isAllowed(clientIP)) {
+      return createErrorResponse(
+        'Too many requests. Please try again later.',
+        429,
+        'RATE_LIMIT_EXCEEDED'
+      );
+    }
+
     const data = await request.json();
 
     // Validate input data
     const validationResult = quoteSchema.safeParse(data);
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
-      return new Response(JSON.stringify({ 
-        success: false,
-        message: firstError.message 
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return createErrorResponse(
+        firstError.message,
+        400,
+        'VALIDATION_ERROR'
+      );
     }
 
     const validatedData = validationResult.data;
 
+    // Sanitize input data
+    const sanitizedData = {
+      ...validatedData,
+      firstName: sanitizeInput(validatedData.firstName, 50),
+      lastName: sanitizeInput(validatedData.lastName, 50),
+      email: sanitizeInput(validatedData.email, 100),
+      phone: sanitizeInput(validatedData.phone, 20),
+      location: validatedData.location ? sanitizeInput(validatedData.location, 100) : undefined,
+      timeline: validatedData.timeline ? sanitizeInput(validatedData.timeline, 100) : undefined,
+      requirements: validatedData.requirements ? sanitizeInput(validatedData.requirements, 500) : undefined,
+      productType: validatedData.productType ? sanitizeInput(validatedData.productType, 100) : undefined
+    };
+
     // Check if SendGrid is properly configured
     const sendgridKey = import.meta.env.SENDGRID_API_KEY;
     if (!sendgridKey) {
-      console.error('SendGrid API key is not properly configured');
-      return new Response(JSON.stringify({ 
-        success: false,
-        message: 'Email service is not configured. Please contact support directly.' 
-      }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return createErrorResponse(
+        'Email service is not configured. Please contact support directly.',
+        503,
+        'SERVICE_UNAVAILABLE'
+      );
     }
 
     // Initialize SendGrid
     sgMail.setApiKey(sendgridKey);
-    
-    const adminEmail = import.meta.env.PUBLIC_ADMIN_EMAIL;
-    const senderName = import.meta.env.PUBLIC_SENDER_NAME;
+
+    const adminEmail = config.contact.adminEmail;
+    const senderName = config.contact.senderName;
 
     // Create email content based on quote type
-    const emailSubject = `New Quote Request: ${validatedData.quoteType.charAt(0).toUpperCase() + validatedData.quoteType.slice(1)}`;
-    
+    const emailSubject = `New Quote Request: ${sanitizedData.quoteType.charAt(0).toUpperCase() + sanitizedData.quoteType.slice(1)}`;
+
     let emailContent = `
       <h1 style="color: #194642;">New Quote Request</h1>
       
       <h2 style="color: #666;">Contact Information</h2>
       <ul style="list-style: none; padding: 0;">
-        <li><strong>Name:</strong> ${validatedData.firstName} ${validatedData.lastName}</li>
-        <li><strong>Email:</strong> ${validatedData.email}</li>
-        <li><strong>Phone:</strong> ${validatedData.phone}</li>
-        <li><strong>Quote Type:</strong> ${validatedData.quoteType}</li>
+        <li><strong>Name:</strong> ${sanitizedData.firstName} ${sanitizedData.lastName}</li>
+        <li><strong>Email:</strong> ${sanitizedData.email}</li>
+        <li><strong>Phone:</strong> ${sanitizedData.phone}</li>
+        <li><strong>Quote Type:</strong> ${sanitizedData.quoteType}</li>
       </ul>
     `;
 
     // Add specific fields based on quote type
-    if (validatedData.quoteType === 'greenhouse') {
+    if (sanitizedData.quoteType === 'greenhouse') {
       emailContent += `
         <h2 style="color: #666;">Project Details</h2>
         <ul style="list-style: none; padding: 0;">
-          ${validatedData.location ? `<li><strong>Location:</strong> ${validatedData.location}</li>` : ''}
-          ${validatedData.size ? `<li><strong>Size:</strong> ${validatedData.size} m²</li>` : ''}
-          ${validatedData.timeline ? `<li><strong>Timeline:</strong> ${validatedData.timeline}</li>` : ''}
+          ${sanitizedData.location ? `<li><strong>Location:</strong> ${sanitizedData.location}</li>` : ''}
+          ${sanitizedData.size ? `<li><strong>Size:</strong> ${sanitizedData.size} m²</li>` : ''}
+          ${sanitizedData.timeline ? `<li><strong>Timeline:</strong> ${sanitizedData.timeline}</li>` : ''}
         </ul>
       `;
     }
 
-    if (validatedData.quoteType === 'substrate') {
+    if (sanitizedData.quoteType === 'substrate') {
       emailContent += `
         <h2 style="color: #666;">Product Details</h2>
         <ul style="list-style: none; padding: 0;">
-          ${validatedData.productType ? `<li><strong>Product Type:</strong> ${validatedData.productType}</li>` : ''}
-          ${validatedData.quantity ? `<li><strong>Quantity:</strong> ${validatedData.quantity} metric tons</li>` : ''}
+          ${sanitizedData.productType ? `<li><strong>Product Type:</strong> ${sanitizedData.productType}</li>` : ''}
+          ${sanitizedData.quantity ? `<li><strong>Quantity:</strong> ${sanitizedData.quantity} metric tons</li>` : ''}
         </ul>
       `;
     }
 
-    if (validatedData.requirements) {
+    if (sanitizedData.requirements) {
       emailContent += `
         <h2 style="color: #666;">Additional Requirements</h2>
-        <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.requirements}</p>
+        <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${sanitizedData.requirements}</p>
       `;
     }
 
     emailContent += `
       <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
       <p style="color: #666; font-size: 12px;">
-        This quote request was sent from ${senderName}<br>
-        Timestamp: ${new Date().toLocaleString()}
+        This quote request was sent from ${config.site.url}<br>
+        Timestamp: ${new Date().toLocaleString()}<br>
+        IP: ${clientIP}
       </p>
     `;
 
@@ -115,7 +139,7 @@ export const POST: APIRoute = async ({ request }) => {
         email: adminEmail,
         name: senderName
       },
-      replyTo: validatedData.email,
+      replyTo: sanitizedData.email,
       subject: emailSubject,
       html: emailContent,
       trackingSettings: {
@@ -126,7 +150,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Send auto-reply to customer
     await sgMail.send({
-      to: validatedData.email,
+      to: sanitizedData.email,
       from: {
         email: adminEmail,
         name: senderName
@@ -135,9 +159,9 @@ export const POST: APIRoute = async ({ request }) => {
       html: `
         <h1 style="color: #194642;">Thank You for Your Quote Request</h1>
         
-        <p>Dear ${validatedData.firstName} ${validatedData.lastName},</p>
+        <p>Dear ${sanitizedData.firstName} ${sanitizedData.lastName},</p>
         
-        <p>Thank you for your interest in our ${validatedData.quoteType} solutions. We have received your quote request and our team will review it carefully.</p>
+        <p>Thank you for your interest in our ${sanitizedData.quoteType} solutions. We have received your quote request and our team will review it carefully.</p>
         
         <p>You can expect to hear from us within 24-48 business hours with a detailed proposal.</p>
         
@@ -156,25 +180,11 @@ export const POST: APIRoute = async ({ request }) => {
       }
     });
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: 'Quote request sent successfully'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (error) {
-    console.error('Quote request error:', error);
-    
-    return new Response(
-      JSON.stringify({ 
-        success: false,
-        message: 'Failed to send quote request. Please try again later.' 
-      }), 
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return createSuccessResponse(
+      null,
+      'Quote request sent successfully'
     );
+  } catch (error) {
+    return handleApiError(error);
   }
 };
