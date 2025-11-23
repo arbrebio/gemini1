@@ -27,7 +27,7 @@ export function getLocalizedPath(path: string, lang: Language): string {
   if (lang === defaultLang) {
     return path.startsWith('/') ? path : `/${path}`;
   }
-  
+
   // For other languages, add the language prefix
   return `/${lang}${path.startsWith('/') ? path : `/${path}`}`;
 }
@@ -40,7 +40,7 @@ export function removeLocaleFromPath(path: string): string {
   if (segments.length > 0 && Object.keys(languages).includes(segments[0])) {
     return '/' + segments.slice(1).join('/');
   }
-  
+
   return path;
 }
 
@@ -54,7 +54,7 @@ export function useTranslations(lang: Language) {
     const keys = key.split('.');
     // First try with the requested language
     let value: any = translations[lang];
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
@@ -64,12 +64,12 @@ export function useTranslations(lang: Language) {
         break;
       }
     }
-    
+
     // If translation was found, return it
     if (typeof value === 'string') {
       return value;
     }
-    
+
     // Otherwise try with fallback language
     return getFallbackTranslation(key) || key;
   };
@@ -80,7 +80,7 @@ function getFallbackTranslation(key: string): string | null {
   try {
     const keys = key.split('.');
     let value: any = translations[defaultLang];
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
@@ -88,7 +88,7 @@ function getFallbackTranslation(key: string): string | null {
         return null;
       }
     }
-    
+
     return typeof value === 'string' ? value : null;
   } catch (error) {
     return null;
@@ -239,7 +239,9 @@ const translations: Record<Language, Record<string, any>> = {
       contact: 'Contact Us',
       contactInfo: 'Contact Us',
       newsletter: 'Newsletter',
+      newsletterDescription: 'Stay updated with the latest agricultural insights and tips.',
       subscribe: 'Subscribe',
+      emailLabel: 'Email address',
       emailPlaceholder: 'Your email address',
       copyright: 'All rights reserved.',
       terms: 'Terms',
@@ -903,7 +905,9 @@ const translations: Record<Language, Record<string, any>> = {
       contact: 'Nous Contacter',
       contactInfo: 'Nous Contacter',
       newsletter: 'Newsletter',
+      newsletterDescription: 'Restez informé des dernières informations et conseils agricoles.',
       subscribe: 'S\'abonner',
+      emailLabel: 'Adresse email',
       emailPlaceholder: 'Votre adresse email',
       copyright: 'Tous droits réservés.',
       terms: 'Conditions',
@@ -1406,7 +1410,9 @@ const translations: Record<Language, Record<string, any>> = {
       contact: 'Contáctanos',
       contactInfo: 'Contáctanos',
       newsletter: 'Boletín',
+      newsletterDescription: 'Mantente actualizado con las últimas ideas y consejos agrícolas.',
       subscribe: 'Suscribirse',
+      emailLabel: 'Dirección de correo electrónico',
       emailPlaceholder: 'Tu dirección de email',
       copyright: 'Todos los derechos reservados.',
       terms: 'Términos',
@@ -1749,7 +1755,9 @@ const translations: Record<Language, Record<string, any>> = {
       contact: 'Kontak Ons',
       contactInfo: 'Kontak Ons',
       newsletter: 'Nuusbrief',
+      newsletterDescription: 'Bly op hoogte van die nuutste landbou insigte en wenke.',
       subscribe: 'Teken In',
+      emailLabel: 'E-pos adres',
       emailPlaceholder: 'Jou email adres',
       copyright: 'Alle regte voorbehou.',
       terms: 'Voorwaardes',

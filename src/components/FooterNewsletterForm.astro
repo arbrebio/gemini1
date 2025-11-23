@@ -1,19 +1,23 @@
 ---
+import { getLangFromUrl, useTranslations, defaultLang } from '../lib/i18n';
+
 interface Props {
   class?: string;
 }
 
 const { class: className } = Astro.props;
+const lang = getLangFromUrl(Astro.url) || defaultLang;
+const t = useTranslations(lang);
 ---
 
-<form class={`space-y-4 ${className}`} id="footer-newsletter-form">
+<form class={`space-y-4 ${className}`} id="footer-newsletter-form" data-lang={lang}>
   <div class="relative">
-    <label for="footer-email" class="sr-only">Email address</label>
+    <label for="footer-email" class="sr-only">{t('footer.emailLabel')}</label>
     <input 
       type="email" 
       id="footer-email"
       name="email"
-      placeholder="Your email address"
+      placeholder={t('footer.emailPlaceholder')}
       class="w-full px-4 py-2 rounded-md bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
       required
       aria-required="true"
@@ -23,7 +27,7 @@ const { class: className } = Astro.props;
     type="submit"
     class="w-full px-4 py-2 bg-white text-primary rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
   >
-    <span>Subscribe</span>
+    <span>{t('footer.subscribe')}</span>
     <span class="loading-spinner hidden ml-2">
       <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
