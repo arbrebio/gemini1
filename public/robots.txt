@@ -1,0 +1,82 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://arbrebio.com/sitemap-index.xml
+Sitemap: https://arbrebio.com/api/sitemap.xml
+
+# Disallow duplicate content for default English
+Disallow: /en/
+
+# Disallow utility pages
+Disallow: /newsletter/confirm
+Disallow: /newsletter/unsubscribe
+Disallow: /*/newsletter/confirm
+Disallow: /*/newsletter/unsubscribe
+
+# Disallow error pages
+Disallow: /404
+Disallow: /500
+Disallow: /*/404
+Disallow: /*/500
+
+# Disallow admin and API areas
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /api/
+
+# Disallow temporary files
+Disallow: /*.tmp
+Disallow: /*.log
+Disallow: /*~
+
+# Allow all CSS and JS for crawling
+Allow: /*.css
+Allow: /*.js
+
+# Crawl delay for heavy bots to ensure server stability
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: DotBot
+Crawl-delay: 10
+
+User-agent: Baiduspider
+Crawl-delay: 10
+
+# Block problematic and aggressive bots
+User-agent: SiteBot
+Disallow: /
+
+User-agent: WebReaper
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: Offline Explorer
+Disallow: /
+
+User-agent: HTTrack
+Disallow: /
+
+User-agent: Microsoft.URL.Control
+Disallow: /
+
+User-agent: EmailCollector
+Disallow: /
+
+User-agent: EmailSiphon
+Disallow: /
+
+User-agent: WebBandit
+Disallow: /
+
+User-agent: EmailWolf
+Disallow: /

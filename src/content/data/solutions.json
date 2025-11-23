@@ -1,0 +1,126 @@
+[
+  {
+    "id": "greenhouses",
+    "title": "Protected Farming Solutions",
+    "subtitle": "Climate-smart greenhouse technology for year-round production",
+    "icon": "🌿",
+    "image": "https://imgur.com/IZGz47e.jpg",
+    "description": "Our greenhouse solutions are specifically engineered for African climate conditions, enabling farmers to grow high-value crops year-round while protecting against extreme weather, pests, and diseases.",
+    "benefits": [
+      "Up to 10x higher yields compared to open-field farming",
+      "Year-round production regardless of external weather conditions",
+      "Significant reduction in water usage through precision irrigation",
+      "Protection from pests and diseases, reducing pesticide use by up to 90%"
+    ],
+    "solutions": [
+      {
+        "name": "High-tech Tropical Greenhouses",
+        "description": "State-of-the-art greenhouses designed specifically for African climate conditions.",
+        "image": "https://imgur.com/w7OS5f6.jpg",
+        "link": "/greenhouses/high-tech"
+      },
+      {
+        "name": "Insect-proof Nets & Films",
+        "description": "Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.",
+        "image": "https://imgur.com/lAI3XeF.jpg",
+        "link": "/greenhouses/accessories"
+      },
+      {
+        "name": "Climate Control Systems",
+        "description": "Advanced automation systems for precise control of temperature, humidity, and ventilation.",
+        "image": "https://imgur.com/xn6Qik0.jpg",
+        "link": "/greenhouses/high-tech"
+      }
+    ]
+  },
+  {
+    "id": "irrigation",
+    "title": "Water Management Solutions",
+    "subtitle": "Precision irrigation technology for optimal water efficiency",
+    "icon": "💧",
+    "image": "https://imgur.com/oe3gOtV.jpg",
+    "description": "Our irrigation solutions help African farmers maximize crop yields while conserving precious water resources. From simple drip systems to advanced automated solutions, we provide technology that increases efficiency and reduces costs.",
+    "benefits": [
+      "Up to 60% reduction in water usage compared to traditional methods",
+      "Increased crop yields through precise water and nutrient delivery",
+      "Reduced labor costs through automation and smart controls",
+      "Adaptable to various farm sizes, from smallholder plots to large commercial operations"
+    ],
+    "solutions": [
+      {
+        "name": "Drip Irrigation Systems",
+        "description": "Water-efficient irrigation solutions designed for optimal crop hydration and nutrient delivery.",
+        "image": "https://imgur.com/33OuKiU.jpg",
+        "link": "/irrigation/drip-systems"
+      },
+      {
+        "name": "Smart Filtration & Fertigation",
+        "description": "Integrated systems for water filtration and fertilizer injection, ensuring optimal nutrient delivery.",
+        "image": "https://imgur.com/AVECFTr.jpg",
+        "link": "/irrigation/drip-systems"
+      },
+      {
+        "name": "Automated Irrigation Controllers",
+        "description": "Smart irrigation controllers and monitoring systems for efficient water management.",
+        "image": "https://imgur.com/OJ0Dbgb.jpg",
+        "link": "/irrigation/controllers"
+      }
+    ]
+  },
+  {
+    "id": "substrates",
+    "title": "Growing Substrate Solutions",
+    "subtitle": "Premium substrates for optimal plant growth and development",
+    "icon": "🌱",
+    "image": "https://imgur.com/YnDCEmp.jpg",
+    "description": "Our premium growing media products are designed to provide the perfect environment for plant roots, ensuring optimal water retention, aeration, and nutrient availability for maximum crop health and productivity.",
+    "benefits": [
+      "Superior water retention reducing irrigation frequency by up to 50%",
+      "Excellent aeration promoting healthy root development and plant growth",
+      "pH balanced for optimal nutrient uptake and plant health",
+      "100% organic and environmentally sustainable materials"
+    ],
+    "solutions": [
+      {
+        "name": "Coco Peat & Coir",
+        "description": "Premium quality growing solutions for hydroponics and nursery applications.",
+        "image": "https://imgur.com/WgMc6pm.jpg",
+        "link": "/substrates/growing-solutions"
+      },
+      {
+        "name": "Organic Soil Amendments",
+        "description": "Natural soil enrichment products for improved crop growth and soil health.",
+        "image": "https://imgur.com/Yc1gQqw.jpg",
+        "link": "/substrates/growing-solutions"
+      }
+    ]
+  },
+  {
+    "id": "services",
+    "title": "Agricultural Services",
+    "subtitle": "Expert support from planning to implementation",
+    "icon": "🚜",
+    "image": "https://imgur.com/DJUivfa.jpg",
+    "description": "Beyond products, we provide comprehensive agricultural services to ensure your farming operation succeeds. Our team of experts offers consultation, design, installation, training, and ongoing support tailored to your specific needs.",
+    "benefits": [
+      "Customized solutions based on your specific farming conditions and goals",
+      "Expert installation ensuring optimal system performance from day one",
+      "Comprehensive training for farmers and farm managers",
+      "Ongoing technical support and maintenance services"
+    ],
+    "solutions": [
+      {
+        "name": "Turnkey Farm Projects",
+        "description": "Comprehensive farm planning and implementation services from concept to completion.",
+        "image": "https://imgur.com/CPZXVHq.jpg",
+        "link": "/projects"
+      },
+      {
+        "name": "Installation & Training",
+        "description": "Professional installation and setup of greenhouse and irrigation systems with comprehensive training.",
+        "image": "https://imgur.com/EhAcgNJ.jpg",
+        "link": "/contact"
+      }
+    ]
+  }
+]

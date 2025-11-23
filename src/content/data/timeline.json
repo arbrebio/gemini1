@@ -1,0 +1,32 @@
+[
+  {
+    "year": 2020,
+    "event": "Company Founded",
+    "description": "Established in Abidjan, Côte d'Ivoire with a vision to revolutionize African agriculture",
+    "icon": "🏢"
+  },
+  {
+    "year": 2021,
+    "event": "First Major Project",
+    "description": "Completed our first large-scale greenhouse installation in Ghana",
+    "icon": "🌿"
+  },
+  {
+    "year": 2022,
+    "event": "Strategic Partnerships",
+    "description": "Formed partnerships with NGS and AZUD to bring world-class agricultural solutions to Africa",
+    "icon": "🤝"
+  },
+  {
+    "year": 2023,
+    "event": "Regional Expansion",
+    "description": "Expanded operations to Nigeria and Ghana, serving over 100 agricultural projects",
+    "icon": "🚀"
+  },
+  {
+    "year": 2024,
+    "event": "Digital Innovation",
+    "description": "Launched smart farming solutions with IoT integration and AI-powered analytics",
+    "icon": "💻"
+  }
+]

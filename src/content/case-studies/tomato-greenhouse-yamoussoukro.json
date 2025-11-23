@@ -1,0 +1,25 @@
+{
+  "title": "Large-Scale Tomato Greenhouse",
+  "client": "Marie Koné",
+  "location": "Yamoussoukro, Côte d'Ivoire",
+  "area": "2 hectares",
+  "type": "Commercial Farm",
+  "description": "Implementation of a 2-hectare greenhouse facility with automated irrigation",
+  "challenge": "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
+  "solution": "Installation of climate-controlled greenhouses with precision irrigation systems",
+  "results": [
+    "300% increase in annual yield",
+    "Water usage reduced by 60%",
+    "Year-round production achieved",
+    "Product quality improvement leading to premium market prices"
+  ],
+  "testimonial": "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+  "clientImage": "https://imgur.com/YbVGmcu.jpg",
+  "beforeImage": "https://imgur.com/tXiE4Aq.jpg",
+  "afterImage": "https://imgur.com/hjafzfj.jpg",
+  "stats": [
+    { "label": "Greenhouse Area", "value": "1,000 m²" },
+    { "label": "Expected Production", "value": "50 tons/year" },
+    { "label": "Water Efficiency", "value": "70%" }
+  ]
+}

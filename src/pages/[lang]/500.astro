@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations, defaultLang } from '../lib/i18n';
+
+const lang = getLangFromUrl(Astro.url) || defaultLang;
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t('errors.serverError')}
+  description="We're experiencing technical difficulties. Please try again later or contact our support team."
+  noIndex={true}
+>
+  <div class="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+    <div class="max-w-md w-full text-center">
+      <div class="mb-8">
+        <h1 class="text-6xl font-bold text-red-500 mb-4">500</h1>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">{t('errors.serverError')}</h2>
+        <p class="text-gray-600 mb-8">
+          We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.
+        </p>
+      </div>
+      
+      <div class="space-y-4">
+        <button 
+          onclick="window.location.reload()"
+          class="inline-block bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors"
+        >
+          {t('errors.tryAgain')}
+        </button>
+        
+        <a 
+          href={lang === defaultLang ? '/' : `/${lang}`}
+          class="block text-primary hover:underline"
+        >
+          {t('errors.goHome')}
+        </a>
+        
+        <div class="text-sm text-gray-500">
+          <p>Still having issues? <a href={`/${lang === defaultLang ? '' : lang + '/'}contact`} class="text-primary hover:underline">Contact support</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

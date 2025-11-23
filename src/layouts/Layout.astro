@@ -1,0 +1,473 @@
+---
+import Navigation from '../components/Navigation.astro';
+import StructuredData from '../components/StructuredData.astro';
+import { SEO } from 'astro-seo';
+import { useTranslations, defaultLang } from '../lib/i18n';
+import { generateMetaTitle, generateMetaDescription, generateCanonicalUrl, generateBreadcrumbSchema } from '../lib/seoOptimization';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article' | 'product';
+  noIndex?: boolean;
+  keywords?: string[];
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const { 
+  title, 
+  description, 
+  image, 
+  type = 'website', 
+  noIndex = false,
+  keywords = [],
+  author,
+  publishedTime,
+  modifiedTime
+} = Astro.props;
+
+const lang = defaultLang;
+const t = useTranslations(lang);
+
+// Optimize meta content
+const optimizedTitle = generateMetaTitle(title);
+const optimizedDescription = generateMetaDescription(description);
+const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://arbrebio.com');
+
+// Generate structured data
+const organizationSchema = {
+  "name": "Arbre Bio Africa",
+  "url": Astro.site?.toString() || "https://arbrebio.com",
+  "logo": "https://i.imgur.com/79cS79J.png",
+  "description": "Leading provider of precision farming solutions in Africa",
+  "address": {
+    "addressLocality": "Abidjan",
+    "addressCountry": "CI"
+  },
+  "contactPoint": {
+    "telephone": "+225 21 21 80 69 50",
+    "contactType": "customer service"
+  },
+  "sameAs": [
+    "https://facebook.com/arbrebio",
+    "https://twitter.com/arbrebio",
+    "https://linkedin.com/company/arbrebio",
+    "https://instagram.com/arbrebio",
+    "https://youtube.com/arbrebio"
+  ]
+};
+
+const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, Astro.site?.toString() || 'https://arbrebio.com') as { itemListElement?: any[] };
+const breadcrumbData = {
+  items: breadcrumbSchema.itemListElement || []
+};
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <link rel="icon" type="image/png" href="https://i.imgur.com/79cS79J.png" />
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://i.imgur.com" crossorigin />
+    <link rel="preconnect" href="https://imgur.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://rsms.me" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    
+    <!-- DNS prefetch for additional performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//www.google-analytics.com" />
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="https://i.imgur.com/79cS79J.png" fetchpriority="high" crossorigin />
+    {image && <link rel="preload" as="image" href={image} fetchpriority="high" crossorigin />}
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- Font Awesome -->
+    <link 
+      rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      media="all"
+    />
+    
+    <!-- Sitemap reference -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    
+    <SEO
+      title={optimizedTitle}
+      description={optimizedDescription}
+      noindex={noIndex}
+      openGraph={{
+        basic: {
+          title: optimizedTitle,
+          type,
+          image: image || "https://i.imgur.com/79cS79J.png",
+        },
+        optional: {
+          siteName: "Arbre Bio Africa",
+          locale: lang,
+          ...(author && { author }),
+          ...(publishedTime && { publishedTime }),
+          ...(modifiedTime && { modifiedTime })
+        },
+      }}
+      twitter={{
+        card: "summary_large_image",
+        site: "@arbrebio",
+        creator: author || "@arbrebio"
+      }}
+      extend={{
+        meta: [
+          { name: "theme-color", content: "#194642" },
+          { name: "robots", content: noIndex ? "noindex, nofollow" : "index, follow" },
+          { name: "author", content: "Arbre Bio Africa" },
+          { name: "geo.region", content: "CI" },
+          { name: "geo.placename", content: "Abidjan" },
+          ...(keywords.length > 0 ? [{ name: "keywords", content: keywords.join(', ') }] : []),
+          { name: "format-detection", content: "telephone=no" },
+          { name: "mobile-web-app-capable", content: "yes" },
+          { name: "apple-mobile-web-app-capable", content: "yes" },
+          { name: "apple-mobile-web-app-status-bar-style", content: "default" }
+        ],
+        link: [
+          { rel: "canonical", href: canonicalURL },
+          { rel: "sitemap", href: "/sitemap-index.xml" }
+        ]
+      }}
+    />
+
+    <!-- Structured Data -->
+    <StructuredData type="Organization" data={organizationSchema} />
+    <StructuredData type="BreadcrumbList" data={breadcrumbData} />
+    
+    <!-- Preload fonts with font-display optimization -->
+    <noscript>
+      <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    </noscript>
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="https://i.imgur.com/79cS79J.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Arbre Bio Africa" />
+    
+    <!-- Performance optimization -->
+    <script>
+      // Critical performance optimizations
+      // Optimize font loading
+      const fontLink = document.createElement('link');
+      fontLink.rel = 'stylesheet';
+      fontLink.href = 'https://rsms.me/inter/inter.css';
+      fontLink.media = 'all';
+      document.head.appendChild(fontLink);
+      
+      // Lazy load non-critical scripts
+      window.addEventListener('load', () => {
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js');
+        }
+      });
+      
+      // Optimize images
+      if ('loading' in HTMLImageElement.prototype) {
+        // Native lazy loading supported
+        document.addEventListener('DOMContentLoaded', () => {
+          const images = document.querySelectorAll('img[loading="lazy"]');
+          images.forEach(img => {
+            const image = img as HTMLImageElement;
+            if (image.dataset.src) {
+              image.src = image.dataset.src;
+            }
+          });
+        });
+      }
+    </script>
+  </head>
+  <body class="bg-white antialiased">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50">
+      Skip to main content
+    </a>
+    
+    <Navigation />
+    
+    <!-- Back Button -->
+    {Astro.url.pathname !== '/' && (
+      <button
+        id="back-button" 
+        class="fixed left-4 top-32 z-50 bg-white/90 backdrop-blur-sm text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center space-x-2" 
+        onclick="window.history.back()" 
+        aria-label={t('common.back') || "Go back to previous page"} 
+      >
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+        <span>{t('common.back')}</span>
+      </button>
+    )}
+    
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer class="bg-primary text-white mt-20">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Company Info -->
+          <div>
+            <img 
+              src="https://i.imgur.com/79cS79J.png" 
+              alt="Arbre Bio" 
+             class="h-32 w-auto mb-6 brightness-0 invert"
+              width="300"
+              height="300"
+              loading="lazy"
+            />
+            <p class="text-gray-300">{t('footer.description')}</p>
+            
+            <!-- Social Media Icons -->
+            <div class="flex space-x-6 mt-6">
+              <a 
+                href="https://facebook.com/arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="Facebook"
+              >
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+              <a 
+                href="https://twitter.com/arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="Twitter"
+              >
+                <i class="fa-brands fa-twitter"></i>
+              </a>
+              <a 
+                href="https://linkedin.com/company/arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="LinkedIn"
+              >
+                <i class="fa-brands fa-linkedin-in"></i>
+              </a>
+              <a 
+                href="https://instagram.com/arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="Instagram"
+              >
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+              <a 
+                href="https://youtube.com/arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="YouTube"
+              >
+                <i class="fa-brands fa-youtube"></i>
+              </a>
+              <a 
+                href="https://tiktok.com/@arbrebio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-white/80 hover:text-white transition-colors text-lg"
+                aria-label="TikTok"
+              >
+                <i class="fa-brands fa-tiktok"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
+            <ul class="space-y-2">
+              <li><a href="/about" class="text-gray-300 hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
+              <li><a href="/solutions" class="text-gray-300 hover:text-white transition-colors">{t('footer.solutions')}</a></li>
+              <li><a href="/blog" class="text-gray-300 hover:text-white transition-colors">Blog</a></li>
+              <li><a href="/contact" class="text-gray-300 hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">{t('footer.contactInfo')}</h3>
+            <ul class="space-y-4 text-gray-300">
+              <li>
+                <p class="font-semibold">Abidjan Office:</p>
+                <p>Cocody Riviera 3, Jacque Prevert 2</p>
+                <a href="tel:+22521218069" class="hover:text-white transition-colors block">
+                  +225 21 21 80 69 50
+                </a>
+                <a href="mailto:farms@arbrebio.com" class="hover:text-white transition-colors block">
+                  farms@arbrebio.com
+                </a>
+              </li>
+              <li>
+                <p class="font-semibold">Cape Town Warehouse:</p>
+                <p>Van Biljon Business Park, Winelands Cl, Stikland Industrial, Cape Town, 7530</p>
+                <a href="tel:+27795330267" class="hover:text-white transition-colors block">
+                  +27 79 533 0267
+                </a>
+                <a href="mailto:CPT@arbrebio.com" class="hover:text-white transition-colors block">
+                  CPT@arbrebio.com
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Newsletter -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">{t('footer.newsletter')}</h3>
+            <div class="space-y-4">
+              <form id="footer-newsletter-form" class="space-y-4">
+                <div class="relative">
+                  <label for="footer-email" class="sr-only">Email address</label>
+                  <input 
+                    type="email" 
+                    id="footer-email"
+                    name="email"
+                    placeholder={t('footer.emailPlaceholder')}
+                    class="w-full px-4 py-2 rounded-md bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    required
+                    aria-required="true"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  class="w-full px-4 py-2 bg-white text-primary rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
+                >
+                  <span>{t('footer.subscribe')}</span>
+                  <span class="loading-spinner hidden ml-2">
+                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  </span>
+                </button>
+                <div class="success-message hidden text-green-300 text-sm"></div>
+                <div class="error-message hidden text-red-300 text-sm"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Footer -->
+        <div class="border-t border-white/20 mt-12 pt-8 text-sm text-gray-300">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex flex-col md:flex-row items-center">
+              <p>&copy; {new Date().getFullYear()} Arbre Bio Africa. {t('footer.copyright')}</p>
+            </div>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+              <a href="/terms" class="hover:text-white transition-colors">{t('footer.terms')}</a>
+              <a href="/privacy" class="hover:text-white transition-colors">{t('footer.privacy')}</a>
+              <a href="/cookies" class="hover:text-white transition-colors">{t('footer.cookies')}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+  
+  <!-- Initialize performance optimizations -->
+  <script>
+    // Newsletter form functionality
+    const form = document.getElementById('footer-newsletter-form') as HTMLFormElement | null;
+    const successMessage = form?.querySelector('.success-message');
+    const errorMessage = form?.querySelector('.error-message');
+    const loadingSpinner = form?.querySelector('.loading-spinner');
+    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Reset messages
+        successMessage?.classList.add('hidden');
+        errorMessage?.classList.add('hidden');
+
+        // Show loading state
+        loadingSpinner?.classList.remove('hidden');
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+
+        try {
+          const emailInput = form.querySelector('#footer-email') as HTMLInputElement | null;
+          const email = emailInput?.value;
+
+          if (!email) {
+            throw new Error('Email is required');
+          }
+
+          const response = await fetch('/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              source: 'footer',
+              consent: true
+            }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Failed to subscribe');
+          }
+
+          if (successMessage) {
+            successMessage.textContent = result.message || 'Thank you for subscribing!';
+            successMessage.classList.remove('hidden');
+          }
+          form.reset();
+        } catch (error) {
+          if (errorMessage) {
+            errorMessage.textContent = error instanceof Error
+              ? error.message
+              : 'An error occurred. Please try again.';
+            errorMessage.classList.remove('hidden');
+          }
+        } finally {
+          loadingSpinner?.classList.add('hidden');
+          if (submitButton) {
+            submitButton.disabled = false;
+          }
+        }
+      });
+    }
+    
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</html>

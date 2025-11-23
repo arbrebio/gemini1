@@ -1,0 +1,160 @@
+---
+import { getLangFromUrl, useTranslations, defaultLang } from '../lib/i18n';
+import { config } from '../lib/config';
+import FooterNewsletterForm from './FooterNewsletterForm.astro';
+
+const lang = getLangFromUrl(Astro.url) || defaultLang;
+const t = useTranslations(lang);
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-primary text-white">
+  <div class="container mx-auto px-4 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Company Info -->
+      <div class="md:col-span-2">
+        <img 
+          src={config.company.logo}
+          alt={config.site.name}
+          width="200"
+          height="60"
+         class="h-16 w-auto mb-4 brightness-0 invert"
+        />
+        <p class="text-gray-300 mb-6 max-w-md">
+          {t('footer.description')}
+        </p>
+        <div class="flex space-x-4">
+          <a 
+            href={config.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors"
+            aria-label="Facebook"
+          >
+            <i class="fa-brands fa-facebook-f text-xl"></i>
+          </a>
+          <a 
+            href={config.social.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors"
+            aria-label="Twitter"
+          >
+            <i class="fa-brands fa-twitter text-xl"></i>
+          </a>
+          <a 
+            href={config.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors"
+            aria-label="LinkedIn"
+          >
+            <i class="fa-brands fa-linkedin-in text-xl"></i>
+          </a>
+          <a 
+            href={config.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <i class="fa-brands fa-instagram text-xl"></i>
+          </a>
+          <a 
+            href={config.social.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors"
+            aria-label="YouTube"
+          >
+            <i class="fa-brands fa-youtube text-xl"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
+        <ul class="space-y-2">
+          <li>
+            <a 
+              href={lang === defaultLang ? '/about' : `/${lang}/about`}
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              {t('footer.about')}
+            </a>
+          </li>
+          <li>
+            <a 
+              href={lang === defaultLang ? '/solutions' : `/${lang}/solutions`}
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              {t('footer.solutions')}
+            </a>
+          </li>
+          <li>
+            <a 
+              href={lang === defaultLang ? '/projects' : `/${lang}/projects`}
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              {t('nav.projects')}
+            </a>
+          </li>
+          <li>
+            <a 
+              href={lang === defaultLang ? '/blog' : `/${lang}/blog`}
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              {t('nav.blog')}
+            </a>
+          </li>
+          <li>
+            <a 
+              href={lang === defaultLang ? '/contact' : `/${lang}/contact`}
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              {t('footer.contact')}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">{t('footer.newsletter')}</h3>
+        <p class="text-gray-300 mb-4">Stay updated with the latest agricultural insights and tips.</p>
+        <FooterNewsletterForm />
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-white/20 mt-12 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-300 mb-4 md:mb-0">
+          © {currentYear} {config.site.name}. {t('footer.copyright')}
+        </p>
+        <div class="flex space-x-6">
+          <a 
+            href={lang === defaultLang ? '/privacy' : `/${lang}/privacy`}
+            class="text-gray-300 hover:text-white transition-colors text-sm"
+          >
+            {t('footer.privacy')}
+          </a>
+          <a 
+            href={lang === defaultLang ? '/terms' : `/${lang}/terms`}
+            class="text-gray-300 hover:text-white transition-colors text-sm"
+          >
+            {t('footer.terms')}
+          </a>
+          <a 
+            href={lang === defaultLang ? '/cookies' : `/${lang}/cookies`}
+            class="text-gray-300 hover:text-white transition-colors text-sm"
+          >
+            {t('footer.cookies')}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

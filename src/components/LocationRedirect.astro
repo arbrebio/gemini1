@@ -1,0 +1,27 @@
+<script>
+  // Client-side language detection and redirection
+  const supportedLanguages = ['en', 'fr', 'es', 'af'];
+  const defaultLanguage = 'en';
+
+  function detectLanguage() {
+    // Check if language is already stored in localStorage
+    const storedLang = localStorage.getItem('preferred_language');
+    if (storedLang && supportedLanguages.includes(storedLang)) {
+      return storedLang;
+    }
+
+    // Check browser language
+    const browserLang = navigator.language.split('-')[0];
+    if (supportedLanguages.includes(browserLang)) {
+      return browserLang;
+    }
+
+    return defaultLanguage;
+  }
+
+  // Only redirect if we are at the root path
+  if (window.location.pathname === '/' || window.location.pathname === '') {
+    const lang = detectLanguage();
+    window.location.href = `/${lang}/`;
+  }
+</script>
