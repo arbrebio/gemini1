@@ -119,8 +119,20 @@ const translations: Record<Language, Record<string, any>> = {
       exploreSolutions: 'Explore Solutions',
       cta: {
         primary: 'Get Started',
-        secondary: 'Explore Solutions'
-      }
+        secondary: 'Explore Solutions',
+        primaryDesc: 'Contact us to get started with agricultural solutions',
+        secondaryDesc: 'Explore our agricultural solutions and products'
+      },
+      heroAlt: 'Hero Background'
+    },
+    partners: {
+      title: 'Our Trusted Partners',
+      subtitle: 'Working together with leading organizations to transform African agriculture'
+    },
+    accessibility: {
+      impactStats: 'Our Impact Statistics',
+      consultationDesc: 'Schedule a free consultation with our agricultural experts',
+      whatsappDesc: 'Chat with our experts on WhatsApp for immediate assistance'
     },
     services: {
       title: 'Our Services',
@@ -803,8 +815,20 @@ const translations: Record<Language, Record<string, any>> = {
       exploreSolutions: 'Explorer les Solutions',
       cta: {
         primary: 'Commencer',
-        secondary: 'Explorer les Solutions'
-      }
+        secondary: 'Explorer les Solutions',
+        primaryDesc: 'Contactez-nous pour commencer avec des solutions agricoles',
+        secondaryDesc: 'Explorez nos solutions et produits agricoles'
+      },
+      heroAlt: 'Arrière-plan héros'
+    },
+    partners: {
+      title: 'Nos Partenaires de Confiance',
+      subtitle: 'Travailler ensemble avec des organisations de premier plan pour transformer l\'agriculture africaine'
+    },
+    accessibility: {
+      impactStats: 'Nos Statistiques d\'Impact',
+      consultationDesc: 'Planifiez une consultation gratuite avec nos experts agricoles',
+      whatsappDesc: 'Discutez avec nos experts sur WhatsApp pour une assistance immédiate'
     },
     services: {
       title: 'Nos Services',
@@ -1320,14 +1344,26 @@ const translations: Record<Language, Record<string, any>> = {
       growingSolutions: 'Soluciones de Cultivo'
     },
     hero: {
-      title: 'Transformando la Agricultura Africana a Través de Soluciones de Agricultura de Precisión',
+      title: 'Transformar la Agricultura Africana a Través de Soluciones de Agricultura de Precisión',
       subtitle: 'Aumenta tus rendimientos hasta 10 veces con nuestra tecnología agrícola moderna',
       getStarted: 'Comenzar',
       exploreSolutions: 'Explorar Soluciones',
       cta: {
         primary: 'Comenzar',
-        secondary: 'Explorar Soluciones'
-      }
+        secondary: 'Explorar Soluciones',
+        primaryDesc: 'Contáctanos para comenzar con soluciones agrícolas',
+        secondaryDesc: 'Explora nuestras soluciones y productos agrícolas'
+      },
+      heroAlt: 'Fondo héroe'
+    },
+    partners: {
+      title: 'Nuestros Socios de Confianza',
+      subtitle: 'Trabajando juntos con organizaciones líderes para transformar la agricultura africana'
+    },
+    accessibility: {
+      impactStats: 'Nuestras Estadísticas de Impacto',
+      consultationDesc: 'Programa una consulta gratuita con nuestros expertos agrícolas',
+      whatsappDesc: 'Chatea con nuestros expertos en WhatsApp para asistencia inmediata'
     },
     services: {
       title: 'Nuestros Servicios',
@@ -1683,14 +1719,26 @@ const translations: Record<Language, Record<string, any>> = {
       growingSolutions: 'Groei Oplossings'
     },
     hero: {
-      title: 'Transformeer Afrika se Landbou Deur Presisie Boerdery Oplossings',
+      title: 'Transformeer Afrika-Landbou Deur Presisie Boerdery Oplossings',
       subtitle: 'Verhoog jou opbrengste tot 10 keer met ons moderne landbou tegnologie',
       getStarted: 'Begin',
       exploreSolutions: 'Verken Oplossings',
       cta: {
         primary: 'Begin',
-        secondary: 'Verken Oplossings'
-      }
+        secondary: 'Verken Oplossings',
+        primaryDesc: 'Kontak ons om te begin met landbou oplossings',
+        secondaryDesc: 'Verken ons landbou oplossings en produkte'
+      },
+      heroAlt: 'Held Agtergrond'
+    },
+    partners: {
+      title: 'Ons Vertroude Vennote',
+      subtitle: 'Saamwerk met toonaangewende organisasies om Afrika-landbou te transformeer'
+    },
+    accessibility: {
+      impactStats: 'Ons Impak Statistieke',
+      consultationDesc: 'Skeduleer \'n gratis konsultasie met ons landboukundiges',
+      whatsappDesc: 'Gesels met ons kundiges op WhatsApp vir onmiddellike hulp'
     },
     services: {
       title: 'Ons Dienste',
