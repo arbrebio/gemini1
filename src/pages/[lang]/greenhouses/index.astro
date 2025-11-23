@@ -9,101 +9,165 @@ const t = useTranslations(lang as any);
 
 const specifications = [
   {
-    category: 'Structure',
+    category: t('pages.greenhouse.specifications.structure.category'),
     items: [
-      { feature: 'Frame Material', value: 'Hot-dip galvanized steel', advantage: 'Superior corrosion resistance, 20+ years lifespan' },
-      { feature: 'Connection System', value: 'Patented bolt-lock technology', advantage: '300% stronger than traditional welded joints' },
-      { feature: 'Wind Resistance', value: 'Up to 150 km/h', advantage: 'Exceeds industry standards by 50%' },
-      { feature: 'Snow Load', value: '25 kg/m²', advantage: 'Designed for varied climate conditions' }
+      { 
+        feature: t('pages.greenhouse.specifications.structure.frameMaterial'), 
+        value: t('pages.greenhouse.specifications.structure.frameMaterialValue'), 
+        advantage: t('pages.greenhouse.specifications.structure.frameMaterialAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.structure.connectionSystem'), 
+        value: t('pages.greenhouse.specifications.structure.connectionSystemValue'), 
+        advantage: t('pages.greenhouse.specifications.structure.connectionSystemAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.structure.windResistance'), 
+        value: t('pages.greenhouse.specifications.structure.windResistanceValue'), 
+        advantage: t('pages.greenhouse.specifications.structure.windResistanceAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.structure.snowLoad'), 
+        value: t('pages.greenhouse.specifications.structure.snowLoadValue'), 
+        advantage: t('pages.greenhouse.specifications.structure.snowLoadAdvantage') 
+      }
     ]
   },
   {
-    category: 'Coverage',
+    category: t('pages.greenhouse.specifications.coverage.category'),
     items: [
-      { feature: 'Material', value: 'Multi-layer UV-stabilized polyethylene', advantage: '92% light transmission' },
-      { feature: 'UV Protection', value: 'Advanced UV-A/B/C blocking', advantage: 'Extended crop protection and film life' },
-      { feature: 'Thermal Properties', value: 'IR heat retention technology', advantage: '25% better temperature regulation' },
-      { feature: 'Warranty', value: '5-year UV warranty', advantage: 'Industry-leading coverage guarantee' }
+      { 
+        feature: t('pages.greenhouse.specifications.coverage.material'), 
+        value: t('pages.greenhouse.specifications.coverage.materialValue'), 
+        advantage: t('pages.greenhouse.specifications.coverage.materialAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.coverage.uvProtection'), 
+        value: t('pages.greenhouse.specifications.coverage.uvProtectionValue'), 
+        advantage: t('pages.greenhouse.specifications.coverage.uvProtectionAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.coverage.thermal'), 
+        value: t('pages.greenhouse.specifications.coverage.thermalValue'), 
+        advantage: t('pages.greenhouse.specifications.coverage.thermalAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.coverage.warranty'), 
+        value: t('pages.greenhouse.specifications.coverage.warrantyValue'), 
+        advantage: t('pages.greenhouse.specifications.coverage.warrantyAdvantage') 
+      }
     ]
   },
   {
-    category: 'Ventilation',
+    category: t('pages.greenhouse.specifications.ventilation.category'),
     items: [
-      { feature: 'System Type', value: 'Automated ridge and side ventilation', advantage: 'Perfect climate control' },
-      { feature: 'Air Exchange Rate', value: '45-60 air changes/hour', advantage: '50% better than standard systems' },
-      { feature: 'Control System', value: 'Smart climate controller', advantage: 'Automated response to weather changes' },
-      { feature: 'Insect Protection', value: '50-mesh anti-insect screens', advantage: 'Maximum pest protection' }
+      { 
+        feature: t('pages.greenhouse.specifications.ventilation.systemType'), 
+        value: t('pages.greenhouse.specifications.ventilation.systemTypeValue'), 
+        advantage: t('pages.greenhouse.specifications.ventilation.systemTypeAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.ventilation.airExchange'), 
+        value: t('pages.greenhouse.specifications.ventilation.airExchangeValue'), 
+        advantage: t('pages.greenhouse.specifications.ventilation.airExchangeAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.ventilation.control'), 
+        value: t('pages.greenhouse.specifications.ventilation.controlValue'), 
+        advantage: t('pages.greenhouse.specifications.ventilation.controlAdvantage') 
+      },
+      { 
+        feature: t('pages.greenhouse.specifications.ventilation.insectProtection'), 
+        value: t('pages.greenhouse.specifications.ventilation.insectProtectionValue'), 
+        advantage: t('pages.greenhouse.specifications.ventilation.insectProtectionAdvantage') 
+      }
     ]
   }
 ];
 
 const features = [
   {
-    title: 'Climate-Adaptive Design',
-    description: 'Engineered specifically for African climate conditions, our greenhouses maintain optimal growing conditions year-round.',
-    stats: ['40% cooler interior', '60% humidity control', '92% light transmission'],
+    title: t('pages.greenhouse.features.climateAdaptive.title'),
+    description: t('pages.greenhouse.features.climateAdaptive.description'),
+    stats: [
+      t('pages.greenhouse.features.climateAdaptive.stats.cooler'),
+      t('pages.greenhouse.features.climateAdaptive.stats.humidity'),
+      t('pages.greenhouse.features.climateAdaptive.stats.light')
+    ],
     image: 'https://imgur.com/XtX9fmQ.jpg'
   },
   {
-    title: 'Structural Durability',
-    description: 'Built with hot-dip galvanized steel and our patented bolt-lock system for unmatched strength and longevity.',
-    stats: ['20+ years lifespan', '150 km/h wind resistance', '25 kg/m² load capacity'],
+    title: t('pages.greenhouse.features.structural.title'),
+    description: t('pages.greenhouse.features.structural.description'),
+    stats: [
+      t('pages.greenhouse.features.structural.stats.lifespan'),
+      t('pages.greenhouse.features.structural.stats.wind'),
+      t('pages.greenhouse.features.structural.stats.load')
+    ],
     image: 'https://imgur.com/hKnWqYO.jpg'
   },
   {
-    title: 'Advanced Coverage System',
-    description: 'Multi-layer UV-stabilized polyethylene with IR heat retention technology for optimal crop protection.',
-    stats: ['5-year UV warranty', '92% light transmission', '25% better heat retention'],
+    title: t('pages.greenhouse.features.coverage.title'),
+    description: t('pages.greenhouse.features.coverage.description'),
+    stats: [
+      t('pages.greenhouse.features.coverage.stats.warranty'),
+      t('pages.greenhouse.features.coverage.stats.light'),
+      t('pages.greenhouse.features.coverage.stats.heat')
+    ],
     image: 'https://imgur.com/ybRfmvG.jpg'
   },
   {
-    title: 'Smart Ventilation',
-    description: 'Automated ventilation system with precision climate control for perfect growing conditions.',
-    stats: ['60 air changes/hour', '50-mesh insect protection', 'Smart climate control'],
+    title: t('pages.greenhouse.features.ventilation.title'),
+    description: t('pages.greenhouse.features.ventilation.description'),
+    stats: [
+      t('pages.greenhouse.features.ventilation.stats.airChanges'),
+      t('pages.greenhouse.features.ventilation.stats.insect'),
+      t('pages.greenhouse.features.ventilation.stats.smart')
+    ],
     image: 'https://imgur.com/u9CfHxE.jpg'
   }
 ];
 
 const comparisons = [
   {
-    title: 'Connection System',
+    title: t('pages.greenhouse.comparison.connection.title'),
     standard: {
-      title: 'Standard Welded Joints',
+      title: t('pages.greenhouse.comparison.connection.standard'),
       points: [
-        'Limited strength under stress',
-        'Prone to failure at weld points',
-        'Cannot be easily repaired',
-        'Shorter lifespan'
+        t('pages.greenhouse.comparison.connection.standardPoints.point1'),
+        t('pages.greenhouse.comparison.connection.standardPoints.point2'),
+        t('pages.greenhouse.comparison.connection.standardPoints.point3'),
+        t('pages.greenhouse.comparison.connection.standardPoints.point4')
       ]
     },
     premium: {
-      title: 'Arbre Bio Bolt-Lock System',
+      title: t('pages.greenhouse.comparison.connection.premium'),
       points: [
-        '300% stronger connection points',
-        'Distributed stress load',
-        'Easy maintenance and repairs',
-        '20+ years lifespan'
+        t('pages.greenhouse.comparison.connection.premiumPoints.point1'),
+        t('pages.greenhouse.comparison.connection.premiumPoints.point2'),
+        t('pages.greenhouse.comparison.connection.premiumPoints.point3'),
+        t('pages.greenhouse.comparison.connection.premiumPoints.point4')
       ]
     }
   },
   {
-    title: 'Coverage Technology',
+    title: t('pages.greenhouse.comparison.coverageTech.title'),
     standard: {
-      title: 'Basic UV Film',
+      title: t('pages.greenhouse.comparison.coverageTech.standard'),
       points: [
-        'Basic UV protection',
-        'Limited light diffusion',
-        '2-3 year lifespan',
-        'Poor heat retention'
+        t('pages.greenhouse.comparison.coverageTech.standardPoints.point1'),
+        t('pages.greenhouse.comparison.coverageTech.standardPoints.point2'),
+        t('pages.greenhouse.comparison.coverageTech.standardPoints.point3'),
+        t('pages.greenhouse.comparison.coverageTech.standardPoints.point4')
       ]
     },
     premium: {
-      title: 'Multi-Layer Smart Film',
+      title: t('pages.greenhouse.comparison.coverageTech.premium'),
       points: [
-        'Complete UV-A/B/C blocking',
-        'Optimal light diffusion',
-        '5-year warranty',
-        'Advanced IR heat retention'
+        t('pages.greenhouse.comparison.coverageTech.premiumPoints.point1'),
+        t('pages.greenhouse.comparison.coverageTech.premiumPoints.point2'),
+        t('pages.greenhouse.comparison.coverageTech.premiumPoints.point3'),
+        t('pages.greenhouse.comparison.coverageTech.premiumPoints.point4')
       ]
     }
   }
@@ -111,15 +175,15 @@ const comparisons = [
 ---
 
 <Layout
-  title="Premium Agricultural Greenhouses | Built for Africa's Climate"
-  description="Discover Arbre Bio Africa's premium greenhouse technology, engineered specifically for African climate conditions. Features include climate-adaptive design, superior durability, and smart ventilation systems."
+  title={t('pages.greenhouse.hero.title')}
+  description={t('pages.greenhouse.features.climateAdaptive.description')}
 >
   <!-- Hero Section -->
   <section class="relative min-h-[80vh] flex items-center">
     <div class="absolute inset-0 z-0">
       <img 
         src="https://imgur.com/z1onyVl.jpg"
-        alt="Arbre Bio Premium Greenhouse" 
+        alt={t('pages.greenhouse.hero.title')} 
         class="w-full h-full object-cover"
         loading="eager"
       />
@@ -128,24 +192,24 @@ const comparisons = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Premium Agricultural Greenhouses
-          <span class="block text-2xl md:text-3xl mt-2">Built for Africa's Climate</span>
+          {t('pages.greenhouse.hero.title')}
+          <span class="block text-2xl md:text-3xl mt-2">{t('pages.greenhouse.hero.builtForAfrica')}</span>
         </h1>
         <p class="text-xl text-white mb-8 font-medium">
-          20+ Years Lifespan • Maximum Crop Protection • Industry-Leading Technology
+          {t('pages.greenhouse.hero.tagline')}
         </p>
         <div class="flex flex-wrap gap-4">
           <a 
             href="#quote-form"
             class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
           >
-            Request Custom Quote
+            {t('pages.greenhouse.hero.requestQuote')}
           </a>
           <a 
             href="#specifications"
             class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
           >
-            View Specifications
+            {t('pages.greenhouse.hero.viewSpecifications')}
           </a>
         </div>
       </div>
@@ -184,7 +248,7 @@ const comparisons = [
   <!-- Specifications Table -->
   <section id="specifications" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Technical Specifications</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('pages.greenhouse.specifications.title')}</h2>
       <div class="space-y-8">
         {specifications.map((category) => (
           <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -211,7 +275,7 @@ const comparisons = [
   <!-- Comparison Section -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Why Choose Our Technology</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('pages.greenhouse.comparison.title')}</h2>
       <div class="space-y-12">
         {comparisons.map((comparison) => (
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -251,12 +315,12 @@ const comparisons = [
   <section id="quote-form" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Custom Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{t('pages.greenhouse.quoteForm.title')}</h2>
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                First Name *
+                {t('pages.greenhouse.quoteForm.firstName')} *
               </label>
               <input
                 type="text"
@@ -266,7 +330,7 @@ const comparisons = [
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Last Name *
+                {t('pages.greenhouse.quoteForm.lastName')} *
               </label>
               <input
                 type="text"
@@ -278,7 +342,7 @@ const comparisons = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Email Address *
+              {t('pages.greenhouse.quoteForm.email')} *
             </label>
             <input
               type="email"
@@ -289,7 +353,7 @@ const comparisons = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number *
+              {t('pages.greenhouse.quoteForm.phone')} *
             </label>
             <input
               type="tel"
@@ -300,19 +364,19 @@ const comparisons = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Project Location *
+              {t('pages.greenhouse.quoteForm.projectLocation')} *
             </label>
             <input
               type="text"
               required
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-              placeholder="City, Country"
+              placeholder={t('pages.greenhouse.quoteForm.locationPlaceholder')}
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Greenhouse Size (Square Meters) *
+              {t('pages.greenhouse.quoteForm.greenhouseSize')} *
             </label>
             <input
               type="number"
@@ -323,25 +387,25 @@ const comparisons = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Project Timeline
+              {t('pages.greenhouse.quoteForm.timeline')}
             </label>
             <select
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
-              <option value="immediate">Immediate (1-3 months)</option>
-              <option value="soon">Soon (3-6 months)</option>
-              <option value="planning">Planning Phase (6+ months)</option>
+              <option value="immediate">{t('pages.greenhouse.quoteForm.timelineImmediate')}</option>
+              <option value="soon">{t('pages.greenhouse.quoteForm.timelineSoon')}</option>
+              <option value="planning">{t('pages.greenhouse.quoteForm.timelinePlanning')}</option>
             </select>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Additional Requirements
+              {t('pages.greenhouse.quoteForm.additionalRequirements')}
             </label>
             <textarea
               rows="4"
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-              placeholder="Tell us about your specific needs, crops you plan to grow, or any special requirements..."
+              placeholder={t('pages.greenhouse.quoteForm.additionalPlaceholder')}
             ></textarea>
           </div>
 
@@ -349,7 +413,7 @@ const comparisons = [
             type="submit"
             class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
           >
-            Submit Quote Request
+            {t('pages.greenhouse.quoteForm.submit')}
           </button>
         </form>
 
@@ -357,18 +421,18 @@ const comparisons = [
         <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div>
             <div class="text-4xl mb-4">🏆</div>
-            <h3 class="font-bold mb-2">ISO 9001:2015 Certified</h3>
-            <p class="text-gray-600">Quality Management System</p>
+            <h3 class="font-bold mb-2">{t('pages.greenhouse.trustIndicators.iso.title')}</h3>
+            <p class="text-gray-600">{t('pages.greenhouse.trustIndicators.iso.description')}</p>
           </div>
           <div>
             <div class="text-4xl mb-4">⭐</div>
-            <h3 class="font-bold mb-2">5-Year Warranty</h3>
-            <p class="text-gray-600">Industry-Leading Coverage</p>
+            <h3 class="font-bold mb-2">{t('pages.greenhouse.trustIndicators.warranty.title')}</h3>
+            <p class="text-gray-600">{t('pages.greenhouse.trustIndicators.warranty.description')}</p>
           </div>
           <div>
             <div class="text-4xl mb-4">🌍</div>
-            <h3 class="font-bold mb-2">500+ Projects</h3>
-            <p class="text-gray-600">Across Africa</p>
+            <h3 class="font-bold mb-2">{t('pages.greenhouse.trustIndicators.projects.title')}</h3>
+            <p class="text-gray-600">{t('pages.greenhouse.trustIndicators.projects.description')}</p>
           </div>
         </div>
       </div>
@@ -378,14 +442,14 @@ const comparisons = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{t('pages.greenhouse.finalCta.title')}</h2>
+      <p class="text-xl text-white mb-8">{t('pages.greenhouse.finalCta.description')}</p>
       <div class="flex flex-wrap justify-center gap-4">
         <a 
           href="#quote-form" 
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
         >
-          Get Started
+          {t('pages.greenhouse.finalCta.getStarted')}
         </a>
         <a 
           href="https://wa.me/2250799295643" 
@@ -394,7 +458,7 @@ const comparisons = [
           class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
         >
           <i class="fab fa-whatsapp mr-2"></i>
-          Chat on WhatsApp
+          {t('pages.greenhouse.finalCta.whatsapp')}
         </a>
       </div>
     </div>
