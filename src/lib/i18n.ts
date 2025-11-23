@@ -209,24 +209,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chat on WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog & Knowledge Hub',
-        subtitle: 'Expert insights and practical guides for modern African agriculture'
-      },
-      newsletter: {
-        title: 'Stay Updated',
-        subtitle: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
-        placeholder: 'Enter your email',
-        subscribe: 'Subscribe'
-      },
-      featured: {
-        title: 'Featured Articles'
-      },
-      latest: {
-        title: 'Latest Articles'
-      }
-    },
+
     office: {
       abidjan: 'Abidjan Office',
       capetown: 'Cape Town Warehouse'
@@ -277,6 +260,29 @@ const translations: Record<Language, Record<string, any>> = {
       terms: 'Terms',
       privacy: 'Privacy',
       cookies: 'Cookies'
+    },
+    blog: {
+      title: 'Blog & Knowledge Hub',
+      subtitle: 'Expert insights and practical guides for modern African agriculture',
+      featured: 'Featured Articles',
+      latest: 'Latest Articles',
+      readMore: 'Read More',
+      by: 'By',
+      stayUpdated: 'Stay Updated',
+      subscribeText: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
+      enterEmail: 'Enter your email',
+      subscribe: 'Subscribe'
+    },
+    newsletterPage: {
+      confirmTitle: 'Confirming Your Subscription',
+      confirmWait: 'Please wait while we confirm your subscription...',
+      confirmSuccess: 'Your subscription has been confirmed! You can close this window.',
+      confirmError: 'An error occurred while confirming your subscription.',
+      unsubscribeTitle: 'Unsubscribe from Newsletter',
+      unsubscribeWait: 'Processing your unsubscribe request...',
+      unsubscribeSuccess: 'You have been successfully unsubscribed from our newsletter.',
+      unsubscribeError: 'An error occurred while processing your unsubscribe request.',
+      genericError: 'An error occurred. Please try again later.'
     },
     errors: {
       pageNotFound: 'Page Not Found',
@@ -913,24 +919,6 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Discuter sur WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog & Centre de Connaissances',
-        subtitle: 'Conseils d\'experts et guides pratiques pour l\'agriculture africaine moderne'
-      },
-      newsletter: {
-        title: 'Restez Informé',
-        subtitle: 'Abonnez-vous à notre newsletter pour les dernières informations agricoles et conseils.',
-        placeholder: 'Entrez votre email',
-        subscribe: 'S\'abonner'
-      },
-      featured: {
-        title: 'Articles en Vedette'
-      },
-      latest: {
-        title: 'Derniers Articles'
-      }
-    },
     office: {
       abidjan: 'Bureau d\'Abidjan',
       capetown: 'Entrepôt du Cap'
@@ -981,6 +969,29 @@ const translations: Record<Language, Record<string, any>> = {
       terms: 'Conditions',
       privacy: 'Confidentialité',
       cookies: 'Cookies'
+    },
+    blog: {
+      title: 'Blog & Centre de Connaissances',
+      subtitle: 'Avis d\'experts et guides pratiques pour l\'agriculture africaine moderne',
+      featured: 'Articles en Vedette',
+      latest: 'Derniers Articles',
+      readMore: 'Lire la suite',
+      by: 'Par',
+      stayUpdated: 'Restez Informé',
+      subscribeText: 'Abonnez-vous à notre newsletter pour les derniers conseils agricoles.',
+      enterEmail: 'Entrez votre email',
+      subscribe: 'S\'abonner'
+    },
+    newsletterPage: {
+      confirmTitle: 'Confirmation de votre abonnement',
+      confirmWait: 'Veuillez patienter pendant que nous confirmons votre abonnement...',
+      confirmSuccess: 'Votre abonnement a été confirmé ! Vous pouvez fermer cette fenêtre.',
+      confirmError: 'Une erreur s\'est produite lors de la confirmation de votre abonnement.',
+      unsubscribeTitle: 'Se désabonner de la newsletter',
+      unsubscribeWait: 'Traitement de votre demande de désabonnement...',
+      unsubscribeSuccess: 'Vous avez été désabonné avec succès de notre newsletter.',
+      unsubscribeError: 'Une erreur s\'est produite lors du traitement de votre demande.',
+      genericError: 'Une erreur s\'est produite. Veuillez réessayer plus tard.'
     },
     errors: {
       pageNotFound: 'Page Non Trouvée',
@@ -1456,24 +1467,6 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chatear en WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog y Centro de Conocimiento',
-        subtitle: 'Consejos de expertos y guías prácticas para la agricultura africana moderna'
-      },
-      newsletter: {
-        title: 'Mantente Actualizado',
-        subtitle: 'Suscríbete a nuestro boletín para obtener los últimos conocimientos y consejos agrícolas.',
-        placeholder: 'Ingresa tu email',
-        subscribe: 'Suscribirse'
-      },
-      featured: {
-        title: 'Artículos Destacados'
-      },
-      latest: {
-        title: 'Últimos Artículos'
-      }
-    },
     office: {
       abidjan: 'Oficina de Abidjan',
       capetown: 'Almacén de Ciudad del Cabo'
@@ -1524,6 +1517,29 @@ const translations: Record<Language, Record<string, any>> = {
       terms: 'Términos',
       privacy: 'Privacidad',
       cookies: 'Cookies'
+    },
+    blog: {
+      title: 'Blog y Centro de Conocimiento',
+      subtitle: 'Perspectivas de expertos y guías prácticas para la agricultura africana moderna',
+      featured: 'Artículos Destacados',
+      latest: 'Últimos Artículos',
+      readMore: 'Leer más',
+      by: 'Por',
+      stayUpdated: 'Mantente Informado',
+      subscribeText: 'Suscríbete a nuestro boletín para recibir los últimos consejos agrícolas.',
+      enterEmail: 'Ingresa tu email',
+      subscribe: 'Suscribirse'
+    },
+    newsletterPage: {
+      confirmTitle: 'Confirmando su suscripción',
+      confirmWait: 'Por favor espere mientras confirmamos su suscripción...',
+      confirmSuccess: '¡Su suscripción ha sido confirmada! Puede cerrar esta ventana.',
+      confirmError: 'Ocurrió un error al confirmar su suscripción.',
+      unsubscribeTitle: 'Darse de baja del boletín',
+      unsubscribeWait: 'Procesando su solicitud de baja...',
+      unsubscribeSuccess: 'Se ha dado de baja exitosamente de nuestro boletín.',
+      unsubscribeError: 'Ocurrió un error al procesar su solicitud de baja.',
+      genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
     },
     errors: {
       pageNotFound: 'Página No Encontrada',
@@ -1839,24 +1855,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Gesels op WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog en Kennis Sentrum',
-        subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika landbou'
-      },
-      newsletter: {
-        title: 'Bly Op Hoogte',
-        subtitle: 'Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.',
-        placeholder: 'Voer jou e-pos in',
-        subscribe: 'Teken In'
-      },
-      featured: {
-        title: 'Uitstaande Artikels'
-      },
-      latest: {
-        title: 'Nuutste Artikels'
-      }
-    },
+
     office: {
       abidjan: 'Abidjan Kantoor',
       capetown: 'Kaapstad Pakhuis'
@@ -1907,6 +1906,29 @@ const translations: Record<Language, Record<string, any>> = {
       terms: 'Voorwaardes',
       privacy: 'Privaatheid',
       cookies: 'Koekies'
+    },
+    blog: {
+      title: 'Blog & Kennis Sentrum',
+      subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika-landbou',
+      featured: 'Uitgesoekte Artikels',
+      latest: 'Nuutste Artikels',
+      readMore: 'Lees Meer',
+      by: 'Deur',
+      stayUpdated: 'Bly Op Hoogte',
+      subscribeText: 'Teken in op ons nuusbrief vir die nuutste landbouwenke.',
+      enterEmail: 'Voer jou e-pos in',
+      subscribe: 'Teken In'
+    },
+    newsletterPage: {
+      confirmTitle: 'Bevestig Jou Intekening',
+      confirmWait: 'Wag asseblief terwyl ons jou intekening bevestig...',
+      confirmSuccess: 'Jou intekening is bevestig! Jy kan hierdie venster toemaak.',
+      confirmError: '\'n Fout het voorgekom tydens die bevestiging van jou intekening.',
+      unsubscribeTitle: 'Kanselleer Intekening',
+      unsubscribeWait: 'Verwerk jou kansellasie versoek...',
+      unsubscribeSuccess: 'Jy het suksesvol uitgeteken van ons nuusbrief.',
+      unsubscribeError: '\'n Fout het voorgekom tydens die verwerking van jou versoek.',
+      genericError: '\'n Fout het voorgekom. Probeer asseblief later weer.'
     },
     errors: {
       pageNotFound: 'Bladsy Nie Gevind',

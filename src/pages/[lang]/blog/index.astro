@@ -37,8 +37,8 @@ const formatDate = (date: Date) => {
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Blog & Knowledge Hub</h1>
-      <p class="text-xl text-white max-w-2xl">Expert insights and practical guides for modern African agriculture</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{t('blog.title')}</h1>
+      <p class="text-xl text-white max-w-2xl">{t('blog.subtitle')}</p>
     </div>
   </section>
 
@@ -46,7 +46,7 @@ const formatDate = (date: Date) => {
   {featuredPosts.length > 0 && (
     <section class="py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8">Featured Articles</h2>
+        <h2 class="text-3xl font-bold mb-8">{t('blog.featured')}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPosts.map(post => (
             <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
@@ -66,12 +66,12 @@ const formatDate = (date: Date) => {
                 </h3>
                 <p class="text-gray-600 mb-4">{post.data.description}</p>
                 <div class="flex items-center justify-between">
-                  <span class="text-sm text-gray-500">By {post.data.author}</span>
+                  <span class="text-sm text-gray-500">{t('blog.by')} {post.data.author}</span>
                   <a 
                     href={`/blog/${post.slug}`}
                     class="text-primary hover:text-primary-dark font-semibold inline-flex items-center"
                   >
-                    Read More
+                    {t('blog.readMore')}
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
@@ -88,7 +88,7 @@ const formatDate = (date: Date) => {
   <!-- All Posts -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-8">Latest Articles</h2>
+      <h2 class="text-3xl font-bold mb-8">{t('blog.latest')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {regularPosts.map(post => (
           <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
@@ -108,12 +108,12 @@ const formatDate = (date: Date) => {
               </h3>
               <p class="text-gray-600 mb-4">{post.data.description}</p>
               <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-500">By {post.data.author}</span>
+                <span class="text-sm text-gray-500">{t('blog.by')} {post.data.author}</span>
                 <a 
                   href={`/blog/${post.slug}`}
                   class="text-primary hover:text-primary-dark font-semibold inline-flex items-center"
                 >
-                  Read More
+                  {t('blog.readMore')}
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                   </svg>
@@ -129,19 +129,19 @@ const formatDate = (date: Date) => {
   <!-- Newsletter Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Stay Updated</h2>
-      <p class="text-xl text-white mb-8">Subscribe to our newsletter for the latest agricultural insights and tips.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{t('blog.stayUpdated')}</h2>
+      <p class="text-xl text-white mb-8">{t('blog.subscribeText')}</p>
       <form class="max-w-lg mx-auto flex gap-4">
         <input 
           type="email" 
-          placeholder="Enter your email"
+          placeholder={t('blog.enterEmail')}
           class="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
         />
         <button 
           type="submit"
           class="bg-white text-primary px-8 py-3 rounded-full hover:bg-opacity-90"
         >
-          Subscribe
+          {t('blog.subscribe')}
         </button>
       </form>
     </div>
