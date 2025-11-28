@@ -595,6 +595,119 @@ const translations: Record<Language, Record<string, any>> = {
         }
       }
     },
+    solutions: {
+      title: 'Products & Solutions - Agricultural Innovation for Africa',
+      description: 'Discover our comprehensive range of agricultural solutions including greenhouses, irrigation systems, growing media, and project management services.',
+      hero: {
+        title: 'Transforming African Agriculture',
+        subtitle: 'Through Innovative Solutions',
+        description: 'Empowering farmers across Africa with cutting-edge technology and sustainable solutions designed for local conditions.',
+        explore: 'Explore Our Solutions',
+        contact: 'Contact Our Experts'
+      },
+      metrics: {
+        yield: { value: '10x', label: 'Yield Increase', description: 'Average yield increase for greenhouse vegetable production' },
+        water: { value: '60%', label: 'Water Savings', description: 'Typical water reduction with our precision irrigation systems' },
+        pests: { value: '90%', label: 'Pest Reduction', description: 'Reduction in pest-related crop losses with protected farming' },
+        projects: { value: '500+', label: 'Projects Completed', description: 'Successful implementations across Africa' }
+      },
+      main: {
+        title: 'Our Agricultural Solutions',
+        description: 'Comprehensive solutions designed specifically for African farming conditions, helping farmers increase productivity, efficiency, and sustainability.',
+        benefits: 'Key Benefits:',
+        learnMore: 'Learn more about our',
+        greenhouses: {
+          title: 'Protected Farming Solutions',
+          subtitle: 'Climate-smart greenhouse technology for year-round production',
+          description: 'Our greenhouse solutions are specifically engineered for African climate conditions, enabling farmers to grow high-value crops year-round while protecting against extreme weather, pests, and diseases.',
+          benefits: [
+            'Up to 10x higher yields compared to open-field farming',
+            'Year-round production regardless of external weather conditions',
+            'Significant reduction in water usage through precision irrigation',
+            'Protection from pests and diseases, reducing pesticide use by up to 90%'
+          ],
+          items: {
+            highTech: { name: 'High-tech Tropical Greenhouses', description: 'State-of-the-art greenhouses designed specifically for African climate conditions.' },
+            nets: { name: 'Insect-proof Nets & Films', description: 'Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.' },
+            climate: { name: 'Climate Control Systems', description: 'Advanced automation systems for precise control of temperature, humidity, and ventilation.' }
+          }
+        },
+        irrigation: {
+          title: 'Water Management Solutions',
+          subtitle: 'Precision irrigation technology for optimal water efficiency',
+          description: 'Our irrigation solutions help African farmers maximize crop yields while conserving precious water resources. From simple drip systems to advanced automated solutions, we provide technology that increases efficiency and reduces costs.',
+          benefits: [
+            'Up to 60% reduction in water usage compared to traditional methods',
+            'Increased crop yields through precise water and nutrient delivery',
+            'Reduced labor costs through automation and smart controls',
+            'Adaptable to various farm sizes, from smallholder plots to large commercial operations'
+          ],
+          items: {
+            drip: { name: 'Drip Irrigation Systems', description: 'Water-efficient irrigation solutions designed for optimal crop hydration and nutrient delivery.' },
+            filtration: { name: 'Smart Filtration & Fertigation', description: 'Integrated systems for water filtration and fertilizer injection, ensuring optimal nutrient delivery.' },
+            controllers: { name: 'Automated Irrigation Controllers', description: 'Smart irrigation controllers and monitoring systems for efficient water management.' }
+          }
+        },
+        substrates: {
+          title: 'Growing Substrate Solutions',
+          subtitle: 'Premium substrates for optimal plant growth and development',
+          description: 'Our premium growing media products are designed to provide the perfect environment for plant roots, ensuring optimal water retention, aeration, and nutrient availability for maximum crop health and productivity.',
+          benefits: [
+            'Superior water retention reducing irrigation frequency by up to 50%',
+            'Excellent aeration promoting healthy root development and plant growth',
+            'pH balanced for optimal nutrient uptake and plant health',
+            '100% organic and environmentally sustainable materials'
+          ],
+          items: {
+            coco: { name: 'Coco Peat & Coir', description: 'Premium quality growing solutions for hydroponics and nursery applications.' },
+            soil: { name: 'Organic Soil Amendments', description: 'Natural soil enrichment products for improved crop growth and soil health.' }
+          }
+        },
+        services: {
+          title: 'Agricultural Services',
+          subtitle: 'Expert support from planning to implementation',
+          description: 'Beyond products, we provide comprehensive agricultural services to ensure your farming operation succeeds. Our team of experts offers consultation, design, installation, training, and ongoing support tailored to your specific needs.',
+          benefits: [
+            'Customized solutions based on your specific farming conditions and goals',
+            'Expert installation ensuring optimal system performance from day one',
+            'Comprehensive training for farmers and farm managers',
+            'Ongoing technical support and maintenance services'
+          ],
+          items: {
+            turnkey: { name: 'Turnkey Farm Projects', description: 'Comprehensive farm planning and implementation services from concept to completion.' },
+            installation: { name: 'Installation & Training', description: 'Professional installation and setup of greenhouse and irrigation systems with comprehensive training.' }
+          }
+        }
+      },
+      testimonials: {
+        title: 'What Our Farmers Say',
+        items: {
+          marie: {
+            quote: 'The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.',
+            author: 'Marie Koné',
+            role: 'Vegetable Farmer',
+            location: 'Yamoussoukro, Côte d\'Ivoire'
+          },
+          emmanuel: {
+            quote: 'The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we\'re seeing much better yields than ever before.',
+            author: 'Emmanuel Osei',
+            role: 'Cocoa Farmer',
+            location: 'Kumasi, Ghana'
+          }
+        }
+      },
+      successStories: {
+        title: 'See Our Solutions in Action',
+        description: 'Discover how our agricultural solutions have transformed farms across Africa, increasing yields, improving efficiency, and creating sustainable livelihoods.',
+        button: 'View Success Stories'
+      },
+      cta: {
+        title: 'Ready to Revolutionize Your Farming Operation?',
+        description: 'Our team of agricultural experts is ready to help you implement the perfect solution for your specific needs.',
+        schedule: 'Schedule a Consultation',
+        whatsapp: 'Chat with an Expert'
+      }
+    },
     validation: {
       required: 'This field is required',
       email: 'Please enter a valid email address',
@@ -1606,6 +1719,119 @@ const translations: Record<Language, Record<string, any>> = {
         }
       }
     },
+    solutions: {
+      title: 'Produits & Solutions - Innovation Agricole pour l\'Afrique',
+      description: 'Découvrez notre gamme complète de solutions agricoles incluant serres, systèmes d\'irrigation, substrats de culture et services de gestion de projet.',
+      hero: {
+        title: 'Transformer l\'Agriculture Africaine',
+        subtitle: 'Grâce à des Solutions Innovantes',
+        description: 'Autonomiser les agriculteurs à travers l\'Afrique avec une technologie de pointe et des solutions durables conçues pour les conditions locales.',
+        explore: 'Explorer Nos Solutions',
+        contact: 'Contacter Nos Experts'
+      },
+      metrics: {
+        yield: { value: '10x', label: 'Augmentation du Rendement', description: 'Augmentation moyenne du rendement pour la production maraîchère sous serre' },
+        water: { value: '60%', label: 'Économies d\'Eau', description: 'Réduction typique de l\'eau avec nos systèmes d\'irrigation de précision' },
+        pests: { value: '90%', label: 'Réduction des Ravageurs', description: 'Réduction des pertes de récoltes liées aux ravageurs avec l\'agriculture protégée' },
+        projects: { value: '500+', label: 'Projets Réalisés', description: 'Mises en œuvre réussies à travers l\'Afrique' }
+      },
+      main: {
+        title: 'Nos Solutions Agricoles',
+        description: 'Solutions complètes conçues spécifiquement pour les conditions agricoles africaines, aidant les agriculteurs à augmenter la productivité, l\'efficacité et la durabilité.',
+        benefits: 'Avantages Clés :',
+        learnMore: 'En savoir plus sur nos',
+        greenhouses: {
+          title: 'Solutions d\'Agriculture Protégée',
+          subtitle: 'Technologie de serre intelligente face au climat pour une production toute l\'année',
+          description: 'Nos solutions de serres sont spécifiquement conçues pour les conditions climatiques africaines, permettant aux agriculteurs de cultiver des cultures à haute valeur ajoutée toute l\'année tout en protégeant contre les conditions météorologiques extrêmes, les ravageurs et les maladies.',
+          benefits: [
+            'Rendements jusqu\'à 10 fois supérieurs par rapport à l\'agriculture en plein champ',
+            'Production toute l\'année quelles que soient les conditions météorologiques extérieures',
+            'Réduction significative de l\'utilisation de l\'eau grâce à l\'irrigation de précision',
+            'Protection contre les ravageurs et les maladies, réduisant l\'utilisation de pesticides jusqu\'à 90%'
+          ],
+          items: {
+            highTech: { name: 'Serres Tropicales High-tech', description: 'Serres de pointe conçues spécifiquement pour les conditions climatiques africaines.' },
+            nets: { name: 'Filets & Films Anti-insectes', description: 'Filets et films agricoles de première qualité qui protègent les cultures tout en maintenant des conditions de croissance optimales.' },
+            climate: { name: 'Systèmes de Contrôle Climatique', description: 'Systèmes d\'automatisation avancés pour un contrôle précis de la température, de l\'humidité et de la ventilation.' }
+          }
+        },
+        irrigation: {
+          title: 'Solutions de Gestion de l\'Eau',
+          subtitle: 'Technologie d\'irrigation de précision pour une efficacité optimale de l\'eau',
+          description: 'Nos solutions d\'irrigation aident les agriculteurs africains à maximiser les rendements des cultures tout en préservant les précieuses ressources en eau. Des systèmes goutte-à-goutte simples aux solutions automatisées avancées, nous fournissons une technologie qui augmente l\'efficacité et réduit les coûts.',
+          benefits: [
+            'Jusqu\'à 60% de réduction de l\'utilisation de l\'eau par rapport aux méthodes traditionnelles',
+            'Augmentation des rendements des cultures grâce à un apport précis en eau et en nutriments',
+            'Réduction des coûts de main-d\'œuvre grâce à l\'automatisation et aux contrôles intelligents',
+            'Adaptable à diverses tailles d\'exploitations, des petites parcelles aux grandes opérations commerciales'
+          ],
+          items: {
+            drip: { name: 'Systèmes d\'Irrigation Goutte-à-Goutte', description: 'Solutions d\'irrigation économes en eau conçues pour une hydratation et un apport en nutriments optimaux des cultures.' },
+            filtration: { name: 'Filtration Intelligente & Fertigation', description: 'Systèmes intégrés pour la filtration de l\'eau et l\'injection d\'engrais, assurant un apport optimal en nutriments.' },
+            controllers: { name: 'Contrôleurs d\'Irrigation Automatisés', description: 'Contrôleurs d\'irrigation intelligents et systèmes de surveillance pour une gestion efficace de l\'eau.' }
+          }
+        },
+        substrates: {
+          title: 'Solutions de Substrats de Culture',
+          subtitle: 'Substrats premium pour une croissance et un développement optimaux des plantes',
+          description: 'Nos produits de supports de culture premium sont conçus pour fournir l\'environnement parfait pour les racines des plantes, assurant une rétention d\'eau, une aération et une disponibilité des nutriments optimales pour une santé et une productivité maximales des cultures.',
+          benefits: [
+            'Rétention d\'eau supérieure réduisant la fréquence d\'irrigation jusqu\'à 50%',
+            'Excellente aération favorisant un développement racinaire sain et la croissance des plantes',
+            'pH équilibré pour une absorption optimale des nutriments et la santé des plantes',
+            'Matériaux 100% organiques et écologiquement durables'
+          ],
+          items: {
+            coco: { name: 'Coco Peat & Fibre de Coco', description: 'Solutions de culture de première qualité pour l\'hydroponie et les applications en pépinière.' },
+            soil: { name: 'Amendements Organiques du Sol', description: 'Produits d\'enrichissement naturel du sol pour une meilleure croissance des cultures et la santé du sol.' }
+          }
+        },
+        services: {
+          title: 'Services Agricoles',
+          subtitle: 'Support expert de la planification à la mise en œuvre',
+          description: 'Au-delà des produits, nous fournissons des services agricoles complets pour assurer le succès de votre exploitation agricole. Notre équipe d\'experts offre consultation, conception, installation, formation et support continu adaptés à vos besoins spécifiques.',
+          benefits: [
+            'Solutions personnalisées basées sur vos conditions agricoles et objectifs spécifiques',
+            'Installation experte assurant une performance optimale du système dès le premier jour',
+            'Formation complète pour les agriculteurs et les gestionnaires de ferme',
+            'Support technique continu et services de maintenance'
+          ],
+          items: {
+            turnkey: { name: 'Projets Agricoles Clé en Main', description: 'Services complets de planification et de mise en œuvre agricole, du concept à l\'achèvement.' },
+            installation: { name: 'Installation & Formation', description: 'Installation professionnelle et configuration des systèmes de serres et d\'irrigation avec formation complète.' }
+          }
+        }
+      },
+      testimonials: {
+        title: 'Ce que Disent Nos Agriculteurs',
+        items: {
+          marie: {
+            quote: 'La technologie de serre d\'Arbre Bio a transformé notre exploitation. Nous produisons maintenant des tomates de haute qualité toute l\'année, et nos revenus ont considérablement augmenté.',
+            author: 'Marie Koné',
+            role: 'Maraichère',
+            location: 'Yamoussoukro, Côte d\'Ivoire'
+          },
+          emmanuel: {
+            quote: 'Le système d\'irrigation a rendu notre ferme plus résiliente aux changements climatiques. Nos cacaoyers sont plus sains et nous voyons de bien meilleurs rendements que jamais auparavant.',
+            author: 'Emmanuel Osei',
+            role: 'Producteur de Cacao',
+            location: 'Kumasi, Ghana'
+          }
+        }
+      },
+      successStories: {
+        title: 'Voir Nos Solutions en Action',
+        description: 'Découvrez comment nos solutions agricoles ont transformé des fermes à travers l\'Afrique, augmentant les rendements, améliorant l\'efficacité et créant des moyens de subsistance durables.',
+        button: 'Voir les Histoires de Réussite'
+      },
+      cta: {
+        title: 'Prêt à Révolutionner Votre Exploitation Agricole ?',
+        description: 'Notre équipe d\'experts agricoles est prête à vous aider à mettre en œuvre la solution parfaite pour vos besoins spécifiques.',
+        schedule: 'Planifier une Consultation',
+        whatsapp: 'Discuter avec un Expert'
+      }
+    },
     validation: {
       required: 'Ce champ est obligatoire',
       email: 'Veuillez entrer une adresse email valide',
@@ -2451,6 +2677,119 @@ const translations: Record<Language, Record<string, any>> = {
         }
       }
     },
+    solutions: {
+      title: 'Productos y Soluciones - Innovación Agrícola para África',
+      description: 'Descubra nuestra gama completa de soluciones agrícolas incluyendo invernaderos, sistemas de riego, sustratos de cultivo y servicios de gestión de proyectos.',
+      hero: {
+        title: 'Transformando la Agricultura Africana',
+        subtitle: 'A través de Soluciones Innovadoras',
+        description: 'Empoderando a los agricultores de toda África con tecnología de punta y soluciones sostenibles diseñadas para las condiciones locales.',
+        explore: 'Explorar Nuestras Soluciones',
+        contact: 'Contactar a Nuestros Expertos'
+      },
+      metrics: {
+        yield: { value: '10x', label: 'Aumento del Rendimiento', description: 'Aumento promedio del rendimiento para la producción de hortalizas en invernadero' },
+        water: { value: '60%', label: 'Ahorro de Agua', description: 'Reducción típica de agua con nuestros sistemas de riego de precisión' },
+        pests: { value: '90%', label: 'Reducción de Plagas', description: 'Reducción de pérdidas de cultivos relacionadas con plagas con agricultura protegida' },
+        projects: { value: '500+', label: 'Proyectos Completados', description: 'Implementaciones exitosas en toda África' }
+      },
+      main: {
+        title: 'Nuestras Soluciones Agrícolas',
+        description: 'Soluciones integrales diseñadas específicamente para las condiciones agrícolas africanas, ayudando a los agricultores a aumentar la productividad, la eficiencia y la sostenibilidad.',
+        benefits: 'Beneficios Clave:',
+        learnMore: 'Aprenda más sobre nuestros',
+        greenhouses: {
+          title: 'Soluciones de Agricultura Protegida',
+          subtitle: 'Tecnología de invernadero climáticamente inteligente para producción todo el año',
+          description: 'Nuestras soluciones de invernadero están diseñadas específicamente para las condiciones climáticas africanas, permitiendo a los agricultores cultivar cultivos de alto valor todo el año mientras protegen contra el clima extremo, plagas y enfermedades.',
+          benefits: [
+            'Rendimientos hasta 10 veces mayores en comparación con la agricultura a campo abierto',
+            'Producción todo el año independientemente de las condiciones climáticas externas',
+            'Reducción significativa en el uso de agua a través del riego de precisión',
+            'Protección contra plagas y enfermedades, reduciendo el uso de pesticidas hasta en un 90%'
+          ],
+          items: {
+            highTech: { name: 'Invernaderos Tropicales de Alta Tecnología', description: 'Invernaderos de última generación diseñados específicamente para las condiciones climáticas africanas.' },
+            nets: { name: 'Mallas y Películas Anti-insectos', description: 'Mallas y películas agrícolas de primera calidad que protegen los cultivos mientras mantienen condiciones de crecimiento óptimas.' },
+            climate: { name: 'Sistemas de Control Climático', description: 'Sistemas de automatización avanzados para un control preciso de la temperatura, la humedad y la ventilación.' }
+          }
+        },
+        irrigation: {
+          title: 'Soluciones de Gestión del Agua',
+          subtitle: 'Tecnología de riego de precisión para una eficiencia hídrica óptima',
+          description: 'Nuestras soluciones de riego ayudan a los agricultores africanos a maximizar los rendimientos de los cultivos mientras conservan los preciosos recursos hídricos. Desde sistemas de goteo simples hasta soluciones automatizadas avanzadas, proporcionamos tecnología que aumenta la eficiencia y reduce los costos.',
+          benefits: [
+            'Hasta un 60% de reducción en el uso de agua en comparación con los métodos tradicionales',
+            'Aumento de los rendimientos de los cultivos a través de una entrega precisa de agua y nutrientes',
+            'Reducción de costos laborales a través de la automatización y controles inteligentes',
+            'Adaptable a varios tamaños de granjas, desde pequeñas parcelas hasta grandes operaciones comerciales'
+          ],
+          items: {
+            drip: { name: 'Sistemas de Riego por Goteo', description: 'Soluciones de riego eficientes en agua diseñadas para una hidratación y entrega de nutrientes óptimas de los cultivos.' },
+            filtration: { name: 'Filtración Inteligente y Fertirrigación', description: 'Sistemas integrados para filtración de agua e inyección de fertilizantes, asegurando una entrega óptima de nutrientes.' },
+            controllers: { name: 'Controladores de Riego Automatizados', description: 'Controladores de riego inteligentes y sistemas de monitoreo para una gestión eficiente del agua.' }
+          }
+        },
+        substrates: {
+          title: 'Soluciones de Sustratos de Cultivo',
+          subtitle: 'Sustratos premium para un crecimiento y desarrollo óptimo de las plantas',
+          description: 'Nuestros productos de medios de cultivo premium están diseñados para proporcionar el ambiente perfecto para las raíces de las plantas, asegurando una retención de agua, aireación y disponibilidad de nutrientes óptimas para una salud y productividad máximas de los cultivos.',
+          benefits: [
+            'Retención de agua superior reduciendo la frecuencia de riego hasta en un 50%',
+            'Excelente aireación promoviendo un desarrollo radicular saludable y el crecimiento de las plantas',
+            'pH equilibrado para una absorción óptima de nutrientes y salud de las plantas',
+            'Materiales 100% orgánicos y ambientalmente sostenibles'
+          ],
+          items: {
+            coco: { name: 'Coco Peat y Fibra de Coco', description: 'Soluciones de cultivo de primera calidad para hidroponía y aplicaciones de vivero.' },
+            soil: { name: 'Enmiendas Orgánicas del Suelo', description: 'Productos de enriquecimiento natural del suelo para un mejor crecimiento de los cultivos y salud del suelo.' }
+          }
+        },
+        services: {
+          title: 'Servicios Agrícolas',
+          subtitle: 'Soporte experto desde la planificación hasta la implementación',
+          description: 'Más allá de los productos, proporcionamos servicios agrícolas integrales para asegurar que su operación agrícola tenga éxito. Nuestro equipo de expertos ofrece consulta, diseño, instalación, capacitación y soporte continuo adaptado a sus necesidades específicas.',
+          benefits: [
+            'Soluciones personalizadas basadas en sus condiciones agrícolas y objetivos específicos',
+            'Instalación experta asegurando un rendimiento óptimo del sistema desde el primer día',
+            'Capacitación integral para agricultores y gerentes de granjas',
+            'Soporte técnico continuo y servicios de mantenimiento'
+          ],
+          items: {
+            turnkey: { name: 'Proyectos Agrícolas Llave en Mano', description: 'Servicios integrales de planificación e implementación agrícola desde el concepto hasta la finalización.' },
+            installation: { name: 'Instalación y Capacitación', description: 'Instalación profesional y configuración de sistemas de invernadero y riego con capacitación integral.' }
+          }
+        }
+      },
+      testimonials: {
+        title: 'Lo que Dicen Nuestros Agricultores',
+        items: {
+          marie: {
+            quote: 'La tecnología de invernadero de Arbre Bio ha transformé nuestra operación. Ahora producimos tomates de alta calidad todo el año, y nuestros ingresos han crecido significativamente.',
+            author: 'Marie Koné',
+            role: 'Agricultora de Hortalizas',
+            location: 'Yamoussoukro, Costa de Marfil'
+          },
+          emmanuel: {
+            quote: 'El sistema de riego ha hecho que nuestra granja sea más resistente a los cambios climáticos. Nuestros árboles de cacao son más saludables y estamos viendo rendimientos mucho mejores que nunca.',
+            author: 'Emmanuel Osei',
+            role: 'Agricultor de Cacao',
+            location: 'Kumasi, Ghana'
+          }
+        }
+      },
+      successStories: {
+        title: 'Vea Nuestras Soluciones en Acción',
+        description: 'Descubra cómo nuestras soluciones agrícolas han transformado granjas en toda África, aumentando los rendimientos, mejorando la eficiencia y creando medios de vida sostenibles.',
+        button: 'Ver Historias de Éxito'
+      },
+      cta: {
+        title: '¿Listo para Revolucionar su Operación Agrícola?',
+        description: 'Nuestro equipo de expertos agrícolas está listo para ayudarle a implementar la solución perfecta para sus necesidades específicas.',
+        schedule: 'Programar una Consulta',
+        whatsapp: 'Chatear con un Experto'
+      }
+    },
     validation: {
       required: 'Este campo es obligatorio',
       email: 'Por favor ingrese una dirección de email válida',
@@ -3134,6 +3473,119 @@ const translations: Record<Language, Record<string, any>> = {
           contact: 'Kontak Ons',
           whatsapp: 'Gesels op WhatsApp'
         }
+      }
+    },
+    solutions: {
+      title: 'Produkte & Oplossings - Landbou Innovasie vir Afrika',
+      description: 'Ontdek ons omvattende reeks landbou-oplossings insluitend kweekhuise, besproeiingstelsels, groeimedia, en projekbestuursdienste.',
+      hero: {
+        title: 'Transformasie van Afrika Landbou',
+        subtitle: 'Deur Innoverende Oplossings',
+        description: 'Bemagtiging van boere regoor Afrika met die nuutste tegnologie en volhoubare oplossings ontwerp vir plaaslike toestande.',
+        explore: 'Verken Ons Oplossings',
+        contact: 'Kontak Ons Kundiges'
+      },
+      metrics: {
+        yield: { value: '10x', label: 'Opbrengs Verhoging', description: 'Gemiddelde opbrengsverhoging vir kweekhuis groenteproduksie' },
+        water: { value: '60%', label: 'Waterbesparings', description: 'Tipiese watervermindering met ons presisiebesproeiingstelsels' },
+        pests: { value: '90%', label: 'Plaagvermindering', description: 'Vermindering in plaagverwante oesverliese met beskermde boerdery' },
+        projects: { value: '500+', label: 'Projekte Voltooi', description: 'Suksesvolle implementerings regoor Afrika' }
+      },
+      main: {
+        title: 'Ons Landbou Oplossings',
+        description: 'Omvattende oplossings spesifiek ontwerp vir Afrika boerderytoestande, wat boere help om produktiwiteit, doeltreffendheid en volhoubaarheid te verhoog.',
+        benefits: 'Sleutelvoordele:',
+        learnMore: 'Leer meer oor ons',
+        greenhouses: {
+          title: 'Beskermde Boerdery Oplossings',
+          subtitle: 'Klimaatslim kweekhuistegnologie vir produksie dwarsdeur die jaar',
+          description: 'Ons kweekhuisoplossings is spesifiek ontwerp vir Afrika klimaatstoestande, wat boere in staat stel om hoëwaarde-gewasse dwarsdeur die jaar te kweek terwyl dit beskerming bied teen uiterste weer, plae en siektes.',
+          benefits: [
+            'Tot 10x hoër opbrengste in vergelyking met ooplandboerdery',
+            'Produksie dwarsdeur die jaar ongeag eksterne weertoestande',
+            'Beduidende vermindering in watergebruik deur presisiebesproeiing',
+            'Beskerming teen plae en siektes, wat plaagdodergebruik met tot 90% verminder'
+          ],
+          items: {
+            highTech: { name: 'Hoë-tegnologie Tropiese Kweekhuise', description: 'Moderne kweekhuise spesifiek ontwerp vir Afrika klimaatstoestande.' },
+            nets: { name: 'Insekbestande Nette & Films', description: 'Premium kwaliteit landbounette en films wat gewasse beskerm terwyl optimale groeitoestande gehandhaaf word.' },
+            climate: { name: 'Klimaatbeheerstelsels', description: 'Gevorderde outomatiseringstelsels vir presiese beheer van temperatuur, humiditeit en ventilasie.' }
+          }
+        },
+        irrigation: {
+          title: 'Waterbestuursoplossings',
+          subtitle: 'Presisiebesproeiingstegnologie vir optimale waterdoeltreffendheid',
+          description: 'Ons besproeiingsoplossings help Afrika-boere om oesopbrengste te maksimeer terwyl kosbare waterhulpbronne bewaar word. Van eenvoudige drupstelsels tot gevorderde outomatiese oplossings, bied ons tegnologie wat doeltreffendheid verhoog en koste verminder.',
+          benefits: [
+            'Tot 60% vermindering in watergebruik in vergelyking met tradisionele metodes',
+            'Verhoogde oesopbrengste deur presiese water- en voedingstoflewering',
+            'Verminderde arbeidskoste deur outomatisering en slim beheer',
+            'Aanpasbaar by verskeie plaasgroottes, van kleinboerpersele tot groot kommersiële bedrywighede'
+          ],
+          items: {
+            drip: { name: 'Drupbesproeiingstelsels', description: 'Waterdoeltreffende besproeiingsoplossings ontwerp vir optimale gewashidrasie en voedingstoflewering.' },
+            filtration: { name: 'Slim Filtrasie & Fertigasie', description: 'Geïntegreerde stelsels vir waterfiltrasie en kunsmisinspuiting, wat optimale voedingstoflewering verseker.' },
+            controllers: { name: 'Outomatiese Besproeiingsbeheerders', description: 'Slim besproeiingsbeheerders en moniteringstelsels vir doeltreffende waterbestuur.' }
+          }
+        },
+        substrates: {
+          title: 'Groeisubstraat Oplossings',
+          subtitle: 'Premium substrate vir optimale plantgroei en ontwikkeling',
+          description: 'Ons premium groeimediaprodukte is ontwerp om die perfekte omgewing vir plantwortels te bied, wat optimale waterretensie, deurlugting en voedingstofbeskikbaarheid vir maksimum gewasgesondheid en produktiwiteit verseker.',
+          benefits: [
+            'Uitstekende waterretensie wat besproeiingsfrekwensie met tot 50% verminder',
+            'Uitstekende deurlugting wat gesonde wortelontwikkeling en plantgroei bevorder',
+            'pH-gebalanseer vir optimale voedingstofopname en plantgesondheid',
+            '100% organiese en omgewingsvolhoubare materiale'
+          ],
+          items: {
+            coco: { name: 'Kokosveen & Kokoshaar', description: 'Premium kwaliteit groeioplossings vir hidroponika en kwekerytoepassings.' },
+            soil: { name: 'Organiese Grondverbeteringsmiddels', description: 'Natuurlike grondverrykingsprodukte vir verbeterde gewasgroei en grondgesondheid.' }
+          }
+        },
+        services: {
+          title: 'Landbou Dienste',
+          subtitle: 'Deskundige ondersteuning van beplanning tot implementering',
+          description: 'Benewens produkte, bied ons omvattende landboudienste om te verseker dat jou boerderybedrywigheid suksesvol is. Ons span kundiges bied konsultasie, ontwerp, installasie, opleiding en deurlopende ondersteuning aangepas by jou spesifieke behoeftes.',
+          benefits: [
+            'Pasgemaakte oplossings gebaseer op jou spesifieke boerderytoestande en doelwitte',
+            'Deskundige installasie wat optimale stelselprestasie vanaf dag een verseker',
+            'Omvattende opleiding vir boere en plaasbestuurders',
+            'Deurlopende tegniese ondersteuning en instandhoudingsdienste'
+          ],
+          items: {
+            turnkey: { name: 'Sleutelklaar Plaasprojekte', description: 'Omvattende plaasbeplanning en implementeringsdienste van konsep tot voltooiing.' },
+            installation: { name: 'Installasie & Opleiding', description: 'Professionele installasie en opstelling van kweekhuis- en besproeiingstelsels met omvattende opleiding.' }
+          }
+        }
+      },
+      testimonials: {
+        title: 'Wat Ons Boere Sê',
+        items: {
+          marie: {
+            quote: 'Die kweekhuistegnologie van Arbre Bio het ons bedrywigheid getransformeer. Ons produseer nou hoëkwaliteit tamaties dwarsdeur die jaar, en ons inkomste het aansienlik gegroei.',
+            author: 'Marie Koné',
+            role: 'Groenteboer',
+            location: 'Yamoussoukro, Ivoorkus'
+          },
+          emmanuel: {
+            quote: 'Die besproeiingstelsel het ons plaas meer veerkragtig gemaak teen klimaatsveranderinge. Ons kakaobome is gesonder, en ons sien baie beter opbrengste as ooit tevore.',
+            author: 'Emmanuel Osei',
+            role: 'Kakaoboer',
+            location: 'Kumasi, Ghana'
+          }
+        }
+      },
+      successStories: {
+        title: 'Sien Ons Oplossings in Aksie',
+        description: 'Ontdek hoe ons landbou-oplossings plase regoor Afrika getransformeer het, opbrengste verhoog het, doeltreffendheid verbeter het en volhoubare lewensbestaan geskep het.',
+        button: 'Bekyk Suksesverhale'
+      },
+      cta: {
+        title: 'Gereed om Jou Boerdery te Revolusioneer?',
+        description: 'Ons span landboukundiges is gereed om jou te help om die perfekte oplossing vir jou spesifieke behoeftes te implementeer.',
+        schedule: 'Skeduleer \'n Konsultasie',
+        whatsapp: 'Gesels met \'n Deskundige'
       }
     },
     validation: {
