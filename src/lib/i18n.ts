@@ -209,24 +209,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chat on WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog & Knowledge Hub',
-        subtitle: 'Expert insights and practical guides for modern African agriculture'
-      },
-      newsletter: {
-        title: 'Stay Updated',
-        subtitle: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
-        placeholder: 'Enter your email',
-        subscribe: 'Subscribe'
-      },
-      featured: {
-        title: 'Featured Articles'
-      },
-      latest: {
-        title: 'Latest Articles'
-      }
-    },
+
     office: {
       abidjan: 'Abidjan Office',
       capetown: 'Cape Town Warehouse'
@@ -452,6 +435,166 @@ const translations: Record<Language, Record<string, any>> = {
         genericError: 'An error occurred. Please try again later.'
       }
     },
+    irrigation: {
+      controllers: {
+        title: 'Smart Irrigation Controllers',
+        subtitle: 'Precision Water Management',
+        heroDescription: 'Advanced control systems for efficient water management',
+        viewProducts: 'View Products',
+        requestQuote: 'Request Quote',
+        ourControllers: 'Our Controllers',
+        keyFeatures: 'Key Features',
+        documentation: 'Documentation',
+        downloadCatalog: 'Download Product Catalog (PDF)',
+        techSpecs: 'Technical Specifications',
+        availableModels: 'Available Models',
+        compatibleAccessories: 'Compatible Accessories',
+        certifications: 'Certifications',
+        labels: {
+          temperature: 'Temperature',
+          storage: 'Storage Temperature',
+          humidity: 'Operating Humidity',
+          input: 'Input',
+          output: 'Output',
+          width: 'Width',
+          height: 'Height',
+          depth: 'Depth',
+          timing: 'Station Timing',
+          seasonal: 'Seasonal Adjustment',
+          startTimes: 'Start Times',
+          programs: 'Programs',
+          indoor: 'Indoor',
+          outdoor: 'Outdoor'
+        },
+        espTm2: {
+          name: 'ESP-TM2 Series Controllers',
+          shortDescription: 'Simple, Flexible and Reliable for Residential Applications',
+          description: "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+          features: {
+            wifi: 'Upgradeable for WiFi-based remote monitoring and control',
+            weather: 'Internet-based weather information for smart scheduling',
+            stations: '4, 6, 8, and 12 station models available',
+            daysOff: 'Set Permanent Days Off per program',
+            installation: 'Easy indoor/outdoor installation',
+            programming: 'Quick 3-step programming',
+            programs: '3 programs with 4 start times each',
+            manual: 'One-touch manual watering',
+            display: 'Large back-lit LCD display',
+            contractor: 'Contractor Default™ save/restore',
+            delay: '14-day watering delay',
+            sensor: 'Bypass Rain Sensor per station',
+            seasonal: 'Seasonal Adjust by program'
+          },
+          specs: {
+            operating: {
+              title: 'Operating Specifications',
+              temperature: 'Up to 149°F (65°C)',
+              storage: '-40°F (-40°C) to 150°F (66°C)',
+              humidity: '95% max @ 50°F to 120°F (10°C to 49°C) non-condensing'
+            },
+            electrical: {
+              title: 'Electrical Specifications',
+              inputStandard: '120V∿, 60Hz, 0.3A',
+              inputInternational: '230V∿, 50Hz, 0.136A',
+              outputStandard: '24V∿, 60Hz, 1.0A',
+              outputIndoor: '24V∿, 50-60Hz, 0.6A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              standardWidth: '7.92 in. (20.1 cm)',
+              standardHeight: '7.86 in. (20.0 cm)',
+              standardDepth: '3.51 in. (9.0 cm)',
+              indoorWidth: '16.7 cm',
+              indoorHeight: '16.8 cm',
+              indoorDepth: '4 cm'
+            }
+          },
+          models: {
+            vac120: '120VAC Models',
+            vac230: '230VAC Models',
+            australia: 'Australia Models'
+          },
+          accessories: {
+            lnkwifi: 'LNK2 WiFi Module for remote control and notification via iOS or Android device',
+            rainFreeze: 'Rain + Freeze Combo',
+            rainFreeze48: 'Rain + Freeze Combo with 48-hour hold',
+            rainSensor: 'Rain sensor w/ latching bracket, extension wire'
+          }
+        },
+        st8: {
+          name: 'ST8-2.0 WiFi Smart Irrigation Timers',
+          shortDescription: 'Smart Watering Made Simple',
+          description: "ST8 2.0, 8-Zone Smart Irrigation WiFi Sprinkler Timer. Put control of your sprinkler system in the palm of your hand with a Smart Irrigation WiFi Timer from Rain Bird. It is simple to setup customized watering schedules that can be adjusted automatically all year long to ensure a healthy, beautiful landscape saving you time and money. That's The Intelligent Use of Water™.",
+          features: {
+            wifi: 'Improved WIFI Connection and app connection speed',
+            reports: 'Watering reports for maximizing efficiency',
+            manual: 'Manual watering in the palm of your hand',
+            seasonal: 'Automatic seasonal adjust based on weather',
+            scheduling: 'Fully customizable zone scheduling',
+            alerts: 'Notification alerts for system events',
+            remote: 'Control multiple timers remotely',
+            setup: 'Easy setup and schedule customization',
+            zones: 'Up to 8 zones',
+            backup: 'Back-up manual interface at timer',
+            sensor: 'Rain Sensor input with software override',
+            master: 'Master valve/pump start circuit'
+          },
+          specs: {
+            operating: {
+              title: 'Operating Specifications',
+              timing: '0 to 199 min',
+              seasonal: '-90% to +100%',
+              startTimes: '6 per zone',
+              programs: 'Independent schedule per zone'
+            },
+            electrical: {
+              title: 'Electrical Specifications',
+              inputStandard: '120VAC, 60Hz, 0.2A',
+              inputInternational: '230VAC, 50Hz, 0.1A',
+              outputStandard: '25.5VAC, 60Hz, 0.65A',
+              outputInternational: '24VAC, 50Hz, 0.65A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              indoorWidth: '6.25 in. (15.9 cm)',
+              indoorHeight: '6.25 in. (15.9 cm)',
+              indoorDepth: '1.54 in. (3.9 cm)',
+              outdoorWidth: '7.88 in. (20 cm)',
+              outdoorHeight: '7.88 in. (20 cm)',
+              outdoorDepth: '3.25 in. (8.3 cm)'
+            }
+          },
+          models: {
+            indoor: 'Indoor Models',
+            outdoor: 'Outdoor Models'
+          },
+          accessories: {
+            rainFreeze: 'Rain + Freeze Combo',
+            rainFreeze48: 'Rain + Freeze Combo with 48-hour hold',
+            rainSensor: 'Rain sensor with latching bracket'
+          }
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          model: 'Controller Model',
+          selectModel: 'Select a model',
+          zones: 'Number of Zones',
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs or any questions you have...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Need Expert Advice?',
+          description: 'Contact us today for personalized recommendations and support.',
+          contact: 'Contact Us',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      }
+    },
     validation: {
       required: 'This field is required',
       email: 'Please enter a valid email address',
@@ -507,6 +650,11 @@ const translations: Record<Language, Record<string, any>> = {
         ultraClearFilm: 'Ultra-Clear EVA Film',
         diffusedFilm: 'Diffused Light Film',
         antiThripNet: 'Anti-Thrip Net',
+        growingPot: 'Growing Pot',
+        cocopeatBag: 'Cocopeat Grow Bag',
+        dripTape: 'Drip Tape',
+        sprinklerHead: 'Sprinkler Head',
+        foggingNozzle: 'Fogging Nozzle',
         cropSupportWire: 'Crop Support Wire',
         trellisSupport: 'Trellis Support System'
       },
@@ -1072,24 +1220,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Discuter sur WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog & Centre de Connaissances',
-        subtitle: 'Conseils d\'experts et guides pratiques pour l\'agriculture africaine moderne'
-      },
-      newsletter: {
-        title: 'Restez Informé',
-        subtitle: 'Abonnez-vous à notre newsletter pour les dernières informations agricoles et conseils.',
-        placeholder: 'Entrez votre email',
-        subscribe: 'S\'abonner'
-      },
-      featured: {
-        title: 'Articles en Vedette'
-      },
-      latest: {
-        title: 'Derniers Articles'
-      }
-    },
+
     office: {
       abidjan: 'Bureau d\'Abidjan',
       capetown: 'Entrepôt du Cap'
@@ -1313,6 +1444,166 @@ const translations: Record<Language, Record<string, any>> = {
         success: 'Vous avez été désabonné avec succès de notre newsletter.',
         error: 'Une erreur s\'est produite lors du traitement de votre demande de désabonnement.',
         genericError: 'Une erreur s\'est produite. Veuillez réessayer plus tard.'
+      }
+    },
+    irrigation: {
+      controllers: {
+        title: 'Contrôleurs d\'Irrigation Intelligents',
+        subtitle: 'Gestion Précise de l\'Eau',
+        heroDescription: 'Systèmes de contrôle avancés pour une gestion efficace de l\'eau',
+        viewProducts: 'Voir les Produits',
+        requestQuote: 'Demander un Devis',
+        ourControllers: 'Nos Contrôleurs',
+        keyFeatures: 'Caractéristiques Clés',
+        documentation: 'Documentation',
+        downloadCatalog: 'Télécharger le Catalogue (PDF)',
+        techSpecs: 'Spécifications Techniques',
+        availableModels: 'Modèles Disponibles',
+        compatibleAccessories: 'Accessoires Compatibles',
+        certifications: 'Certifications',
+        labels: {
+          temperature: 'Température',
+          storage: 'Température de Stockage',
+          humidity: 'Humidité de Fonctionnement',
+          input: 'Entrée',
+          output: 'Sortie',
+          width: 'Largeur',
+          height: 'Hauteur',
+          depth: 'Profondeur',
+          timing: 'Durée de la Station',
+          seasonal: 'Ajustement Saisonnier',
+          startTimes: 'Heures de Démarrage',
+          programs: 'Programmes',
+          indoor: 'Intérieur',
+          outdoor: 'Extérieur'
+        },
+        espTm2: {
+          name: 'Contrôleurs Série ESP-TM2',
+          shortDescription: 'Simple, Flexible et Fiable pour Applications Résidentielles',
+          description: "Le contrôleur d'irrigation ESP-TM2 est l'option parfaite pour les solutions résidentielles de base. S'appuyant sur l'héritage de Rain Bird de l'Utilisation Intelligente de l'Eau®, ce contrôleur offre des fonctionnalités simples d'économie d'eau que vous utiliserez réellement.",
+          features: {
+            wifi: 'Évolutif pour la surveillance et le contrôle à distance via WiFi',
+            weather: 'Informations météorologiques basées sur Internet pour une planification intelligente',
+            stations: 'Modèles à 4, 6, 8 et 12 stations disponibles',
+            daysOff: 'Définir des Jours d\'Arrêt Permanents par programme',
+            installation: 'Installation facile intérieur/extérieur',
+            programming: 'Programmation rapide en 3 étapes',
+            programs: '3 programmes avec 4 heures de démarrage chacun',
+            manual: 'Arrosage manuel à une touche',
+            display: 'Grand écran LCD rétro-éclairé',
+            contractor: 'Sauvegarde/restauration Contractor Default™',
+            delay: 'Délai d\'arrosage de 14 jours',
+            sensor: 'Contourner le capteur de pluie par station',
+            seasonal: 'Ajustement saisonnier par programme'
+          },
+          specs: {
+            operating: {
+              title: 'Spécifications de Fonctionnement',
+              temperature: 'Jusqu\'à 65°C (149°F)',
+              storage: '-40°C à 66°C (-40°F à 150°F)',
+              humidity: '95% max @ 10°C à 49°C sans condensation'
+            },
+            electrical: {
+              title: 'Spécifications Électriques',
+              inputStandard: '120V∿, 60Hz, 0.3A',
+              inputInternational: '230V∿, 50Hz, 0.136A',
+              outputStandard: '24V∿, 60Hz, 1.0A',
+              outputIndoor: '24V∿, 50-60Hz, 0.6A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              standardWidth: '20.1 cm (7.92 in.)',
+              standardHeight: '20.0 cm (7.86 in.)',
+              standardDepth: '9.0 cm (3.51 in.)',
+              indoorWidth: '16.7 cm',
+              indoorHeight: '16.8 cm',
+              indoorDepth: '4 cm'
+            }
+          },
+          models: {
+            vac120: 'Modèles 120VAC',
+            vac230: 'Modèles 230VAC',
+            australia: 'Modèles Australie'
+          },
+          accessories: {
+            lnkwifi: 'Module WiFi LNK2 pour contrôle à distance et notification via iOS ou Android',
+            rainFreeze: 'Combo Pluie + Gel',
+            rainFreeze48: 'Combo Pluie + Gel avec maintien de 48 heures',
+            rainSensor: 'Capteur de pluie avec support de verrouillage, fil d\'extension'
+          }
+        },
+        st8: {
+          name: 'Minuteurs d\'Irrigation Intelligents WiFi ST8-2.0',
+          shortDescription: 'L\'Arrosage Intelligent Simplifié',
+          description: "ST8 2.0, Minuteur d'Irrigation Intelligent WiFi à 8 Zones. Prenez le contrôle de votre système d'arrosage avec un Minuteur d'Irrigation Intelligent WiFi de Rain Bird. Il est simple de configurer des programmes d'arrosage personnalisés qui peuvent être ajustés automatiquement toute l'année pour assurer un paysage sain et beau tout en vous faisant gagner du temps et de l'argent. C'est l'Utilisation Intelligente de l'Eau™.",
+          features: {
+            wifi: 'Connexion WIFI améliorée et vitesse de connexion à l\'application',
+            reports: 'Rapports d\'arrosage pour maximiser l\'efficacité',
+            manual: 'Arrosage manuel dans la paume de votre main',
+            seasonal: 'Ajustement saisonnier automatique basé sur la météo',
+            scheduling: 'Planification de zone entièrement personnalisable',
+            alerts: 'Alertes de notification pour les événements système',
+            remote: 'Contrôlez plusieurs minuteurs à distance',
+            setup: 'Configuration facile et personnalisation du programme',
+            zones: 'Jusqu\'à 8 zones',
+            backup: 'Interface manuelle de secours sur le minuteur',
+            sensor: 'Entrée capteur de pluie avec contournement logiciel',
+            master: 'Circuit de vanne maîtresse/démarrage de pompe'
+          },
+          specs: {
+            operating: {
+              title: 'Spécifications de Fonctionnement',
+              timing: '0 à 199 min',
+              seasonal: '-90% à +100%',
+              startTimes: '6 par zone',
+              programs: 'Programme indépendant par zone'
+            },
+            electrical: {
+              title: 'Spécifications Électriques',
+              inputStandard: '120VAC, 60Hz, 0.2A',
+              inputInternational: '230VAC, 50Hz, 0.1A',
+              outputStandard: '25.5VAC, 60Hz, 0.65A',
+              outputInternational: '24VAC, 50Hz, 0.65A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              indoorWidth: '15.9 cm (6.25 in.)',
+              indoorHeight: '15.9 cm (6.25 in.)',
+              indoorDepth: '3.9 cm (1.54 in.)',
+              outdoorWidth: '20 cm (7.88 in.)',
+              outdoorHeight: '20 cm (7.88 in.)',
+              outdoorDepth: '8.3 cm (3.25 in.)'
+            }
+          },
+          models: {
+            indoor: 'Modèles Intérieurs',
+            outdoor: 'Modèles Extérieurs'
+          },
+          accessories: {
+            rainFreeze: 'Combo Pluie + Gel',
+            rainFreeze48: 'Combo Pluie + Gel avec maintien de 48 heures',
+            rainSensor: 'Capteur de pluie avec support de verrouillage'
+          }
+        },
+        form: {
+          title: 'Demander un Devis',
+          firstName: 'Prénom',
+          lastName: 'Nom',
+          email: 'Adresse Email',
+          phone: 'Numéro de Téléphone',
+          model: 'Modèle de Contrôleur',
+          selectModel: 'Sélectionnez un modèle',
+          zones: 'Nombre de Zones',
+          requirements: 'Exigences Supplémentaires',
+          requirementsPlaceholder: 'Parlez-nous de vos besoins spécifiques ou de vos questions...',
+          submit: 'Soumettre la Demande'
+        },
+        cta: {
+          title: 'Besoin de Conseils d\'Experts ?',
+          description: 'Contactez-nous dès aujourd\'hui pour des recommandations personnalisées et du support.',
+          contact: 'Nous Contacter',
+          whatsapp: 'Discuter sur WhatsApp'
+        }
       }
     },
     validation: {
@@ -1774,24 +2065,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chatear en WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog y Centro de Conocimiento',
-        subtitle: 'Consejos de expertos y guías prácticas para la agricultura africana moderna'
-      },
-      newsletter: {
-        title: 'Mantente Actualizado',
-        subtitle: 'Suscríbete a nuestro boletín para obtener los últimos conocimientos y consejos agrícolas.',
-        placeholder: 'Ingresa tu email',
-        subscribe: 'Suscribirse'
-      },
-      featured: {
-        title: 'Artículos Destacados'
-      },
-      latest: {
-        title: 'Últimos Artículos'
-      }
-    },
+
     office: {
       abidjan: 'Oficina de Abidjan',
       capetown: 'Almacén de Ciudad del Cabo'
@@ -2015,6 +2289,166 @@ const translations: Record<Language, Record<string, any>> = {
         success: 'Se ha dado de baja con éxito de nuestro boletín.',
         error: 'Ocurrió un error al procesar su solicitud de baja.',
         genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
+      }
+    },
+    irrigation: {
+      controllers: {
+        title: 'Controladores de Riego Inteligentes',
+        subtitle: 'Gestión Precisa del Agua',
+        heroDescription: 'Sistemas de control avanzados para una gestión eficiente del agua',
+        viewProducts: 'Ver Productos',
+        requestQuote: 'Solicitar Presupuesto',
+        ourControllers: 'Nuestros Controladores',
+        keyFeatures: 'Características Clave',
+        documentation: 'Documentación',
+        downloadCatalog: 'Descargar Catálogo (PDF)',
+        techSpecs: 'Especificaciones Técnicas',
+        availableModels: 'Modelos Disponibles',
+        compatibleAccessories: 'Accesorios Compatibles',
+        certifications: 'Certificaciones',
+        labels: {
+          temperature: 'Temperatura',
+          storage: 'Temperatura de Almacenamiento',
+          humidity: 'Humedad de Funcionamiento',
+          input: 'Entrada',
+          output: 'Salida',
+          width: 'Ancho',
+          height: 'Alto',
+          depth: 'Profundidad',
+          timing: 'Tiempo de la Estación',
+          seasonal: 'Ajuste Estacional',
+          startTimes: 'Horas de Inicio',
+          programs: 'Programas',
+          indoor: 'Interior',
+          outdoor: 'Exterior'
+        },
+        espTm2: {
+          name: 'Controladores Serie ESP-TM2',
+          shortDescription: 'Simple, Flexible y Confiable para Aplicaciones Residenciales',
+          description: "El controlador de riego ESP-TM2 es la opción perfecta para soluciones residenciales básicas. Basándose en el legado de Rain Bird del Uso Inteligente del Agua®, este controlador ofrece características simples de ahorro de agua que realmente utilizará.",
+          features: {
+            wifi: 'Actualizable para monitoreo y control remoto vía WiFi',
+            weather: 'Información meteorológica basada en Internet para programación inteligente',
+            stations: 'Modelos de 4, 6, 8 y 12 estaciones disponibles',
+            daysOff: 'Establecer Días Libres Permanentes por programa',
+            installation: 'Fácil instalación interior/exterior',
+            programming: 'Programación rápida en 3 pasos',
+            programs: '3 programas con 4 horas de inicio cada uno',
+            manual: 'Riego manual de un toque',
+            display: 'Gran pantalla LCD retroiluminada',
+            contractor: 'Guardar/restaurar Contractor Default™',
+            delay: 'Retraso de riego de 14 días',
+            sensor: 'Anular Sensor de Lluvia por estación',
+            seasonal: 'Ajuste Estacional por programa'
+          },
+          specs: {
+            operating: {
+              title: 'Especificaciones de Operación',
+              temperature: 'Hasta 65°C (149°F)',
+              storage: '-40°C a 66°C (-40°F a 150°F)',
+              humidity: '95% máx @ 10°C a 49°C sin condensación'
+            },
+            electrical: {
+              title: 'Especificaciones Eléctricas',
+              inputStandard: '120V∿, 60Hz, 0.3A',
+              inputInternational: '230V∿, 50Hz, 0.136A',
+              outputStandard: '24V∿, 60Hz, 1.0A',
+              outputIndoor: '24V∿, 50-60Hz, 0.6A'
+            },
+            dimensions: {
+              title: 'Dimensiones',
+              standardWidth: '20.1 cm (7.92 in.)',
+              standardHeight: '20.0 cm (7.86 in.)',
+              standardDepth: '9.0 cm (3.51 in.)',
+              indoorWidth: '16.7 cm',
+              indoorHeight: '16.8 cm',
+              indoorDepth: '4 cm'
+            }
+          },
+          models: {
+            vac120: 'Modelos 120VAC',
+            vac230: 'Modelos 230VAC',
+            australia: 'Modelos Australia'
+          },
+          accessories: {
+            lnkwifi: 'Módulo WiFi LNK2 para control remoto y notificación vía iOS o Android',
+            rainFreeze: 'Combo Lluvia + Helada',
+            rainFreeze48: 'Combo Lluvia + Helada con retención de 48 horas',
+            rainSensor: 'Sensor de lluvia con soporte de enganche, cable de extensión'
+          }
+        },
+        st8: {
+          name: 'Temporizadores de Riego Inteligentes WiFi ST8-2.0',
+          shortDescription: 'Riego Inteligente Simplificado',
+          description: "ST8 2.0, Temporizador de Riego Inteligente WiFi de 8 Zonas. Ponga el control de su sistema de aspersores en la palma de su mano con un Temporizador de Riego Inteligente WiFi de Rain Bird. Es simple configurar programas de riego personalizados que se pueden ajustar automáticamente durante todo el año para garantizar un paisaje saludable y hermoso, ahorrándole tiempo y dinero. Eso es el Uso Inteligente del Agua™.",
+          features: {
+            wifi: 'Conexión WIFI mejorada y velocidad de conexión a la aplicación',
+            reports: 'Informes de riego para maximizar la eficiencia',
+            manual: 'Riego manual en la palma de su mano',
+            seasonal: 'Ajuste estacional automático basado en el clima',
+            scheduling: 'Programación de zona totalmente personalizable',
+            alerts: 'Alertas de notificación para eventos del sistema',
+            remote: 'Controle múltiples temporizadores de forma remota',
+            setup: 'Fácil configuración y personalización de horarios',
+            zones: 'Hasta 8 zonas',
+            backup: 'Interfaz manual de respaldo en el temporizador',
+            sensor: 'Entrada de sensor de lluvia con anulación de software',
+            master: 'Circuito de válvula maestra/arranque de bomba'
+          },
+          specs: {
+            operating: {
+              title: 'Especificaciones de Operación',
+              timing: '0 a 199 min',
+              seasonal: '-90% a +100%',
+              startTimes: '6 por zona',
+              programs: 'Horario independiente por zona'
+            },
+            electrical: {
+              title: 'Especificaciones Eléctricas',
+              inputStandard: '120VAC, 60Hz, 0.2A',
+              inputInternational: '230VAC, 50Hz, 0.1A',
+              outputStandard: '25.5VAC, 60Hz, 0.65A',
+              outputInternational: '24VAC, 50Hz, 0.65A'
+            },
+            dimensions: {
+              title: 'Dimensiones',
+              indoorWidth: '15.9 cm (6.25 in.)',
+              indoorHeight: '15.9 cm (6.25 in.)',
+              indoorDepth: '3.9 cm (1.54 in.)',
+              outdoorWidth: '20 cm (7.88 in.)',
+              outdoorHeight: '20 cm (7.88 in.)',
+              outdoorDepth: '8.3 cm (3.25 in.)'
+            }
+          },
+          models: {
+            indoor: 'Modelos Interiores',
+            outdoor: 'Modelos Exteriores'
+          },
+          accessories: {
+            rainFreeze: 'Combo Lluvia + Helada',
+            rainFreeze48: 'Combo Lluvia + Helada con retención de 48 horas',
+            rainSensor: 'Sensor de lluvia con soporte de enganche'
+          }
+        },
+        form: {
+          title: 'Solicitar Presupuesto',
+          firstName: 'Nombre',
+          lastName: 'Apellido',
+          email: 'Dirección de Email',
+          phone: 'Número de Teléfono',
+          model: 'Modelo de Controlador',
+          selectModel: 'Seleccione un modelo',
+          zones: 'Número de Zonas',
+          requirements: 'Requisitos Adicionales',
+          requirementsPlaceholder: 'Cuéntenos sobre sus necesidades específicas o preguntas...',
+          submit: 'Enviar Solicitud'
+        },
+        cta: {
+          title: '¿Necesita Asesoramiento Experto?',
+          description: 'Contáctenos hoy para recomendaciones personalizadas y soporte.',
+          contact: 'Contáctenos',
+          whatsapp: 'Chatear en WhatsApp'
+        }
       }
     },
     validation: {
@@ -2316,24 +2750,7 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Gesels op WhatsApp'
       }
     },
-    blog: {
-      hero: {
-        title: 'Blog en Kennis Sentrum',
-        subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika landbou'
-      },
-      newsletter: {
-        title: 'Bly Op Hoogte',
-        subtitle: 'Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.',
-        placeholder: 'Voer jou e-pos in',
-        subscribe: 'Teken In'
-      },
-      featured: {
-        title: 'Uitstaande Artikels'
-      },
-      latest: {
-        title: 'Nuutste Artikels'
-      }
-    },
+
     office: {
       abidjan: 'Abidjan Kantoor',
       capetown: 'Kaapstad Pakhuis'
@@ -2557,6 +2974,166 @@ const translations: Record<Language, Record<string, any>> = {
         success: 'Jy het suksesvol uitgeteken van ons nuusbrief.',
         error: '\'n Fout het voorgekom tydens die verwerking van jou uittekenversoek.',
         genericError: '\'n Fout het voorgekom. Probeer asseblief later weer.'
+      }
+    },
+    irrigation: {
+      controllers: {
+        title: 'Slim Besproeiingsbeheerders',
+        subtitle: 'Presisie Waterbestuur',
+        heroDescription: 'Gevorderde beheerstelsels vir doeltreffende waterbestuur',
+        viewProducts: 'Bekyk Produkte',
+        requestQuote: 'Versoek Kwotasie',
+        ourControllers: 'Ons Beheerders',
+        keyFeatures: 'Sleutelkenmerke',
+        documentation: 'Dokumentasie',
+        downloadCatalog: 'Laai Produkkatalogus Af (PDF)',
+        techSpecs: 'Tegniese Spesifikasies',
+        availableModels: 'Beskikbare Modelle',
+        compatibleAccessories: 'Versoenbare Toebehore',
+        certifications: 'Sertifisering',
+        labels: {
+          temperature: 'Temperatuur',
+          storage: 'Bergings Temperatuur',
+          humidity: 'Bedryfshumiditeit',
+          input: 'Inset',
+          output: 'Uitset',
+          width: 'Breedte',
+          height: 'Hoogte',
+          depth: 'Diepte',
+          timing: 'Stasie Tydsberekening',
+          seasonal: 'Seisoenale Aanpassing',
+          startTimes: 'Begintye',
+          programs: 'Programme',
+          indoor: 'Binne',
+          outdoor: 'Buite'
+        },
+        espTm2: {
+          name: 'ESP-TM2 Reeks Beheerders',
+          shortDescription: 'Eenvoudig, Buigsaam en Betroubaar vir Residensiële Toepassings',
+          description: "Die ESP-TM2 besproeiingsbeheerder is die perfekte opsie vir basiese residensiële oplossings. Voortbouend op Rain Bird se nalatenskap van Die Intelligente Gebruik van Water®, bied hierdie beheerder eenvoudige waterbesparingsfunksies wat jy werklik sal gebruik.",
+          features: {
+            wifi: 'Opgradeerbaar vir WiFi-gebaseerde afstandmonitering en beheer',
+            weather: 'Internet-gebaseerde weerinligting vir slim skedulering',
+            stations: '4, 6, 8, en 12 stasie modelle beskikbaar',
+            daysOff: 'Stel Permanente Dae Af per program',
+            installation: 'Maklike binne/buite installasie',
+            programming: 'Vinnige 3-stap programmering',
+            programs: '3 programme met 4 begintye elk',
+            manual: 'Een-druk handbesproeiing',
+            display: 'Groot agtergrondverligte LCD-skerm',
+            contractor: 'Contractor Default™ stoor/herstel',
+            delay: '14-dae besproeiingsvertraging',
+            sensor: 'Omseil Reënsensor per stasie',
+            seasonal: 'Seisoenale Aanpassing per program'
+          },
+          specs: {
+            operating: {
+              title: 'Bedryfspesifikasies',
+              temperature: 'Tot 65°C (149°F)',
+              storage: '-40°C tot 66°C (-40°F tot 150°F)',
+              humidity: '95% maks @ 10°C tot 49°C nie-kondenserend'
+            },
+            electrical: {
+              title: 'Elektriese Spesifikasies',
+              inputStandard: '120V∿, 60Hz, 0.3A',
+              inputInternational: '230V∿, 50Hz, 0.136A',
+              outputStandard: '24V∿, 60Hz, 1.0A',
+              outputIndoor: '24V∿, 50-60Hz, 0.6A'
+            },
+            dimensions: {
+              title: 'Afmetings',
+              standardWidth: '20.1 cm (7.92 in.)',
+              standardHeight: '20.0 cm (7.86 in.)',
+              standardDepth: '9.0 cm (3.51 in.)',
+              indoorWidth: '16.7 cm',
+              indoorHeight: '16.8 cm',
+              indoorDepth: '4 cm'
+            }
+          },
+          models: {
+            vac120: '120VAC Modelle',
+            vac230: '230VAC Modelle',
+            australia: 'Australië Modelle'
+          },
+          accessories: {
+            lnkwifi: 'LNK2 WiFi Module vir afstandbeheer en kennisgewing via iOS of Android',
+            rainFreeze: 'Reën + Vries Kombinasie',
+            rainFreeze48: 'Reën + Vries Kombinasie met 48-uur hou',
+            rainSensor: 'Reënsensor met grendelbeugel, verlengdraad'
+          }
+        },
+        st8: {
+          name: 'ST8-2.0 WiFi Slim Besproeiingstydhouers',
+          shortDescription: 'Slim Besproeiing Eenvoudig Gemaak',
+          description: "ST8 2.0, 8-Sone Slim Besproeiing WiFi Sproeiertydhouer. Plaas beheer van jou sproeierstelsel in die palm van jou hand met 'n Slim Besproeiing WiFi Tydhouer van Rain Bird. Dit is eenvoudig om pasgemaakte besproeiingskedules op te stel wat outomaties die hele jaar deur aangepas kan word om 'n gesonde, pragtige landskap te verseker terwyl jy tyd en geld bespaar. Dit is Die Intelligente Gebruik van Water™.",
+          features: {
+            wifi: 'Verbeterde WIFI-verbinding en app-verbindingspoed',
+            reports: 'Besproeiingsverslae vir maksimering van doeltreffendheid',
+            manual: 'Handbesproeiing in die palm van jou hand',
+            seasonal: 'Outomatiese seisoenale aanpassing gebaseer op weer',
+            scheduling: 'Volledig aanpasbare sone skedulering',
+            alerts: 'Kennisgewing waarskuwings vir stelselgebeure',
+            remote: 'Beheer verskeie tydhouers op afstand',
+            setup: 'Maklike opstelling en skedule aanpassing',
+            zones: 'Tot 8 sones',
+            backup: 'Rugsteun handkoppelvlak by tydhouer',
+            sensor: 'Reënsensor inset met sagteware omseiling',
+            master: 'Meesterklep/pomp begin stroombaan'
+          },
+          specs: {
+            operating: {
+              title: 'Bedryfspesifikasies',
+              timing: '0 tot 199 min',
+              seasonal: '-90% tot +100%',
+              startTimes: '6 per sone',
+              programs: 'Onafhanklike skedule per sone'
+            },
+            electrical: {
+              title: 'Elektriese Spesifikasies',
+              inputStandard: '120VAC, 60Hz, 0.2A',
+              inputInternational: '230VAC, 50Hz, 0.1A',
+              outputStandard: '25.5VAC, 60Hz, 0.65A',
+              outputInternational: '24VAC, 50Hz, 0.65A'
+            },
+            dimensions: {
+              title: 'Afmetings',
+              indoorWidth: '15.9 cm (6.25 in.)',
+              indoorHeight: '15.9 cm (6.25 in.)',
+              indoorDepth: '3.9 cm (1.54 in.)',
+              outdoorWidth: '20 cm (7.88 in.)',
+              outdoorHeight: '20 cm (7.88 in.)',
+              outdoorDepth: '8.3 cm (3.25 in.)'
+            }
+          },
+          models: {
+            indoor: 'Binne Modelle',
+            outdoor: 'Buite Modelle'
+          },
+          accessories: {
+            rainFreeze: 'Reën + Vries Kombinasie',
+            rainFreeze48: 'Reën + Vries Kombinasie met 48-uur hou',
+            rainSensor: 'Reënsensor met grendelbeugel'
+          }
+        },
+        form: {
+          title: 'Versoek \'n Kwotasie',
+          firstName: 'Voornaam',
+          lastName: 'Van',
+          email: 'E-posadres',
+          phone: 'Telefoonnommer',
+          model: 'Beheerder Model',
+          selectModel: 'Kies \'n model',
+          zones: 'Aantal Sones',
+          requirements: 'Bykomende Vereistes',
+          requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes of enige vrae wat jy het...',
+          submit: 'Dien Kwotasie Versoek In'
+        },
+        cta: {
+          title: 'Benodig Deskundige Advies?',
+          description: 'Kontak ons vandag vir persoonlike aanbevelings en ondersteuning.',
+          contact: 'Kontak Ons',
+          whatsapp: 'Gesels op WhatsApp'
+        }
       }
     },
     validation: {

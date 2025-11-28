@@ -3,62 +3,62 @@ import Layout from '../../../layouts/Layout.astro';
 
 const products = [
   {
-    name: "ESP-TM2 Series Controllers",
-    shortDescription: "Simple, Flexible and Reliable for Residential Applications",
-    description: "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+    name: t('irrigation.controllers.espTm2.name'),
+    shortDescription: t('irrigation.controllers.espTm2.shortDescription'),
+    description: t('irrigation.controllers.espTm2.description'),
     image: "https://imgur.com/NaJWgvW.jpg",
     features: [
-      "Upgradeable for WiFi-based remote monitoring and control",
-      "Internet-based weather information for smart scheduling",
-      "4, 6, 8, and 12 station models available",
-      "Set Permanent Days Off per program",
-      "Easy indoor/outdoor installation",
-      "Quick 3-step programming",
-      "3 programs with 4 start times each",
-      "One-touch manual watering",
-      "Large back-lit LCD display",
-      "Contractor Default™ save/restore",
-      "14-day watering delay",
-      "Bypass Rain Sensor per station",
-      "Seasonal Adjust by program"
+      t('irrigation.controllers.espTm2.features.wifi'),
+      t('irrigation.controllers.espTm2.features.weather'),
+      t('irrigation.controllers.espTm2.features.stations'),
+      t('irrigation.controllers.espTm2.features.daysOff'),
+      t('irrigation.controllers.espTm2.features.installation'),
+      t('irrigation.controllers.espTm2.features.programming'),
+      t('irrigation.controllers.espTm2.features.programs'),
+      t('irrigation.controllers.espTm2.features.manual'),
+      t('irrigation.controllers.espTm2.features.display'),
+      t('irrigation.controllers.espTm2.features.contractor'),
+      t('irrigation.controllers.espTm2.features.delay'),
+      t('irrigation.controllers.espTm2.features.sensor'),
+      t('irrigation.controllers.espTm2.features.seasonal')
     ],
     specifications: {
-      operating: {
-        temperature: "Up to 149°F (65°C)",
-        storage: "-40°F (-40°C) to 150°F (66°C)",
-        humidity: "95% max @ 50°F to 120°F (10°C to 49°C) non-condensing"
+      [t('irrigation.controllers.espTm2.specs.operating.title')]: {
+        [t('irrigation.controllers.labels.temperature')]: t('irrigation.controllers.espTm2.specs.operating.temperature'),
+        [t('irrigation.controllers.labels.storage')]: t('irrigation.controllers.espTm2.specs.operating.storage'),
+        [t('irrigation.controllers.labels.humidity')]: t('irrigation.controllers.espTm2.specs.operating.humidity')
       },
-      electrical: {
-        input: {
-          standard: "120V∿, 60Hz, 0.3A",
-          international: "230V∿, 50Hz, 0.136A"
+      [t('irrigation.controllers.espTm2.specs.electrical.title')]: {
+        [t('irrigation.controllers.labels.input')]: {
+          [t('irrigation.controllers.specs.standard')]: t('irrigation.controllers.espTm2.specs.electrical.inputStandard'),
+          [t('irrigation.controllers.specs.international')]: t('irrigation.controllers.espTm2.specs.electrical.inputInternational')
         },
-        output: {
-          standard: "24V∿, 60Hz, 1.0A",
-          indoor: "24V∿, 50-60Hz, 0.6A"
+        [t('irrigation.controllers.labels.output')]: {
+          [t('irrigation.controllers.specs.standard')]: t('irrigation.controllers.espTm2.specs.electrical.outputStandard'),
+          [t('irrigation.controllers.labels.indoor')]: t('irrigation.controllers.espTm2.specs.electrical.outputIndoor')
         }
       },
-      dimensions: {
-        standard: {
-          width: "7.92 in. (20.1 cm)",
-          height: "7.86 in. (20.0 cm)",
-          depth: "3.51 in. (9.0 cm)"
+      [t('irrigation.controllers.espTm2.specs.dimensions.title')]: {
+        [t('irrigation.controllers.specs.standard')]: {
+          [t('irrigation.controllers.labels.width')]: t('irrigation.controllers.espTm2.specs.dimensions.standardWidth'),
+          [t('irrigation.controllers.labels.height')]: t('irrigation.controllers.espTm2.specs.dimensions.standardHeight'),
+          [t('irrigation.controllers.labels.depth')]: t('irrigation.controllers.espTm2.specs.dimensions.standardDepth')
         },
-        indoor: {
-          width: "16.7 cm",
-          height: "16.8 cm",
-          depth: "4 cm"
+        [t('irrigation.controllers.labels.indoor')]: {
+          [t('irrigation.controllers.labels.width')]: t('irrigation.controllers.espTm2.specs.dimensions.indoorWidth'),
+          [t('irrigation.controllers.labels.height')]: t('irrigation.controllers.espTm2.specs.dimensions.indoorHeight'),
+          [t('irrigation.controllers.labels.depth')]: t('irrigation.controllers.espTm2.specs.dimensions.indoorDepth')
         }
       }
     },
     models: {
-      "120VAC": [
+      [t('irrigation.controllers.espTm2.models.vac120')]: [
         "TM2-4-120V: 4-station",
         "TM2-6-120V: 6-station",
         "TM2-8-120V: 8-station",
         "TM2-12-120V: 12-station"
       ],
-      "230VAC": [
+      [t('irrigation.controllers.espTm2.models.vac230')]: [
         "TM2-4-230V: 4-station",
         "TM2-6-230V: 6-station",
         "TM2-8-230V: 8-station",
@@ -68,7 +68,7 @@ const products = [
         "TM2I8-230V: 8-station (Indoor)",
         "TM2I12-230V: 12-station (Indoor)"
       ],
-      "Australia": [
+      [t('irrigation.controllers.espTm2.models.australia')]: [
         "TM2-4-AUS: 4-station",
         "TM2-6-AUS: 6-station",
         "TM2-8-AUS: 8-station",
@@ -78,29 +78,29 @@ const products = [
     accessories: [
       {
         name: "LNKWIFI",
-        description: "LNK2 WiFi Module for remote control and notification via iOS or Android device"
+        description: t('irrigation.controllers.espTm2.accessories.lnkwifi')
       },
       {
         name: "WR2-RFC",
-        description: "Rain + Freeze Combo"
+        description: t('irrigation.controllers.espTm2.accessories.rainFreeze')
       },
       {
         name: "WR2-48",
-        description: "Rain + Freeze Combo with 48-hour hold"
+        description: t('irrigation.controllers.espTm2.accessories.rainFreeze48')
       },
       {
         name: "RSD-BEx",
-        description: "Rain sensor w/ latching bracket, extension wire"
+        description: t('irrigation.controllers.espTm2.accessories.rainSensor')
       }
     ],
     certifications: {
-      "120V Models": [
+      [t('irrigation.controllers.espTm2.models.vac120')]: [
         "cULus (US and Canada)",
         "FCC Part 15b (US)",
         "CAN ICES-3(B)/NMB-3(B) (Canada)",
         "NOM-001-SCFI-2018 (Mexico)"
       ],
-      "230V Models": [
+      [t('irrigation.controllers.espTm2.models.vac230')]: [
         "CE (European Union)",
         "IP24",
         "RCM (Australia and New Zealand)",
@@ -114,61 +114,61 @@ const products = [
     }
   },
   {
-    name: "ST8-2.0 WiFi Smart Irrigation Timers",
-    shortDescription: "Smart Watering Made Simple",
-    description: "ST8 2.0, 8-Zone Smart Irrigation WiFi Sprinkler Timer. Put control of your sprinkler system in the palm of your hand with a Smart Irrigation WiFi Timer from Rain Bird. It is simple to setup customized watering schedules that can be adjusted automatically all year long to ensure a healthy, beautiful landscape saving you time and money. That's The Intelligent Use of Water™.",
+    name: t('irrigation.controllers.st8.name'),
+    shortDescription: t('irrigation.controllers.st8.shortDescription'),
+    description: t('irrigation.controllers.st8.description'),
     image: "https://imgur.com/U5GEgAP.jpg",
     features: [
-      "Improved WIFI Connection and app connection speed",
-      "Watering reports for maximizing efficiency",
-      "Manual watering in the palm of your hand",
-      "Automatic seasonal adjust based on weather",
-      "Fully customizable zone scheduling",
-      "Notification alerts for system events",
-      "Control multiple timers remotely",
-      "Easy setup and schedule customization",
-      "Up to 8 zones",
-      "Back-up manual interface at timer",
-      "Rain Sensor input with software override",
-      "Master valve/pump start circuit"
+      t('irrigation.controllers.st8.features.wifi'),
+      t('irrigation.controllers.st8.features.reports'),
+      t('irrigation.controllers.st8.features.manual'),
+      t('irrigation.controllers.st8.features.seasonal'),
+      t('irrigation.controllers.st8.features.scheduling'),
+      t('irrigation.controllers.st8.features.alerts'),
+      t('irrigation.controllers.st8.features.remote'),
+      t('irrigation.controllers.st8.features.setup'),
+      t('irrigation.controllers.st8.features.zones'),
+      t('irrigation.controllers.st8.features.backup'),
+      t('irrigation.controllers.st8.features.sensor'),
+      t('irrigation.controllers.st8.features.master')
     ],
     specifications: {
-      operating: {
-        timing: "0 to 199 min",
-        seasonal: "-90% to +100%",
-        startTimes: "6 per zone",
-        programs: "Independent schedule per zone"
+      [t('irrigation.controllers.st8.specs.operating.title')]: {
+        [t('irrigation.controllers.labels.timing')]: t('irrigation.controllers.st8.specs.operating.timing'),
+        [t('irrigation.controllers.labels.seasonal')]: t('irrigation.controllers.st8.specs.operating.seasonal'),
+        [t('irrigation.controllers.labels.startTimes')]: t('irrigation.controllers.st8.specs.operating.startTimes'),
+        [t('irrigation.controllers.labels.programs')]: t('irrigation.controllers.st8.specs.operating.programs')
       },
-      electrical: {
-        input: {
-          standard: "120VAC, 60Hz, 0.2A",
-          international: "230VAC, 50Hz, 0.1A"
+      [t('irrigation.controllers.st8.specs.electrical.title')]: {
+        [t('irrigation.controllers.labels.input')]: {
+          [t('irrigation.controllers.specs.standard')]: t('irrigation.controllers.st8.specs.electrical.inputStandard'),
+          [t('irrigation.controllers.specs.international')]: t('irrigation.controllers.st8.specs.electrical.inputInternational')
         },
-        output: {
-          standard: "25.5VAC, 60Hz, 0.65A",
-          international: "24VAC, 50Hz, 0.65A"
+        [t('irrigation.controllers.labels.output')]: {
+          [t('irrigation.controllers.specs.standard')]: t('irrigation.controllers.st8.specs.electrical.outputStandard'),
+          [t('irrigation.controllers.specs.international')]: t('irrigation.controllers.st8.specs.electrical.outputInternational')
         }
       },
-      dimensions: {
-        indoor: {
-          width: "6.25 in. (15.9 cm)",
-          height: "6.25 in. (15.9 cm)",
-          depth: "1.54 in. (3.9 cm)"
+      [t('irrigation.controllers.st8.specs.dimensions.title')]: {
+        [t('irrigation.controllers.labels.indoor')]: {
+          [t('irrigation.controllers.labels.width')]: t('irrigation.controllers.st8.specs.dimensions.indoorWidth'),
+          [t('irrigation.controllers.labels.height')]: t('irrigation.controllers.st8.specs.dimensions.indoorHeight'),
+          [t('irrigation.controllers.labels.depth')]: t('irrigation.controllers.st8.specs.dimensions.indoorDepth')
         },
-        outdoor: {
-          width: "7.88 in. (20 cm)",
-          height: "7.88 in. (20 cm)",
-          depth: "3.25 in. (8.3 cm)"
+        [t('irrigation.controllers.labels.outdoor')]: {
+          [t('irrigation.controllers.labels.width')]: t('irrigation.controllers.st8.specs.dimensions.outdoorWidth'),
+          [t('irrigation.controllers.labels.height')]: t('irrigation.controllers.st8.specs.dimensions.outdoorHeight'),
+          [t('irrigation.controllers.labels.depth')]: t('irrigation.controllers.st8.specs.dimensions.outdoorDepth')
         }
       }
     },
     models: {
-      "Indoor Models": [
+      [t('irrigation.controllers.st8.models.indoor')]: [
         "ST8I WIFI",
         "ST8I-2.0 WIFI",
         "ST8I-INTL"
       ],
-      "Outdoor Models": [
+      [t('irrigation.controllers.st8.models.outdoor')]: [
         "ST8O-2.0",
         "ST8O-AUS"
       ]
@@ -176,19 +176,19 @@ const products = [
     accessories: [
       {
         name: "WR2-RFC",
-        description: "Rain + Freeze Combo"
+        description: t('irrigation.controllers.st8.accessories.rainFreeze')
       },
       {
         name: "WR2-48",
-        description: "Rain + Freeze Combo with 48-hour hold"
+        description: t('irrigation.controllers.st8.accessories.rainFreeze48')
       },
       {
         name: "RSD-BEx",
-        description: "Rain sensor with latching bracket"
+        description: t('irrigation.controllers.st8.accessories.rainSensor')
       }
     ],
     certifications: {
-      "Indoor Models": [
+      [t('irrigation.controllers.st8.models.indoor')]: [
         "cULus (US and Canada)",
         "FCC Part 15b (US)",
         "WaterSense (US, ST8I-WIFI only)",
@@ -197,7 +197,7 @@ const products = [
         "NRCS (South Africa)",
         "SABS (South Africa)"
       ],
-      "Outdoor Models": [
+      [t('irrigation.controllers.st8.models.outdoor')]: [
         "cULus (US and Canada)",
         "FCC Part 15b (US)",
         "WaterSense (US)",
@@ -212,8 +212,8 @@ const products = [
 ---
 
 <Layout
-  title="Irrigation Controllers - Smart Water Management"
-  description="Discover our range of smart irrigation controllers for precise water management. From basic residential solutions to advanced WiFi-enabled systems."
+  title={t('irrigation.controllers.title')}
+  description={t('irrigation.controllers.heroDescription')}
 >
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
@@ -228,24 +228,24 @@ const products = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Smart Irrigation Controllers
-          <span class="block text-2xl md:text-3xl mt-2">Precision Water Management</span>
+          {t('irrigation.controllers.title')}
+          <span class="block text-2xl md:text-3xl mt-2">{t('irrigation.controllers.subtitle')}</span>
         </h1>
         <p class="text-xl text-white mb-8">
-          Advanced control systems for efficient water management
+          {t('irrigation.controllers.heroDescription')}
         </p>
         <div class="flex flex-wrap gap-4">
           <a 
             href="#products"
             class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
           >
-            View Products
+            {t('irrigation.controllers.viewProducts')}
           </a>
           <a 
             href="#quote-form"
             class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
           >
-            Request Quote
+            {t('irrigation.controllers.requestQuote')}
           </a>
         </div>
       </div>
@@ -255,7 +255,7 @@ const products = [
   <!-- Products Section -->
   <section id="products" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Controllers</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('irrigation.controllers.ourControllers')}</h2>
       
       {products.map((product, index) => (
         <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
@@ -267,7 +267,7 @@ const products = [
               
               <div class="space-y-6">
                 <div>
-                  <h4 class="font-bold mb-3">Key Features:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.keyFeatures')}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {product.features.map((feature) => (
                       <div class="flex items-center text-gray-700">
@@ -281,7 +281,7 @@ const products = [
                 </div>
 
                 <div>
-                  <h4 class="font-bold mb-3">Documentation:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.documentation')}:</h4>
                   <div class="bg-gray-50 p-4 rounded-lg">
                     <a 
                       href={product.name === "ESP-TM2 Series Controllers" 
@@ -295,13 +295,13 @@ const products = [
                       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
-                      Download Product Catalog (PDF)
+                      {t('irrigation.controllers.downloadCatalog')}
                     </a>
                   </div>
                 </div>
 
                 <div>
-                  <h4 class="font-bold mb-3">Technical Specifications:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.techSpecs')}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.specifications).map(([category, specs]) => {
                       if (typeof specs !== 'object' || specs === null) {
@@ -339,7 +339,7 @@ const products = [
                 </div>
 
                 <div>
-                  <h4 class="font-bold mb-3">Available Models:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.availableModels')}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.models).map(([category, models]: [string, any]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -355,7 +355,7 @@ const products = [
                 </div>
 
                 <div>
-                  <h4 class="font-bold mb-3">Compatible Accessories:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.compatibleAccessories')}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.accessories.map((accessory) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -367,7 +367,7 @@ const products = [
                 </div>
 
                 <div>
-                  <h4 class="font-bold mb-3">Certifications:</h4>
+                  <h4 class="font-bold mb-3">{t('irrigation.controllers.certifications')}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.certifications).map(([category, certs]: [string, any]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -400,12 +400,12 @@ const products = [
   <section id="quote-form" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{t('irrigation.controllers.form.title')}</h2>
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                First Name *
+                {t('irrigation.controllers.form.firstName')} *
               </label>
               <input
                 type="text"
@@ -415,7 +415,7 @@ const products = [
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Last Name *
+                {t('irrigation.controllers.form.lastName')} *
               </label>
               <input
                 type="text"
@@ -427,7 +427,7 @@ const products = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Email Address *
+              {t('irrigation.controllers.form.email')} *
             </label>
             <input
               type="email"
@@ -438,7 +438,7 @@ const products = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number *
+              {t('irrigation.controllers.form.phone')} *
             </label>
             <input
               type="tel"
@@ -449,13 +449,13 @@ const products = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Controller Model *
+              {t('irrigation.controllers.form.model')} *
             </label>
             <select
               required
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
-              <option value="">Select a model</option>
+              <option value="">{t('irrigation.controllers.form.selectModel')}</option>
               {products.map((product) => (
                 <optgroup label={product.name}>
                   {Object.entries(product.models).flatMap(([category, models]: [string, any]) =>
@@ -470,7 +470,7 @@ const products = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Number of Zones *
+              {t('irrigation.controllers.form.zones')} *
             </label>
             <input
               type="number"
@@ -483,12 +483,12 @@ const products = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Additional Requirements
+              {t('irrigation.controllers.form.requirements')}
             </label>
             <textarea
               rows="4"
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-              placeholder="Tell us about your specific needs or any questions you have..."
+              placeholder={t('irrigation.controllers.form.requirementsPlaceholder')}
             ></textarea>
           </div>
 
@@ -496,7 +496,7 @@ const products = [
             type="submit"
             class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
           >
-            Submit Quote Request
+            {t('irrigation.controllers.form.submit')}
           </button>
         </form>
       </div>
@@ -506,14 +506,14 @@ const products = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for personalized recommendations and support.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{t('irrigation.controllers.cta.title')}</h2>
+      <p class="text-xl text-white mb-8">{t('irrigation.controllers.cta.description')}</p>
       <div class="flex flex-wrap justify-center gap-4">
         <a 
           href="/contact" 
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
         >
-          Contact Us
+          {t('irrigation.controllers.cta.contact')}
         </a>
         <a 
           href="https://wa.me/2250799295643" 
@@ -522,7 +522,7 @@ const products = [
           class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
         >
           <i class="fab fa-whatsapp mr-2"></i>
-          Chat on WhatsApp
+          {t('irrigation.controllers.cta.whatsapp')}
         </a>
       </div>
     </div>
