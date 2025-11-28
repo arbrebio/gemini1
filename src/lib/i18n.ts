@@ -745,6 +745,39 @@ const translations: Record<Language, Record<string, any>> = {
         contact: { title: '9. Contact Us', text: 'If you have any questions about our use of cookies, please contact us at:', abidjan: 'Abidjan Office:', capeTown: 'Cape Town Warehouse:' }
       }
     },
+    about: {
+      title: 'About Us - Leading Agricultural Innovation in Africa',
+      description: 'Arbre Bio Africa is transforming agriculture across Africa through precision irrigation, greenhouse solutions, and sustainable farming technologies.',
+      hero: { title: 'About Us', subtitle: 'Leading the transformation of African agriculture through innovation and sustainable solutions' },
+      whoWeAre: { title: 'Who We Are', text: 'Arbre Bio Africa is a leader in agricultural innovation, providing precision irrigation, greenhouse solutions, and organic growing substrate across Africa. Our commitment to sustainable farming practices and cutting-edge technology has positioned us at the forefront of agricultural transformation in the region.', mission: { title: 'Our Mission', text: 'Our goal is to transform African agriculture by making modern farming technologies accessible and sustainable.' } },
+      journey: { title: 'Our Journey', timeline: { 2020: { title: 'Company Founded', text: 'Established in Abidjan, Côte d\'Ivoire with a vision to revolutionize African agriculture' }, 2021: { title: 'First Major Project', text: 'Completed our first large-scale greenhouse installation in Ghana' }, 2022: { title: 'Strategic Partnerships', text: 'Formed partnerships with NGS and AZUD to bring world-class agricultural solutions to Africa' }, 2023: { title: 'Regional Expansion', text: 'Expanded operations to Nigeria and Ghana, serving over 100 agricultural projects' } } },
+      leadership: { title: 'Our Leadership', ceo: { name: 'Lethabo Ndhlovu', role: 'Chief Executive Officer', bio: 'With over 25 years of experience in agricultural Engineering and specializing in intensive farming, Lethabo leads our mission to transform African agriculture.' }, coo: { name: 'Sydney Abouna', role: 'Chief Operations Officer', bio: 'Sydney brings extensive operational expertise in managing large-scale agricultural projects across Africa.' }, marketing: { name: 'Viviane BROU', role: 'Marketing Strategy Representative', bio: 'Hospitality-trained, now in digital marketing and product — focused on helping customers connect with products through clarity, empathy, and a passion for sustainability.' } },
+      values: { title: 'Our Values', sustainability: { title: 'Sustainability', text: 'Committed to environmentally responsible farming practices' }, innovation: { title: 'Innovation', text: 'Continuously advancing agricultural technology' }, partnership: { title: 'Partnership', text: 'Building strong relationships with farmers and communities' } },
+      cta: { title: 'Join Us in Transforming African Agriculture', subtitle: 'Let\'s work together to build a more sustainable and productive future for farming.', button: 'Contact Us' }
+    },
+    company: {
+      title: 'Company - Arbre Bio Africa',
+      description: 'Learn about Arbre Bio Africa\'s history, partnerships, and commitment to transforming African agriculture.',
+      hero: { title: 'Our Company', subtitle: 'Building the future of African agriculture' },
+      overview: { title: 'Company Overview', text: 'Arbre Bio Africa is dedicated to revolutionizing agriculture across Africa through innovative solutions and sustainable practices.' },
+      history: { title: 'Our History', text: 'Founded in 2020, we have grown from a small startup to a leading provider of agricultural solutions across West Africa.' },
+      partnerships: { title: 'Strategic Partnerships', text: 'We partner with world-leading agricultural technology companies to bring the best solutions to African farmers.' },
+      locations: { title: 'Our Locations', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Cape Town, South Africa' }
+    },
+    projects: {
+      title: 'Projects - Agricultural Success Stories',
+      description: 'Explore our portfolio of successful agricultural projects across Africa.',
+      hero: { title: 'Our Projects', subtitle: 'Transforming farms across Africa' },
+      portfolio: { title: 'Project Portfolio', text: 'We have successfully completed over 500 agricultural projects across Africa.' },
+      caseStudies: { title: 'Case Studies', text: 'Discover how our solutions have helped farmers increase productivity and profitability.' }
+    },
+    successStories: {
+      title: 'Success Stories - Real Results from African Farms',
+      description: 'Read about the real impact of our agricultural solutions on farms across Africa.',
+      hero: { title: 'Success Stories', subtitle: 'Real results from real farmers' },
+      stories: { title: 'Our Success Stories', text: 'See how our solutions have transformed agricultural operations across Africa.' },
+      metrics: { title: 'Results That Matter', text: 'Our solutions deliver measurable improvements in yield, efficiency, and profitability.' }
+    },
     validation: {
       required: 'This field is required',
       email: 'Please enter a valid email address',
