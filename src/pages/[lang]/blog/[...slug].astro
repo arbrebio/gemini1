@@ -1,6 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -38,7 +42,7 @@ const formatDate = (date: Date) => {
         <span class="mx-2">•</span>
         <span class="text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
         <span class="mx-2">•</span>
-        <span class="text-gray-500">By {post.data.author}</span>
+        <span class="text-gray-500">{t('blog.post.by')} {post.data.author}</span>
       </div>
       <h1 class="text-4xl font-bold mb-8">{post.data.title}</h1>
       <Content />
@@ -47,7 +51,7 @@ const formatDate = (date: Date) => {
     <!-- Share on Social Media -->
     <div class="container mx-auto px-4 mt-8">
       <div class="max-w-4xl mx-auto">
-        <h3 class="text-xl font-bold mb-4">Share This Article</h3>
+        <h3 class="text-xl font-bold mb-4">{t('blog.post.shareArticle')}</h3>
         <div class="flex flex-wrap gap-4">
           <a 
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`}
@@ -182,7 +186,7 @@ const formatDate = (date: Date) => {
   <!-- Related Articles -->
   <section class="bg-gray-50 py-16">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-8">Related Articles</h2>
+      <h2 class="text-3xl font-bold mb-8">{t('blog.post.relatedArticles')}</h2>
       <!-- Add related articles logic here -->
     </div>
   </section>
@@ -190,13 +194,13 @@ const formatDate = (date: Date) => {
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Our team is here to help you implement these solutions on your farm.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{t('blog.post.needExpertAdvice')}</h2>
+      <p class="text-xl text-white mb-8">{t('blog.post.expertAdviceDesc')}</p>
       <a 
         href="/contact" 
         class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
       >
-        Contact Us
+        {t('blog.post.contactUs')}
         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
         </svg>
