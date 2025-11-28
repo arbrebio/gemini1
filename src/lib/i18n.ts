@@ -522,8 +522,8 @@ const translations: Record<Language, Record<string, any>> = {
             whatsapp: 'Chat on WhatsApp'
           }
         },
-,
-,
+      ,
+      ,
     drip: {
       title: 'Drip Irrigation Systems - Precision Water Management',
       description: 'Advanced drip irrigation solutions for efficient water management and optimal crop yields. Discover our range of drippers, driplines, and micro-irrigation systems.',
@@ -871,32 +871,39 @@ office: {
     capetown: 'Cape Town Warehouse'
 },
 common: {
-  'learn-more': 'Learn More',
-    'request-quote': 'Request Quote',
-      'view-products': 'View Products',
-        'download': 'Download',
-          'loading': 'Loading...',
-            'back': 'Back',
-              'view-technical-specs': 'View Technical Specs',
-                'submit-quote-request': 'Submit Quote Request',
-                  'select-category': 'Select a category',
-                    'project-details': 'Project Details',
-                      'tell-us-about': 'Tell us about your project and specific requirements...',
-                        'need-expert-advice': 'Need Expert Advice?',
-                          'contact-today': 'Contact us today for technical consultation and custom solutions.',
-                            'technical-specs': 'Technical Specifications',
-                              'installation-guide': 'Installation Guide',
-                                'cad-files': 'CAD Files',
-                                  'complete-product-specs': 'Complete product specifications',
-                                    'step-by-step': 'Step-by-step installation instructions',
-                                      'technical-drawings': 'Technical drawings and 3D models',
-                                        'quality-certifications': 'Quality Certifications',
-                                          'quality-management': 'Quality Management System',
-                                            'structural-steel': 'Structural Steel Components',
-                                              'greenhouse-covering': 'Greenhouse Covering Materials',
-                                                'professional-greenhouse': 'Professional Greenhouse Components',
-                                                  'quality-certified': 'Quality-Certified Accessories & Supplies',
-                                                    'technical-documentation': 'Technical Documentation'
+  heroBackground: 'Hero Background Image',
+    heroSection: 'Hero section',
+      shareOnFacebook: 'Share on Facebook',
+        shareOnTwitter: 'Share on Twitter',
+          shareOnLinkedIn: 'Share on LinkedIn',
+            shareOnWhatsApp: 'Share on WhatsApp',
+              followOnInstagram: 'Follow us on Instagram',
+                'learn-more': 'Learn More',
+                  'request-quote': 'Request Quote',
+                    'view-products': 'View Products',
+                      'download': 'Download',
+                        'loading': 'Loading...',
+                          'back': 'Back',
+                            'view-technical-specs': 'View Technical Specs',
+                              'submit-quote-request': 'Submit Quote Request',
+                                'select-category': 'Select a category',
+                                  'project-details': 'Project Details',
+                                    'tell-us-about': 'Tell us about your project and specific requirements...',
+                                      'need-expert-advice': 'Need Expert Advice?',
+                                        'contact-today': 'Contact us today for technical consultation and custom solutions.',
+                                          'technical-specs': 'Technical Specifications',
+                                            'installation-guide': 'Installation Guide',
+                                              'cad-files': 'CAD Files',
+                                                'complete-product-specs': 'Complete product specifications',
+                                                  'step-by-step': 'Step-by-step installation instructions',
+                                                    'technical-drawings': 'Technical drawings and 3D models',
+                                                      'quality-certifications': 'Quality Certifications',
+                                                        'quality-management': 'Quality Management System',
+                                                          'structural-steel': 'Structural Steel Components',
+                                                            'greenhouse-covering': 'Greenhouse Covering Materials',
+                                                              'professional-greenhouse': 'Professional Greenhouse Components',
+                                                                'quality-certified': 'Quality-Certified Accessories & Supplies',
+                                                                  'technical-documentation': 'Technical Documentation'
 },
 footer: {
   description: 'Transforming African agriculture through precision farming solutions.',
@@ -933,9 +940,10 @@ errors: {
                           goHome: 'Go Home'
 },
 blog: {
-  title: 'Blog & Knowledge Hub - Agricultural Insights',
-    description: 'Explore our collection of articles, guides, and expert insights on modern farming techniques, greenhouse technology, and agricultural innovation in Africa.',
-      hero: {
+  heroImage: 'Modern Agriculture',
+    title: 'Blog & Knowledge Hub - Agricultural Insights',
+      description: 'Explore our collection of articles, guides, and expert insights on modern farming techniques, greenhouse technology, and agricultural innovation in Africa.',
+        hero: {
     title: 'Blog & Knowledge Hub',
       subtitle: 'Expert insights and practical guides for modern African agriculture'
   },
@@ -1100,9 +1108,10 @@ newsletterPage: {
   }
 },
 solutions: {
-  title: 'Products & Solutions - Agricultural Innovation for Africa',
-    description: 'Discover our comprehensive range of agricultural solutions including greenhouses, irrigation systems, growing media, and project management services.',
-      hero: {
+  heroImage: 'African Agricultural Solutions',
+    title: 'Agricultural Solutions - Modern Farming Technology',
+      description: 'Discover our comprehensive range of agricultural solutions designed for African farming conditions. From greenhouses to irrigation systems, we provide the technology you need to succeed.',
+        hero: {
     title: 'Transforming African Agriculture',
       subtitle: 'Through Innovative Solutions',
         description: 'Empowering farmers across Africa with cutting-edge technology and sustainable solutions designed for local conditions.',
@@ -1198,9 +1207,10 @@ terms: {
   }
 },
 about: {
-  title: 'About Us - Leading Agricultural Innovation in Africa',
-    description: 'Arbre Bio Africa is transforming agriculture across Africa through precision irrigation, greenhouse solutions, and sustainable farming technologies.',
-      hero: { title: 'About Us', subtitle: 'Leading the transformation of African agriculture through innovation and sustainable solutions' },
+  teamImage: 'Team at Agricultural Site',
+    title: 'About Us - Leading Agricultural Innovation in Africa',
+      description: 'Arbre Bio Africa is transforming agriculture across Africa through precision irrigation, greenhouse solutions, and sustainable farming technologies.',
+        hero: { title: 'About Us', subtitle: 'Leading the transformation of African agriculture through innovation and sustainable solutions' },
   whoWeAre: { title: 'Who We Are', text: 'Arbre Bio Africa is a leader in agricultural innovation, providing precision irrigation, greenhouse solutions, and organic growing substrate across Africa. Our commitment to sustainable farming practices and cutting-edge technology has positioned us at the forefront of agricultural transformation in the region.', mission: { title: 'Our Mission', text: 'Our goal is to transform African agriculture by making modern farming technologies accessible and sustainable.' } },
   journey: { title: 'Our Journey', timeline: { 2020: { title: 'Company Founded', text: 'Established in Abidjan, Côte d\'Ivoire with a vision to revolutionize African agriculture' }, 2021: { title: 'First Major Project', text: 'Completed our first large-scale greenhouse installation in Ghana' }, 2022: { title: 'Strategic Partnerships', text: 'Formed partnerships with NGS and AZUD to bring world-class agricultural solutions to Africa' }, 2023: { title: 'Regional Expansion', text: 'Expanded operations to Nigeria and Ghana, serving over 100 agricultural projects' } } },
   leadership: { title: 'Our Leadership', ceo: { name: 'Lethabo Ndhlovu', role: 'Chief Executive Officer', bio: 'With over 25 years of experience in agricultural Engineering and specializing in intensive farming, Lethabo leads our mission to transform African agriculture.' }, coo: { name: 'Sydney Abouna', role: 'Chief Operations Officer', bio: 'Sydney brings extensive operational expertise in managing large-scale agricultural projects across Africa.' }, marketing: { name: 'Viviane BROU', role: 'Marketing Strategy Representative', bio: 'Hospitality-trained, now in digital marketing and product — focused on helping customers connect with products through clarity, empathy, and a passion for sustainability.' } },
@@ -1216,9 +1226,10 @@ company: {
   locations: { title: 'Our Locations', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Cape Town, South Africa' }
 },
 projects: {
-  title: 'Projects - Agricultural Success Stories',
-    description: 'Explore our portfolio of successful agricultural projects across Africa.',
-      hero: { title: 'Our Projects', subtitle: 'Transforming farms across Africa' },
+  heroImage: 'Agricultural Projects',
+    title: 'Projects - Agricultural Success Stories',
+      description: 'Explore our portfolio of successful agricultural projects across Africa.',
+        hero: { title: 'Our Projects', subtitle: 'Transforming farms across Africa' },
   portfolio: { title: 'Project Portfolio', text: 'We have successfully completed over 500 agricultural projects across Africa.' },
 },
 substrates: {
@@ -1735,7 +1746,7 @@ pages: {
     }
   }
 }
-  },
+},
 fr: {
   nav: {
     greenhouses: 'Serres',
