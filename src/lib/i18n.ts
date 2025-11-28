@@ -728,6 +728,23 @@ const translations: Record<Language, Record<string, any>> = {
         contact: { title: '12. Contact Information', text: 'For any inquiries regarding these terms, please contact us at:', abidjan: 'Abidjan Office:', capeTown: 'Cape Town Warehouse:' }
       }
     },
+    cookies: {
+      title: 'Cookies Policy - Arbre Bio Africa',
+      description: 'Learn about how Arbre Bio Africa uses cookies and other tracking technologies to improve your browsing experience.',
+      heading: 'Cookies Policy',
+      lastUpdated: 'Last updated:',
+      sections: {
+        intro: { title: '1. Introduction', text: 'This Cookies Policy explains how Arbre Bio Africa ("we", "us", "our") uses cookies and similar technologies on our website. Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better browsing experience and allow us to improve our site.' },
+        types: { title: '2. Types of Cookies We Use', essential: { title: '2.1 Essential Cookies', text: 'These cookies are necessary for the website to function properly. They enable basic functions like page navigation and access to secure areas of the website. The website cannot function properly without these cookies.' }, performance: { title: '2.2 Performance Cookies', text: 'These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. They help us improve the functionality of our site.' }, functionality: { title: '2.3 Functionality Cookies', text: 'These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages.' }, targeting: { title: '2.4 Targeting/Advertising Cookies', text: 'These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant advertisements on other sites.' } },
+        usage: { title: '3. How We Use Cookies', text: 'We use cookies for the following purposes:', items: ['To ensure proper website functionality', 'To analyze website traffic and user behavior', 'To remember your preferences and settings', 'To improve website performance and speed', 'To provide personalized content and recommendations', 'To measure the effectiveness of our marketing campaigns'] },
+        thirdParty: { title: '4. Third-Party Cookies', text: 'We use services from the following third parties that may place cookies on your device:', items: ['Google Analytics - For website analytics and performance monitoring', 'Google Ads - For advertising and remarketing', 'Facebook Pixel - For social media integration and advertising', 'LinkedIn - For professional network integration'], note: 'These third-party services have their own privacy policies and cookie policies that govern their use of your information.' },
+        managing: { title: '5. Managing and Disabling Cookies', text: 'You can control and manage cookies in various ways:', browser: { title: '5.1 Browser Settings', text: 'Most web browsers allow you to manage cookies through their settings. You can:', items: ['View cookies stored on your device', 'Block or allow cookies', 'Delete existing cookies', 'Set preferences for certain websites'] }, instructions: { title: '5.2 Browser Instructions', text: 'Find instructions for managing cookies in popular browsers:' } },
+        consent: { title: '6. Consent & Control', text: 'When you first visit our website, you will be presented with a cookie consent banner. You can:', items: ['Accept all cookies', 'Reject non-essential cookies', 'Customize your cookie preferences', 'Change your preferences at any time'] },
+        dataProtection: { title: '7. Data Protection & Privacy', text: 'Information collected through cookies is processed in accordance with our Privacy Policy. For more information about how we protect your data, please refer to our', privacyLink: 'Privacy Policy' },
+        updates: { title: '8. Policy Updates', text: 'We may update this Cookies Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. Any changes will be posted on this page with an updated revision date.' },
+        contact: { title: '9. Contact Us', text: 'If you have any questions about our use of cookies, please contact us at:', abidjan: 'Abidjan Office:', capeTown: 'Cape Town Warehouse:' }
+      }
+    },
     validation: {
       required: 'This field is required',
       email: 'Please enter a valid email address',
