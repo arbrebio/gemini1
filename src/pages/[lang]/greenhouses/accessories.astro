@@ -1,5 +1,11 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+
 
 const structuralComponents = [
   {
@@ -191,8 +197,7 @@ const certifications = [
     description: "Greenhouse Covering Materials",
     icon: "🌿"
   }
-];
----
+];---
 
 <Layout
   title="Greenhouse Accessories & Components | Professional Grade"

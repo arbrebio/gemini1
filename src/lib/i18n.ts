@@ -1434,6 +1434,511 @@ const translations: Record<Language, Record<string, any>> = {
       stories: { title: 'Our Success Stories', text: 'See how our solutions have transformed agricultural operations across Africa.' },
       metrics: { title: 'Results That Matter', text: 'Our solutions deliver measurable improvements in yield, efficiency, and profitability.' }
     },
+        greenhouse: {
+          highTech: {
+            title: 'Soluciones de Invernaderos de Alta Tecnología',
+            description: 'Estructuras avanzadas de invernaderos diseñadas para condiciones climáticas africanas. Descubra nuestra gama de entornos de cultivo controlados para una producción agrícola óptima.',
+            hero: {
+              title: 'Soluciones Avanzadas de Invernaderos',
+              subtitle: 'Diseñadas para Condiciones de Cultivo Óptimas',
+              cta: 'Solicitar Cotización Personalizada',
+              download: 'Descargar Especificaciones Técnicas'
+            },
+            types: {
+              nethouse: {
+                name: 'Nethouse (Malla Sombra)',
+                description: 'Ideal para climas tropicales, ofreciendo ventilación óptima y protección contra insectos mientras mantiene condiciones de cultivo favorables.',
+                specs: {
+                  dimensions: 'Vanos estándar de 8m, longitudes personalizables',
+                  materials: 'Estructura de acero galvanizado, malla anti-insectos de alta calidad',
+                  loadCapacity: 'Resistencia al viento hasta 100km/h',
+                  climate: 'Ventilación natural con sistemas de ventiladores opcionales',
+                  lifespan: '15-20 años para la estructura, 5-7 años para la malla',
+                  installation: 'Requiere suelo nivelado, cimentación básica'
+                },
+                features: ['Malla 40-50 mesh estabilizada UV', 'Ventilación lateral enrollable', 'Pantalla anti-virus', 'Diseño modular'],
+                advantages: ['Inversión inicial más baja', 'Excelente ventilación natural', 'Ideal para climas cálidos', 'Mantenimiento fácil'],
+                limitations: ['Control climático limitado', 'No apto para condiciones climáticas extremas', 'Control ambiental menos preciso'],
+                roi: { payback: '2-3 años', yieldIncrease: '40-60%', waterSavings: '30-40%' }
+              },
+              sawtooth: {
+                name: 'Invernadero Diente de Sierra',
+                description: 'Diseño avanzado que ofrece ventilación y control climático superiores, perfecto para producción durante todo el año en climas cálidos.',
+                specs: {
+                  dimensions: 'Ancho de vano de 9,6m, longitud personalizable',
+                  materials: 'Acero galvanizado en caliente, cubierta estabilizada UV',
+                  loadCapacity: 'Resistencia al viento hasta 120km/h',
+                  climate: 'Ventilación cenital con enfriamiento opcional',
+                  lifespan: '25+ años para la estructura, 8-10 años para la cubierta',
+                  installation: 'Requiere cimentación técnica'
+                },
+                features: ['Ventilación cenital automatizada', 'Cubierta de polietileno estabilizado UV', 'Sistema de sombreo integrado', 'Refuerzo estructural'],
+                advantages: ['Excelente ventilación natural', 'Mayor resistencia estructural', 'Mejor distribución de luz', 'Apto para automatización'],
+                limitations: ['Costo inicial más alto', 'Instalación compleja', 'Requiere mantenimiento regular'],
+                roi: { payback: '3-4 años', yieldIncrease: '70-90%', waterSavings: '50-60%' }
+              },
+              tunnel: {
+                name: 'Invernadero Túnel',
+                description: 'Solución rentable que ofrece excelentes condiciones de cultivo para diversos cultivos, con buenas capacidades de control climático.',
+                specs: {
+                  dimensions: 'Ancho de 8m o 9,6m, longitud modular',
+                  materials: 'Acero galvanizado, cubierta multicapa',
+                  loadCapacity: 'Resistencia al viento hasta 90km/h',
+                  climate: 'Ventilación lateral y de extremos',
+                  lifespan: '15-20 años estructura, 4-5 años cubierta',
+                  installation: 'Requisitos mínimos de cimentación'
+                },
+                features: ['Opción de inflado de doble capa', 'Paredes laterales enrollables', 'Ventilación frontal y trasera', 'Instalación rápida'],
+                advantages: ['Solución rentable', 'Despliegue rápido', 'Buen control climático', 'Aplicación versátil'],
+                limitations: ['Ancho de vano limitado', 'Menor resistencia al viento', 'Control climático básico'],
+                roi: { payback: '2-3 años', yieldIncrease: '50-70%', waterSavings: '40-50%' }
+              },
+              ridgeAndFurrow: {
+                name: 'Multi-Capilla',
+                description: 'Sistema de invernadero comercial a gran escala que ofrece máxima área de producción y capacidades avanzadas de control climático.',
+                specs: {
+                  dimensions: 'Múltiples vanos de 8m o 9,6m',
+                  materials: 'Acero galvanizado robusto, cubierta de calidad profesional',
+                  loadCapacity: 'Resistencia al viento hasta 150km/h',
+                  climate: 'Sistema completo de control climático',
+                  lifespan: '30+ años estructura, 8-10 años cubierta',
+                  installation: 'Requiere instalación profesional'
+                },
+                features: ['Control climático integrado', 'Ventilación automatizada', 'Sistema de canalón central', 'Compartimentos múltiples'],
+                advantages: ['Máximo uso del espacio', 'Control climático avanzado', 'Apto para grandes operaciones', 'Mayor productividad'],
+                limitations: ['Inversión inicial más alta', 'Instalación compleja', 'Requiere gestión calificada'],
+                roi: { payback: '4-5 años', yieldIncrease: '100-150%', waterSavings: '60-70%' }
+              }
+            },
+            labels: {
+              techSpecs: 'Especificaciones Técnicas',
+              keyFeatures: 'Características Clave',
+              advantages: 'Ventajas',
+              limitations: 'Limitaciones',
+              roi: 'Proyecciones ROI',
+              payback: 'Período de Retorno de Inversión',
+              yieldIncrease: 'Aumento de Rendimiento',
+              waterSavings: 'Ahorro de Agua',
+              techDocs: 'Documentación Técnica',
+              qualityCerts: 'Certificaciones de Calidad',
+              requestQuote: 'Solicitar Cotización Personalizada'
+            },
+            form: {
+              firstName: 'Nombre',
+              lastName: 'Apellido',
+              email: 'Dirección de Email',
+              phone: 'Número de Teléfono',
+              type: 'Tipo de Invernadero',
+              selectType: 'Seleccione un tipo de invernadero',
+              location: 'Ubicación del Proyecto',
+              locationPlaceholder: 'Ciudad, País',
+              size: 'Tamaño del Invernadero (Metros Cuadrados)',
+              requirements: 'Requisitos Adicionales',
+              requirementsPlaceholder: 'Cuéntenos sobre sus necesidades específicas...',
+              submit: 'Enviar Solicitud de Cotización'
+            },
+            accessories: {
+              title: 'Accesorios y Componentes de Invernadero | Calidad Profesional',
+              description: 'Gama completa de componentes y accesorios de invernadero de calidad profesional. Desde elementos estructurales hasta sistemas de cultivo, descubra nuestros productos certificados.',
+              hero: {
+                title: 'Componentes Profesionales de Invernadero',
+                subtitle: 'Accesorios y Suministros Certificados de Calidad',
+                cta: 'Solicitar Cotización',
+                specs: 'Ver Especificaciones Técnicas'
+              },
+              nav: {
+                structural: 'Componentes Estructurales',
+                fasteners: 'Fijaciones y Conexiones',
+                coverage: 'Materiales de Cobertura',
+                growing: 'Accesorios de Cultivo'
+              },
+              structural: {
+                title: 'Componentes Estructurales',
+                arches: {
+                  category: 'Arcos y Cerchas',
+                  arch9600: { name: 'Arco Premium 9600' },
+                  truss: { name: 'Sistema de Cercha Reforzado' }
+                },
+                support: {
+                  category: 'Sistemas de Soporte',
+                  column: { name: 'Columna Robusta' },
+                  bracing: { name: 'Kit de Arriostramiento' }
+                }
+              },
+              fasteners: {
+                title: 'Sistemas de Fijación y Conexión',
+                connectors: {
+                  category: 'Conectores Estructurales',
+                  boltSet: { name: 'Juego de Pernos Robustos', applications: ['Conexiones de arco', 'Ensamblaje del marco principal', 'Arriostramiento de soporte'] },
+                  channel: { name: 'Conector de Canal', applications: ['Conexiones de correa', 'Unión de travesaño', 'Soporte de canalón'] }
+                }
+              },
+              coverage: {
+                title: 'Materiales de Cobertura y Control Climático',
+                films: {
+                  category: 'Películas y Láminas',
+                  eva: { name: 'Película EVA Ultra-Clara' },
+                  diffused: { name: 'Película de Luz Difusa' }
+                },
+                screens: {
+                  category: 'Pantallas Anti-Insectos',
+                  thrip: { name: 'Malla Anti-Trips' }
+                }
+              },
+              growing: {
+                title: 'Accesorios de Cultivo',
+                support: {
+                  category: 'Sistemas de Soporte',
+                  wire: { name: 'Alambre de Soporte de Cultivo', applications: ['Soporte de tomates', 'Entutorado de pepinos', 'Cultivos trepadores'] },
+                  trellis: { name: 'Sistema de Soporte en Espaldera', applications: ['Cultivo vertical', 'Entutorado de plantas', 'Cultivos en hileras'] }
+                }
+              },
+              labels: {
+                applications: 'Aplicaciones',
+                specs: 'Especificaciones Técnicas',
+                material: 'Material',
+                thickness: 'Espesor',
+                loadCapacity: 'Capacidad de Carga',
+                span: 'Vano',
+                coating: 'Recubrimiento',
+                height: 'Altura',
+                length: 'Longitud',
+                size: 'Tamaño',
+                torque: 'Par',
+                standard: 'Estándar',
+                lightTransmission: 'Transmisión de Luz',
+                uvStability: 'Estabilidad UV',
+                thermalRetention: 'Retención Térmica',
+                lightDiffusion: 'Difusión de Luz',
+                mesh: 'Malla',
+                airflow: 'Flujo de aire',
+                shading: 'Sombreado',
+                diameter: 'Diámetro',
+                strength: 'Resistencia',
+                rollLength: 'Longitud del Rollo',
+                wireSpacing: 'Espaciado de Alambres',
+                postHeight: 'Altura del Poste'
+              },
+              techSpecs: {
+                title: 'Documentación Técnica',
+                specs: { name: 'Especificaciones Técnicas', desc: 'Especificaciones completas del producto' },
+                install: { name: 'Guía de Instalación', desc: 'Instrucciones de instalación paso a paso' },
+                cad: { name: 'Archivos CAD', desc: 'Dibujos técnicos y modelos 3D' }
+              },
+              certifications: {
+                title: 'Certificaciones de Calidad',
+                iso9001: { name: 'ISO 9001:2015', desc: 'Sistema de Gestión de Calidad' },
+                en1090: { name: 'EN 1090-1', desc: 'Componentes de Acero Estructural' },
+                en13206: { name: 'EN 13206', desc: 'Materiales de Cobertura de Invernadero' }
+              },
+              form: {
+                title: 'Solicitar Cotización',
+                firstName: 'Nombre',
+                lastName: 'Apellido',
+                email: 'Dirección de Email',
+                phone: 'Número de Teléfono',
+                category: 'Categoría de Producto',
+                selectCategory: 'Seleccionar categoría',
+                details: 'Detalles del Proyecto',
+                detailsPlaceholder: 'Cuéntenos sobre su proyecto y necesidades específicas...',
+                submit: 'Enviar Solicitud de Cotización'
+              },
+              cta: {
+                title: '¿Necesita Asesoramiento Experto?',
+                subtitle: 'Contáctenos hoy para consulta técnica y soluciones personalizadas.',
+                contact: 'Contáctenos',
+                whatsapp: 'Chatear en WhatsApp'
+              }
+            }
+          }
+        },
+        irrigation: {
+          drip: {
+            title: 'Sistemas de Riego por Goteo - Gestión Precisa del Agua',
+            description: 'Soluciones avanzadas de riego por goteo para una gestión eficiente del agua y rendimientos óptimos. Descubra nuestra gama de goteros, líneas de goteo y sistemas de micro-riego.',
+            hero: {
+              title: 'Sistemas de Riego por Goteo',
+              subtitle: 'Gestión Precisa del Agua',
+              desc: 'Transforme su granja con soluciones eficientes de gestión del agua',
+              viewProducts: 'Ver Productos',
+              requestQuote: 'Solicitar Cotización'
+            },
+            benefits: {
+              title: 'Por Qué Elegir Riego por Goteo',
+              water: { title: 'Eficiencia del Agua', desc: 'Hasta 95% de eficiencia en el uso del agua en comparación con el riego tradicional' },
+              yield: { title: 'Aumento de Rendimiento', desc: '30-100% de aumento en los rendimientos de cultivos' },
+              cost: { title: 'Ahorro de Costos', desc: 'Reducción de costos de mano de obra y operación' },
+              precision: { title: 'Control Preciso', desc: 'Suministro preciso de agua y nutrientes' }
+            },
+            products: {
+              title: 'Nuestras Soluciones',
+              netafim: {
+                name: 'Goteros y Líneas de Goteo Netafim',
+                shortDesc: 'Goteros, líneas de goteo y otros tipos de emisores para cualquier cultivo, topografía, clima, suelo, en cualquier lugar.',
+                desc: 'El riego por goteo está transformando las vidas de millones de agricultores en todo el mundo permitiendo mayores rendimientos mientras ahorra agua, fertilizantes y energía. Sin importar sus condiciones de cultivo, espere cultivos uniformemente mejores y mayores rendimientos, temporada tras temporada, con los goteros y líneas de goteo más confiables y robustos jamás fabricados.',
+                features: {
+                  universal: { title: 'Compatibilidad Universal', desc: 'Adecuado para cualquier cultivo, topografía, clima y tipo de suelo' },
+                  efficiency: { title: 'Eficiencia de Recursos', desc: 'Ahorros significativos en agua, fertilizantes y consumo de energía' },
+                  uniformity: { title: 'Distribución Uniforme', desc: 'Asegura una distribución uniforme del agua para un crecimiento constante de cultivos' },
+                  durability: { title: 'Durabilidad', desc: 'Construcción robusta para confiabilidad a largo plazo' }
+                },
+                specs: {
+                  general: { title: 'general', flow: 'Caudales', pressure: 'Presión de operación', filtration: 'Requisitos de filtración', wall: 'Espesor de pared' },
+                  features: { title: 'características', antiSiphon: 'Anti-sifón', antiDrain: 'Anti-drenaje', pressureComp: 'Compensación de presión', uv: 'Resistencia UV' }
+                }
+              },
+              azudGreentec: {
+                name: 'AZUD GREENTEC',
+                shortDesc: 'Tubería de micro-riego con gotero turbulento integrado para instalaciones de riego superficial',
+                desc: 'La tubería de micro-riego con y sin gotero turbulento integrado tiene un historial comprobado y eficiencia para instalaciones de riego superficial, garantizando uniformidad, larga vida útil y alta resistencia a la obstrucción. Comportamiento hidráulico óptimo con tubería completamente cilíndrica y diseño de gotero.',
+                features: {
+                  ds: { title: 'Tecnología DS', desc: 'Máxima protección contra obstrucción con filtro de entrada autolimpiante' },
+                  optimization: { title: 'Optimización de Recursos', desc: 'Ahorro de agua y energía mediante operación a baja presión' },
+                  versatile: { title: 'Instalación Versátil', desc: 'Adaptable a diversas condiciones del paisaje' },
+                  integrated: { title: 'Sistema Integrado', desc: 'Costos de instalación reducidos con mayor control de riego' }
+                },
+                specs: {
+                  pipe: { title: 'TUBERÍA DE MICRO-RIEGO', diameter: 'Diámetro', coil: 'Bobina', color: 'Color' },
+                  integrated: { title: 'TUBERÍA CON GOTERO INTEGRADO', diameter: 'Diámetro', flow: 'Caudal', framework: 'Marco', color: 'Color' }
+                }
+              },
+              azudMicrotube: {
+                name: 'AZUD TUB MICROTUBE',
+                shortDesc: 'Microtubos versátiles para diversas aplicaciones de riego',
+                desc: 'Los microtubos comercializados por AZUD se dividen en diferentes modelos para múltiples aplicaciones, desde operación de válvulas hidráulicas hasta hidroponía y accesorios de micro-riego.',
+                features: {
+                  materials: { title: 'Materiales Premium', desc: 'Fabricado con materias primas de primera calidad para durabilidad' },
+                  maintenance: { title: 'Mantenimiento Fácil', desc: 'Facilita el mantenimiento y futuras extensiones del sistema' },
+                  packaging: { title: 'Embalaje Reforzado', desc: 'Transporte y almacenamiento fáciles con diseño apilable' },
+                  installation: { title: 'Instalación Flexible', desc: 'Inserción fácil y flexible con goteros y accesorios' }
+                },
+                specs: {
+                  pe: { title: 'Modelos PE', sizes: 'Tamaños' },
+                  flex: { title: 'Modelos FLEX', sizes: 'Tamaños' }
+                }
+              },
+              azudNavia: {
+                name: 'AZUD NAVIA',
+                shortDesc: 'Goteros autocompensantes y anti-fuga para topografía desafiante',
+                desc: 'AZUD NAVIA es la gama de goteros autocompensantes y anti-fuga adecuados para riego de instalaciones con desniveles topográficos significativos y cultivos de alto rendimiento en invernaderos.',
+                features: {
+                  range: { title: 'Amplio Rango de Trabajo', desc: 'Opera bajo un amplio rango de presiones, optimizando costos' },
+                  control: { title: 'Control Preciso', desc: 'Presión de apertura y cierre precisa para uso eficiente de fertilizantes' },
+                  installation: { title: 'Instalación Fácil', desc: 'Instalación a distancia variable según necesidades específicas del cultivo' },
+                  durability: { title: 'Máxima Durabilidad', desc: 'Alta resistencia al impacto, fricción y degradación UV' }
+                },
+                specs: {
+                  nd: { title: 'Modelos ND', flows: 'Caudales' },
+                  pc: { title: 'Modelos PC', flows: 'Caudales' }
+                }
+              }
+            },
+            labels: {
+              techSpecs: 'Especificaciones Técnicas',
+              documentation: 'Documentación',
+              download: 'Descargar Catálogo de Productos (PDF)'
+            },
+            certifications: {
+              title: 'Certificaciones de Calidad',
+              iso9001: { name: 'ISO 9001:2015', desc: 'Sistema de Gestión de Calidad' },
+              iso14001: { name: 'ISO 14001:2015', desc: 'Gestión Ambiental' },
+              ce: { name: 'Marcado CE', desc: 'Conformidad Europea' }
+            },
+            form: {
+              title: 'Solicitar Cotización',
+              firstName: 'Nombre',
+              lastName: 'Apellido',
+              email: 'Dirección de Email',
+              phone: 'Número de Teléfono',
+              product: 'Producto',
+              selectProduct: 'Seleccionar producto',
+              area: 'Área del Proyecto (Hectáreas)',
+              crop: 'Tipo de Cultivo',
+              selectCrop: 'Seleccionar tipo de cultivo',
+              crops: { veg: 'Vegetales', fruits: 'Frutas', field: 'Cultivos de Campo', other: 'Otro' },
+              requirements: 'Requisitos Adicionales',
+              requirementsPlaceholder: 'Cuéntenos sobre sus necesidades específicas...',
+              submit: 'Enviar Solicitud de Cotización'
+            },
+            cta: {
+              title: '¿Necesita Asesoramiento Experto?',
+              subtitle: 'Contáctenos hoy para recomendaciones personalizadas y soporte.',
+              contact: 'Contáctenos',
+              whatsapp: 'Chatear en WhatsApp'
+            }
+          },
+          sprinklers: {
+            title: 'Aspersores de Riego - Distribución Precisa del Agua',
+            description: 'Descubra nuestra gama de aspersores de riego profesionales diseñados para una distribución óptima del agua y cobertura de cultivos en diversas aplicaciones agrícolas.',
+            hero: {
+              title: 'Aspersores Profesionales',
+              subtitle: 'Distribución Precisa del Agua',
+              desc: 'Soluciones avanzadas de aspersores para riego óptimo de cultivos',
+              viewProducts: 'Ver Productos',
+              requestQuote: 'Solicitar Cotización'
+            },
+            products: {
+              title: 'Nuestros Aspersores',
+              dnet0950: {
+                name: 'D-Net™ 0950',
+                shortDesc: 'ASPERSOR DE IMPACTO DE MUY BAJA TRAYECTORIA PARA RIEGO UNIFORME BAJO DOSEL',
+                desc: 'Con su ángulo de trayectoria de agua bajo, el D-Net™ 0950 es idealmente adecuado para riego preciso bajo dosel de plantaciones de banano o palma aceitera hasta 10 x 10 metros o cultivos de campo con condiciones ventosas.',
+                features: {
+                  uniformity: { title: 'Alta uniformidad de distribución de agua y Mayor rendimiento', desc: 'Brazo de difusión 3D innovador, asegura una uniformidad de distribución de agua relativamente alta, resultando en rendimientos de cultivos uniformes.' },
+                  efficiency: { title: 'Uso Eficiente del Agua', desc: 'El ángulo de trayectoria más bajo del agua previene la evaporación al aire en áreas con vientos, y garantiza la máxima eficiencia en el uso del agua.' },
+                  robust: { title: 'Producto robusto y Rendimiento duradero', desc: 'El D-Net ™ 0950 tiene un diseño especial que hace que el aspersor sea resistente al desgaste y asegura un alto rendimiento durante toda la larga vida útil del producto.' },
+                  maintenance: { title: 'Costo de mano de obra reducido y Mantenimiento fácil', desc: 'Instalación versátil. Puede instalarse en conjuntos sólidos o en soportes de campo removibles. Fácil de mantener. Un diseño especial de boquilla permite una limpieza simple de la boquilla incluso bajo presión.' },
+                  durability: { title: 'Durabilidad', desc: 'El D-Net™ 0950 está fabricado con materiales protegidos contra UV, haciéndolo duradero en todas las condiciones climáticas y con cualquier producto aplicado.' }
+                },
+                specs: {
+                  general: { title: 'general', type: 'tipo', design: 'diseño', trajectory: 'trayectoria', coverage: 'cobertura' },
+                  performance: { title: 'rendimiento', flow: 'Caudales', nominal: 'Caudal nominal', pressure: 'Rango de presión', angle: 'Ángulo de trayectoria' },
+                  technical: { title: 'técnico', distribution: 'Distribución de agua', inlet: 'Conector de entrada' }
+                },
+                applications: {
+                  type: { title: 'tipo', items: ['Riego'] },
+                  pressure: { title: 'presión', items: ['Presión media', 'Baja Presión'] },
+                  coverage: { title: 'cobertura', items: ['Cobertura Completa: Instalación de espaciado medio', 'Cobertura Completa: Instalación de espaciado pequeño'] },
+                  crops: { title: 'cultivos', items: ['Cultivos de campo', 'Huertos'] },
+                  trajectory: { title: 'trayectoria', items: ['Baja'] }
+                },
+                advantages: ['Uniformidad óptima de distribución de agua', 'Evaporación reducida en condiciones ventosas', 'Materiales duraderos protegidos contra UV', 'Mantenimiento y limpieza fáciles', 'Opciones de instalación versátiles', 'Larga vida útil del producto'],
+                limitations: ['Limitado a requisitos de espaciado específicos', 'Requiere presión de operación mínima', 'Ángulo de trayectoria fijo']
+              },
+              dnet8550: {
+                name: 'D-NET™ 8550 F.R.',
+                shortDesc: 'ASPERSOR DE IMPACTO DURADERO con boquillas de flujo regulado PARA RIEGO DE CULTIVOS DE CAMPO Y VEGETALES',
+                desc: 'Los aspersores de impacto D-Net™ 8550 F.R. 1/2", con brazo de difusión 3D y boquillas de flujo regulado únicas garantizan una excelente uniformidad y consistencia de cultivos para riego de cultivos de campo y vegetales en todo el campo, con espaciado de aspersores hasta 12x14 metros. La distribución precisa y eficiente en agua también ofrece una solución ideal para germinación de cultivos y enfriamiento de huertos.',
+                features: {
+                  yields: { title: 'Rendimientos altos y uniformes', desc: 'El brazo de difusión 3D innovador y las boquillas de flujo regulado únicas aseguran el más alto nivel de uniformidad de distribución de agua en el mercado, para una producción más consistente y mayores rendimientos de cultivos.' },
+                  efficiency: { title: 'Mayor eficiencia del agua', desc: 'Una uniformidad de distribución de agua excepcional elimina el riego excesivo y optimiza el uso del agua.' },
+                  performance: { title: 'Rendimiento duradero', desc: 'Los materiales robustos protegidos contra UV resisten todas las condiciones climáticas, nutrientes aplicados y productos químicos asegurando una operación sin problemas durante toda la vida del producto.' },
+                  installation: { title: 'Instalación versátil', desc: 'Se instala en conjuntos sólidos o en soportes de campo removibles.' },
+                  maintenance: { title: 'Mantenimiento que ahorra mano de obra', desc: 'La llave de boquilla especial está diseñada para facilitar la limpieza de escombros de la boquilla incluso bajo presión.' }
+                },
+                specs: {
+                  general: { title: 'general', type: 'tipo', design: 'diseño', trajectory: 'trayectoria', coverage: 'cobertura' },
+                  performance: { title: 'rendimiento', flow: 'Caudales', regulation: 'Regulación de presión', angle: 'Ángulo de trayectoria', nozzles: 'Boquillas' },
+                  technical: { title: 'técnico', distribution: 'Distribución de agua', inlet: 'Conector de entrada' }
+                },
+                applications: {
+                  type: { title: 'tipo', items: ['Riego'] },
+                  pressure: { title: 'presión', items: ['Presión media', 'Baja Presión'] },
+                  coverage: { title: 'cobertura', items: ['Cobertura Completa: Instalación de espaciado pequeño'] },
+                  crops: { title: 'cultivos', items: ['Cultivos de campo'] },
+                  trajectory: { title: 'trayectoria', items: ['Normal'] }
+                },
+                advantages: ['Máxima uniformidad de distribución de agua', 'Regulación de flujo para rendimiento constante', 'Materiales duraderos protegidos contra UV', 'Mantenimiento fácil con llave de boquilla especial', 'Opciones de instalación flexibles', 'Boquillas codificadas por color para fácil identificación'],
+                limitations: ['Requisitos de espaciado específicos', 'Requisitos de presión mínima', 'Ángulo de trayectoria fijo']
+              }
+            },
+            labels: {
+              keyFeatures: 'Características Clave',
+              techSpecs: 'Especificaciones Técnicas',
+              applications: 'Aplicaciones',
+              advantages: 'Ventajas',
+              limitations: 'Limitaciones',
+              documentation: 'Documentación',
+              download: 'Descargar Catálogo de Productos (PDF)'
+            },
+            form: {
+              title: 'Solicitar Cotización',
+              firstName: 'Nombre',
+              lastName: 'Apellido',
+              email: 'Dirección de Email',
+              phone: 'Número de Teléfono',
+              product: 'Producto',
+              selectProduct: 'Seleccionar producto',
+              appType: 'Tipo de Aplicación',
+              selectAppType: 'Seleccionar tipo de aplicación',
+              appTypes: { field: 'Cultivos de Campo', orchards: 'Huertos', other: 'Otro' },
+              area: 'Área del Proyecto (Hectáreas)',
+              requirements: 'Requisitos Adicionales',
+              requirementsPlaceholder: 'Cuéntenos sobre sus necesidades específicas...',
+              submit: 'Enviar Solicitud de Cotización'
+            },
+            cta: {
+              title: '¿Necesita Asesoramiento Experto?',
+              subtitle: 'Contáctenos hoy para recomendaciones personalizadas y soporte.',
+              contact: 'Contáctenos',
+              whatsapp: 'Chatear en WhatsApp'
+            }
+          }
+        },
+        substrates: {
+          growingSolutions: {
+            title: 'Soluciones de Cultivo Premium | Fibra de Coco Orgánica',
+            description: 'Descubra los productos premium de fibra de coco orgánica de Arbre Bio Africa. Soluciones de cultivo sostenibles diseñadas para máximo rendimiento y salud de cultivos.',
+            hero: {
+              title: 'El Crecimiento Sostenible Comienza Aquí',
+              subtitle: 'Fibra de Coco Orgánica Premium',
+              desc: 'Diseñado para máximo rendimiento y salud óptima de cultivos',
+              viewProducts: 'Ver Productos',
+              requestQuote: 'Solicitar Cotización'
+            },
+            benefits: {
+              title: 'Por Qué Elegir Nuestras Soluciones de Cultivo',
+              retention: { title: 'Retención de Agua Superior', desc: 'Retiene hasta 9 veces su peso en agua, reduciendo la frecuencia de riego' },
+              aeration: { title: 'Aireación Óptima', desc: 'Relación aire-agua perfecta que promueve el desarrollo saludable de raíces' },
+              ph: { title: 'pH Equilibrado', desc: 'Niveles de pH estables ideales para la absorción de nutrientes' },
+              organic: { title: '100% Orgánico', desc: 'Natural, renovable y ambientalmente sostenible' }
+            },
+            products: {
+              title: 'Nuestros Productos Premium',
+              type20: {
+                type: 'Tipo 20',
+                name: 'Fibra de Coco Pura',
+                desc: 'Fibra de coco pura de grado premium, ideal para horticultura profesional y aplicaciones hidropónicas.',
+                specs: { ec: 'Nivel EC', ph: 'Nivel pH', retention: 'Retención de Agua', size: 'Tamaño de Partícula' },
+                applications: ['Sistemas de cultivo hidropónico', 'Viveros profesionales', 'Cultivo en invernadero', 'Agricultura vertical']
+              },
+              type30: {
+                type: 'Tipo 30',
+                name: 'Mezcla Premium 80/20',
+                desc: 'Mezcla optimizada de 80% fibra de coco y 20% chips de coco, proporcionando una relación aire-agua ideal para un desarrollo radicular robusto.',
+                specs: { ec: 'Nivel EC', ph: 'Nivel pH', retention: 'Retención de Agua', aeration: 'Aireación' },
+                applications: ['Agricultura comercial', 'Cultivo de árboles frutales', 'Cultivos a largo plazo', 'Cultivo en contenedor']
+              }
+            },
+            process: {
+              title: 'Nuestro Proceso de Producción',
+              harvesting: { title: 'Cosecha Natural', desc: 'Cáscaras de coco de origen sostenible procesadas usando métodos ecológicos' },
+              drying: { title: 'Secado Solar', desc: 'Proceso de secado natural al sol asegurando contenido óptimo de humedad' },
+              filtration: { title: 'Filtración Avanzada', desc: 'Filtración multi-etapa eliminando impurezas y asegurando calidad consistente' },
+              testing: { title: 'Pruebas de Calidad', desc: 'Pruebas rigurosas para EC, pH y propiedades físicas' }
+            },
+            certifications: {
+              title: 'Certificaciones de Calidad',
+              organic: { name: 'Certificado Orgánico', desc: 'Cumple con estándares internacionales de agricultura orgánica' },
+              iso9001: { name: 'ISO 9001:2015', desc: 'Sistema de gestión de calidad certificado' },
+              rhp: { name: 'Certificado RHP', desc: 'Cumple con estándares hortícolas europeos' }
+            },
+            labels: {
+              idealApps: 'Aplicaciones Ideales'
+            },
+            form: {
+              title: 'Solicitar Cotización',
+              firstName: 'Nombre',
+              lastName: 'Apellido',
+              email: 'Dirección de Email',
+              phone: 'Número de Teléfono',
+              product: 'Tipo de Producto',
+              selectProduct: 'Seleccionar producto',
+              products: { type20: 'Tipo 20 - Fibra de Coco Pura', type30: 'Tipo 30 - Mezcla Premium 80/20', custom: 'Mezcla Personalizada' },
+              quantity: 'Cantidad (Toneladas Métricas)',
+              requirements: 'Requisitos Adicionales',
+              requirementsPlaceholder: 'Cuéntenos sobre sus necesidades específicas o requisitos de mezcla personalizada...',
+              submit: 'Enviar Solicitud de Cotización'
+            },
+            cta: {
+              title: '¿Listo para Transformar Su Operación de Cultivo?',
+              subtitle: 'Contáctenos hoy para asesoramiento experto y soluciones personalizadas.',
+              getStarted: 'Comenzar',
+              whatsapp: 'Chatear en WhatsApp'
+            }
+          }
+        }
+
     validation: {
       required: 'This field is required',
       email: 'Please enter a valid email address',
@@ -2611,6 +3116,511 @@ const translations: Record<Language, Record<string, any>> = {
       stories: { title: 'Nos Réussites', text: 'Voyez comment nos solutions ont transformé les opérations agricoles à travers l\'Afrique.' },
       metrics: { title: 'Résultats qui Comptent', text: 'Nos solutions offrent des améliorations mesurables en rendement, efficacité et rentabilité.' }
     },
+        greenhouse: {
+          highTech: {
+            title: 'Solutions de Serres High-Tech',
+            description: 'Structures de serres avancées conçues pour les conditions climatiques africaines. Découvrez notre gamme d\'environnements de culture contrôlés pour une production agricole optimale.',
+            hero: {
+              title: 'Solutions de Serres Avancées',
+              subtitle: 'Conçues pour des Conditions de Culture Optimales',
+              cta: 'Demander un Devis Personnalisé',
+              download: 'Télécharger les Spécifications Techniques'
+            },
+            types: {
+              nethouse: {
+                name: 'Nethouse (Ombrière)',
+                description: 'Idéal pour les climats tropicaux, offrant une ventilation optimale et une protection contre les insectes tout en maintenant des conditions de culture favorables.',
+                specs: {
+                  dimensions: 'Portées standard de 8m, longueurs personnalisables',
+                  materials: 'Structure en acier galvanisé, filet anti-insectes de haute qualité',
+                  loadCapacity: 'Résistance au vent jusqu\'à 100km/h',
+                  climate: 'Ventilation naturelle avec systèmes de ventilateurs en option',
+                  lifespan: '15-20 ans pour la structure, 5-7 ans pour le filet',
+                  installation: 'Nécessite un sol plat, fondation de base'
+                },
+                features: ['Filet 40-50 mesh stabilisé UV', 'Ventilation latérale enroulable', 'Écran anti-virus', 'Conception modulaire'],
+                advantages: ['Investissement initial plus faible', 'Excellente ventilation naturelle', 'Idéal pour les climats chauds', 'Entretien facile'],
+                limitations: ['Contrôle climatique limité', 'Ne convient pas aux conditions météorologiques extrêmes', 'Contrôle de l\'environnement moins précis'],
+                roi: { payback: '2-3 ans', yieldIncrease: '40-60%', waterSavings: '30-40%' }
+              },
+              sawtooth: {
+                name: 'Serre Dents de Scie',
+                description: 'Conception avancée offrant une ventilation et un contrôle climatique supérieurs, parfaite pour une production toute l\'année dans les climats chauds.',
+                specs: {
+                  dimensions: 'Largeur de portée de 9,6m, longueur personnalisable',
+                  materials: 'Acier galvanisé à chaud, couverture stabilisée UV',
+                  loadCapacity: 'Résistance au vent jusqu\'à 120km/h',
+                  climate: 'Ventilation au faîtage avec refroidissement en option',
+                  lifespan: '25+ ans pour la structure, 8-10 ans pour la couverture',
+                  installation: 'Nécessite une fondation technique'
+                },
+                features: ['Ventilation au faîtage automatisée', 'Couverture en polyéthylène stabilisé UV', 'Système d\'ombrage intégré', 'Renforcement structurel'],
+                advantages: ['Excellente ventilation naturelle', 'Résistance structurelle plus élevée', 'Meilleure distribution de la lumière', 'Adapté à l\'automatisation'],
+                limitations: ['Coût initial plus élevé', 'Installation complexe', 'Nécessite un entretien régulier'],
+                roi: { payback: '3-4 ans', yieldIncrease: '70-90%', waterSavings: '50-60%' }
+              },
+              tunnel: {
+                name: 'Serre Tunnel',
+                description: 'Solution rentable offrant d\'excellentes conditions de culture pour diverses cultures, avec de bonnes capacités de contrôle climatique.',
+                specs: {
+                  dimensions: 'Largeur de 8m ou 9,6m, longueur modulaire',
+                  materials: 'Acier galvanisé, couverture multicouche',
+                  loadCapacity: 'Résistance au vent jusqu\'à 90km/h',
+                  climate: 'Ventilation latérale et d\'extrémité',
+                  lifespan: '15-20 ans structure, 4-5 ans couverture',
+                  installation: 'Exigences de fondation minimales'
+                },
+                features: ['Option de gonflage double couche', 'Parois latérales enroulables', 'Ventilation avant et arrière', 'Installation rapide'],
+                advantages: ['Solution rentable', 'Déploiement rapide', 'Bon contrôle climatique', 'Application polyvalente'],
+                limitations: ['Largeur de portée limitée', 'Résistance au vent plus faible', 'Contrôle climatique de base'],
+                roi: { payback: '2-3 ans', yieldIncrease: '50-70%', waterSavings: '40-50%' }
+              },
+              ridgeAndFurrow: {
+                name: 'Multi-Chapelle',
+                description: 'Système de serre commerciale à grande échelle offrant une surface de production maximale et des capacités de contrôle climatique avancées.',
+                specs: {
+                  dimensions: 'Multiples portées de 8m ou 9,6m',
+                  materials: 'Acier galvanisé robuste, couverture de qualité professionnelle',
+                  loadCapacity: 'Résistance au vent jusqu\'à 150km/h',
+                  climate: 'Système de contrôle climatique complet',
+                  lifespan: '30+ ans structure, 8-10 ans couverture',
+                  installation: 'Nécessite une installation professionnelle'
+                },
+                features: ['Contrôle climatique intégré', 'Ventilation automatisée', 'Système de gouttière centrale', 'Compartiments multiples'],
+                advantages: ['Utilisation maximale de l\'espace', 'Contrôle climatique avancé', 'Adapté aux grandes opérations', 'Productivité plus élevée'],
+                limitations: ['Investissement initial le plus élevé', 'Installation complexe', 'Nécessite une gestion qualifiée'],
+                roi: { payback: '4-5 ans', yieldIncrease: '100-150%', waterSavings: '60-70%' }
+              }
+            },
+            labels: {
+              techSpecs: 'Spécifications Techniques',
+              keyFeatures: 'Caractéristiques Clés',
+              advantages: 'Avantages',
+              limitations: 'Limitations',
+              roi: 'Projections ROI',
+              payback: 'Période de Retour sur Investissement',
+              yieldIncrease: 'Augmentation du Rendement',
+              waterSavings: 'Économies d\'Eau',
+              techDocs: 'Documentation Technique',
+              qualityCerts: 'Certifications de Qualité',
+              requestQuote: 'Demander un Devis Personnalisé'
+            },
+            form: {
+              firstName: 'Prénom',
+              lastName: 'Nom',
+              email: 'Adresse Email',
+              phone: 'Numéro de Téléphone',
+              type: 'Type de Serre',
+              selectType: 'Sélectionnez un type de serre',
+              location: 'Lieu du Projet',
+              locationPlaceholder: 'Ville, Pays',
+              size: 'Taille de la Serre (Mètres Carrés)',
+              requirements: 'Exigences Supplémentaires',
+              requirementsPlaceholder: 'Parlez-nous de vos besoins spécifiques...',
+              submit: 'Soumettre la Demande de Devis'
+            },
+            accessories: {
+              title: 'Accessoires & Composants de Serre | Qualité Professionnelle',
+              description: 'Gamme complète de composants et accessoires de serre de qualité professionnelle. Des éléments structurels aux systèmes de culture, découvrez nos produits certifiés.',
+              hero: {
+                title: 'Composants de Serre Professionnels',
+                subtitle: 'Accessoires & Fournitures Certifiés Qualité',
+                cta: 'Demander un Devis',
+                specs: 'Voir les Spécifications Techniques'
+              },
+              nav: {
+                structural: 'Composants Structurels',
+                fasteners: 'Fixations & Connexions',
+                coverage: 'Matériaux de Couverture',
+                growing: 'Accessoires de Culture'
+              },
+              structural: {
+                title: 'Composants Structurels',
+                arches: {
+                  category: 'Arches & Fermes',
+                  arch9600: { name: 'Arche Premium 9600' },
+                  truss: { name: 'Système de Ferme Renforcé' }
+                },
+                support: {
+                  category: 'Systèmes de Support',
+                  column: { name: 'Colonne Robuste' },
+                  bracing: { name: 'Kit de Contreventement' }
+                }
+              },
+              fasteners: {
+                title: 'Systèmes de Fixation & Connexion',
+                connectors: {
+                  category: 'Connecteurs Structurels',
+                  boltSet: { name: 'Jeu de Boulons Robustes', applications: ['Connexions d\'arche', 'Assemblage du cadre principal', 'Contreventement de support'] },
+                  channel: { name: 'Connecteur de Canal', applications: ['Connexions de panne', 'Jonction de traverse', 'Support de gouttière'] }
+                }
+              },
+              coverage: {
+                title: 'Matériaux de Couverture & Contrôle Climatique',
+                films: {
+                  category: 'Films & Feuilles',
+                  eva: { name: 'Film EVA Ultra-Clair' },
+                  diffused: { name: 'Film à Lumière Diffuse' }
+                },
+                screens: {
+                  category: 'Écrans Anti-Insectes',
+                  thrip: { name: 'Filet Anti-Thrips' }
+                }
+              },
+              growing: {
+                title: 'Accessoires de Culture',
+                support: {
+                  category: 'Systèmes de Support',
+                  wire: { name: 'Fil de Support de Culture', applications: ['Support de tomates', 'Palissage de concombres', 'Cultures grimpantes'] },
+                  trellis: { name: 'Système de Support en Treillis', applications: ['Culture verticale', 'Palissage des plantes', 'Cultures en rangs'] }
+                }
+              },
+              labels: {
+                applications: 'Applications',
+                specs: 'Spécifications Techniques',
+                material: 'Matériau',
+                thickness: 'Épaisseur',
+                loadCapacity: 'Capacité de Charge',
+                span: 'Portée',
+                coating: 'Revêtement',
+                height: 'Hauteur',
+                length: 'Longueur',
+                size: 'Taille',
+                torque: 'Couple',
+                standard: 'Standard',
+                lightTransmission: 'Transmission Lumineuse',
+                uvStability: 'Stabilité UV',
+                thermalRetention: 'Rétention Thermique',
+                lightDiffusion: 'Diffusion de la Lumière',
+                mesh: 'Maillage',
+                airflow: 'Flux d\'air',
+                shading: 'Ombrage',
+                diameter: 'Diamètre',
+                strength: 'Résistance',
+                rollLength: 'Longueur du Rouleau',
+                wireSpacing: 'Espacement des Fils',
+                postHeight: 'Hauteur du Poteau'
+              },
+              techSpecs: {
+                title: 'Documentation Technique',
+                specs: { name: 'Spécifications Techniques', desc: 'Spécifications complètes du produit' },
+                install: { name: 'Guide d\'Installation', desc: 'Instructions d\'installation étape par étape' },
+                cad: { name: 'Fichiers CAO', desc: 'Dessins techniques et modèles 3D' }
+              },
+              certifications: {
+                title: 'Certifications de Qualité',
+                iso9001: { name: 'ISO 9001:2015', desc: 'Système de Gestion de la Qualité' },
+                en1090: { name: 'EN 1090-1', desc: 'Composants en Acier Structurel' },
+                en13206: { name: 'EN 13206', desc: 'Matériaux de Couverture de Serre' }
+              },
+              form: {
+                title: 'Demander un Devis',
+                firstName: 'Prénom',
+                lastName: 'Nom',
+                email: 'Adresse Email',
+                phone: 'Numéro de Téléphone',
+                category: 'Catégorie de Produit',
+                selectCategory: 'Sélectionner une catégorie',
+                details: 'Détails du Projet',
+                detailsPlaceholder: 'Parlez-nous de votre projet et de vos besoins spécifiques...',
+                submit: 'Soumettre la Demande de Devis'
+              },
+              cta: {
+                title: 'Besoin de Conseils d\'Experts ?',
+                subtitle: 'Contactez-nous aujourd\'hui pour une consultation technique et des solutions personnalisées.',
+                contact: 'Nous Contacter',
+                whatsapp: 'Discuter sur WhatsApp'
+              }
+            }
+          }
+        },
+        irrigation: {
+          drip: {
+            title: 'Systèmes d\'Irrigation Goutte-à-Goutte - Gestion Précise de l\'Eau',
+            description: 'Solutions avancées d\'irrigation goutte-à-Goutte pour une gestion efficace de l\'eau et des rendements optimaux. Découvrez notre gamme de goutteurs, lignes de goutte-à-goutte et systèmes de micro-irrigation.',
+            hero: {
+              title: 'Systèmes d\'Irrigation Goutte-à-Goutte',
+              subtitle: 'Gestion Précise de l\'Eau',
+              desc: 'Transformez votre ferme avec des solutions efficaces de gestion de l\'eau',
+              viewProducts: 'Voir les Produits',
+              requestQuote: 'Demander un Devis'
+            },
+            benefits: {
+              title: 'Pourquoi Choisir l\'Irrigation Goutte-à-Goutte',
+              water: { title: 'Efficacité de l\'Eau', desc: 'Jusqu\'à 95% d\'efficacité d\'utilisation de l\'eau par rapport à l\'irrigation traditionnelle' },
+              yield: { title: 'Augmentation du Rendement', desc: '30-100% d\'augmentation des rendements des cultures' },
+              cost: { title: 'Économies de Coûts', desc: 'Réduction des coûts de main-d\'œuvre et d\'exploitation' },
+              precision: { title: 'Contrôle Précis', desc: 'Apport précis d\'eau et de nutriments' }
+            },
+            products: {
+              title: 'Nos Solutions',
+              netafim: {
+                name: 'Goutteurs et Lignes de Goutte-à-Goutte Netafim',
+                shortDesc: 'Goutteurs, lignes de goutte-à-goutte et autres types d\'émetteurs pour toute culture, topographie, climat, sol, n\'importe où.',
+                desc: 'L\'irrigation goutte-à-goutte transforme la vie de millions d\'agriculteurs dans le monde en permettant des rendements plus élevés tout en économisant de l\'eau, des engrais et de l\'énergie. Quelles que soient vos conditions de culture, attendez-vous à des cultures uniformément meilleures et à des rendements plus élevés, saison après saison, avec les goutteurs et lignes de goutte-à-goutte les plus fiables et robustes jamais fabriqués.',
+                features: {
+                  universal: { title: 'Compatibilité Universelle', desc: 'Convient à toute culture, topographie, climat et type de sol' },
+                  efficiency: { title: 'Efficacité des Ressources', desc: 'Économies significatives en eau, engrais et consommation d\'énergie' },
+                  uniformity: { title: 'Distribution Uniforme', desc: 'Assure une distribution uniforme de l\'eau pour une croissance constante des cultures' },
+                  durability: { title: 'Durabilité', desc: 'Construction robuste pour une fiabilité à long terme' }
+                },
+                specs: {
+                  general: { title: 'général', flow: 'Débits', pressure: 'Pression de fonctionnement', filtration: 'Exigences de filtration', wall: 'Épaisseur de paroi' },
+                  features: { title: 'caractéristiques', antiSiphon: 'Anti-siphon', antiDrain: 'Anti-vidange', pressureComp: 'Compensation de pression', uv: 'Résistance UV' }
+                }
+              },
+              azudGreentec: {
+                name: 'AZUD GREENTEC',
+                shortDesc: 'Tuyau de micro-irrigation avec goutteur turbulent intégré pour installations d\'irrigation de surface',
+                desc: 'Le tuyau de micro-irrigation avec et sans goutteur turbulent intégré a fait ses preuves et son efficacité pour les installations d\'irrigation de surface, garantissant uniformité, longue durée de vie et haute résistance au colmatage. Comportement hydraulique optimal avec tubulure entièrement cylindrique et conception de goutteur.',
+                features: {
+                  ds: { title: 'Technologie DS', desc: 'Protection maximale contre le colmatage avec filtre d\'entrée autonettoyant' },
+                  optimization: { title: 'Optimisation des Ressources', desc: 'Économie d\'eau et d\'énergie grâce au fonctionnement à basse pression' },
+                  versatile: { title: 'Installation Polyvalente', desc: 'Adaptable à diverses conditions paysagères' },
+                  integrated: { title: 'Système Intégré', desc: 'Coûts d\'installation réduits avec un meilleur contrôle de l\'irrigation' }
+                },
+                specs: {
+                  pipe: { title: 'TUYAU DE MICRO-IRRIGATION', diameter: 'Diamètre', coil: 'Bobine', color: 'Couleur' },
+                  integrated: { title: 'TUYAU AVEC GOUTTEUR INTÉGRÉ', diameter: 'Diamètre', flow: 'Débit', framework: 'Cadre', color: 'Couleur' }
+                }
+              },
+              azudMicrotube: {
+                name: 'AZUD TUB MICROTUBE',
+                shortDesc: 'Microtubes polyvalents pour diverses applications d\'irrigation',
+                desc: 'Les microtubes commercialisés par AZUD sont divisés en différents modèles pour de multiples applications, du fonctionnement des vannes hydrauliques à l\'hydroponie et aux raccords de micro-irrigation.',
+                features: {
+                  materials: { title: 'Matériaux Premium', desc: 'Fabriqué avec des matières premières de première qualité pour la durabilité' },
+                  maintenance: { title: 'Entretien Facile', desc: 'Facilite l\'entretien et les futures extensions du système' },
+                  packaging: { title: 'Emballage Renforcé', desc: 'Transport et stockage faciles avec conception empilable' },
+                  installation: { title: 'Installation Flexible', desc: 'Insertion facile et flexible avec goutteurs et raccords' }
+                },
+                specs: {
+                  pe: { title: 'Modèles PE', sizes: 'Tailles' },
+                  flex: { title: 'Modèles FLEX', sizes: 'Tailles' }
+                }
+              },
+              azudNavia: {
+                name: 'AZUD NAVIA',
+                shortDesc: 'Goutteurs auto-compensateurs et anti-fuite pour topographie difficile',
+                desc: 'AZUD NAVIA est la gamme de goutteurs auto-compensateurs et anti-fuite adaptés à l\'irrigation d\'installations avec des dénivelés topographiques importants et des cultures à haut rendement sous serre.',
+                features: {
+                  range: { title: 'Large Plage de Travail', desc: 'Fonctionne sous une large plage de pressions, optimisant les coûts' },
+                  control: { title: 'Contrôle Précis', desc: 'Pression d\'ouverture et de fermeture précise pour une utilisation efficace des engrais' },
+                  installation: { title: 'Installation Facile', desc: 'Installation à distance variable selon les besoins spécifiques de la culture' },
+                  durability: { title: 'Durabilité Maximale', desc: 'Haute résistance aux chocs, frottements et dégradation UV' }
+                },
+                specs: {
+                  nd: { title: 'Modèles ND', flows: 'Débits' },
+                  pc: { title: 'Modèles PC', flows: 'Débits' }
+                }
+              }
+            },
+            labels: {
+              techSpecs: 'Spécifications Techniques',
+              documentation: 'Documentation',
+              download: 'Télécharger le Catalogue Produit (PDF)'
+            },
+            certifications: {
+              title: 'Certifications de Qualité',
+              iso9001: { name: 'ISO 9001:2015', desc: 'Système de Gestion de la Qualité' },
+              iso14001: { name: 'ISO 14001:2015', desc: 'Gestion Environnementale' },
+              ce: { name: 'Marquage CE', desc: 'Conformité Européenne' }
+            },
+            form: {
+              title: 'Demander un Devis',
+              firstName: 'Prénom',
+              lastName: 'Nom',
+              email: 'Adresse Email',
+              phone: 'Numéro de Téléphone',
+              product: 'Produit',
+              selectProduct: 'Sélectionner un produit',
+              area: 'Surface du Projet (Hectares)',
+              crop: 'Type de Culture',
+              selectCrop: 'Sélectionner le type de culture',
+              crops: { veg: 'Légumes', fruits: 'Fruits', field: 'Grandes Cultures', other: 'Autre' },
+              requirements: 'Exigences Supplémentaires',
+              requirementsPlaceholder: 'Parlez-nous de vos besoins spécifiques...',
+              submit: 'Soumettre la Demande de Devis'
+            },
+            cta: {
+              title: 'Besoin de Conseils d\'Experts ?',
+              subtitle: 'Contactez-nous aujourd\'hui pour des recommandations personnalisées et du support.',
+              contact: 'Nous Contacter',
+              whatsapp: 'Discuter sur WhatsApp'
+            }
+          },
+          sprinklers: {
+            title: 'Arroseurs d\'Irrigation - Distribution Précise de l\'Eau',
+            description: 'Découvrez notre gamme d\'arroseurs d\'irrigation professionnels conçus pour une distribution optimale de l\'eau et une couverture des cultures dans diverses applications agricoles.',
+            hero: {
+              title: 'Arroseurs Professionnels',
+              subtitle: 'Distribution Précise de l\'Eau',
+              desc: 'Solutions d\'arroseurs avancées pour une irrigation optimale des cultures',
+              viewProducts: 'Voir les Produits',
+              requestQuote: 'Demander un Devis'
+            },
+            products: {
+              title: 'Nos Arroseurs',
+              dnet0950: {
+                name: 'D-Net™ 0950',
+                shortDesc: 'ARROSEUR À IMPACT À TRÈS BASSE TRAJECTOIRE POUR UNE IRRIGATION UNIFORME SOUS CANOPÉE',
+                desc: 'Avec son angle de trajectoire d\'eau bas, le D-Net™ 0950 est idéalement adapté pour une irrigation précise sous canopée des plantations de bananes ou de palmiers à huile jusqu\'à 10 x 10 mètres ou des grandes cultures avec des conditions venteuses.',
+                features: {
+                  uniformity: { title: 'Haute uniformité de distribution de l\'eau & Rendement plus élevé', desc: 'Bras de diffusion 3D innovant, assure une uniformité de distribution de l\'eau relativement élevée, résultant en des rendements de culture uniformes.' },
+                  efficiency: { title: 'Utilisation Efficace de l\'Eau', desc: 'L\'angle de trajectoire plus bas de l\'eau empêche l\'évaporation dans l\'air dans les zones venteuses, et garantit une efficacité maximale d\'utilisation de l\'eau.' },
+                  robust: { title: 'Produit robuste & Performances durables', desc: 'Le D-Net ™ 0950 a une conception spéciale qui rend l\'arroseur résistant à l\'usure et assure des performances élevées tout au long de la longue durée de vie du produit.' },
+                  maintenance: { title: 'Coût de main-d\'œuvre réduit & Entretien facile', desc: 'Installation polyvalente. Peut être installé sur des ensembles solides ou sur des supports de terrain amovibles. Facile à entretenir. Une conception de buse spéciale permet un nettoyage simple de la buse même sous pression.' },
+                  durability: { title: 'Durabilité', desc: 'Le D-Net™ 0950 est fabriqué en matériaux protégés contre les UV, ce qui le rend durable dans toutes les conditions climatiques et avec tout produit appliqué.' }
+                },
+                specs: {
+                  general: { title: 'général', type: 'type', design: 'conception', trajectory: 'trajectoire', coverage: 'couverture' },
+                  performance: { title: 'performance', flow: 'Débits', nominal: 'Débit nominal', pressure: 'Plage de pression', angle: 'Angle de trajectoire' },
+                  technical: { title: 'technique', distribution: 'Distribution de l\'eau', inlet: 'Connecteur d\'entrée' }
+                },
+                applications: {
+                  type: { title: 'type', items: ['Irrigation'] },
+                  pressure: { title: 'pression', items: ['Pression moyenne', 'Basse Pression'] },
+                  coverage: { title: 'couverture', items: ['Couverture Complète : Installation à espacement moyen', 'Couverture Complète : Installation à petit espacement'] },
+                  crops: { title: 'cultures', items: ['Grandes cultures', 'Vergers'] },
+                  trajectory: { title: 'trajectoire', items: ['Basse'] }
+                },
+                advantages: ['Uniformité optimale de distribution de l\'eau', 'Évaporation réduite dans des conditions venteuses', 'Matériaux durables protégés contre les UV', 'Entretien et nettoyage faciles', 'Options d\'installation polyvalentes', 'Longue durée de vie du produit'],
+                limitations: ['Limité à des exigences d\'espacement spécifiques', 'Nécessite une pression de fonctionnement minimale', 'Angle de trajectoire fixe']
+              },
+              dnet8550: {
+                name: 'D-NET™ 8550 F.R.',
+                shortDesc: 'ARROSEUR À IMPACT DURABLE avec buses à débit régulé POUR L\'IRRIGATION DES GRANDES CULTURES ET DES LÉGUMES',
+                desc: 'Les arroseurs à impact D-Net™ 8550 F.R. 1/2", avec bras de diffusion 3D et buses à débit régulé uniques garantissent une excellente uniformité et cohérence des cultures pour l\'irrigation des grandes cultures et des légumes dans tout le champ, avec un espacement des arroseurs jusqu\'à 12x14 mètres. Une distribution précise et économe en eau offre également une solution idéale pour la germination des cultures et le refroidissement des vergers.',
+                features: {
+                  yields: { title: 'Rendements élevés et uniformes', desc: 'Le bras de diffusion 3D innovant et les buses à débit régulé uniques assurent le plus haut niveau d\'uniformité de distribution de l\'eau sur le marché, pour une production plus cohérente et des rendements de culture plus élevés.' },
+                  efficiency: { title: 'Plus grande efficacité de l\'eau', desc: 'Une uniformité de distribution de l\'eau exceptionnelle élimine l\'arrosage excessif et optimise l\'utilisation de l\'eau.' },
+                  performance: { title: 'Performance durable', desc: 'Les matériaux robustes protégés contre les UV résistent à toutes les conditions climatiques, aux nutriments appliqués et aux produits chimiques assurant un fonctionnement sans problème tout au long de la vie du produit.' },
+                  installation: { title: 'Installation polyvalente', desc: 'S\'installe sur des ensembles solides ou sur des supports de terrain amovibles.' },
+                  maintenance: { title: 'Entretien économe en main-d\'œuvre', desc: 'La clé de buse spéciale est conçue pour faciliter le nettoyage des débris de la buse même sous pression.' }
+                },
+                specs: {
+                  general: { title: 'général', type: 'type', design: 'conception', trajectory: 'trajectoire', coverage: 'couverture' },
+                  performance: { title: 'performance', flow: 'Débits', regulation: 'Régulation de pression', angle: 'Angle de trajectoire', nozzles: 'Buses' },
+                  technical: { title: 'technique', distribution: 'Distribution de l\'eau', inlet: 'Connecteur d\'entrée' }
+                },
+                applications: {
+                  type: { title: 'type', items: ['Irrigation'] },
+                  pressure: { title: 'pression', items: ['Pression moyenne', 'Basse Pression'] },
+                  coverage: { title: 'couverture', items: ['Couverture Complète : Installation à petit espacement'] },
+                  crops: { title: 'cultures', items: ['Grandes cultures'] },
+                  trajectory: { title: 'trajectoire', items: ['Normale'] }
+                },
+                advantages: ['Plus haute uniformité de distribution de l\'eau', 'Régulation de débit pour une performance constante', 'Matériaux durables protégés contre les UV', 'Entretien facile avec clé de buse spéciale', 'Options d\'installation flexibles', 'Buses codées par couleur pour une identification facile'],
+                limitations: ['Exigences d\'espacement spécifiques', 'Exigences de pression minimale', 'Angle de trajectoire fixe']
+              }
+            },
+            labels: {
+              keyFeatures: 'Caractéristiques Clés',
+              techSpecs: 'Spécifications Techniques',
+              applications: 'Applications',
+              advantages: 'Avantages',
+              limitations: 'Limitations',
+              documentation: 'Documentation',
+              download: 'Télécharger le Catalogue Produit (PDF)'
+            },
+            form: {
+              title: 'Demander un Devis',
+              firstName: 'Prénom',
+              lastName: 'Nom',
+              email: 'Adresse Email',
+              phone: 'Numéro de Téléphone',
+              product: 'Produit',
+              selectProduct: 'Sélectionner un produit',
+              appType: 'Type d\'Application',
+              selectAppType: 'Sélectionner le type d\'application',
+              appTypes: { field: 'Grandes Cultures', orchards: 'Vergers', other: 'Autre' },
+              area: 'Surface du Projet (Hectares)',
+              requirements: 'Exigences Supplémentaires',
+              requirementsPlaceholder: 'Parlez-nous de vos besoins spécifiques...',
+              submit: 'Soumettre la Demande de Devis'
+            },
+            cta: {
+              title: 'Besoin de Conseils d\'Experts ?',
+              subtitle: 'Contactez-nous aujourd\'hui pour des recommandations personnalisées et du support.',
+              contact: 'Nous Contacter',
+              whatsapp: 'Discuter sur WhatsApp'
+            }
+          }
+        },
+        substrates: {
+          growingSolutions: {
+            title: 'Solutions de Culture Premium | Fibre de Coco & Coco Peat Bio',
+            description: 'Découvrez les produits de fibre de coco et coco peat bio premium d\'Arbre Bio Africa. Solutions de culture durables conçues pour un rendement maximal et la santé des cultures.',
+            hero: {
+              title: 'La Croissance Durable Commence Ici',
+              subtitle: 'Fibre de Coco & Coco Peat Bio Premium',
+              desc: 'Conçu pour un rendement maximal et une santé optimale des cultures',
+              viewProducts: 'Voir les Produits',
+              requestQuote: 'Demander un Devis'
+            },
+            benefits: {
+              title: 'Pourquoi Choisir Nos Solutions de Culture',
+              retention: { title: 'Rétention d\'Eau Supérieure', desc: 'Retient jusqu\'à 9 fois son poids en eau, réduisant la fréquence d\'irrigation' },
+              aeration: { title: 'Aération Optimale', desc: 'Ratio air-eau parfait favorisant le développement sain des racines' },
+              ph: { title: 'pH Équilibré', desc: 'Niveaux de pH stables idéaux pour l\'absorption des nutriments' },
+              organic: { title: '100% Biologique', desc: 'Naturel, renouvelable et écologiquement durable' }
+            },
+            products: {
+              title: 'Nos Produits Premium',
+              type20: {
+                type: 'Type 20',
+                name: 'Coco Peat Pur',
+                desc: 'Coco peat pur de qualité premium, idéal pour l\'horticulture professionnelle et les applications hydroponiques.',
+                specs: { ec: 'Niveau EC', ph: 'Niveau pH', retention: 'Rétention d\'Eau', size: 'Taille des Particules' },
+                applications: ['Systèmes de culture hydroponique', 'Pépinières professionnelles', 'Culture sous serre', 'Agriculture verticale']
+              },
+              type30: {
+                type: 'Type 30',
+                name: 'Mélange Premium 80/20',
+                desc: 'Mélange optimisé de 80% de coco peat et 20% de copeaux de coco, offrant un ratio air-eau idéal pour un développement racinaire robuste.',
+                specs: { ec: 'Niveau EC', ph: 'Niveau pH', retention: 'Rétention d\'Eau', aeration: 'Aération' },
+                applications: ['Agriculture commerciale', 'Culture d\'arbres fruitiers', 'Cultures à long terme', 'Culture en conteneur']
+              }
+            },
+            process: {
+              title: 'Notre Processus de Production',
+              harvesting: { title: 'Récolte Naturelle', desc: 'Coques de noix de coco sourcées durablement et traitées selon des méthodes écologiques' },
+              drying: { title: 'Séchage Solaire', desc: 'Processus de séchage naturel au soleil assurant une teneur en humidité optimale' },
+              filtration: { title: 'Filtration Avancée', desc: 'Filtration multi-étapes éliminant les impuretés et assurant une qualité constante' },
+              testing: { title: 'Tests de Qualité', desc: 'Tests rigoureux pour l\'EC, le pH et les propriétés physiques' }
+            },
+            certifications: {
+              title: 'Certifications de Qualité',
+              organic: { name: 'Certifié Biologique', desc: 'Répond aux normes internationales de l\'agriculture biologique' },
+              iso9001: { name: 'ISO 9001:2015', desc: 'Système de gestion de la qualité certifié' },
+              rhp: { name: 'Certifié RHP', desc: 'Répond aux normes horticoles européennes' }
+            },
+            labels: {
+              idealApps: 'Applications Idéales'
+            },
+            form: {
+              title: 'Demander un Devis',
+              firstName: 'Prénom',
+              lastName: 'Nom',
+              email: 'Adresse Email',
+              phone: 'Numéro de Téléphone',
+              product: 'Type de Produit',
+              selectProduct: 'Sélectionner un produit',
+              products: { type20: 'Type 20 - Coco Peat Pur', type30: 'Type 30 - Mélange Premium 80/20', custom: 'Mélange Personnalisé' },
+              quantity: 'Quantité (Tonnes Métriques)',
+              requirements: 'Exigences Supplémentaires',
+              requirementsPlaceholder: 'Parlez-nous de vos besoins spécifiques ou exigences de mélange personnalisé...',
+              submit: 'Soumettre la Demande de Devis'
+            },
+            cta: {
+              title: 'Prêt à Transformer Votre Opération de Culture ?',
+              subtitle: 'Contactez-nous aujourd\'hui pour des conseils d\'experts et des solutions personnalisées.',
+              getStarted: 'Commencer',
+              whatsapp: 'Discuter sur WhatsApp'
+            }
+          }
+        }
+
     validation: {
       required: 'Ce champ est obligatoire',
       email: 'Veuillez entrer une adresse email valide',
@@ -4473,6 +5483,118 @@ const translations: Record<Language, Record<string, any>> = {
       stories: { title: 'Ons Suksesverhale', text: 'Sien hoe ons oplossings landboubedrywighede regoor Afrika getransformeer het.' },
       metrics: { title: 'Resultate wat Saak Maak', text: 'Ons oplossings lewer meetbare verbeterings in opbrengs, doeltreffendheid en winsgewendheid.' }
     },
+        greenhouse: {
+          highTech: {
+            title: 'Hoëtegnologie Kweekhuise',
+            description: 'Gevorderde kweekhuisstrukture ontwerp vir Afrika klimaatstoestande.',
+            hero: {
+              title: 'Gevorderde Kweekhuisoplossings',
+              subtitle: 'Ontwerp vir Optimale Groeitoestande',
+              cta: 'Versoek Persoonlike Kwotasie',
+              download: 'Laai Tegniese Spesifikasies Af'
+            },
+            types: {
+              nethouse: {
+                name: 'Nethouse (Skaduhuis)',
+                description: 'Ideaal vir tropiese klimate, bied optimale ventilasie en insekbeskerming.',
+                specs: {
+                  dimensions: 'Standaard 8m span, aanpasbare lengtes',
+                  materials: 'Gegalvaniseerde staalstruktuur, hoëgehalte inseknet',
+                  loadCapacity: 'Windweerstand tot 100km/h',
+                  climate: 'Natuurlike ventilasie met opsionele waaiers',
+                  lifespan: '15-20 jaar vir struktuur, 5-7 jaar vir net',
+                  installation: 'Vereis plat grond, basiese fondament'
+                },
+                features: ['40-50 maas UV-gestabiliseerde net', 'Oprolbare syventilasie', 'Anti-virus skerm', 'Modulêre ontwerp'],
+                advantages: ['Laer aanvanklike belegging', 'Uitstekende natuurlike ventilasie', 'Ideaal vir warm klimate', 'Maklike instandhouding'],
+                limitations: ['Beperkte klimaatbeheer', 'Nie geskik vir uiterste weer nie', 'Minder presiese omgewingsbeheer'],
+                roi: { payback: '2-3 jaar', yieldIncrease: '40-60%', waterSavings: '30-40%' }
+              },
+              sawtooth: { name: 'Saagtand Kweekhuis', description: 'Gevorderde ontwerp met superieure ventilasie en klimaatbeheer.', specs: {}, features: [], advantages: [], limitations: [], roi: {} },
+              tunnel: { name: 'Tonnel Kweekhuis', description: 'Koste-effektiewe oplossing met uitstekende groeitoestande.', specs: {}, features: [], advantages: [], limitations: [], roi: {} },
+              ridgeAndFurrow: { name: 'Multi-Kapel', description: 'Grootskaalse kommersiële kweekhuisstelsel.', specs: {}, features: [], advantages: [], limitations: [], roi: {} }
+            },
+            labels: {
+              techSpecs: 'Tegniese Spesifikasies',
+              keyFeatures: 'Sleutelkenmerke',
+              advantages: 'Voordele',
+              limitations: 'Beperkings',
+              roi: 'ROI Projeksies',
+              payback: 'Terugbetalingsperiode',
+              yieldIncrease: 'Opbrengsverhoging',
+              waterSavings: 'Waterbesparing',
+              techDocs: 'Tegniese Dokumentasie',
+              qualityCerts: 'Kwaliteitsertifikate',
+              requestQuote: 'Versoek Persoonlike Kwotasie'
+            },
+            form: {
+              firstName: 'Voornaam',
+              lastName: 'Van',
+              email: 'E-posadres',
+              phone: 'Telefoonnommer',
+              type: 'Kweekhuistipe',
+              selectType: 'Kies 'n kweekhuistipe',
+              location: 'Projekligging',
+              locationPlaceholder: 'Stad, Land',
+              size: 'Kweekhuisgrootte (Vierkante Meters)',
+              requirements: 'Bykomende Vereistes',
+              requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...',
+              submit: 'Dien Kwotasieversoek In'
+            },
+            accessories: {
+              title: 'Kweekhuistoebehore & Komponente',
+              description: 'Volledige reeks professionele kweekhuiskomponente en toebehore.',
+              hero: { title: 'Professionele Kweekhuiskomponente', subtitle: 'Kwaliteit Gesertifiseerde Toebehore', cta: 'Versoek Kwotasie', specs: 'Bekyk Tegniese Spesifikasies' },
+              nav: { structural: 'Strukturele Komponente', fasteners: 'Hegstukke & Verbindings', coverage: 'Dekkingsmateriale', growing: 'Groeitoebehore' },
+              structural: { title: 'Strukturele Komponente', arches: {}, support: {} },
+              fasteners: { title: 'Hegstuk & Verbindingstelsels', connectors: {} },
+              coverage: { title: 'Dekkingsmateriale & Klimaatbeheer', films: {}, screens: {} },
+              growing: { title: 'Groeitoebehore', support: {} },
+              labels: {},
+              techSpecs: { title: 'Tegniese Dokumentasie', specs: {}, install: {}, cad: {} },
+              certifications: { title: 'Kwaliteitsertifikate', iso9001: {}, en1090: {}, en13206: {} },
+              form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', category: 'Produkkategorie', selectCategory: 'Kies kategorie', details: 'Projekbesonderhede', detailsPlaceholder: 'Vertel ons van jou projek en spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
+              cta: { title: 'Benodig Kundige Advies?', subtitle: 'Kontak ons vandag vir tegniese konsultasie en persoonlike oplossings.', contact: 'Kontak Ons', whatsapp: 'Gesels op WhatsApp' }
+            }
+          }
+        },
+        irrigation: {
+          drip: {
+            title: 'Drupbesproeiingstelsels - Presiese Waterbestuur',
+            description: 'Gevorderde drupbesproeiingsoplossings vir doeltreffende waterbestuur en optimale opbrengste.',
+            hero: { title: 'Drupbesproeiingstelsels', subtitle: 'Presiese Waterbestuur', desc: 'Transformeer jou plaas met doeltreffende waterbestuursoplossings', viewProducts: 'Bekyk Produkte', requestQuote: 'Versoek Kwotasie' },
+            benefits: { title: 'Waarom Drupbesproeiing Kies', water: {}, yield: {}, cost: {}, precision: {} },
+            products: { title: 'Ons Oplossings', netafim: {}, azudGreentec: {}, azudMicrotube: {}, azudNavia: {} },
+            labels: { techSpecs: 'Tegniese Spesifikasies', documentation: 'Dokumentasie', download: 'Laai Produkkatalogus Af (PDF)' },
+            certifications: { title: 'Kwaliteitsertifikate', iso9001: {}, iso14001: {}, ce: {} },
+            form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', product: 'Produk', selectProduct: 'Kies produk', area: 'Projekarea (Hektaar)', crop: 'Gewastipe', selectCrop: 'Kies gewastipe', crops: {}, requirements: 'Bykomende Vereistes', requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
+            cta: { title: 'Benodig Kundige Advies?', subtitle: 'Kontak ons vandag vir persoonlike aanbevelings en ondersteuning.', contact: 'Kontak Ons', whatsapp: 'Gesels op WhatsApp' }
+          },
+          sprinklers: {
+            title: 'Besproeiingsproeiers - Presiese Waterverdeling',
+            description: 'Ontdek ons reeks professionele besproeiingsproeiers ontwerp vir optimale waterverdeling.',
+            hero: { title: 'Professionele Sproeiers', subtitle: 'Presiese Waterverdeling', desc: 'Gevorderde sproeioplossings vir optimale gewasbesproeiing', viewProducts: 'Bekyk Produkte', requestQuote: 'Versoek Kwotasie' },
+            products: { title: 'Ons Sproeiers', dnet0950: {}, dnet8550: {} },
+            labels: { keyFeatures: 'Sleutelkenmerke', techSpecs: 'Tegniese Spesifikasies', applications: 'Toepassings', advantages: 'Voordele', limitations: 'Beperkings', documentation: 'Dokumentasie', download: 'Laai Produkkatalogus Af (PDF)' },
+            form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', product: 'Produk', selectProduct: 'Kies produk', appType: 'Toepassingstipe', selectAppType: 'Kies toepassingstipe', appTypes: {}, area: 'Projekarea (Hektaar)', requirements: 'Bykomende Vereistes', requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
+            cta: { title: 'Benodig Kundige Advies?', subtitle: 'Kontak ons vandag vir persoonlike aanbevelings en ondersteuning.', contact: 'Kontak Ons', whatsapp: 'Gesels op WhatsApp' }
+          }
+        },
+        substrates: {
+          growingSolutions: {
+            title: 'Premium Groeioplossings | Organiese Kokosveen',
+            description: 'Ontdek Arbre Bio Africa se premium organiese kokosveen produkte. Volhoubare groeioplossings ontwerp vir maksimum opbrengs.',
+            hero: { title: 'Volhoubare Groei Begin Hier', subtitle: 'Premium Organiese Kokosveen', desc: 'Ontwerp vir maksimum opbrengs en optimale gewasgesondheid', viewProducts: 'Bekyk Produkte', requestQuote: 'Versoek Kwotasie' },
+            benefits: { title: 'Waarom Ons Groeioplossings Kies', retention: {}, aeration: {}, ph: {}, organic: {} },
+            products: { title: 'Ons Premium Produkte', type20: {}, type30: {} },
+            process: { title: 'Ons Produksieproses', harvesting: {}, drying: {}, filtration: {}, testing: {} },
+            certifications: { title: 'Kwaliteitsertifikate', organic: {}, iso9001: {}, rhp: {} },
+            labels: { idealApps: 'Ideale Toepassings' },
+            form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', product: 'Produktipe', selectProduct: 'Kies produk', products: {}, quantity: 'Hoeveelheid (Metrieke Ton)', requirements: 'Bykomende Vereistes', requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
+            cta: { title: 'Gereed om Jou Groeioperasie te Transformeer?', subtitle: 'Kontak ons vandag vir kundige advies en persoonlike oplossings.', getStarted: 'Begin', whatsapp: 'Gesels op WhatsApp' }
+          }
+        }
+
     validation: {
       required: 'Hierdie veld is verplig',
       email: 'Voer asseblief \'n geldige e-posadres in',

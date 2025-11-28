@@ -1,5 +1,11 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+
 
 const products = [
   {
@@ -190,8 +196,7 @@ const certifications = [
     description: "European Conformity",
     icon: "✅"
   }
-];
----
+];---
 
 <Layout
   title="Drip Irrigation Systems - Precision Water Management"

@@ -1,5 +1,11 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+
 
 const greenhouseTypes = [
   {
@@ -154,8 +160,7 @@ const downloadableSpecs = [
   { name: "Technical Specifications", format: "PDF", size: "2.5 MB" },
   { name: "Installation Guide", format: "PDF", size: "3.1 MB" },
   { name: "Maintenance Manual", format: "PDF", size: "1.8 MB" }
-];
----
+];---
 
 <Layout
   title="High-Tech Greenhouse Solutions"
