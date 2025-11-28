@@ -145,16 +145,672 @@ const translations: Record<Language, Record<string, any>> = {
         title: 'High-Tech Greenhouses',
         description: 'State-of-the-art greenhouse solutions optimized for African climate conditions.'
       },
-      irrigation: {
-        title: 'Precision Irrigation',
-        description: 'Smart irrigation systems that maximize water efficiency and crop yields.'
+          greenhouse: {
+      highTech: {
+        title: 'High-Tech Greenhouse Solutions',
+        description: 'Advanced greenhouse structures engineered for African climate conditions. Discover our range of climate-controlled growing environments for optimal crop production.',
+        hero: {
+          title: 'Advanced Greenhouse Solutions',
+          subtitle: 'Engineered for Optimal Growing Conditions',
+          cta: 'Request Custom Quote',
+          download: 'Download Technical Specifications'
+        },
+        types: {
+          nethouse: {
+            name: 'Nethouse',
+            description: 'Ideal for tropical climates, providing optimal ventilation and insect protection while maintaining favorable growing conditions.',
+            specs: {
+              dimensions: 'Standard spans of 8m, lengths customizable',
+              materials: 'Galvanized steel structure, high-grade insect netting',
+              loadCapacity: 'Wind load up to 100km/h',
+              climate: 'Natural ventilation with optional fan systems',
+              lifespan: '15-20 years for structure, 5-7 years for netting',
+              installation: 'Requires level ground, basic foundation'
+            },
+            features: ['40-50 mesh UV-stabilized netting', 'Roll-up side ventilation', 'Anti-virus screening', 'Modular design'],
+            advantages: ['Lower initial investment', 'Excellent natural ventilation', 'Ideal for warm climates', 'Easy maintenance'],
+            limitations: ['Limited climate control', 'Not suitable for extreme weather', 'Less precise environment control'],
+            roi: { payback: '2-3 years', yieldIncrease: '40-60%', waterSavings: '30-40%' }
+          },
+          sawtooth: {
+            name: 'Sawtooth Greenhouse',
+            description: 'Advanced design offering superior ventilation and climate control, perfect for year-round production in hot climates.',
+            specs: {
+              dimensions: '9.6m span width, customizable length',
+              materials: 'Hot-dip galvanized steel, UV-stabilized covering',
+              loadCapacity: 'Wind load up to 120km/h',
+              climate: 'Ridge ventilation with optional cooling',
+              lifespan: '25+ years for structure, 8-10 years for covering',
+              installation: 'Requires engineered foundation'
+            },
+            features: ['Automated ridge ventilation', 'UV-stabilized polyethylene cover', 'Integrated shade system', 'Structural reinforcement'],
+            advantages: ['Excellent natural ventilation', 'Higher structural strength', 'Better light distribution', 'Suitable for automation'],
+            limitations: ['Higher initial cost', 'Complex installation', 'Requires regular maintenance'],
+            roi: { payback: '3-4 years', yieldIncrease: '70-90%', waterSavings: '50-60%' }
+          },
+          tunnel: {
+            name: 'Tunnel Greenhouse',
+            description: 'Cost-effective solution providing excellent growing conditions for various crops, with good climate control capabilities.',
+            specs: {
+              dimensions: '8m or 9.6m width, modular length',
+              materials: 'Galvanized steel, multi-layer covering',
+              loadCapacity: 'Wind load up to 90km/h',
+              climate: 'Side and end ventilation',
+              lifespan: '15-20 years structure, 4-5 years covering',
+              installation: 'Minimal foundation requirements'
+            },
+            features: ['Double-layer inflation option', 'Roll-up side walls', 'Front and rear ventilation', 'Quick installation'],
+            advantages: ['Cost-effective solution', 'Quick deployment', 'Good climate control', 'Versatile application'],
+            limitations: ['Limited span width', 'Lower wind resistance', 'Basic climate control'],
+            roi: { payback: '2-3 years', yieldIncrease: '50-70%', waterSavings: '40-50%' }
+          },
+          ridgeAndFurrow: {
+            name: 'Ridge and Furrow',
+            description: 'Large-scale commercial greenhouse system offering maximum production area and advanced climate control capabilities.',
+            specs: {
+              dimensions: 'Multiple 8m or 9.6m spans',
+              materials: 'Heavy-duty galvanized steel, professional grade covering',
+              loadCapacity: 'Wind load up to 150km/h',
+              climate: 'Full climate control system',
+              lifespan: '30+ years structure, 8-10 years covering',
+              installation: 'Requires professional installation'
+            },
+            features: ['Integrated climate control', 'Automated ventilation', 'Central gutter system', 'Multiple compartments'],
+            advantages: ['Maximum space utilization', 'Advanced climate control', 'Suitable for large operations', 'Higher productivity'],
+            limitations: ['Highest initial investment', 'Complex installation', 'Requires skilled management'],
+            roi: { payback: '4-5 years', yieldIncrease: '100-150%', waterSavings: '60-70%' }
+          }
+        },
+        labels: {
+          techSpecs: 'Technical Specifications',
+          keyFeatures: 'Key Features',
+          advantages: 'Advantages',
+          limitations: 'Limitations',
+          roi: 'ROI Projections',
+          payback: 'Payback Period',
+          yieldIncrease: 'Yield Increase',
+          waterSavings: 'Water Savings',
+          techDocs: 'Technical Documentation',
+          qualityCerts: 'Quality Certifications',
+          requestQuote: 'Request a Custom Quote'
+        },
+        form: {
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          type: 'Greenhouse Type',
+          selectType: 'Select a greenhouse type',
+          location: 'Project Location',
+          locationPlaceholder: 'City, Country',
+          size: 'Greenhouse Size (Square Meters)',
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs...',
+          submit: 'Submit Quote Request'
+        }
       },
-      substrates: {
-        title: 'Growing Solutions',
-        description: 'Premium coco peat and substrates for optimal plant growth and development.'
-      },
-      learnMore: 'Learn More'
+      accessories: {
+        title: 'Greenhouse Accessories & Components | Professional Grade',
+        description: 'Complete range of professional-grade greenhouse components and accessories. From structural elements to growing systems, discover our quality-certified products.',
+        hero: {
+          title: 'Professional Greenhouse Components',
+          subtitle: 'Quality-Certified Accessories & Supplies',
+          cta: 'Request Quote',
+          specs: 'View Technical Specs'
+        },
+        nav: {
+          structural: 'Structural Components',
+          fasteners: 'Fasteners & Connections',
+          coverage: 'Coverage Materials',
+          growing: 'Growing Accessories'
+        },
+        structural: {
+          title: 'Structural Components',
+          arches: {
+            category: 'Arches & Trusses',
+            arch9600: { name: 'Premium Arch 9600' },
+            truss: { name: 'Reinforced Truss System' }
+          },
+          support: {
+            category: 'Support Systems',
+            column: { name: 'Heavy-Duty Column' },
+            bracing: { name: 'Cross Bracing Kit' }
+          }
+        },
+        fasteners: {
+          title: 'Fasteners & Connection Systems',
+          connectors: {
+            category: 'Structural Connectors',
+            boltSet: { name: 'Heavy-Duty Bolt Set', applications: ['Arch connections', 'Main frame assembly', 'Support bracing'] },
+            channel: { name: 'Channel Connector', applications: ['Purlin connections', 'Cross member joining', 'Gutter support'] }
+          }
+        },
+        coverage: {
+          title: 'Coverage Materials & Climate Control',
+          films: {
+            category: 'Films & Sheets',
+            eva: { name: 'Ultra-Clear EVA Film' },
+            diffused: { name: 'Diffused Light Film' }
+          },
+          screens: {
+            category: 'Insect Screens',
+            thrip: { name: 'Anti-Thrip Net' }
+          }
+        },
+        growing: {
+          title: 'Growing Accessories',
+          support: {
+            category: 'Support Systems',
+            wire: { name: 'Crop Support Wire', applications: ['Tomato support', 'Cucumber training', 'Vine crops'] },
+            trellis: { name: 'Trellis Support System', applications: ['Vertical growing', 'Plant training', 'Row crops'] }
+          }
+        },
+        labels: {
+          applications: 'Applications',
+          specs: 'Technical Specifications',
+          material: 'Material',
+          thickness: 'Thickness',
+          loadCapacity: 'Load Capacity',
+          span: 'Span',
+          coating: 'Coating',
+          height: 'Height',
+          length: 'Length',
+          size: 'Size',
+          torque: 'Torque',
+          standard: 'Standard',
+          lightTransmission: 'Light Transmission',
+          uvStability: 'UV Stability',
+          thermalRetention: 'Thermal Retention',
+          lightDiffusion: 'Light Diffusion',
+          mesh: 'Mesh',
+          airflow: 'Airflow',
+          shading: 'Shading',
+          diameter: 'Diameter',
+          strength: 'Strength',
+          rollLength: 'Roll Length',
+          wireSpacing: 'Wire Spacing',
+          postHeight: 'Post Height'
+        },
+        techSpecs: {
+          title: 'Technical Documentation',
+          specs: { name: 'Technical Specifications', desc: 'Complete product specifications' },
+          install: { name: 'Installation Guide', desc: 'Step-by-step installation instructions' },
+          cad: { name: 'CAD Files', desc: 'Technical drawings and 3D models' }
+        },
+        certifications: {
+          title: 'Quality Certifications',
+          iso9001: { name: 'ISO 9001:2015', desc: 'Quality Management System' },
+          en1090: { name: 'EN 1090-1', desc: 'Structural Steel Components' },
+          en13206: { name: 'EN 13206', desc: 'Greenhouse Covering Materials' }
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          category: 'Product Category',
+          selectCategory: 'Select a category',
+          details: 'Project Details',
+          detailsPlaceholder: 'Tell us about your project and specific requirements...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Need Expert Advice?',
+          subtitle: 'Contact us today for technical consultation and custom solutions.',
+          contact: 'Contact Us',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      }
     },
+    irrigation: {
+      controllers: {
+        title: 'Smart Irrigation Controllers',
+        subtitle: 'Precision Water Management',
+        heroDescription: 'Advanced control systems for efficient water management',
+        viewProducts: 'View Products',
+        requestQuote: 'Request Quote',
+        ourControllers: 'Our Controllers',
+        keyFeatures: 'Key Features',
+        documentation: 'Documentation',
+        downloadCatalog: 'Download Product Catalog (PDF)',
+        techSpecs: 'Technical Specifications',
+        availableModels: 'Available Models',
+        compatibleAccessories: 'Compatible Accessories',
+        certifications: 'Certifications',
+        labels: {
+          temperature: 'Temperature',
+          storage: 'Storage Temperature',
+          humidity: 'Operating Humidity',
+          input: 'Input',
+          output: 'Output',
+          width: 'Width',
+          height: 'Height',
+          depth: 'Depth',
+          timing: 'Station Timing',
+          seasonal: 'Seasonal Adjustment',
+          startTimes: 'Start Times',
+          programs: 'Programs',
+          indoor: 'Indoor',
+          outdoor: 'Outdoor'
+        },
+        espTm2: {
+          name: 'ESP-TM2 Series Controllers',
+          shortDescription: 'Simple, Flexible and Reliable for Residential Applications',
+          description: "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+          features: {
+            wifi: 'Upgradeable for WiFi-based remote monitoring and control',
+            weather: 'Internet-based weather information for smart scheduling',
+            stations: '4, 6, 8, and 12 station models available',
+            daysOff: 'Set Permanent Days Off per program',
+            installation: 'Easy indoor/outdoor installation',
+            programming: 'Quick 3-step programming',
+            programs: '3 programs with 4 start times each',
+            manual: 'One-touch manual watering',
+            display: 'Large back-lit LCD display',
+            contractor: 'Contractor Default™ save/restore',
+            delay: '14-day watering delay',
+            sensor: 'Bypass Rain Sensor per station',
+            seasonal: 'Seasonal Adjust by program'
+          },
+          specs: {
+            operating: {
+              title: 'Operating Specifications',
+              temperature: 'Up to 149°F (65°C)',
+              storage: '-40°F (-40°C) to 150°F (66°C)',
+              humidity: '95% max @ 50°F to 120°F (10°C to 49°C) non-condensing'
+            },
+            electrical: {
+              title: 'Electrical Specifications',
+              inputStandard: '120V∿, 60Hz, 0.3A',
+              inputInternational: '230V∿, 50Hz, 0.136A',
+              outputStandard: '24V∿, 60Hz, 1.0A',
+              outputIndoor: '24V∿, 50-60Hz, 0.6A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              standardWidth: '7.92 in. (20.1 cm)',
+              standardHeight: '7.86 in. (20.0 cm)',
+              standardDepth: '3.51 in. (9.0 cm)',
+              indoorWidth: '16.7 cm',
+              indoorHeight: '16.8 cm',
+              indoorDepth: '4 cm'
+            }
+          },
+          models: {
+            vac120: '120VAC Models',
+            vac230: '230VAC Models',
+            australia: 'Australia Models'
+          },
+          accessories: {
+            lnkwifi: 'LNK2 WiFi Module for remote control and notification via iOS or Android device',
+            rainFreeze: 'Rain + Freeze Combo',
+            rainFreeze48: 'Rain + Freeze Combo with 48-hour hold',
+            rainSensor: 'Rain sensor w/ latching bracket, extension wire'
+          }
+        },
+        st8: {
+          name: 'ST8-2.0 WiFi Smart Irrigation Timers',
+          shortDescription: 'Smart Watering Made Simple',
+          description: "ST8 2.0, 8-Zone Smart Irrigation WiFi Sprinkler Timer. Put control of your sprinkler system in the palm of your hand with a Smart Irrigation WiFi Timer from Rain Bird. It is simple to setup customized watering schedules that can be adjusted automatically all year long to ensure a healthy, beautiful landscape saving you time and money. That's The Intelligent Use of Water™.",
+          features: {
+            wifi: 'Improved WIFI Connection and app connection speed',
+            reports: 'Watering reports for maximizing efficiency',
+            manual: 'Manual watering in the palm of your hand',
+            seasonal: 'Automatic seasonal adjust based on weather',
+            scheduling: 'Fully customizable zone scheduling',
+            alerts: 'Notification alerts for system events',
+            remote: 'Control multiple timers remotely',
+            setup: 'Easy setup and schedule customization',
+            zones: 'Up to 8 zones',
+            backup: 'Back-up manual interface at timer',
+            sensor: 'Rain Sensor input with software override',
+            master: 'Master valve/pump start circuit'
+          },
+          specs: {
+            operating: {
+              title: 'Operating Specifications',
+              timing: '0 to 199 min',
+              seasonal: '-90% to +100%',
+              startTimes: '6 per zone',
+              programs: 'Independent schedule per zone'
+            },
+            electrical: {
+              title: 'Electrical Specifications',
+              inputStandard: '120VAC, 60Hz, 0.2A',
+              inputInternational: '230VAC, 50Hz, 0.1A',
+              outputStandard: '25.5VAC, 60Hz, 0.65A',
+              outputInternational: '24VAC, 50Hz, 0.65A'
+            },
+            dimensions: {
+              title: 'Dimensions',
+              indoorWidth: '6.25 in. (15.9 cm)',
+              indoorHeight: '6.25 in. (15.9 cm)',
+              indoorDepth: '1.54 in. (3.9 cm)',
+              outdoorWidth: '7.88 in. (20 cm)',
+              outdoorHeight: '7.88 in. (20 cm)',
+              outdoorDepth: '3.25 in. (8.3 cm)'
+            }
+          },
+          models: {
+            indoor: 'Indoor Models',
+            outdoor: 'Outdoor Models'
+          },
+          accessories: {
+            rainFreeze: 'Rain + Freeze Combo',
+            rainFreeze48: 'Rain + Freeze Combo with 48-hour hold',
+            rainSensor: 'Rain sensor with latching bracket'
+          }
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          model: 'Controller Model',
+          selectModel: 'Select a model',
+          zones: 'Number of Zones',
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs or any questions you have...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Need Expert Advice?',
+          description: 'Contact us today for personalized recommendations and support.',
+          contact: 'Contact Us',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      },
+,
+,
+      drip: {
+        title: 'Drip Irrigation Systems - Precision Water Management',
+        description: 'Advanced drip irrigation solutions for efficient water management and optimal crop yields. Discover our range of drippers, driplines, and micro-irrigation systems.',
+        hero: {
+          title: 'Drip Irrigation Systems',
+          subtitle: 'Precision Water Management',
+          desc: 'Transform your farm with efficient water management solutions',
+          viewProducts: 'View Products',
+          requestQuote: 'Request Quote'
+        },
+        benefits: {
+          title: 'Why Choose Drip Irrigation',
+          water: { title: 'Water Efficiency', desc: 'Up to 95% water use efficiency compared to traditional irrigation' },
+          yield: { title: 'Yield Increase', desc: '30-100% increase in crop yields' },
+          cost: { title: 'Cost Savings', desc: 'Reduced labor and operational costs' },
+          precision: { title: 'Precision Control', desc: 'Precise water and nutrient delivery' }
+        },
+        products: {
+          title: 'Our Solutions',
+          netafim: {
+            name: 'Netafim Drippers and Driplines',
+            shortDesc: 'Drippers, driplines and other emitters types for any crop, topography, climate, soil, anywhere.',
+            desc: 'Drip irrigation is transforming the lives of millions of farmers around the world enabling higher yields while saving on water, fertilizer and energy. No matter your growing conditions, look forward to uniformly better crops and higher yields, season after season, with the most reliable and robust drippers and driplines ever made.',
+            features: {
+              universal: { title: 'Universal Compatibility', desc: 'Suitable for any crop, topography, climate, and soil type' },
+              efficiency: { title: 'Resource Efficiency', desc: 'Significant savings in water, fertilizer, and energy usage' },
+              uniformity: { title: 'Uniform Distribution', desc: 'Ensures even water distribution for consistent crop growth' },
+              durability: { title: 'Durability', desc: 'Robust construction for long-term reliability' }
+            },
+            specs: {
+              general: { title: 'general', flow: 'Flow rates', pressure: 'Operating pressure', filtration: 'Filtration requirements', wall: 'Wall thickness' },
+              features: { title: 'features', antiSiphon: 'Anti-siphon', antiDrain: 'Anti-drain', pressureComp: 'Pressure compensating', uv: 'UV resistance' }
+            }
+          },
+          azudGreentec: {
+            name: 'AZUD GREENTEC',
+            shortDesc: 'Micro-irrigation pipe with integrated turbulent dripper for surface irrigation installations',
+            desc: 'The micro-irrigation pipe with and without integrated turbulent dripper has a proven track record and efficiency for surface irrigation installations, guaranteeing uniformity, long life and high resistance to clogging. Optimum hydraulic behaviour with fully cylindrical tubing and dripper design.',
+            features: {
+              ds: { title: 'DS Technology', desc: 'Maximum protection against clogging with self-cleaning inlet filter' },
+              optimization: { title: 'Resource Optimization', desc: 'Water and energy saving through low pressure operation' },
+              versatile: { title: 'Versatile Installation', desc: 'Adaptable to various landscape conditions' },
+              integrated: { title: 'Integrated System', desc: 'Reduced installation costs with greater irrigation control' }
+            },
+            specs: {
+              pipe: { title: 'MICRO-IRRIGATION PIPE', diameter: 'Diameter', coil: 'Coil', color: 'Color' },
+              integrated: { title: 'PIPE WITH INTEGRATED DRIPPER', diameter: 'Diameter', flow: 'Flow rate', framework: 'Framework', color: 'Color' }
+            }
+          },
+          azudMicrotube: {
+            name: 'AZUD TUB MICROTUBE',
+            shortDesc: 'Versatile microtubes for various irrigation applications',
+            desc: 'The microtubes marketed by AZUD are divided into different models for multiple applications, from hydraulic valve operation to hydroponics and micro-irrigation fittings.',
+            features: {
+              materials: { title: 'Premium Materials', desc: 'Manufactured with top quality raw materials for durability' },
+              maintenance: { title: 'Easy Maintenance', desc: 'Facilitates maintenance and future system extensions' },
+              packaging: { title: 'Reinforced Packaging', desc: 'Easy transport and storage with stackable design' },
+              installation: { title: 'Flexible Installation', desc: 'Easy and flexible insertion with drippers and fittings' }
+            },
+            specs: {
+              pe: { title: 'PE Models', sizes: 'Sizes' },
+              flex: { title: 'FLEX Models', sizes: 'Sizes' }
+            }
+          },
+          azudNavia: {
+            name: 'AZUD NAVIA',
+            shortDesc: 'Self-compensating and non-leakage drippers for challenging topography',
+            desc: 'AZUD NAVIA is the range of self-compensating and non-leakage drippers suitable for irrigation of installations with significant topographical unevenness and high-yield crops in greenhouses.',
+            features: {
+              range: { title: 'Wide Working Range', desc: 'Operates under a wide range of pressures, optimizing costs' },
+              control: { title: 'Precise Control', desc: 'Accurate opening and closing pressure for efficient fertilizer usage' },
+              installation: { title: 'Easy Installation', desc: 'Variable distance installation based on specific crop needs' },
+              durability: { title: 'Maximum Durability', desc: 'High resistance to impact, friction and UV degradation' }
+            },
+            specs: {
+              nd: { title: 'ND Models', flows: 'Flows' },
+              pc: { title: 'PC Models', flows: 'Flows' }
+            }
+          }
+        },
+        labels: {
+          techSpecs: 'Technical Specifications',
+          documentation: 'Documentation',
+          download: 'Download Product Catalog (PDF)'
+        },
+        certifications: {
+          title: 'Quality Certifications',
+          iso9001: { name: 'ISO 9001:2015', desc: 'Quality Management System' },
+          iso14001: { name: 'ISO 14001:2015', desc: 'Environmental Management' },
+          ce: { name: 'CE Marking', desc: 'European Conformity' }
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          product: 'Product',
+          selectProduct: 'Select a product',
+          area: 'Project Area (Hectares)',
+          crop: 'Crop Type',
+          selectCrop: 'Select crop type',
+          crops: { veg: 'Vegetables', fruits: 'Fruits', field: 'Field Crops', other: 'Other' },
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Need Expert Advice?',
+          subtitle: 'Contact us today for personalized recommendations and support.',
+          contact: 'Contact Us',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      }
+    },
+      sprinklers: {
+        title: 'Irrigation Sprinklers - Precision Water Distribution',
+        description: 'Discover our range of professional irrigation sprinklers designed for optimal water distribution and crop coverage in various agricultural applications.',
+        hero: {
+          title: 'Professional Sprinklers',
+          subtitle: 'Precision Water Distribution',
+          desc: 'Advanced sprinkler solutions for optimal crop irrigation',
+          viewProducts: 'View Products',
+          requestQuote: 'Request Quote'
+        },
+        products: {
+          title: 'Our Sprinklers',
+          dnet0950: {
+            name: 'D-Net™ 0950',
+            shortDesc: 'VERY LOW TRAJECTORY IMPACT SPRINKLER FOR UNIFORM UNDER-CANOPY IRRIGATION',
+            desc: 'With its low water trajectory angle, D-Net™ 0950 is ideally suited for precise under canopy irrigation of banana or oil palm plantations up to 10 x 10 meters or field crops with windy conditions.',
+            features: {
+              uniformity: { title: 'High water distribution uniformity & Higher yield', desc: 'Innovative 3D diffusion arm, ensures relatively high water distribution uniformity, resulting uniform crop yields.' },
+              efficiency: { title: 'Efficient Water Usage', desc: 'The lower trajectory angle of the water prevents evaporation to the air in areas with winds, and guarantees maximum water-use efficiency.' },
+              robust: { title: 'Robust product & Long lasting performances', desc: 'D-Net ™ 0950 has a special design that makes the sprinkler resistant to wear and ensures high performance throughout the long product life.' },
+              maintenance: { title: 'Reduced labor cost & Easy maintenance', desc: 'Versatile installation. Can be installed on solid sets or on removable field stands. Easy to maintain. A special nozzle design, allows simple cleaning of the nozzle even under pressure.' },
+              durability: { title: 'Durability', desc: 'D-Net™ 0950 is made of UV-protected materials, making it durable under all climate conditions and with any applied.' }
+            },
+            specs: {
+              general: { title: 'general', type: 'type', design: 'design', trajectory: 'trajectory', coverage: 'coverage' },
+              performance: { title: 'performance', flow: 'Flow rates', nominal: 'Nominal flow rate', pressure: 'Pressure range', angle: 'Trajectory angle' },
+              technical: { title: 'technical', distribution: 'Water distribution', inlet: 'Inlet connector' }
+            },
+            applications: {
+              type: { title: 'type', items: ['Irrigation'] },
+              pressure: { title: 'pressure', items: ['Medium pressure', 'Low Pressure'] },
+              coverage: { title: 'coverage', items: ['Full Coverage: Medium spacing installation', 'Full Coverage: Small spacing installation'] },
+              crops: { title: 'crops', items: ['Field crops', 'Orchards'] },
+              trajectory: { title: 'trajectory', items: ['Low'] }
+            },
+            advantages: ['Optimal water distribution uniformity', 'Reduced evaporation in windy conditions', 'Durable UV-protected materials', 'Easy maintenance and cleaning', 'Versatile installation options', 'Long product lifespan'],
+            limitations: ['Limited to specific spacing requirements', 'Requires minimum operating pressure', 'Fixed trajectory angle']
+          },
+          dnet8550: {
+            name: 'D-NET™ 8550 F.R.',
+            shortDesc: 'DURABLE IMPACT SPRINKLER with flow regulated nozzles FOR FIELD CROPS AND VEGETABLES IRRIGATION',
+            desc: 'D-Net™ 8550 F.R. 1/2" impact sprinklers, with 3D diffusion arm and unique flow regulated nozzles guarantees excellent crop uniformity and consistency for field crops and vegetables irrigation throughout the field, with sprinkler spacing up to 12x14 meters. Precise and water-efficient distribution also offers an ideal solution for crop germination and orchard cooling.',
+            features: {
+              yields: { title: 'High and uniform yields', desc: 'Innovative 3D diffusion arm and unique flow regulated nozzles ensure the highest level of water distribution uniformity in the market, for more consistent production and higher crop yields.' },
+              efficiency: { title: 'Greater water efficiency', desc: 'Outstanding water distribution uniformity eliminates over watering and optimizes water usage.' },
+              performance: { title: 'Long-lasting performance', desc: 'Tough UV-protected materials withstand all climate conditions, applied nutrients and chemicals ensuring trouble-free operation over the product\'s life.' },
+              installation: { title: 'Versatile installation', desc: 'Installs on solid sets or on removable field stands.' },
+              maintenance: { title: 'Labor-saving maintenance', desc: 'Special nozzle-key is designed to make it easy to clean debris from the nozzle even under pressure.' }
+            },
+            specs: {
+              general: { title: 'general', type: 'type', design: 'design', trajectory: 'trajectory', coverage: 'coverage' },
+              performance: { title: 'performance', flow: 'Flow rates', regulation: 'Pressure regulation', angle: 'Trajectory angle', nozzles: 'Nozzles' },
+              technical: { title: 'technical', distribution: 'Water distribution', inlet: 'Inlet connector' }
+            },
+            applications: {
+              type: { title: 'type', items: ['Irrigation'] },
+              pressure: { title: 'pressure', items: ['Medium pressure', 'Low Pressure'] },
+              coverage: { title: 'coverage', items: ['Full Coverage: Small spacing installation'] },
+              crops: { title: 'crops', items: ['Field crops'] },
+              trajectory: { title: 'trajectory', items: ['Normal'] }
+            },
+            advantages: ['Highest water distribution uniformity', 'Flow regulation for consistent performance', 'UV-protected durable materials', 'Easy maintenance with special nozzle-key', 'Flexible installation options', 'Color-coded nozzles for easy identification'],
+            limitations: ['Specific spacing requirements', 'Minimum pressure requirements', 'Fixed trajectory angle']
+          }
+        },
+        labels: {
+          keyFeatures: 'Key Features',
+          techSpecs: 'Technical Specifications',
+          applications: 'Applications',
+          advantages: 'Advantages',
+          limitations: 'Limitations',
+          documentation: 'Documentation',
+          download: 'Download Product Catalog (PDF)'
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          product: 'Product',
+          selectProduct: 'Select a product',
+          appType: 'Application Type',
+          selectAppType: 'Select application type',
+          appTypes: { field: 'Field Crops', orchards: 'Orchards', other: 'Other' },
+          area: 'Project Area (Hectares)',
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Need Expert Advice?',
+          subtitle: 'Contact us today for personalized recommendations and support.',
+          contact: 'Contact Us',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      }
+    },
+    substrates: {
+      growingSolutions: {
+        title: 'Premium Growing Solutions | Organic Coco Peat & Coir',
+        description: 'Discover Arbre Bio Africa\'s premium organic coco peat and coir products. Sustainable growing solutions engineered for maximum yield and crop health.',
+        hero: {
+          title: 'Sustainable Growth Starts Here',
+          subtitle: 'Premium Organic Coco Peat & Coir',
+          desc: 'Engineered for maximum yield and optimal crop health',
+          viewProducts: 'View Products',
+          requestQuote: 'Request Quote'
+        },
+        benefits: {
+          title: 'Why Choose Our Growing Solutions',
+          retention: { title: 'Superior Water Retention', desc: 'Holds up to 9 times its weight in water, reducing irrigation frequency' },
+          aeration: { title: 'Optimal Aeration', desc: 'Perfect air-to-water ratio promoting healthy root development' },
+          ph: { title: 'pH Balanced', desc: 'Stable pH levels ideal for nutrient uptake' },
+          organic: { title: '100% Organic', desc: 'Natural, renewable, and environmentally sustainable' }
+        },
+        products: {
+          title: 'Our Premium Products',
+          type20: {
+            type: 'Type 20',
+            name: 'Pure Coco Peat',
+            desc: 'Premium-grade pure coco peat, ideal for professional horticulture and hydroponic applications.',
+            specs: { ec: 'EC Level', ph: 'pH Level', retention: 'Water Retention', size: 'Particle Size' },
+            applications: ['Hydroponic growing systems', 'Professional nurseries', 'Greenhouse cultivation', 'Vertical farming']
+          },
+          type30: {
+            type: 'Type 30',
+            name: '80/20 Premium Blend',
+            desc: 'Optimized blend of 80% coco peat and 20% coco chips, providing ideal air-to-water ratio for robust root development.',
+            specs: { ec: 'EC Level', ph: 'pH Level', retention: 'Water Retention', aeration: 'Aeration' },
+            applications: ['Commercial agriculture', 'Fruit tree cultivation', 'Long-term crops', 'Container growing']
+          }
+        },
+        process: {
+          title: 'Our Production Process',
+          harvesting: { title: 'Natural Harvesting', desc: 'Sustainably sourced coconut husks processed using eco-friendly methods' },
+          drying: { title: 'Solar Drying', desc: 'Natural sun-drying process ensuring optimal moisture content' },
+          filtration: { title: 'Advanced Filtration', desc: 'Multi-stage filtration removing impurities and ensuring consistent quality' },
+          testing: { title: 'Quality Testing', desc: 'Rigorous testing for EC, pH, and physical properties' }
+        },
+        certifications: {
+          title: 'Quality Certifications',
+          organic: { name: 'Organic Certified', desc: 'Meets international organic farming standards' },
+          iso9001: { name: 'ISO 9001:2015', desc: 'Certified quality management system' },
+          rhp: { name: 'RHP Certified', desc: 'Meets European horticultural standards' }
+        },
+        labels: {
+          idealApps: 'Ideal Applications'
+        },
+        form: {
+          title: 'Request a Quote',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          product: 'Product Type',
+          selectProduct: 'Select a product',
+          products: { type20: 'Type 20 - Pure Coco Peat', type30: 'Type 30 - 80/20 Premium Blend', custom: 'Custom Blend' },
+          quantity: 'Quantity (Metric Tons)',
+          requirements: 'Additional Requirements',
+          requirementsPlaceholder: 'Tell us about your specific needs or custom blend requirements...',
+          submit: 'Submit Quote Request'
+        },
+        cta: {
+          title: 'Ready to Transform Your Growing Operation?',
+          subtitle: 'Contact us today for expert advice and custom solutions.',
+          getStarted: 'Get Started',
+          whatsapp: 'Chat on WhatsApp'
+        }
+      }
+    }
+
     stats: {
       yieldIncrease: 'Yield Increase',
       waterSavings: 'Water Savings',
@@ -1922,6 +2578,39 @@ const translations: Record<Language, Record<string, any>> = {
         contact: { title: '12. Informations de Contact', text: 'Pour toute question concernant ces conditions, veuillez nous contacter à :', abidjan: 'Bureau d\'Abidjan :', capeTown: 'Entrepôt du Cap :' }
       }
     },
+    about: {
+      title: 'À Propos - Leader de l\'Innovation Agricole en Afrique',
+      description: 'Arbre Bio Africa transforme l\'agriculture à travers l\'Afrique grâce à l\'irrigation de précision, aux solutions de serre et aux technologies agricoles durables.',
+      hero: { title: 'À Propos de Nous', subtitle: 'Mener la transformation de l\'agriculture africaine par l\'innovation et les solutions durables' },
+      whoWeAre: { title: 'Qui Nous Sommes', text: 'Arbre Bio Africa est un leader de l\'innovation agricole, fournissant l\'irrigation de précision, des solutions de serre et des substrats de culture biologiques à travers l\'Afrique. Notre engagement envers les pratiques agricoles durables et la technologie de pointe nous a positionnés à l\'avant-garde de la transformation agricole dans la région.', mission: { title: 'Notre Mission', text: 'Notre objectif est de transformer l\'agriculture africaine en rendant les technologies agricoles modernes accessibles et durables.' } },
+      journey: { title: 'Notre Parcours', timeline: { 2020: { title: 'Fondation de l\'Entreprise', text: 'Établie à Abidjan, Côte d\'Ivoire avec une vision de révolutionner l\'agriculture africaine' }, 2021: { title: 'Premier Grand Projet', text: 'Achevé notre première installation de serre à grande échelle au Ghana' }, 2022: { title: 'Partenariats Stratégiques', text: 'Formé des partenariats avec NGS et AZUD pour apporter des solutions agricoles de classe mondiale en Afrique' }, 2023: { title: 'Expansion Régionale', text: 'Étendu les opérations au Nigéria et au Ghana, desservant plus de 100 projets agricoles' } } },
+      leadership: { title: 'Notre Direction', ceo: { name: 'Lethabo Ndhlovu', role: 'Directeur Général', bio: 'Avec plus de 25 ans d\'expérience en ingénierie agricole et spécialisé dans l\'agriculture intensive, Lethabo dirige notre mission de transformer l\'agriculture africaine.' }, coo: { name: 'Sydney Abouna', role: 'Directeur des Opérations', bio: 'Sydney apporte une vaste expertise opérationnelle dans la gestion de projets agricoles à grande échelle à travers l\'Afrique.' }, marketing: { name: 'Viviane BROU', role: 'Représentante Stratégie Marketing', bio: 'Formée dans l\'hôtellerie, maintenant dans le marketing numérique et produit — concentrée sur l\'aide aux clients pour se connecter aux produits par la clarté, l\'empathie et une passion pour la durabilité.' } },
+      values: { title: 'Nos Valeurs', sustainability: { title: 'Durabilité', text: 'Engagés dans des pratiques agricoles respectueuses de l\'environnement' }, innovation: { title: 'Innovation', text: 'Faire progresser continuellement la technologie agricole' }, partnership: { title: 'Partenariat', text: 'Établir des relations solides avec les agriculteurs et les communautés' } },
+      cta: { title: 'Rejoignez-Nous pour Transformer l\'Agriculture Africaine', subtitle: 'Travaillons ensemble pour construire un avenir plus durable et productif pour l\'agriculture.', button: 'Contactez-Nous' }
+    },
+    company: {
+      title: 'Entreprise - Arbre Bio Africa',
+      description: 'Découvrez l\'histoire, les partenariats et l\'engagement d\'Arbre Bio Africa à transformer l\'agriculture africaine.',
+      hero: { title: 'Notre Entreprise', subtitle: 'Construire l\'avenir de l\'agriculture africaine' },
+      overview: { title: 'Aperçu de l\'Entreprise', text: 'Arbre Bio Africa se consacre à révolutionner l\'agriculture à travers l\'Afrique grâce à des solutions innovantes et des pratiques durables.' },
+      history: { title: 'Notre Histoire', text: 'Fondée en 2020, nous sommes passés d\'une petite startup à un fournisseur leader de solutions agricoles en Afrique de l\'Ouest.' },
+      partnerships: { title: 'Partenariats Stratégiques', text: 'Nous nous associons avec des entreprises de technologie agricole de renommée mondiale pour apporter les meilleures solutions aux agriculteurs africains.' },
+      locations: { title: 'Nos Emplacements', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Le Cap, Afrique du Sud' }
+    },
+    projects: {
+      title: 'Projets - Réussites Agricoles',
+      description: 'Explorez notre portefeuille de projets agricoles réussis à travers l\'Afrique.',
+      hero: { title: 'Nos Projets', subtitle: 'Transformer les fermes à travers l\'Afrique' },
+      portfolio: { title: 'Portefeuille de Projets', text: 'Nous avons réalisé avec succès plus de 500 projets agricoles à travers l\'Afrique.' },
+      caseStudies: { title: 'Études de Cas', text: 'Découvrez comment nos solutions ont aidé les agriculteurs à augmenter leur productivité et leur rentabilité.' }
+    },
+    successStories: {
+      title: 'Réussites - Résultats Réels des Fermes Africaines',
+      description: 'Lisez l\'impact réel de nos solutions agricoles sur les fermes à travers l\'Afrique.',
+      hero: { title: 'Réussites', subtitle: 'Résultats réels d\'agriculteurs réels' },
+      stories: { title: 'Nos Réussites', text: 'Voyez comment nos solutions ont transformé les opérations agricoles à travers l\'Afrique.' },
+      metrics: { title: 'Résultats qui Comptent', text: 'Nos solutions offrent des améliorations mesurables en rendement, efficacité et rentabilité.' }
+    },
     validation: {
       required: 'Ce champ est obligatoire',
       email: 'Veuillez entrer une adresse email valide',
@@ -2900,6 +3589,39 @@ const translations: Record<Language, Record<string, any>> = {
         contact: { title: '12. Información de Contacto', text: 'Para cualquier consulta sobre estos términos, contáctenos en:', abidjan: 'Oficina de Abidján:', capeTown: 'Almacén de Ciudad del Cabo:' }
       }
     },
+    about: {
+      title: 'Sobre Nosotros - Líder en Innovación Agrícola en África',
+      description: 'Arbre Bio Africa está transformando la agricultura en toda África a través de riego de precisión, soluciones de invernadero y tecnologías agrícolas sostenibles.',
+      hero: { title: 'Sobre Nosotros', subtitle: 'Liderando la transformación de la agricultura africana a través de la innovación y soluciones sostenibles' },
+      whoWeAre: { title: 'Quiénes Somos', text: 'Arbre Bio Africa es líder en innovación agrícola, proporcionando riego de precisión, soluciones de invernadero y sustrato de cultivo orgánico en toda África. Nuestro compromiso con las prácticas agrícolas sostenibles y la tecnología de vanguardia nos ha posicionado a la vanguardia de la transformación agrícola en la región.', mission: { title: 'Nuestra Misión', text: 'Nuestro objetivo es transformar la agricultura africana haciendo que las tecnologías agrícolas modernas sean accesibles y sostenibles.' } },
+      journey: { title: 'Nuestra Trayectoria', timeline: { 2020: { title: 'Fundación de la Empresa', text: 'Establecida en Abidján, Costa de Marfil con la visión de revolucionar la agricultura africana' }, 2021: { title: 'Primer Gran Proyecto', text: 'Completamos nuestra primera instalación de invernadero a gran escala en Ghana' }, 2022: { title: 'Alianzas Estratégicas', text: 'Formamos alianzas con NGS y AZUD para traer soluciones agrícolas de clase mundial a África' }, 2023: { title: 'Expansión Regional', text: 'Expandimos operaciones a Nigeria y Ghana, sirviendo a más de 100 proyectos agrícolas' } } },
+      leadership: { title: 'Nuestro Liderazgo', ceo: { name: 'Lethabo Ndhlovu', role: 'Director Ejecutivo', bio: 'Con más de 25 años de experiencia en ingeniería agrícola y especialización en agricultura intensiva, Lethabo lidera nuestra misión de transformar la agricultura africana.' }, coo: { name: 'Sydney Abouna', role: 'Director de Operaciones', bio: 'Sydney aporta una amplia experiencia operativa en la gestión de proyectos agrícolas a gran escala en toda África.' }, marketing: { name: 'Viviane BROU', role: 'Representante de Estrategia de Marketing', bio: 'Formada en hostelería, ahora en marketing digital y producto — enfocada en ayudar a los clientes a conectar con los productos a través de la claridad, la empatía y la pasión por la sostenibilidad.' } },
+      values: { title: 'Nuestros Valores', sustainability: { title: 'Sostenibilidad', text: 'Comprometidos con prácticas agrícolas ambientalmente responsables' }, innovation: { title: 'Innovación', text: 'Avanzando continuamente en tecnología agrícola' }, partnership: { title: 'Colaboración', text: 'Construyendo relaciones sólidas con agricultores y comunidades' } },
+      cta: { title: 'Únase a Nosotros para Transformar la Agricultura Africana', subtitle: 'Trabajemos juntos para construir un futuro más sostenible y productivo para la agricultura.', button: 'Contáctenos' }
+    },
+    company: {
+      title: 'Empresa - Arbre Bio Africa',
+      description: 'Conozca la historia, las alianzas y el compromiso de Arbre Bio Africa de transformar la agricultura africana.',
+      hero: { title: 'Nuestra Empresa', subtitle: 'Construyendo el futuro de la agricultura africana' },
+      overview: { title: 'Descripción de la Empresa', text: 'Arbre Bio Africa se dedica a revolucionar la agricultura en toda África a través de soluciones innovadoras y prácticas sostenibles.' },
+      history: { title: 'Nuestra Historia', text: 'Fundada en 2020, hemos pasado de ser una pequeña startup a un proveedor líder de soluciones agrícolas en África Occidental.' },
+      partnerships: { title: 'Alianzas Estratégicas', text: 'Nos asociamos con empresas de tecnología agrícola líderes en el mundo para traer las mejores soluciones a los agricultores africanos.' },
+      locations: { title: 'Nuestras Ubicaciones', abidjan: 'Abidján, Costa de Marfil', capeTown: 'Ciudad del Cabo, Sudáfrica' }
+    },
+    projects: {
+      title: 'Proyectos - Historias de Éxito Agrícola',
+      description: 'Explore nuestra cartera de proyectos agrícolas exitosos en toda África.',
+      hero: { title: 'Nuestros Proyectos', subtitle: 'Transformando granjas en toda África' },
+      portfolio: { title: 'Cartera de Proyectos', text: 'Hemos completado con éxito más de 500 proyectos agrícolas en toda África.' },
+      caseStudies: { title: 'Estudios de Caso', text: 'Descubra cómo nuestras soluciones han ayudado a los agricultores a aumentar la productividad y la rentabilidad.' }
+    },
+    successStories: {
+      title: 'Historias de Éxito - Resultados Reales de Granjas Africanas',
+      description: 'Lea sobre el impacto real de nuestras soluciones agrícolas en granjas de toda África.',
+      hero: { title: 'Historias de Éxito', subtitle: 'Resultados reales de agricultores reales' },
+      stories: { title: 'Nuestras Historias de Éxito', text: 'Vea cómo nuestras soluciones han transformado las operaciones agrícolas en toda África.' },
+      metrics: { title: 'Resultados que Importan', text: 'Nuestras soluciones ofrecen mejoras medibles en rendimiento, eficiencia y rentabilidad.' }
+    },
     validation: {
       required: 'Este campo es obligatorio',
       email: 'Por favor ingrese una dirección de email válida',
@@ -3717,6 +4439,39 @@ const translations: Record<Language, Record<string, any>> = {
         modifications: { title: '11. Wysigings aan Terme', text: 'Ons behou die reg voor om hierdie terme te eniger tyd te wysig. Veranderinge sal van krag wees by plasing op ons webwerf. Voortgesette gebruik van ons dienste konstitueer aanvaarding van gewysigde terme.' },
         contact: { title: '12. Kontakinligting', text: 'Vir enige navrae rakende hierdie terme, kontak ons asseblief by:', abidjan: 'Abidjan Kantoor:', capeTown: 'Kaapstad Pakhuis:' }
       }
+    },
+    about: {
+      title: 'Oor Ons - Leier in Landbou-innovasie in Afrika',
+      description: 'Arbre Bio Africa transformeer landbou regoor Afrika deur presisiebesproeiing, kweekhuisoplossings en volhoubare boerderytegnologieë.',
+      hero: { title: 'Oor Ons', subtitle: 'Lei die transformasie van Afrika-landbou deur innovasie en volhoubare oplossings' },
+      whoWeAre: { title: 'Wie Ons Is', text: 'Arbre Bio Africa is \'n leier in landbou-innovasie, wat presisiebesproeiing, kweekhuisoplossings en organiese groeibodems regoor Afrika verskaf. Ons verbintenis tot volhoubare boerderypraktyke en die nuutste tegnologie het ons aan die voorpunt van landboutransformasie in die streek geplaas.', mission: { title: 'Ons Missie', text: 'Ons doel is om Afrika-landbou te transformeer deur moderne boerderytegnologieë toeganklik en volhoubaar te maak.' } },
+      journey: { title: 'Ons Reis', timeline: { 2020: { title: 'Maatskappy Gestig', text: 'Gevestig in Abidjan, Ivoorkus met \'n visie om Afrika-landbou te revolusioneer' }, 2021: { title: 'Eerste Groot Projek', text: 'Ons eerste grootskaalse kweekhuisinstallasie in Ghana voltooi' }, 2022: { title: 'Strategiese Vennootskappe', text: 'Vennootskappe gevorm met NGS en AZUD om wêreldklas landbou-oplossings na Afrika te bring' }, 2023: { title: 'Streeksuitbreiding', text: 'Bedrywighede uitgebrei na Nigerië en Ghana, wat meer as 100 landbouprojekte bedien' } } },
+      leadership: { title: 'Ons Leierskap', ceo: { name: 'Lethabo Ndhlovu', role: 'Hoof Uitvoerende Beampte', bio: 'Met meer as 25 jaar ondervinding in landbou-ingenieurswese en spesialisasie in intensiewe boerdery, lei Lethabo ons missie om Afrika-landbou te transformeer.' }, coo: { name: 'Sydney Abouna', role: 'Hoof Operasionele Beampte', bio: 'Sydney bring uitgebreide operasionele kundigheid in die bestuur van grootskaalse landbouprojekte regoor Afrika.' }, marketing: { name: 'Viviane BROU', role: 'Bemarkingstrategie Verteenwoordiger', bio: 'Gasvryheid-opgelei, nou in digitale bemarking en produk — gefokus daarop om kliënte te help om met produkte te skakel deur duidelikheid, empatie en \'n passie vir volhoubaarheid.' } },
+      values: { title: 'Ons Waardes', sustainability: { title: 'Volhoubaarheid', text: 'Verbind tot omgewingsverantwoordelike boerderypraktyke' }, innovation: { title: 'Innovasie', text: 'Bevorder landboutegnologie voortdurend' }, partnership: { title: 'Vennootskap', text: 'Bou sterk verhoudings met boere en gemeenskappe' } },
+      cta: { title: 'Sluit by Ons aan om Afrika-landbou te Transformeer', subtitle: 'Kom ons werk saam om \'n meer volhoubare en produktiewe toekoms vir boerdery te bou.', button: 'Kontak Ons' }
+    },
+    company: {
+      title: 'Maatskappy - Arbre Bio Africa',
+      description: 'Leer oor Arbre Bio Africa se geskiedenis, vennootskappe en verbintenis om Afrika-landbou te transformeer.',
+      hero: { title: 'Ons Maatskappy', subtitle: 'Bou die toekoms van Afrika-landbou' },
+      overview: { title: 'Maatskappy Oorsig', text: 'Arbre Bio Africa is toegewy aan die revolusionering van landbou regoor Afrika deur innoverende oplossings en volhoubare praktyke.' },
+      history: { title: 'Ons Geskiedenis', text: 'Gestig in 2020, het ons gegroei van \'n klein beginonderneming tot \'n toonaangewende verskaffer van landbou-oplossings regoor Wes-Afrika.' },
+      partnerships: { title: 'Strategiese Vennootskappe', text: 'Ons werk saam met wêreldleier landboutegnologiemaatskappye om die beste oplossings na Afrika-boere te bring.' },
+      locations: { title: 'Ons Liggings', abidjan: 'Abidjan, Ivoorkus', capeTown: 'Kaapstad, Suid-Afrika' }
+    },
+    projects: {
+      title: 'Projekte - Landbou Suksesverhale',
+      description: 'Verken ons portefeulje van suksesvolle landbouprojekte regoor Afrika.',
+      hero: { title: 'Ons Projekte', subtitle: 'Transformeer plase regoor Afrika' },
+      portfolio: { title: 'Projek Portefeulje', text: 'Ons het meer as 500 landbouprojekte regoor Afrika suksesvol voltooi.' },
+      caseStudies: { title: 'Gevallestudies', text: 'Ontdek hoe ons oplossings boere gehelp het om produktiwiteit en winsgewendheid te verhoog.' }
+    },
+    successStories: {
+      title: 'Suksesverhale - Werklike Resultate van Afrika-plase',
+      description: 'Lees oor die werklike impak van ons landbou-oplossings op plase regoor Afrika.',
+      hero: { title: 'Suksesverhale', subtitle: 'Werklike resultate van werklike boere' },
+      stories: { title: 'Ons Suksesverhale', text: 'Sien hoe ons oplossings landboubedrywighede regoor Afrika getransformeer het.' },
+      metrics: { title: 'Resultate wat Saak Maak', text: 'Ons oplossings lewer meetbare verbeterings in opbrengs, doeltreffendheid en winsgewendheid.' }
     },
     validation: {
       required: 'Hierdie veld is verplig',
