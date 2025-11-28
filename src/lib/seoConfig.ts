@@ -261,26 +261,51 @@ export const organizationSchema = {
   ]
 };
 
-export const localBusinessSchema = {
+// Enhanced Local Business Schema with multiple locations
+export const enhancedLocalBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  name: 'Arbre Bio Africa - Abidjan Office',
-  image: 'https://i.imgur.com/79cS79J.png',
-  '@id': 'https://arbrebio.com',
+  '@id': 'https://arbrebio.com/#organization',
+  name: 'Arbre Bio Africa',
+  alternateName: ['Arbre Bio', 'Arbre Bio Côte d\'Ivoire'],
+  image: [
+    'https://i.imgur.com/79cS79J.png',
+    'https://i.imgur.com/Aab6e6c.jpg'
+  ],
   url: 'https://arbrebio.com',
-  telephone: '+225 21 21 80 69 50',
+  telephone: ['+225 21 21 80 69 50', '+27 79 533 0267'],
   priceRange: '$$',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Cocody Riviera 3, Jacque Prevert 2',
-    addressLocality: 'Abidjan',
-    addressCountry: 'CI'
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: 5.3599517,
-    longitude: -4.0082563
-  },
+  address: [
+    {
+      '@type': 'PostalAddress',
+      streetAddress: 'Cocody Riviera 3, Jacque Prevert 2',
+      addressLocality: 'Abidjan',
+      addressRegion: 'Abidjan',
+      addressCountry: 'CI',
+      name: 'Abidjan Office'
+    },
+    {
+      '@type': 'PostalAddress',
+      streetAddress: 'Van Biljon Business Park, Winelands Cl, Stikland Industrial',
+      addressLocality: 'Cape Town',
+      postalCode: '7530',
+      addressRegion: 'Western Cape',
+      addressCountry: 'ZA',
+      name: 'Cape Town Warehouse'
+    }
+  ],
+  geo: [
+    {
+      '@type': 'GeoCoordinates',
+      latitude: 5.3599517,
+      longitude: -4.0082563
+    },
+    {
+      '@type': 'GeoCoordinates',
+      latitude: -33.8915,
+      longitude: 18.5935
+    }
+  ],
   openingHoursSpecification: {
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -290,9 +315,23 @@ export const localBusinessSchema = {
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.9',
-    reviewCount: '127'
-  }
+    reviewCount: '127',
+    bestRating: '5',
+    worstRating: '1'
+  },
+  areaServed: [
+    { '@type': 'Country', name: 'Côte d\'Ivoire' },
+    { '@type': 'Country', name: 'Senegal' },
+    { '@type': 'Country', name: 'Ghana' },
+    { '@type': 'Country', name: 'Nigeria' },
+    { '@type': 'Country', name: 'Mali' },
+    { '@type': 'Country', name: 'Burkina Faso' },
+    { '@type': 'Country', name: 'South Africa' }
+  ]
 };
+
+// Keep original for backward compatibility
+export const localBusinessSchema = enhancedLocalBusinessSchema;
 
 export function generatePageSEO(page: string, lang: string = 'en') {
   const pageConfig = seoPages[page as keyof typeof seoPages];
@@ -311,3 +350,31 @@ export function generateLocationKeywords(location: string, baseKeywords: string[
     `${location} ${keyword}`
   ]).flat();
 }
+
+// Enhanced SEO meta tags per language
+export const enhancedSEOByLanguage = {
+  en: {
+    ogTitle: 'Transform Your Farm with Precision Agriculture | Arbre Bio Africa',
+    ogDescription: '500+ successful projects across West Africa. Greenhouses, smart irrigation, organic substrates. ISO certified. Free consultation.',
+    twitterTitle: 'Arbre Bio Africa - #1 Agricultural Solutions in Africa',
+    twitterDescription: 'Greenhouses • Irrigation • Substrates | 500+ Projects | ISO Certified'
+  },
+  fr: {
+    ogTitle: 'Transformez Votre Exploitation avec l\'Agriculture de Précision',
+    ogDescription: '500+ projets réussis en Afrique de l\'Ouest. Serres, irrigation intelligente, substrats organiques. Certifié ISO.',
+    twitterTitle: 'Arbre Bio Africa - Solutions Agricoles N°1 en Afrique',
+    twitterDescription: 'Serres • Irrigation • Substrats | 500+ Projets | Certifié ISO'
+  },
+  es: {
+    ogTitle: 'Transforme Su Granja con Agricultura de Precisión',
+    ogDescription: '500+ proyectos exitosos en África Occidental. Invernaderos, riego inteligente, sustratos orgánicos.',
+    twitterTitle: 'Arbre Bio Africa - Soluciones Agrícolas N°1 en África',
+    twitterDescription: 'Invernaderos • Riego • Sustratos | 500+ Proyectos | Certificado ISO'
+  },
+  af: {
+    ogTitle: 'Transform Jou Plaas met Presisie Landbou',
+    ogDescription: '500+ suksesvolle projekte in Wes-Afrika. Kweekhuise, slim besproeiing, organiese substrate.',
+    twitterTitle: 'Arbre Bio Africa - #1 Landbou Oplossings in Afrika',
+    twitterDescription: 'Kweekhuise • Besproeiing • Substrate | 500+ Projekte | ISO Gesertifiseer'
+  }
+};

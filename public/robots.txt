@@ -3,7 +3,15 @@ Allow: /
 
 # Sitemap
 Sitemap: https://arbrebio.com/sitemap-index.xml
-Sitemap: https://arbrebio.com/api/sitemap.xml
+Sitemap: https://arbrebio.com/sitemap-0.xml
+
+# Allow image crawling for better image search
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
+Allow: /*.gif$
 
 # Disallow duplicate content for default English
 Disallow: /en/

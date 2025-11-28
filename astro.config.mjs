@@ -10,10 +10,11 @@ export default defineConfig({
     sitemap({
       i18n: {
         defaultLocale: 'en',
-        locales: ['en', 'fr', 'es', 'af'],
-        routing: {
-          prefixDefaultLocale: true,
-          redirectToDefaultLocale: false
+        locales: {
+          en: 'en',
+          fr: 'fr',
+          es: 'es',
+          af: 'af'
         }
       },
       filter: (page) =>
@@ -25,16 +26,36 @@ export default defineConfig({
       changefreq: 'weekly',
       lastmod: new Date().toISOString(),
       serialize: (item) => {
-        // Customize sitemap entries
-        if (item.url.includes('/blog/')) {
-          item.changefreq = 'monthly';
-          item.priority = 0.7;
-        } else if (item.url === '/' || item.url.endsWith('/')) {
+        // Customize sitemap entries with enhanced SEO priorities
+
+        // Homepage - highest priority
+        if (item.url === '/' || item.url.match(/\/(en|fr|es|af)\/?$/)) {
           item.priority = 1.0;
           item.changefreq = 'daily';
-        } else {
-          item.priority = 0.8;
         }
+        // Product pages - very high priority
+        else if (item.url.includes('/greenhouses/') ||
+          item.url.includes('/irrigation/') ||
+          item.url.includes('/substrates/')) {
+          item.priority = 0.9;
+          item.changefreq = 'weekly';
+        }
+        // Main category pages
+        else if (item.url.match(/\/(greenhouses|irrigation|substrates|projects|solutions|about|contact)$/)) {
+          item.priority = 0.8;
+          item.changefreq = 'weekly';
+        }
+        // Blog posts
+        else if (item.url.includes('/blog/')) {
+          item.priority = 0.7;
+          item.changefreq = 'monthly';
+        }
+        // Other pages
+        else {
+          item.priority = 0.6;
+          item.changefreq = 'monthly';
+        }
+
         return item;
       }
     })

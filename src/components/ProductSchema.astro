@@ -1,0 +1,70 @@
+---
+/**
+ * Product Schema Component
+ * Generates Product structured data for e-commerce SEO
+ */
+
+interface ProductOffer {
+  priceCurrency: string;
+  lowPrice?: string;
+  highPrice?: string;
+  price?: string;
+  availability: string;
+}
+
+interface ProductRating {
+  ratingValue: string;
+  reviewCount: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  image: string;
+  brand?: string;
+  offers: ProductOffer;
+  aggregateRating?: ProductRating;
+}
+
+const { name, description, image, brand = 'Arbre Bio Africa', offers, aggregateRating } = Astro.props;
+
+const baseUrl = Astro.site?.toString() || 'https://arbrebio.com';
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name,
+  description,
+  image,
+  brand: {
+    '@type': 'Brand',
+    name: brand
+  },
+  manufacturer: {
+    '@type': 'Organization',
+    name: 'Arbre Bio Africa',
+    url: baseUrl
+  },
+  offers: {
+    '@type': offers.lowPrice ? 'AggregateOffer' : 'Offer',
+    priceCurrency: offers.priceCurrency,
+    ...(offers.lowPrice && { lowPrice: offers.lowPrice }),
+    ...(offers.highPrice && { highPrice: offers.highPrice }),
+    ...(offers.price && { price: offers.price }),
+    availability: offers.availability,
+    seller: {
+      '@type': 'Organization',
+      name: 'Arbre Bio Africa'
+    }
+  },
+  ...(aggregateRating && {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: aggregateRating.ratingValue,
+      reviewCount: aggregateRating.reviewCount
+    }
+  })
+};
+---
+
+\u003cscript type="application/ld+json" set:html={JSON.stringify(productSchema)} /\u003e

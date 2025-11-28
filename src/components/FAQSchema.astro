@@ -1,0 +1,32 @@
+---
+/**
+ * FAQ Schema Component
+ * Generates FAQ structured data for better search visibility
+ */
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  faqs: FAQ[];
+}
+
+const { faqs } = Astro.props;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq =\u003e ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+\u003cscript type="application/ld+json" set:html={JSON.stringify(faqSchema)} /\u003e

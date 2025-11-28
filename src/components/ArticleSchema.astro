@@ -1,0 +1,57 @@
+---
+/**
+ * Article Schema Component
+ * Generates Article structured data for blog posts
+ */
+
+interface Props {
+  headline: string;
+  description: string;
+  image: string;
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  keywords?: string[];
+}
+
+const { 
+  headline, 
+  description, 
+  image, 
+  datePublished, 
+  dateModified, 
+  author = 'Arbre Bio Africa',
+  keywords = []
+} = Astro.props;
+
+const baseUrl = Astro.site?.toString() || 'https://arbrebio.com';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline,
+  description,
+  image,
+  datePublished,
+  dateModified: dateModified || datePublished,
+  author: {
+    '@type': 'Person',
+    name: author
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Arbre Bio Africa',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://i.imgur.com/79cS79J.png'
+    }
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': Astro.url.href
+  },
+  ...(keywords.length > 0 && { keywords: keywords.join(', ') })
+};
+---
+
+\u003cscript type="application/ld+json" set:html={JSON.stringify(articleSchema)} /\u003e
