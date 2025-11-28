@@ -1,0 +1,38 @@
+COMPREHENSIVE SOURCE CODE ANALYSIS REPORT
+============================================================
+
+Total Issues: 33
+
+⚠️  components/LocationRedirect.astro: Possible missing i18n import
+⚠️  components/Navigation.astro: 1 images missing alt attribute
+⚠️  components/AccessibilityEnhancements.astro: Possible missing i18n import
+⚠️  components/Footer.astro: 1 images missing alt attribute
+⚠️  components/OptimizedImage.astro: 2 images missing alt attribute
+⚠️  components/FormValidation.astro: Possible missing i18n import
+⚠️  components/MobileNavigation.astro: 1 images missing alt attribute
+⚠️  layouts/Layout.astro: 1 images missing alt attribute
+⚠️  pages/[lang]/about.astro: 4 images missing alt attribute
+⚠️  pages/[lang]/solutions.astro: 4 images missing alt attribute
+⚠️  pages/[lang]/index.astro: 3 images missing alt attribute
+⚠️  pages/[lang]/contact.astro: 1 images missing alt attribute
+⚠️  pages/[lang]/success-stories.astro: 5 images missing alt attribute
+⚠️  pages/[lang]/projects/index.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/blog/index.astro: 3 images missing alt attribute
+⚠️  pages/[lang]/blog/[...slug].astro: 1 images missing alt attribute
+⚠️  pages/[lang]/substrates/index.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/substrates/growing-solutions.astro: Possible hardcoded strings: 4 found
+⚠️  pages/[lang]/substrates/growing-solutions.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/irrigation/controllers.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/irrigation/drip-systems.astro: Possible hardcoded strings: 4 found
+⚠️  pages/[lang]/irrigation/drip-systems.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/irrigation/index.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/irrigation/sprinklers.astro: Possible hardcoded strings: 4 found
+⚠️  pages/[lang]/irrigation/sprinklers.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/greenhouses/accessories.astro: Possible hardcoded strings: 5 found
+⚠️  pages/[lang]/greenhouses/accessories.astro: 5 images missing alt attribute
+⚠️  pages/[lang]/greenhouses/index.astro: 2 images missing alt attribute
+⚠️  pages/[lang]/greenhouses/high-tech.astro: Possible hardcoded strings: 5 found
+⚠️  pages/[lang]/greenhouses/high-tech.astro: 2 images missing alt attribute
+❌ lib/i18n.ts: Brace mismatch (1112 open, 1111 close)
+❌ Missing translation keys: newsletterPage.unsubscribe.success, pages.irrigation.technologies.fertigation.caseStudy.title, solutions.successStories.title, cookies.sections.types.functionality.text, footer.emailPlaceholder, pages.greenhouse.specifications.ventilation.controlAdvantage, token, cookies.sections.usage.title, irrigation.controllers.st8.features.scheduling, nav.blog
+   ... and 786 more
