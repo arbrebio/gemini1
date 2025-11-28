@@ -903,7 +903,20 @@ common: {
   'greenhouse-covering': 'Greenhouse Covering Materials',
   'professional-greenhouse': 'Professional Greenhouse Components',
   'quality-certified': 'Quality-Certified Accessories & Supplies',
-  'technical-documentation': 'Technical Documentation'
+  'technical-documentation': 'Technical Documentation',
+  // Image alt texts
+  logoAlt: 'Arbre Bio Africa Logo',
+  ogImageAlt: 'Arbre Bio Africa - Agricultural Solutions',
+  heroImageAlt: 'Modern African Agriculture',
+  teamImageAlt: 'Arbre Bio Africa Team',
+  productImageAlt: 'Agricultural Product',
+  projectImageAlt: 'Agricultural Project',
+  beforeImageAlt: 'Before Implementation',
+  afterImageAlt: 'After Implementation',
+  blogImageAlt: 'Blog Article Image',
+  greenhouseImageAlt: 'Greenhouse System',
+  irrigationImageAlt: 'Irrigation System',
+  substrateImageAlt: 'Growing Substrate',
 },
 footer: {
   description: 'Transforming African agriculture through precision farming solutions.',
