@@ -1,30 +1,39 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 
+import { useTranslations, getStaticPaths } from '../../../lib/i18n';
+
+export { getStaticPaths };
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as any);
 const email = Astro.url.searchParams.get('email');
 const token = Astro.url.searchParams.get('token');
+
+const messages = {
+  processing: t('newsletterPage.unsubscribe.processing'),
+  success: t('newsletterPage.unsubscribe.success'),
+  error: t('newsletterPage.unsubscribe.error'),
+  genericError: t('newsletterPage.unsubscribe.genericError')
+};
 ---
 
 <Layout
-  title="Unsubscribe from Newsletter"
-  description="Unsubscribe from Arbre Bio Africa's newsletter"
+  title={t('newsletterPage.unsubscribe.title')}
+  description={t('newsletterPage.unsubscribe.description')}
   noIndex={true}
 >
   <div class="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
       <div class="text-center">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">{t('newsletterPage.unsubscribeTitle')}</h1>
-        <p class="text-gray-600" id="status-message">{t('newsletterPage.unsubscribeWait')}</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{t('newsletterPage.unsubscribe.heading')}</h1>
+        <p class="text-gray-600" id="status-message">{t('newsletterPage.unsubscribe.processing')}</p>
       </div>
     </div>
   </div>
 </Layout>
 
-<script define:vars={{ email, token, messages: {
-  success: t('newsletterPage.unsubscribeSuccess'),
-  error: t('newsletterPage.unsubscribeError'),
-  genericError: t('newsletterPage.genericError')
-} }}>
+<script define:vars={{ email, token, messages }}>
   async function unsubscribe() {
     try {
       const response = await fetch(`/api/newsletter/unsubscribe?email=${email}&token=${token}`);
@@ -33,7 +42,7 @@ const token = Astro.url.searchParams.get('token');
       if (response.ok) {
         try {
           const result = await response.json();
-          if (statusMessage) {
+          if (statusMessage && result) {
             statusMessage.textContent = result.message || messages.success;
             statusMessage.className = 'text-green-600';
           }
@@ -46,7 +55,7 @@ const token = Astro.url.searchParams.get('token');
       } else {
         try {
           const errorResult = await response.json();
-          if (statusMessage) {
+          if (statusMessage && errorResult) {
             statusMessage.textContent = errorResult.message || messages.error;
             statusMessage.className = 'text-red-600';
           }

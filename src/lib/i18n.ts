@@ -209,7 +209,24 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chat on WhatsApp'
       }
     },
-
+    blog: {
+      hero: {
+        title: 'Blog & Knowledge Hub',
+        subtitle: 'Expert insights and practical guides for modern African agriculture'
+      },
+      newsletter: {
+        title: 'Stay Updated',
+        subtitle: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
+        placeholder: 'Enter your email',
+        subscribe: 'Subscribe'
+      },
+      featured: {
+        title: 'Featured Articles'
+      },
+      latest: {
+        title: 'Latest Articles'
+      }
+    },
     office: {
       abidjan: 'Abidjan Office',
       capetown: 'Cape Town Warehouse'
@@ -261,29 +278,6 @@ const translations: Record<Language, Record<string, any>> = {
       privacy: 'Privacy',
       cookies: 'Cookies'
     },
-    blog: {
-      title: 'Blog & Knowledge Hub',
-      subtitle: 'Expert insights and practical guides for modern African agriculture',
-      featured: 'Featured Articles',
-      latest: 'Latest Articles',
-      readMore: 'Read More',
-      by: 'By',
-      stayUpdated: 'Stay Updated',
-      subscribeText: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
-      enterEmail: 'Enter your email',
-      subscribe: 'Subscribe'
-    },
-    newsletterPage: {
-      confirmTitle: 'Confirming Your Subscription',
-      confirmWait: 'Please wait while we confirm your subscription...',
-      confirmSuccess: 'Your subscription has been confirmed! You can close this window.',
-      confirmError: 'An error occurred while confirming your subscription.',
-      unsubscribeTitle: 'Unsubscribe from Newsletter',
-      unsubscribeWait: 'Processing your unsubscribe request...',
-      unsubscribeSuccess: 'You have been successfully unsubscribed from our newsletter.',
-      unsubscribeError: 'An error occurred while processing your unsubscribe request.',
-      genericError: 'An error occurred. Please try again later.'
-    },
     errors: {
       pageNotFound: 'Page Not Found',
       pageNotFoundDesc: "The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.",
@@ -298,6 +292,165 @@ const translations: Record<Language, Record<string, any>> = {
       networkError: 'Network Error',
       tryAgain: 'Try Again',
       goHome: 'Go Home'
+    },
+    blog: {
+      title: 'Blog & Knowledge Hub - Agricultural Insights',
+      description: 'Explore our collection of articles, guides, and expert insights on modern farming techniques, greenhouse technology, and agricultural innovation in Africa.',
+      hero: {
+        title: 'Blog & Knowledge Hub',
+        subtitle: 'Expert insights and practical guides for modern African agriculture'
+      },
+      featured: 'Featured Articles',
+      latest: 'Latest Articles',
+      readMore: 'Read More',
+      by: 'By',
+      newsletter: {
+        title: 'Stay Updated',
+        description: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
+        placeholder: 'Enter your email',
+        button: 'Subscribe'
+      }
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      description: 'Our commitment to protecting your privacy',
+      heading: 'Privacy Policy',
+      intro: {
+        title: '1. Introduction',
+        text: 'At Arbre Bio Africa, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you interact with our services, website, or products.'
+      },
+      collect: {
+        title: '2. Information We Collect',
+        personal: {
+          title: '2.1 Personal Information',
+          text: 'We may collect the following types of personal information:',
+          list: {
+            name: 'Name and contact details',
+            business: 'Business information',
+            delivery: 'Delivery addresses',
+            payment: 'Payment information',
+            communication: 'Communication preferences'
+          }
+        },
+        technical: {
+          title: '2.2 Technical Information',
+          text: 'We automatically collect certain information when you visit our website:',
+          list: {
+            ip: 'IP address',
+            browser: 'Browser type and version',
+            device: 'Device information',
+            pages: 'Pages visited and interaction data',
+            referral: 'Referral source'
+          }
+        }
+      },
+      use: {
+        title: '3. How We Use Your Information',
+        text: 'We use your information for the following purposes:',
+        list: {
+          orders: 'Processing and fulfilling orders',
+          support: 'Providing customer support',
+          updates: 'Sending important product updates and notifications',
+          improve: 'Improving our products and services',
+          marketing: 'Marketing communications (with your consent)',
+          legal: 'Legal compliance and business operations'
+        }
+      },
+      sharing: {
+        title: '4. Data Sharing & Third Parties',
+        text1: 'We may share your information with the following categories of third parties:',
+        list: {
+          providers: 'Service providers (e.g., payment processors, shipping companies)',
+          partners: 'Business partners for product installation and maintenance',
+          analytics: 'Analytics providers',
+          legal: 'Legal authorities when required by law'
+        },
+        text2: 'We require all third parties to respect the security of your personal data and to treat it in accordance with applicable laws.'
+      },
+      security: {
+        title: '5. Data Security Measures',
+        text: 'We implement appropriate technical and organizational measures to protect your personal information, including:',
+        list: {
+          encryption: 'Encryption of data in transit and at rest',
+          access: 'Secure access controls and authentication',
+          assessments: 'Regular security assessments',
+          training: 'Employee training on data protection',
+          physical: 'Physical security measures'
+        }
+      },
+      cookies: {
+        title: '6. Cookies & Tracking Technologies',
+        text1: 'We use cookies and similar tracking technologies to improve your browsing experience and analyze website traffic. These may include:',
+        list: {
+          essential: 'Essential cookies for website functionality',
+          analytics: 'Analytics cookies to understand user behavior',
+          marketing: 'Marketing cookies for targeted advertising'
+        },
+        text2: 'You can control cookie preferences through your browser settings.'
+      },
+      rights: {
+        title: '7. Your Rights & Controls',
+        text: 'You have the following rights regarding your personal information:',
+        list: {
+          access: 'Access your personal data',
+          correct: 'Correct inaccurate data',
+          delete: 'Request deletion of your data',
+          object: 'Object to processing',
+          portability: 'Data portability',
+          withdraw: 'Withdraw consent'
+        }
+      },
+      retention: {
+        title: '8. Data Retention',
+        text: 'We retain your personal information for as long as necessary to:',
+        list: {
+          fulfill: 'Fulfill the purposes outlined in this policy',
+          legal: 'Comply with legal obligations',
+          disputes: 'Resolve disputes',
+          enforce: 'Enforce our agreements'
+        }
+      },
+      international: {
+        title: '9. International Data Transfers',
+        text: 'We may transfer your personal information to countries outside your residence for processing. We ensure appropriate safeguards are in place to protect your data in accordance with applicable data protection laws.'
+      },
+      children: {
+        title: '10. Children\'s Privacy',
+        text: 'Our services are not intended for children under 16 years of age. We do not knowingly collect or process personal information from children under 16. If you become aware that a child has provided us with personal information, please contact us.'
+      },
+      updates: {
+        title: '11. Updates to This Policy',
+        text: 'We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website and updating the "Last Updated" date.'
+      },
+      contact: {
+        title: '12. Contact Us',
+        text: 'If you have any questions about this Privacy Policy or our data practices, please contact us at:',
+        abidjan: 'Abidjan Office:',
+        capeTown: 'Cape Town Warehouse:',
+        phone: 'Phone:',
+        email: 'Email:'
+      },
+      lastUpdated: 'Last updated:'
+    },
+    newsletterPage: {
+      confirm: {
+        title: 'Confirm Newsletter Subscription',
+        description: 'Confirm your subscription to Arbre Bio Africa\'s newsletter',
+        heading: 'Confirming Your Subscription',
+        waitMessage: 'Please wait while we confirm your subscription...',
+        success: 'Your subscription has been confirmed! You can close this window.',
+        error: 'An error occurred while confirming your subscription.',
+        genericError: 'An error occurred. Please try again later.'
+      },
+      unsubscribe: {
+        title: 'Unsubscribe from Newsletter',
+        description: 'Unsubscribe from Arbre Bio Africa\'s newsletter',
+        heading: 'Unsubscribe from Newsletter',
+        processing: 'Processing your unsubscribe request...',
+        success: 'You have been successfully unsubscribed from our newsletter.',
+        error: 'An error occurred while processing your unsubscribe request.',
+        genericError: 'An error occurred. Please try again later.'
+      }
     },
     validation: {
       required: 'This field is required',
@@ -919,6 +1072,24 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Discuter sur WhatsApp'
       }
     },
+    blog: {
+      hero: {
+        title: 'Blog & Centre de Connaissances',
+        subtitle: 'Conseils d\'experts et guides pratiques pour l\'agriculture africaine moderne'
+      },
+      newsletter: {
+        title: 'Restez Informé',
+        subtitle: 'Abonnez-vous à notre newsletter pour les dernières informations agricoles et conseils.',
+        placeholder: 'Entrez votre email',
+        subscribe: 'S\'abonner'
+      },
+      featured: {
+        title: 'Articles en Vedette'
+      },
+      latest: {
+        title: 'Derniers Articles'
+      }
+    },
     office: {
       abidjan: 'Bureau d\'Abidjan',
       capetown: 'Entrepôt du Cap'
@@ -970,29 +1141,6 @@ const translations: Record<Language, Record<string, any>> = {
       privacy: 'Confidentialité',
       cookies: 'Cookies'
     },
-    blog: {
-      title: 'Blog & Centre de Connaissances',
-      subtitle: 'Avis d\'experts et guides pratiques pour l\'agriculture africaine moderne',
-      featured: 'Articles en Vedette',
-      latest: 'Derniers Articles',
-      readMore: 'Lire la suite',
-      by: 'Par',
-      stayUpdated: 'Restez Informé',
-      subscribeText: 'Abonnez-vous à notre newsletter pour les derniers conseils agricoles.',
-      enterEmail: 'Entrez votre email',
-      subscribe: 'S\'abonner'
-    },
-    newsletterPage: {
-      confirmTitle: 'Confirmation de votre abonnement',
-      confirmWait: 'Veuillez patienter pendant que nous confirmons votre abonnement...',
-      confirmSuccess: 'Votre abonnement a été confirmé ! Vous pouvez fermer cette fenêtre.',
-      confirmError: 'Une erreur s\'est produite lors de la confirmation de votre abonnement.',
-      unsubscribeTitle: 'Se désabonner de la newsletter',
-      unsubscribeWait: 'Traitement de votre demande de désabonnement...',
-      unsubscribeSuccess: 'Vous avez été désabonné avec succès de notre newsletter.',
-      unsubscribeError: 'Une erreur s\'est produite lors du traitement de votre demande.',
-      genericError: 'Une erreur s\'est produite. Veuillez réessayer plus tard.'
-    },
     errors: {
       pageNotFound: 'Page Non Trouvée',
       pageNotFoundDesc: "La page que vous recherchez n'existe pas. Elle a peut-être été déplacée, supprimée ou vous avez entré une mauvaise URL.",
@@ -1007,6 +1155,165 @@ const translations: Record<Language, Record<string, any>> = {
       networkError: 'Erreur Réseau',
       tryAgain: 'Réessayer',
       goHome: 'Accueil'
+    },
+    blog: {
+      title: 'Blog & Centre de Connaissances - Perspectives Agricoles',
+      description: 'Explorez notre collection d\'articles, de guides et d\'avis d\'experts sur les techniques agricoles modernes, la technologie des serres et l\'innovation agricole en Afrique.',
+      hero: {
+        title: 'Blog & Centre de Connaissances',
+        subtitle: 'Avis d\'experts et guides pratiques pour l\'agriculture africaine moderne'
+      },
+      featured: 'Articles en Vedette',
+      latest: 'Derniers Articles',
+      readMore: 'Lire la Suite',
+      by: 'Par',
+      newsletter: {
+        title: 'Restez Informé',
+        description: 'Abonnez-vous à notre newsletter pour les dernières informations et conseils agricoles.',
+        placeholder: 'Entrez votre email',
+        button: 'S\'abonner'
+      }
+    },
+    privacy: {
+      title: 'Politique de Confidentialité',
+      description: 'Notre engagement à protéger votre vie privée',
+      heading: 'Politique de Confidentialité',
+      intro: {
+        title: '1. Introduction',
+        text: 'Chez Arbre Bio Africa, nous nous engageons à protéger votre vie privée et à assurer la sécurité de vos informations personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous interagissez avec nos services, notre site web ou nos produits.'
+      },
+      collect: {
+        title: '2. Informations que nous collectons',
+        personal: {
+          title: '2.1 Informations Personnelles',
+          text: 'Nous pouvons collecter les types d\'informations personnelles suivants :',
+          list: {
+            name: 'Nom et coordonnées',
+            business: 'Informations commerciales',
+            delivery: 'Adresses de livraison',
+            payment: 'Informations de paiement',
+            communication: 'Préférences de communication'
+          }
+        },
+        technical: {
+          title: '2.2 Informations Techniques',
+          text: 'Nous collectons automatiquement certaines informations lorsque vous visitez notre site web :',
+          list: {
+            ip: 'Adresse IP',
+            browser: 'Type et version du navigateur',
+            device: 'Informations sur l\'appareil',
+            pages: 'Pages visitées et données d\'interaction',
+            referral: 'Source de référence'
+          }
+        }
+      },
+      use: {
+        title: '3. Comment nous utilisons vos informations',
+        text: 'Nous utilisons vos informations aux fins suivantes :',
+        list: {
+          orders: 'Traitement et exécution des commandes',
+          support: 'Fournir un support client',
+          updates: 'Envoi de mises à jour importantes sur les produits et notifications',
+          improve: 'Amélioration de nos produits et services',
+          marketing: 'Communications marketing (avec votre consentement)',
+          legal: 'Conformité légale et opérations commerciales'
+        }
+      },
+      sharing: {
+        title: '4. Partage de données et tiers',
+        text1: 'Nous pouvons partager vos informations avec les catégories de tiers suivantes :',
+        list: {
+          providers: 'Prestataires de services (ex : processeurs de paiement, sociétés de transport)',
+          partners: 'Partenaires commerciaux pour l\'installation et la maintenance des produits',
+          analytics: 'Fournisseurs d\'analyses',
+          legal: 'Autorités légales lorsque la loi l\'exige'
+        },
+        text2: 'Nous exigeons de tous les tiers qu\'ils respectent la sécurité de vos données personnelles et qu\'ils les traitent conformément aux lois applicables.'
+      },
+      security: {
+        title: '5. Mesures de sécurité des données',
+        text: 'Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos informations personnelles, notamment :',
+        list: {
+          encryption: 'Chiffrement des données en transit et au repos',
+          access: 'Contrôles d\'accès sécurisés et authentification',
+          assessments: 'Évaluations de sécurité régulières',
+          training: 'Formation des employés sur la protection des données',
+          physical: 'Mesures de sécurité physique'
+        }
+      },
+      cookies: {
+        title: '6. Cookies et technologies de suivi',
+        text1: 'Nous utilisons des cookies et des technologies de suivi similaires pour améliorer votre expérience de navigation et analyser le trafic du site web. Ceux-ci peuvent inclure :',
+        list: {
+          essential: 'Cookies essentiels pour le fonctionnement du site web',
+          analytics: 'Cookies analytiques pour comprendre le comportement des utilisateurs',
+          marketing: 'Cookies marketing pour la publicité ciblée'
+        },
+        text2: 'Vous pouvez contrôler les préférences en matière de cookies via les paramètres de votre navigateur.'
+      },
+      rights: {
+        title: '7. Vos droits et contrôles',
+        text: 'Vous disposez des droits suivants concernant vos informations personnelles :',
+        list: {
+          access: 'Accéder à vos données personnelles',
+          correct: 'Corriger les données inexactes',
+          delete: 'Demander la suppression de vos données',
+          object: 'S\'opposer au traitement',
+          portability: 'Portabilité des données',
+          withdraw: 'Retirer votre consentement'
+        }
+      },
+      retention: {
+        title: '8. Conservation des données',
+        text: 'Nous conservons vos informations personnelles aussi longtemps que nécessaire pour :',
+        list: {
+          fulfill: 'Remplir les objectifs décrits dans cette politique',
+          legal: 'Se conformer aux obligations légales',
+          disputes: 'Résoudre les litiges',
+          enforce: 'Appliquer nos accords'
+        }
+      },
+      international: {
+        title: '9. Transferts internationaux de données',
+        text: 'Nous pouvons transférer vos informations personnelles vers des pays hors de votre résidence pour traitement. Nous nous assurons que des garanties appropriées sont en place pour protéger vos données conformément aux lois applicables sur la protection des données.'
+      },
+      children: {
+        title: '10. Confidentialité des enfants',
+        text: 'Nos services ne sont pas destinés aux enfants de moins de 16 ans. Nous ne collectons ni ne traitons sciemment d\'informations personnelles auprès d\'enfants de moins de 16 ans. Si vous apprenez qu\'un enfant nous a fourni des informations personnelles, veuillez nous contacter.'
+      },
+      updates: {
+        title: '11. Mises à jour de cette politique',
+        text: 'Nous pouvons mettre à jour cette politique de confidentialité de temps à autre. Nous vous informerons de tout changement important en publiant la nouvelle politique sur notre site web et en mettant à jour la date de "Dernière mise à jour".'
+      },
+      contact: {
+        title: '12. Contactez-nous',
+        text: 'Si vous avez des questions concernant cette politique de confidentialité ou nos pratiques en matière de données, veuillez nous contacter à :',
+        abidjan: 'Bureau d\'Abidjan :',
+        capeTown: 'Entrepôt du Cap :',
+        phone: 'Téléphone :',
+        email: 'Email :'
+      },
+      lastUpdated: 'Dernière mise à jour :'
+    },
+    newsletterPage: {
+      confirm: {
+        title: 'Confirmer l\'Abonnement à la Newsletter',
+        description: 'Confirmez votre abonnement à la newsletter d\'Arbre Bio Africa',
+        heading: 'Confirmation de votre Abonnement',
+        waitMessage: 'Veuillez patienter pendant que nous confirmons votre abonnement...',
+        success: 'Votre abonnement a été confirmé ! Vous pouvez fermer cette fenêtre.',
+        error: 'Une erreur s\'est produite lors de la confirmation de votre abonnement.',
+        genericError: 'Une erreur s\'est produite. Veuillez réessayer plus tard.'
+      },
+      unsubscribe: {
+        title: 'Se désabonner de la Newsletter',
+        description: 'Se désabonner de la newsletter d\'Arbre Bio Africa',
+        heading: 'Se désabonner de la Newsletter',
+        processing: 'Traitement de votre demande de désabonnement...',
+        success: 'Vous avez été désabonné avec succès de notre newsletter.',
+        error: 'Une erreur s\'est produite lors du traitement de votre demande de désabonnement.',
+        genericError: 'Une erreur s\'est produite. Veuillez réessayer plus tard.'
+      }
     },
     validation: {
       required: 'Ce champ est obligatoire',
@@ -1467,6 +1774,24 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Chatear en WhatsApp'
       }
     },
+    blog: {
+      hero: {
+        title: 'Blog y Centro de Conocimiento',
+        subtitle: 'Consejos de expertos y guías prácticas para la agricultura africana moderna'
+      },
+      newsletter: {
+        title: 'Mantente Actualizado',
+        subtitle: 'Suscríbete a nuestro boletín para obtener los últimos conocimientos y consejos agrícolas.',
+        placeholder: 'Ingresa tu email',
+        subscribe: 'Suscribirse'
+      },
+      featured: {
+        title: 'Artículos Destacados'
+      },
+      latest: {
+        title: 'Últimos Artículos'
+      }
+    },
     office: {
       abidjan: 'Oficina de Abidjan',
       capetown: 'Almacén de Ciudad del Cabo'
@@ -1518,29 +1843,6 @@ const translations: Record<Language, Record<string, any>> = {
       privacy: 'Privacidad',
       cookies: 'Cookies'
     },
-    blog: {
-      title: 'Blog y Centro de Conocimiento',
-      subtitle: 'Perspectivas de expertos y guías prácticas para la agricultura africana moderna',
-      featured: 'Artículos Destacados',
-      latest: 'Últimos Artículos',
-      readMore: 'Leer más',
-      by: 'Por',
-      stayUpdated: 'Mantente Informado',
-      subscribeText: 'Suscríbete a nuestro boletín para recibir los últimos consejos agrícolas.',
-      enterEmail: 'Ingresa tu email',
-      subscribe: 'Suscribirse'
-    },
-    newsletterPage: {
-      confirmTitle: 'Confirmando su suscripción',
-      confirmWait: 'Por favor espere mientras confirmamos su suscripción...',
-      confirmSuccess: '¡Su suscripción ha sido confirmada! Puede cerrar esta ventana.',
-      confirmError: 'Ocurrió un error al confirmar su suscripción.',
-      unsubscribeTitle: 'Darse de baja del boletín',
-      unsubscribeWait: 'Procesando su solicitud de baja...',
-      unsubscribeSuccess: 'Se ha dado de baja exitosamente de nuestro boletín.',
-      unsubscribeError: 'Ocurrió un error al procesar su solicitud de baja.',
-      genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
-    },
     errors: {
       pageNotFound: 'Página No Encontrada',
       pageNotFoundDesc: "La página que buscas no existe. Puede haber sido movida, eliminada o ingresaste una URL incorrecta.",
@@ -1555,6 +1857,165 @@ const translations: Record<Language, Record<string, any>> = {
       networkError: 'Error de Red',
       tryAgain: 'Intentar de Nuevo',
       goHome: 'Ir al Inicio'
+    },
+    blog: {
+      title: 'Blog y Centro de Conocimiento - Perspectivas Agrícolas',
+      description: 'Explore nuestra colección de artículos, guías y opiniones de expertos sobre técnicas agrícolas modernas, tecnología de invernaderos e innovación agrícola en África.',
+      hero: {
+        title: 'Blog y Centro de Conocimiento',
+        subtitle: 'Opiniones de expertos y guías prácticas para la agricultura africana moderna'
+      },
+      featured: 'Artículos Destacados',
+      latest: 'Últimos Artículos',
+      readMore: 'Leer Más',
+      by: 'Por',
+      newsletter: {
+        title: 'Manténgase Actualizado',
+        description: 'Suscríbase a nuestro boletín para obtener las últimas ideas y consejos agrícolas.',
+        placeholder: 'Ingrese su correo electrónico',
+        button: 'Suscribirse'
+      }
+    },
+    privacy: {
+      title: 'Política de Privacidad',
+      description: 'Nuestro compromiso de proteger su privacidad',
+      heading: 'Política de Privacidad',
+      intro: {
+        title: '1. Introducción',
+        text: 'En Arbre Bio Africa, nos comprometemos a proteger su privacidad y garantizar la seguridad de su información personal. Esta Política de Privacidad explica cómo recopilamos, usamos, divulgamos y protegemos su información cuando interactúa con nuestros servicios, sitio web o productos.'
+      },
+      collect: {
+        title: '2. Información que Recopilamos',
+        personal: {
+          title: '2.1 Información Personal',
+          text: 'Podemos recopilar los siguientes tipos de información personal:',
+          list: {
+            name: 'Nombre y datos de contacto',
+            business: 'Información comercial',
+            delivery: 'Direcciones de entrega',
+            payment: 'Información de pago',
+            communication: 'Preferencias de comunicación'
+          }
+        },
+        technical: {
+          title: '2.2 Información Técnica',
+          text: 'Recopilamos automáticamente cierta información cuando visita nuestro sitio web:',
+          list: {
+            ip: 'Dirección IP',
+            browser: 'Tipo y versión del navegador',
+            device: 'Información del dispositivo',
+            pages: 'Páginas visitadas y datos de interacción',
+            referral: 'Fuente de referencia'
+          }
+        }
+      },
+      use: {
+        title: '3. Cómo Usamos Su Información',
+        text: 'Utilizamos su información para los siguientes propósitos:',
+        list: {
+          orders: 'Procesamiento y cumplimiento de pedidos',
+          support: 'Proporcionar atención al cliente',
+          updates: 'Envío de actualizaciones importantes de productos y notificaciones',
+          improve: 'Mejorar nuestros productos y servicios',
+          marketing: 'Comunicaciones de marketing (con su consentimiento)',
+          legal: 'Cumplimiento legal y operaciones comerciales'
+        }
+      },
+      sharing: {
+        title: '4. Intercambio de Datos y Terceros',
+        text1: 'Podemos compartir su información con las siguientes categorías de terceros:',
+        list: {
+          providers: 'Proveedores de servicios (ej. procesadores de pagos, empresas de envío)',
+          partners: 'Socios comerciales para instalación y mantenimiento de productos',
+          analytics: 'Proveedores de análisis',
+          legal: 'Autoridades legales cuando lo requiera la ley'
+        },
+        text2: 'Requerimos que todos los terceros respeten la seguridad de sus datos personales y los traten de acuerdo con las leyes aplicables.'
+      },
+      security: {
+        title: '5. Medidas de Seguridad de Datos',
+        text: 'Implementamos medidas técnicas y organizativas apropiadas para proteger su información personal, incluyendo:',
+        list: {
+          encryption: 'Cifrado de datos en tránsito y en reposo',
+          access: 'Controles de acceso seguro y autenticación',
+          assessments: 'Evaluaciones de seguridad regulares',
+          training: 'Capacitación de empleados sobre protección de datos',
+          physical: 'Medidas de seguridad física'
+        }
+      },
+      cookies: {
+        title: '6. Cookies y Tecnologías de Rastreo',
+        text1: 'Utilizamos cookies y tecnologías de rastreo similares para mejorar su experiencia de navegación y analizar el tráfico del sitio web. Estos pueden incluir:',
+        list: {
+          essential: 'Cookies esenciales para la funcionalidad del sitio web',
+          analytics: 'Cookies analíticas para entender el comportamiento del usuario',
+          marketing: 'Cookies de marketing para publicidad dirigida'
+        },
+        text2: 'Puede controlar las preferencias de cookies a través de la configuración de su navegador.'
+      },
+      rights: {
+        title: '7. Sus Derechos y Controles',
+        text: 'Tiene los siguientes derechos con respecto a su información personal:',
+        list: {
+          access: 'Acceder a sus datos personales',
+          correct: 'Corregir datos inexactos',
+          delete: 'Solicitar la eliminación de sus datos',
+          object: 'Oponerse al procesamiento',
+          portability: 'Portabilidad de datos',
+          withdraw: 'Retirar el consentimiento'
+        }
+      },
+      retention: {
+        title: '8. Retención de Datos',
+        text: 'Retenemos su información personal durante el tiempo necesario para:',
+        list: {
+          fulfill: 'Cumplir con los propósitos descritos en esta política',
+          legal: 'Cumplir con obligaciones legales',
+          disputes: 'Resolver disputas',
+          enforce: 'Hacer cumplir nuestros acuerdos'
+        }
+      },
+      international: {
+        title: '9. Transferencias Internacionales de Datos',
+        text: 'Podemos transferir su información personal a países fuera de su residencia para su procesamiento. Nos aseguramos de que existan salvaguardas adecuadas para proteger sus datos de acuerdo con las leyes de protección de datos aplicables.'
+      },
+      children: {
+        title: '10. Privacidad de los Niños',
+        text: 'Nuestros servicios no están destinados a niños menores de 16 años. No recopilamos ni procesamos a sabiendas información personal de niños menores de 16 años. Si tiene conocimiento de que un niño nos ha proporcionado información personal, contáctenos.'
+      },
+      updates: {
+        title: '11. Actualizaciones de esta Política',
+        text: 'Podemos actualizar esta Política de Privacidad de vez en cuando. Le notificaremos cualquier cambio importante publicando la nueva política en nuestro sitio web y actualizando la fecha de "Última actualización".'
+      },
+      contact: {
+        title: '12. Contáctenos',
+        text: 'Si tiene alguna pregunta sobre esta Política de Privacidad o nuestras prácticas de datos, contáctenos en:',
+        abidjan: 'Oficina de Abidjan:',
+        capeTown: 'Almacén de Ciudad del Cabo:',
+        phone: 'Teléfono:',
+        email: 'Email:'
+      },
+      lastUpdated: 'Última actualización:'
+    },
+    newsletterPage: {
+      confirm: {
+        title: 'Confirmar Suscripción al Boletín',
+        description: 'Confirme su suscripción al boletín de Arbre Bio Africa',
+        heading: 'Confirmando su Suscripción',
+        waitMessage: 'Por favor espere mientras confirmamos su suscripción...',
+        success: '¡Su suscripción ha sido confirmada! Puede cerrar esta ventana.',
+        error: 'Ocurrió un error al confirmar su suscripción.',
+        genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
+      },
+      unsubscribe: {
+        title: 'Darse de baja del Boletín',
+        description: 'Darse de baja del boletín de Arbre Bio Africa',
+        heading: 'Darse de baja del Boletín',
+        processing: 'Procesando su solicitud de baja...',
+        success: 'Se ha dado de baja con éxito de nuestro boletín.',
+        error: 'Ocurrió un error al procesar su solicitud de baja.',
+        genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
+      }
     },
     validation: {
       required: 'Este campo es obligatorio',
@@ -1855,7 +2316,24 @@ const translations: Record<Language, Record<string, any>> = {
         button: 'Gesels op WhatsApp'
       }
     },
-
+    blog: {
+      hero: {
+        title: 'Blog en Kennis Sentrum',
+        subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika landbou'
+      },
+      newsletter: {
+        title: 'Bly Op Hoogte',
+        subtitle: 'Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.',
+        placeholder: 'Voer jou e-pos in',
+        subscribe: 'Teken In'
+      },
+      featured: {
+        title: 'Uitstaande Artikels'
+      },
+      latest: {
+        title: 'Nuutste Artikels'
+      }
+    },
     office: {
       abidjan: 'Abidjan Kantoor',
       capetown: 'Kaapstad Pakhuis'
@@ -1907,29 +2385,6 @@ const translations: Record<Language, Record<string, any>> = {
       privacy: 'Privaatheid',
       cookies: 'Koekies'
     },
-    blog: {
-      title: 'Blog & Kennis Sentrum',
-      subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika-landbou',
-      featured: 'Uitgesoekte Artikels',
-      latest: 'Nuutste Artikels',
-      readMore: 'Lees Meer',
-      by: 'Deur',
-      stayUpdated: 'Bly Op Hoogte',
-      subscribeText: 'Teken in op ons nuusbrief vir die nuutste landbouwenke.',
-      enterEmail: 'Voer jou e-pos in',
-      subscribe: 'Teken In'
-    },
-    newsletterPage: {
-      confirmTitle: 'Bevestig Jou Intekening',
-      confirmWait: 'Wag asseblief terwyl ons jou intekening bevestig...',
-      confirmSuccess: 'Jou intekening is bevestig! Jy kan hierdie venster toemaak.',
-      confirmError: '\'n Fout het voorgekom tydens die bevestiging van jou intekening.',
-      unsubscribeTitle: 'Kanselleer Intekening',
-      unsubscribeWait: 'Verwerk jou kansellasie versoek...',
-      unsubscribeSuccess: 'Jy het suksesvol uitgeteken van ons nuusbrief.',
-      unsubscribeError: '\'n Fout het voorgekom tydens die verwerking van jou versoek.',
-      genericError: '\'n Fout het voorgekom. Probeer asseblief later weer.'
-    },
     errors: {
       pageNotFound: 'Bladsy Nie Gevind',
       pageNotFoundDesc: "Die bladsy wat jy soek bestaan nie. Dit is dalk verskuif, verwyder, of jy het die verkeerde URL ingevoer.",
@@ -1944,6 +2399,165 @@ const translations: Record<Language, Record<string, any>> = {
       networkError: 'Netwerk Fout',
       tryAgain: 'Probeer Weer',
       goHome: 'Tuisblad'
+    },
+    blog: {
+      title: 'Blog & Kennis Sentrum - Landbou Insigte',
+      description: 'Verken ons versameling artikels, gidse en deskundige insigte oor moderne boerderytegnieke, kweekhuistegnologie en landbou-innovasie in Afrika.',
+      hero: {
+        title: 'Blog & Kennis Sentrum',
+        subtitle: 'Deskundige insigte en praktiese gidse vir moderne Afrika-landbou'
+      },
+      featured: 'Uitgesoekte Artikels',
+      latest: 'Nuutste Artikels',
+      readMore: 'Lees Meer',
+      by: 'Deur',
+      newsletter: {
+        title: 'Bly Op Hoogte',
+        description: 'Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.',
+        placeholder: 'Voer jou e-pos in',
+        button: 'Teken In'
+      }
+    },
+    privacy: {
+      title: 'Privaatheidsbeleid',
+      description: 'Ons verbintenis om jou privaatheid te beskerm',
+      heading: 'Privaatheidsbeleid',
+      intro: {
+        title: '1. Inleiding',
+        text: 'By Arbre Bio Africa is ons daartoe verbind om jou privaatheid te beskerm en die veiligheid van jou persoonlike inligting te verseker. Hierdie Privaatheidsbeleid verduidelik hoe ons jou inligting versamel, gebruik, openbaar en beveilig wanneer jy met ons dienste, webwerf of produkte omgaan.'
+      },
+      collect: {
+        title: '2. Inligting wat ons versamel',
+        personal: {
+          title: '2.1 Persoonlike Inligting',
+          text: 'Ons kan die volgende tipes persoonlike inligting versamel:',
+          list: {
+            name: 'Naam en kontakbesonderhede',
+            business: 'Besigheidsinligting',
+            delivery: 'Afleweringsadresse',
+            payment: 'Betalingsinligting',
+            communication: 'Kommunikasie voorkeure'
+          }
+        },
+        technical: {
+          title: '2.2 Tegniese Inligting',
+          text: 'Ons versamel outomaties sekere inligting wanneer jy ons webwerf besoek:',
+          list: {
+            ip: 'IP-adres',
+            browser: 'Blaaiertipe en weergawe',
+            device: 'Toestelinligting',
+            pages: 'Bladsye besoek en interaksiedata',
+            referral: 'Verwysingsbron'
+          }
+        }
+      },
+      use: {
+        title: '3. Hoe ons jou inligting gebruik',
+        text: 'Ons gebruik jou inligting vir die volgende doeleindes:',
+        list: {
+          orders: 'Verwerking en uitvoering van bestellings',
+          support: 'Verskaffing van kliëntediens',
+          updates: 'Stuur van belangrike produkopdaterings en kennisgewings',
+          improve: 'Verbetering van ons produkte en dienste',
+          marketing: 'Bemarkingskommunikasie (met jou toestemming)',
+          legal: 'Wetlike nakoming en besigheidsbedrywighede'
+        }
+      },
+      sharing: {
+        title: '4. Datadeling en Derde Partye',
+        text1: 'Ons kan jou inligting met die volgende kategorieë van derde partye deel:',
+        list: {
+          providers: 'Diensverskaffers (bv. betalingsverwerkers, versendingsmaatskappye)',
+          partners: 'Besigheidsvennote vir produkinstallasie en instandhouding',
+          analytics: 'Analise verskaffers',
+          legal: 'Wetlike owerhede wanneer dit deur die wet vereis word'
+        },
+        text2: 'Ons vereis dat alle derde partye die veiligheid van jou persoonlike data respekteer en dit in ooreenstemming met toepaslike wette hanteer.'
+      },
+      security: {
+        title: '5. Datasekuriteitsmaatreëls',
+        text: 'Ons implementeer toepaslike tegniese en organisatoriese maatreëls om jou persoonlike inligting te beskerm, insluitend:',
+        list: {
+          encryption: 'Enkripsie van data in transito en in rus',
+          access: 'Veilige toegangskontroles en verifikasie',
+          assessments: 'Gereelde sekuriteitsbeoordelings',
+          training: 'Werknemersopleiding oor databeskerming',
+          physical: 'Fisiese sekuriteitsmaatreëls'
+        }
+      },
+      cookies: {
+        title: '6. Koekies en Opsporingstegnologieë',
+        text1: 'Ons gebruik koekies en soortgelyke opsporingstegnologieë om jou blaai-ervaring te verbeter en webwerfverkeer te ontleed. Dit kan insluit:',
+        list: {
+          essential: 'Noodsaaklike koekies vir webwerffunksionaliteit',
+          analytics: 'Analise koekies om gebruikersgedrag te verstaan',
+          marketing: 'Bemarkingskoekies vir geteikende advertensies'
+        },
+        text2: 'Jy kan koekievoorkeure beheer deur jou blaaierinstellings.'
+      },
+      rights: {
+        title: '7. Jou Regte en Beheer',
+        text: 'Jy het die volgende regte met betrekking tot jou persoonlike inligting:',
+        list: {
+          access: 'Toegang tot jou persoonlike data',
+          correct: 'Korrigeer onakkurate data',
+          delete: 'Versoek verwydering van jou data',
+          object: 'Maak beswaar teen verwerking',
+          portability: 'Data-oordraagbaarheid',
+          withdraw: 'Onttrek toestemming'
+        }
+      },
+      retention: {
+        title: '8. Databewaring',
+        text: 'Ons bewaar jou persoonlike inligting so lank as wat nodig is om:',
+        list: {
+          fulfill: 'Die doeleindes soos uiteengesit in hierdie beleid te vervul',
+          legal: 'Voldoen aan wetlike verpligtinge',
+          disputes: 'Geskille op te los',
+          enforce: 'Ons ooreenkomste af te dwing'
+        }
+      },
+      international: {
+        title: '9. Internasionale Data-oordragte',
+        text: 'Ons kan jou persoonlike inligting oordra na lande buite jou woonplek vir verwerking. Ons verseker dat toepaslike waarborge in plek is om jou data te beskerm in ooreenstemming met toepaslike databeskermingswette.'
+      },
+      children: {
+        title: '10. Kinders se Privaatheid',
+        text: 'Ons dienste is nie bedoel vir kinders onder 16 jaar oud nie. Ons versamel of verwerk nie wetens persoonlike inligting van kinders onder 16 nie. As jy bewus word dat \'n kind vir ons persoonlike inligting verskaf het, kontak ons asseblief.'
+      },
+      updates: {
+        title: '11. Opdaterings aan hierdie beleid',
+        text: 'Ons kan hierdie Privaatheidsbeleid van tyd tot tyd opdateer. Ons sal jou in kennis stel van enige wesenlike veranderinge deur die nuwe beleid op ons webwerf te plaas en die "Laas opgedateer" datum op te dateer.'
+      },
+      contact: {
+        title: '12. Kontak Ons',
+        text: 'As jy enige vrae het oor hierdie Privaatheidsbeleid of ons datapraktyke, kontak ons asseblief by:',
+        abidjan: 'Abidjan Kantoor:',
+        capeTown: 'Kaapstad Pakhuis:',
+        phone: 'Foon:',
+        email: 'E-pos:'
+      },
+      lastUpdated: 'Laas opgedateer:'
+    },
+    newsletterPage: {
+      confirm: {
+        title: 'Bevestig Nuusbrief Intekening',
+        description: 'Bevestig jou intekening op Arbre Bio Africa se nuusbrief',
+        heading: 'Bevestig Jou Intekening',
+        waitMessage: 'Wag asseblief terwyl ons jou intekening bevestig...',
+        success: 'Jou intekening is bevestig! Jy kan hierdie venster toemaak.',
+        error: '\'n Fout het voorgekom tydens die bevestiging van jou intekening.',
+        genericError: '\'n Fout het voorgekom. Probeer asseblief later weer.'
+      },
+      unsubscribe: {
+        title: 'Teken uit van Nuusbrief',
+        description: 'Teken uit van Arbre Bio Africa se nuusbrief',
+        heading: 'Teken uit van Nuusbrief',
+        processing: 'Verwerk jou uittekenversoek...',
+        success: 'Jy het suksesvol uitgeteken van ons nuusbrief.',
+        error: '\'n Fout het voorgekom tydens die verwerking van jou uittekenversoek.',
+        genericError: '\'n Fout het voorgekom. Probeer asseblief later weer.'
+      }
     },
     validation: {
       required: 'Hierdie veld is verplig',
