@@ -4380,4 +4380,5 @@ const translations: Record<Language, Record<string, any>> = {
   }
   }
   }
+  }
   };
