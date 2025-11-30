@@ -1,0 +1,117 @@
+---
+interface Props {
+  type: 'Organization' | 'WebPage' | 'Product' | 'BlogPosting' | 'BreadcrumbList';
+  data: Record<string, any>;
+}
+
+const { type, data } = Astro.props;
+
+// Generate structured data based on type
+function generateStructuredData(type: string, data: any) {
+  const baseSchema = {
+    '@context': 'https://schema.org',
+    '@type': type
+  };
+
+  switch (type) {
+    case 'Organization':
+      return {
+        ...baseSchema,
+        name: data.name || 'Arbre Bio Africa',
+        url: data.url || 'https://arbrebio.com',
+        logo: data.logo || 'https://i.imgur.com/79cS79J.png',
+        description: data.description || 'Leading provider of precision farming solutions in Africa',
+        address: data.address || {
+          '@type': 'PostalAddress',
+          addressLocality: 'Abidjan',
+          addressCountry: 'CI'
+        },
+        contactPoint: data.contactPoint || {
+          '@type': 'ContactPoint',
+          telephone: '+225 21 21 80 69 50',
+          contactType: 'customer service'
+        },
+        sameAs: data.sameAs || [
+          'https://facebook.com/arbrebio',
+          'https://twitter.com/arbrebio',
+          'https://linkedin.com/company/arbrebio'
+        ]
+      };
+
+    case 'WebPage':
+      return {
+        ...baseSchema,
+        name: data.title,
+        description: data.description,
+        url: data.url,
+        inLanguage: data.language || 'en',
+        isPartOf: {
+          '@type': 'WebSite',
+          name: 'Arbre Bio Africa',
+          url: 'https://arbrebio.com'
+        }
+      };
+
+    case 'Product':
+      return {
+        ...baseSchema,
+        name: data.name,
+        description: data.description,
+        image: data.image,
+        brand: {
+          '@type': 'Brand',
+          name: data.brand || 'Arbre Bio Africa'
+        },
+        manufacturer: {
+          '@type': 'Organization',
+          name: 'Arbre Bio Africa',
+          url: 'https://arbrebio.com'
+        },
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'XOF',
+          availability: 'https://schema.org/InStock'
+        }
+      };
+
+    case 'BlogPosting':
+      return {
+        ...baseSchema,
+        headline: data.title,
+        description: data.description,
+        image: data.image,
+        datePublished: data.publishedTime,
+        dateModified: data.modifiedTime || data.publishedTime,
+        author: {
+          '@type': 'Person',
+          name: data.author
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Arbre Bio Africa',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://i.imgur.com/79cS79J.png'
+          }
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': data.url
+        }
+      };
+
+    case 'BreadcrumbList':
+      return {
+        ...baseSchema,
+        itemListElement: data.items || []
+      };
+
+    default:
+      return { ...baseSchema, ...data };
+  }
+}
+
+const structuredData = generateStructuredData(type, data);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

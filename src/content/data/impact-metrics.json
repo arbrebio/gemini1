@@ -1,0 +1,22 @@
+[
+  {
+    "value": "10x",
+    "label": "Yield Increase",
+    "description": "Average yield increase for greenhouse vegetable production"
+  },
+  {
+    "value": "60%",
+    "label": "Water Savings",
+    "description": "Typical water reduction with our precision irrigation systems"
+  },
+  {
+    "value": "90%",
+    "label": "Pest Reduction",
+    "description": "Reduction in pest-related crop losses with protected farming"
+  },
+  {
+    "value": "500+",
+    "label": "Projects Completed",
+    "description": "Successful implementations across Africa"
+  }
+]

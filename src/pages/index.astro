@@ -1,0 +1,589 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StructuredData from "../components/StructuredData.astro";
+import AccessibilityEnhancements from "../components/AccessibilityEnhancements.astro";
+import { useTranslations, defaultLang } from "../lib/i18n";
+import { config } from "../lib/config";
+
+const lang = defaultLang;
+const t = useTranslations(lang);
+
+const services = [
+  {
+    icon: "🌿",
+    title: t("services.greenhouses.title"),
+    description: t("services.greenhouses.description"),
+    link: "/greenhouses",
+  },
+  {
+    icon: "💧",
+    title: t("services.irrigation.title"),
+    description: t("services.irrigation.description"),
+    link: "/irrigation",
+  },
+  {
+    icon: "🌱",
+    title: t("services.substrates.title"),
+    description: t("services.substrates.description"),
+    link: "/substrates/growing-solutions",
+  },
+];
+
+const partners = [
+  {
+    name: "Conseil Hévéa Palmier",
+    logo: "https://i.imgur.com/shsj3KH.jpg",
+    website: "https://conseilheveapalmier.ci/",
+  },
+  {
+    name: "CDTA El Mirador",
+    logo: "https://i.imgur.com/P1DPCaB.jpg",
+    website: "https://cdtaelmirador.com/",
+  },
+  {
+    name: "FIRCA",
+    logo: "https://i.imgur.com/91MTbWi.jpg",
+    website: "https://firca.ci/",
+  },
+  {
+    name: "Ministère de l'Agriculture",
+    logo: "https://i.imgur.com/nsRSuEQ.jpg",
+    website: "https://www.agriculture.gouv.ci/accueil",
+  },
+  {
+    name: "CNRA",
+    logo: "https://i.imgur.com/6an3KC8.jpg",
+    website: "http://cnra.ci/",
+  },
+  {
+    name: "Eureka Network",
+    logo: "https://i.imgur.com/hf5JXIm.jpg",
+    website: "https://www.eurekanetwork.org/",
+  },
+  {
+    name: "World Bank",
+    logo: "https://i.imgur.com/W55LKPV.jpg",
+    website: "https://www.worldbank.org/ext/en/home",
+  },
+  {
+    name: "INP-HB ESA",
+    logo: "https://i.imgur.com/da88PlP.jpg",
+    website: "https://www.inphb.edu.ci/ecoles/esa",
+  },
+  {
+    name: "Econatur",
+    logo: "https://i.imgur.com/6GjxYNG.jpg",
+    website: "https://econatur.net/en/",
+  },
+  {
+    name: "Hortalan",
+    logo: "https://i.imgur.com/hVXMDbV.jpg",
+    website: "https://hortalan.com/",
+  },
+  {
+    name: "Agrogenia Biotech",
+    logo: "https://i.imgur.com/9aFTawp.jpg",
+    website: "https://agrogeniabiotech.com/",
+  },
+  {
+    name: "African Development Bank",
+    logo: "https://i.imgur.com/xUbaryR.jpg",
+    website: "https://www.afdb.org/en",
+  },
+  {
+    name: "AZUD",
+    logo: "https://i.imgur.com/cYKFakb.jpg",
+    website: "https://azud.com/en/",
+  },
+  {
+    name: "Novagric",
+    logo: "https://i.imgur.com/cyocoKN.jpg",
+    website: "https://novagric.com/",
+  },
+  {
+    name: "PDC2V",
+    logo: "https://i.imgur.com/BMzFHHR.jpg",
+    website: "https://pdc2v.ci/",
+  },
+  {
+    name: "Agence Emploi Jeunes",
+    logo: "https://i.imgur.com/YTmTlBr.jpg",
+    website: "https://www.agenceemploijeunes.ci/site/",
+  },
+  {
+    name: "GIZ",
+    logo: "https://i.imgur.com/g3qxeY3.jpg",
+    website: "https://www.giz.de/en/regions/africa/cote-divoire",
+  },
+  {
+    name: "OMRI",
+    logo: "https://i.imgur.com/pcM8A7v.jpg",
+    website: "https://www.omri.org/",
+  },
+];
+---
+
+<Layout
+  title={t("hero.title")}
+  description={t("hero.subtitle")}
+  image="https://i.imgur.com/Aab6e6c.jpg"
+  keywords={[
+    "agriculture",
+    "farming",
+    "Africa",
+    "greenhouse",
+    "irrigation",
+    "precision farming",
+  ]}
+>
+  <AccessibilityEnhancements />
+
+  <!-- Enhanced structured data for homepage -->
+  <StructuredData
+    type="WebPage"
+    data={{
+      title: t("hero.title"),
+      description: t("hero.subtitle"),
+      url: Astro.url.href,
+      language: lang,
+      mainEntity: {
+        name: "Arbre Bio Africa",
+        url: Astro.site?.toString(),
+        logo: "https://i.imgur.com/79cS79J.png",
+      },
+    }}
+  />
+
+  <!-- Hero Section with Image Background -->
+  <section
+    class="relative h-screen flex items-center justify-center overflow-hidden"
+    aria-label="Hero section"
+  >
+    <img
+      src="https://i.imgur.com/Aab6e6c.jpg"
+      alt="Hero Background"
+      class="absolute inset-0 w-full h-full object-cover"
+      width="1920"
+      height="1080"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+    <div
+      class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto"
+      role="banner"
+    >
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+        {t("hero.title")}
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 animate-slide-up">
+        {t("hero.subtitle")}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/contact"
+          class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up"
+          style="animation-delay: 200ms;"
+          aria-describedby="cta-primary-desc"
+        >
+          {t("hero.getStarted")}
+        </a>
+        <span id="cta-primary-desc" class="sr-only"
+          >Contact us to get started with agricultural solutions</span
+        >
+        <a
+          href="/solutions"
+          class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up"
+          style="animation-delay: 400ms;"
+          aria-describedby="cta-secondary-desc"
+        >
+          {t("hero.exploreSolutions")}
+        </a>
+        <span id="cta-secondary-desc" class="sr-only"
+          >Explore our agricultural solutions and products</span
+        >
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div
+      class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+      aria-hidden="true"
+    >
+      <svg
+        class="w-6 h-6 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="py-20 bg-gray-50" aria-labelledby="services-heading">
+    <div class="container mx-auto px-4">
+      <h2
+        id="services-heading"
+        class="text-3xl md:text-4xl font-bold text-center mb-4"
+      >
+        {t("services.title")}
+      </h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+        {t("services.subtitle")}
+      </p>
+
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        role="list"
+      >
+        {
+          services.map((service, index) => (
+            <article
+              class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300"
+              style={`animation-delay: ${index * 100}ms`}
+              role="listitem"
+            >
+              <div
+                class="text-4xl mb-4 group-hover:animate-scale"
+                aria-hidden="true"
+              >
+                {service.icon}
+              </div>
+              <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">
+                {service.title}
+              </h3>
+              <p class="text-gray-600 mb-4">{service.description}</p>
+              <a
+                href={service.link}
+                class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors"
+                aria-label={`Learn more about ${service.title}`}
+              >
+                {t("services.learnMore")}
+                <svg
+                  class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-20 bg-primary text-white" aria-labelledby="stats-heading">
+    <div class="container mx-auto px-4">
+      <h2 id="stats-heading" class="sr-only">Our Impact Statistics</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+        <div role="group" aria-labelledby="yield-stat">
+          <div class="text-4xl font-bold mb-2">10x</div>
+          <p id="yield-stat" class="text-gray-300">
+            {t("stats.yieldIncrease")}
+          </p>
+        </div>
+        <div role="group" aria-labelledby="water-stat">
+          <div class="text-4xl font-bold mb-2">60%</div>
+          <p id="water-stat" class="text-gray-300">{t("stats.waterSavings")}</p>
+        </div>
+        <div role="group" aria-labelledby="projects-stat">
+          <div class="text-4xl font-bold mb-2">500+</div>
+          <p id="projects-stat" class="text-gray-300">
+            {t("stats.projectsCompleted")}
+          </p>
+        </div>
+        <div role="group" aria-labelledby="countries-stat">
+          <div class="text-4xl font-bold mb-2">5</div>
+          <p id="countries-stat" class="text-gray-300">
+            {t("stats.africanCountries")}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section -->
+  <section
+    class="py-20 bg-gray-50 overflow-hidden"
+    aria-labelledby="partners-heading"
+  >
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 id="partners-heading" class="text-3xl md:text-4xl font-bold mb-4">
+          Our Trusted Partners
+        </h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Working together with leading organizations to transform African
+          agriculture
+        </p>
+      </div>
+
+      <div class="partners-carousel-wrapper">
+        <div class="partners-carousel">
+          {
+            partners.map((partner) => (
+              <a
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="partner-card"
+                aria-label={`Visit ${partner.name} website`}
+              >
+                <div class="partner-logo-container">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    class="partner-logo"
+                    loading="lazy"
+                    width="200"
+                    height="120"
+                  />
+                </div>
+              </a>
+            ))
+          }
+          {
+            partners.map((partner) => (
+              <a
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="partner-card"
+                aria-label={`Visit ${partner.name} website`}
+                aria-hidden="true"
+              >
+                <div class="partner-logo-container">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    class="partner-logo"
+                    loading="lazy"
+                    width="200"
+                    height="120"
+                  />
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20" aria-labelledby="cta-heading">
+    <div class="container mx-auto px-4 text-center">
+      <h2 id="cta-heading" class="text-3xl md:text-4xl font-bold mb-6">
+        {t("cta.title")}
+      </h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        {t("cta.subtitle")}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/contact"
+          class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
+          aria-describedby="consultation-desc"
+        >
+          {t("cta.consultation")}
+        </a>
+        <span id="consultation-desc" class="sr-only"
+          >Schedule a free consultation with our agricultural experts</span
+        >
+        <a
+          href={`https://wa.me/${config.contact.whatsappNumber.replace("+", "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center"
+          aria-describedby="whatsapp-desc"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          {t("cta.whatsapp")}
+        </a>
+        <span id="whatsapp-desc" class="sr-only"
+          >Chat with our experts on WhatsApp for immediate assistance</span
+        >
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .partners-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+
+  .partners-carousel {
+    display: flex;
+    gap: 2rem;
+    animation: scroll 40s linear infinite;
+    width: max-content;
+  }
+
+  .partners-carousel:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .partner-card {
+    flex-shrink: 0;
+    width: 220px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .partner-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.1),
+      rgba(34, 197, 94, 0.05)
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .partner-card:hover {
+    transform: translateY(-8px) scale(1.05) rotateX(5deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
+
+  .partner-card:hover::before {
+    opacity: 1;
+  }
+
+  .partner-card:active {
+    transform: translateY(-6px) scale(1.02);
+  }
+
+  .partner-logo-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .partner-logo {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(100%) brightness(0.8);
+    transition: all 0.4s ease;
+  }
+
+  .partner-card:hover .partner-logo {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .partners-carousel {
+      animation-duration: 30s;
+      gap: 1.5rem;
+    }
+
+    .partner-card {
+      width: 180px;
+      height: 120px;
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .partners-carousel {
+      animation-duration: 25s;
+      gap: 1rem;
+    }
+
+    .partner-card {
+      width: 150px;
+      height: 100px;
+      padding: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .partners-carousel {
+      animation: none;
+    }
+
+    .partner-card {
+      transition: none;
+    }
+
+    .partner-logo {
+      transition: none;
+    }
+  }
+
+  @supports (will-change: transform) {
+    .partners-carousel {
+      will-change: transform;
+    }
+
+    .partner-card {
+      will-change: transform, box-shadow;
+    }
+  }
+</style>

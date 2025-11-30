@@ -1,0 +1,291 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const stats = [
+  { value: '500+', label: 'Projects Completed' },
+  { value: '9', label: 'African Countries' },
+  { value: '50k+', label: 'Hectares Optimized' },
+  { value: '60%', label: 'Average Water Savings' }
+];
+
+const partners = [
+  { name: 'United Nations', category: 'International Organizations', logo: 'https://imgur.com/b1iqh4C.jpg' },
+  { name: 'FAO', category: 'International Organizations', logo: 'https://imgur.com/oM0xDtE.jpg' },
+  { name: 'Government of Kenya', category: 'Government', logo: 'https://i.imgur.com/DEF789.png' },
+  { name: 'SAPH', category: 'Agribusiness', logo: 'https://imgur.com/J7eUN6b.jpg' }
+];
+
+const solutions = [
+  {
+    title: 'Precision Irrigation',
+    description: 'Smart water management systems that reduce waste and optimize crop yield',
+    icon: '💧',
+    stats: ['50% water savings', '40% yield increase', '2-year ROI']
+  },
+  {
+    title: 'Organic Substrates',
+    description: 'High-quality coconut-based growing mediums for sustainable farming',
+    icon: '🌱',
+    stats: ['100% organic', '8x water retention', '5-year lifespan']
+  },
+  {
+    title: 'Industrial Greenhouses',
+    description: 'Climate-controlled environments designed for African conditions',
+    icon: '🏗️',
+    stats: ['40% cooler inside', '90% pest reduction', '20-year durability']
+  },
+  {
+    title: 'Digital Farming',
+    description: 'IoT-based monitoring and AI-driven analytics for smart agriculture',
+    icon: '📱',
+    stats: ['24/7 monitoring', 'Real-time alerts', 'Data-driven insights']
+  }
+];
+
+const timeline = [
+  { year: 2014, event: 'Founded in California', icon: '🌎' },
+  { year: 2018, event: 'First African project in Kenya', icon: '🌍' },
+  { year: 2020, event: 'Expansion to West Africa', icon: '🚀' },
+  { year: 2022, event: 'Launch of Digital Farming Solutions', icon: '💻' },
+  { year: 2023, event: 'Reached 500+ Projects Milestone', icon: '🏆' }
+];
+---
+
+<Layout
+  title="About Arbre Bio Africa - Leading Agricultural Innovation"
+  description="Discover how Arbre Bio Africa is transforming agriculture across Africa through innovative technology and sustainable solutions."
+>
+  <!-- Hero Section with Parallax -->
+  <section class="relative h-screen overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image: url('https://imgur.com/2Pt8VXW.jpg'); background-size: cover; background-position: center;"></div>
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    
+    <div class="relative z-10 h-full flex items-center">
+      <div class="container mx-auto px-4">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+          Transforming Agriculture
+          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">Through Innovation</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8 animate-slide-up">
+          Empowering farmers across Africa with cutting-edge technology and sustainable solutions.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a 
+            href="#solutions"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
+          >
+            Explore Solutions
+          </a>
+          <a 
+            href="/contact"
+            class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Stats Section with Counter Animation -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {stats.map((stat) => (
+          <div class="text-center transform hover:scale-105 transition-transform duration-300">
+            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.value}>0</div>
+            <div class="text-gray-600">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section with Parallax -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image: url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c8b8d?ixlib=rb-4.0.3'); background-size: cover; background-position: center;"></div>
+      <div class="absolute inset-0 bg-primary bg-opacity-90 backdrop-blur-sm"></div>
+    </div>
+    
+    <div class="relative z-10 container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Mission</h2>
+        <p class="text-xl leading-relaxed">
+          At Arbre Bio Africa, we're committed to revolutionizing agriculture through innovative technology and sustainable practices. Our mission is to empower farmers with solutions that increase productivity while preserving natural resources.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solutions Section with Hover Effects -->
+  <section id="solutions" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Solutions</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {solutions.map((solution) => (
+          <div class="bg-white rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
+            <div class="text-4xl mb-4">{solution.icon}</div>
+            <h3 class="text-xl font-bold mb-3">{solution.title}</h3>
+            <p class="text-gray-600 mb-4">{solution.description}</p>
+            <div class="space-y-2">
+              {solution.stats.map((stat) => (
+                <div class="flex items-center text-primary">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  {stat}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Journey</h2>
+      <div class="max-w-4xl mx-auto relative">
+        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
+        
+        {timeline.map((item, index) => (
+          <div class={`relative mb-8 ${index % 2 === 0 ? 'left-timeline' : 'right-timeline'}`}>
+            <div class="flex items-center">
+              <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center z-10">
+                {item.icon}
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-lg ml-6 transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+                <div class="text-2xl font-bold text-primary mb-2">{item.year}</div>
+                <div class="text-gray-600">{item.event}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
+      <p class="text-xl text-white mb-8">Join hundreds of successful farmers across Africa.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="/contact" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300"
+        >
+          Get Started
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 inline-flex items-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parallax-bg {
+    transform: translateY(var(--scroll-offset, 0));
+    will-change: transform;
+  }
+
+  .left-timeline {
+    padding-right: 50%;
+  }
+
+  .right-timeline {
+    padding-left: 50%;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 1s ease-out;
+  }
+</style>
+
+<script>
+  // Parallax Effect
+  const parallaxElements = document.querySelectorAll('.parallax-bg');
+  
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+
+    parallaxElements.forEach((element) => {
+      const htmlElement = element as HTMLElement;
+      const offset = scrolled * 0.5;
+      htmlElement.style.setProperty('--scroll-offset', `${offset}px`);
+    });
+  });
+
+  // Stats Counter Animation
+  const counters = document.querySelectorAll<HTMLElement>('.counter');
+
+  const animateCounter = (counter: HTMLElement) => {
+    const target = parseInt(counter.getAttribute('data-target')?.replace(/\D/g, '') || '0');
+    let current = 0;
+    const increment = target / 50;
+
+    const updateCounter = () => {
+      if (current < target) {
+        current += increment;
+        counter.textContent = Math.ceil(current).toString();
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = counter.getAttribute('data-target') || '0';
+      }
+    };
+
+    updateCounter();
+  };
+
+  // Intersection Observer for counters
+  const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target as HTMLElement);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(counter => observer.observe(counter));
+</script>

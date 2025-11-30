@@ -1,0 +1,230 @@
+---
+import MobileNavigation from "./MobileNavigation.astro";
+import { useTranslations, defaultLang } from "../lib/i18n";
+import { config } from "../lib/config";
+
+const lang = defaultLang;
+const t = useTranslations(lang);
+
+const menuItems = [
+  {
+    name: t("nav.greenhouses"),
+    url: "/greenhouses",
+    submenu: [
+      { name: t("nav.highTech"), url: "/greenhouses/high-tech" },
+      { name: t("nav.accessories"), url: "/greenhouses/accessories" },
+    ],
+  },
+  {
+    name: t("nav.irrigation"),
+    url: "/irrigation",
+    submenu: [
+      { name: t("nav.dripSystems"), url: "/irrigation/drip-systems" },
+      { name: t("nav.sprinklers"), url: "/irrigation/sprinklers" },
+      { name: t("nav.controllers"), url: "/irrigation/controllers" },
+    ],
+  },
+  {
+    name: t("nav.substrates"),
+    url: "/substrates",
+    submenu: [
+      { name: t("nav.growingSolutions"), url: "/substrates/growing-solutions" },
+    ],
+  },
+  {
+    name: t("nav.projects"),
+    url: "/projects",
+  },
+  { name: t("nav.company"), url: "/company" },
+  { name: t("nav.blog"), url: "/blog" },
+  { name: "Contact", url: "/contact" },
+];
+---
+
+<nav
+  class="fixed top-0 left-0 right-0 z-40 bg-primary/90 backdrop-blur-sm transition-all duration-300"
+>
+  <div class="container mx-auto px-6">
+    <div class="flex justify-between items-center h-20">
+      <a href="/" class="flex items-center" aria-label="Home">
+        <img
+          src={config.company.logo}
+          alt={config.site.name}
+          class="h-24 w-auto transition-transform hover:scale-105 brightness-0 invert"
+          width="300"
+          height="300"
+          loading="eager"
+          fetchpriority="high"
+          decoding="sync"
+        />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-6">
+        {
+          menuItems.map((item) => (
+            <div class="relative group">
+              <a
+                href={item.url}
+                class="text-white/90 hover:text-white text-[17px] transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+                aria-expanded={item.submenu ? "false" : undefined}
+              >
+                {item.name}
+              </a>
+
+              {item.submenu && (
+                <div class="absolute left-0 mt-2 w-56 bg-primary/85 backdrop-blur-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0">
+                  <div class="py-2">
+                    {item.submenu.map((subitem) => (
+                      <a
+                        href={subitem.url}
+                        class="block px-4 py-2 text-white/80 hover:text-white hover:bg-primary/95 focus:text-white focus:bg-primary/95 transition-colors focus:outline-none"
+                      >
+                        {subitem.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        }
+
+        <!-- Social Media Icons -->
+        <div class="flex items-center space-x-6">
+          <a
+            href={config.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+            aria-label="Facebook"
+          >
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a
+            href={config.social.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg"
+            aria-label="Twitter"
+          >
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a
+            href={config.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg"
+            aria-label="LinkedIn"
+          >
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a
+            href={config.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg"
+            aria-label="Instagram"
+          >
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a
+            href={config.social.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg"
+            aria-label="YouTube"
+          >
+            <i class="fa-brands fa-youtube"></i>
+          </a>
+          <a
+            href={config.social.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/80 hover:text-white transition-colors text-lg"
+            aria-label="TikTok"
+          >
+            <i class="fa-brands fa-tiktok"></i>
+          </a>
+
+          <!-- WhatsApp Icon -->
+          <a
+            href={`https://wa.me/${config.contact.whatsappNumber.replace("+", "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/90 hover:text-white text-[17px] transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+            aria-label="Chat on WhatsApp"
+          >
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        class="md:hidden text-white hover:text-white/80 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+        id="mobile-menu-button"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav-menu"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation Component -->
+<MobileNavigation menuItems={menuItems} />
+
+<script is:inline>
+  (function () {
+    const nav = document.querySelector("nav");
+
+    // Hide navigation on scroll down, show on scroll up
+    if (typeof window !== "undefined") {
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        if (!nav) return;
+        const currentScroll = window.scrollY;
+        if (currentScroll <= 0) {
+          nav.classList.remove("-translate-y-full");
+          nav.classList.remove("bg-primary/90");
+          nav.classList.add("bg-transparent");
+          return;
+        }
+
+        nav.classList.remove("bg-transparent");
+        nav.classList.add("bg-primary/90");
+
+        if (
+          currentScroll > lastScroll &&
+          !nav.classList.contains("-translate-y-full")
+        ) {
+          // Scroll Down
+          nav.classList.add("-translate-y-full");
+        } else if (
+          currentScroll < lastScroll &&
+          nav.classList.contains("-translate-y-full")
+        ) {
+          // Scroll Up
+          nav.classList.remove("-translate-y-full");
+        }
+
+        lastScroll = currentScroll;
+      });
+    }
+  })();
+</script>

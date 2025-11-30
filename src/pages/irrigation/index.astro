@@ -1,0 +1,407 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const technologies = [
+  {
+    title: 'Drip Irrigation Systems',
+    description: 'State-of-the-art drip irrigation technology that delivers precise amounts of water directly to plant roots, maximizing efficiency and crop yields while minimizing water waste. Our systems are designed specifically for African agricultural conditions.',
+    specs: [
+      { label: 'Flow Rate', value: '1-8 L/hour' },
+      { label: 'Spacing Options', value: '20-100 cm' },
+      { label: 'Operating Pressure', value: '1-4 bar' },
+      { label: 'Filtration', value: '120 mesh' }
+    ],
+    benefits: [
+      'Up to 70% water savings compared to traditional irrigation',
+      'Uniform water distribution across all crops',
+      'Reduced fertilizer leaching',
+      'Minimal soil erosion and weed growth'
+    ],
+    image: 'https://imgur.com/6XtSwqS.jpg',
+    caseStudy: {
+      title: 'Tomato Farm in Ghana',
+      result: '65% increase in yield, 40% reduction in water usage'
+    }
+  },
+  {
+    title: 'Sprinkler Systems',
+    description: 'Advanced sprinkler systems featuring precision water distribution and smart pressure regulation. Ideal for larger fields and specific crop types requiring overhead irrigation, our systems ensure optimal coverage and water efficiency.',
+    specs: [
+      { label: 'Coverage Radius', value: '5-25 meters' },
+      { label: 'Flow Rate', value: '500-2000 L/hour' },
+      { label: 'Pressure Range', value: '2-5 bar' },
+      { label: 'Rotation', value: '360° coverage' }
+    ],
+    benefits: [
+      'Even water distribution pattern',
+      'Adjustable spray patterns for different crops',
+      'Durable construction for long service life',
+      'Low maintenance requirements'
+    ],
+    image: 'https://imgur.com/fwHJKYs.jpg',
+    caseStudy: {
+      title: 'Maize Farm in Kenya',
+      result: '45% increase in crop uniformity, 30% water savings'
+    }
+  },
+  {
+    title: 'Fertigation Solutions',
+    description: 'Integrated fertigation systems that combine irrigation with fertilizer application, ensuring precise nutrient delivery while maximizing resource efficiency. Our smart dosing technology adapts to crop needs and growth stages.',
+    specs: [
+      { label: 'Injection Rate', value: '0.2-40 L/hour' },
+      { label: 'Mixing Ratio', value: '1:50 - 1:1000' },
+      { label: 'Tank Capacity', value: '50-1000 L' },
+      { label: 'Control', value: 'EC/pH automated' }
+    ],
+    benefits: [
+      'Precise nutrient delivery to crop root zone',
+      'Automated pH and EC control',
+      'Real-time monitoring and adjustment',
+      'Reduced fertilizer waste'
+    ],
+    image: 'https://imgur.com/NnkgMDq.jpg',
+    caseStudy: {
+      title: 'Vegetable Farm in Côte d\'Ivoire',
+      result: '50% reduction in fertilizer use, 40% yield increase'
+    }
+  },
+  {
+    title: 'Digital Farming Tools',
+    description: 'Smart irrigation management systems powered by IoT sensors and advanced analytics. Monitor soil moisture, weather conditions, and crop health in real-time to optimize irrigation scheduling and resource usage.',
+    specs: [
+      { label: 'Sensor Range', value: 'Up to 5 km' },
+      { label: 'Data Update', value: 'Every 15 min' },
+      { label: 'Battery Life', value: '5 years' },
+      { label: 'Accuracy', value: '±2% VWC' }
+    ],
+    benefits: [
+      'Real-time monitoring and alerts',
+      'Data-driven irrigation decisions',
+      'Remote system control via mobile app',
+      'Predictive maintenance alerts'
+    ],
+    image: 'https://imgur.com/3VCs7hJ.jpg',
+    caseStudy: {
+      title: 'Tech-enabled Farm in Nigeria',
+      result: '35% water savings through smart scheduling'
+    }
+  },
+  {
+    title: 'Water Treatment & Filtration',
+    description: 'Comprehensive water treatment solutions that ensure irrigation water quality meets crop requirements. Our systems remove contaminants, prevent clogging, and maintain system efficiency throughout the growing season.',
+    specs: [
+      { label: 'Flow Capacity', value: '10-200 m³/hour' },
+      { label: 'Filtration Level', value: '20-200 micron' },
+      { label: 'Pressure Loss', value: '<0.3 bar' },
+      { label: 'Backwash', value: 'Automated' }
+    ],
+    benefits: [
+      'Prevents emitter clogging',
+      'Removes harmful contaminants',
+      'Extends system lifespan',
+      'Automated self-cleaning'
+    ],
+    image: 'https://imgur.com/Y5YU1VX.jpg',
+    caseStudy: {
+      title: 'Large Scale Farm in Tanzania',
+      result: '90% reduction in system maintenance needs'
+    }
+  },
+  {
+    title: 'Mass Production Methods',
+    description: 'Scalable irrigation solutions designed for large-scale agricultural operations. Our systems can be customized to meet the specific needs of commercial farms while maintaining efficiency and ease of management.',
+    specs: [
+      { label: 'System Capacity', value: '50-1000 ha' },
+      { label: 'Pump Station', value: 'Up to 500 HP' },
+      { label: 'Control Zones', value: 'Up to 100' },
+      { label: 'Automation', value: 'Full system' }
+    ],
+    benefits: [
+      'Scalable system design',
+      'Centralized control system',
+      'Zone-specific management',
+      'Integration with farm operations'
+    ],
+    image: 'https://imgur.com/3AJRSrz.jpg',
+    caseStudy: {
+      title: 'Commercial Farm in Ethiopia',
+      result: '85% efficiency in 500-hectare operation'
+    }
+  }
+];
+
+const stats = [
+  { value: '60%', label: 'Average Water Savings' },
+  { value: '500+', label: 'Projects Completed' },
+  { value: '45%', label: 'Yield Increase' },
+  { value: '98%', label: 'Client Satisfaction' }
+];
+
+const calculatorInputs = [
+  { label: 'Land Area (Hectares)', id: 'area', type: 'number' as const, min: 0.1, step: 0.1 },
+  { label: 'Crop Type', id: 'crop', type: 'select' as const, options: ['Vegetables', 'Cereals', 'Fruits', 'Other'] },
+  { label: 'Current Water Usage (m³/ha/year)', id: 'waterUsage', type: 'number' as const, min: 0 },
+  { label: 'Current Yield (tons/ha)', id: 'yield', type: 'number' as const, min: 0 }
+];
+---
+
+<Layout
+  title="Precision Irrigation Solutions for African Agriculture"
+  description="Transform your farm with Arbre Bio's advanced irrigation systems. Our solutions deliver up to 70% water savings and significant yield increases across Africa."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/699v91Q.jpg"
+        alt="Precision Irrigation System" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+          Precision Irrigation Solutions
+          <span class="block text-2xl md:text-3xl mt-2">For African Agriculture</span>
+        </h1>
+        <p class="text-xl text-white mb-8">
+          Transform your farm with water-efficient irrigation systems designed for African conditions
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a 
+            href="#calculator"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
+          >
+            Calculate Your Savings
+          </a>
+          <a 
+            href="#technologies"
+            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
+          >
+            Explore Solutions
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-12 bg-primary">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {stats.map((stat) => (
+          <div class="text-center text-white">
+            <div class="text-4xl font-bold mb-2">{stat.value}</div>
+            <div class="text-sm opacity-80">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Technologies Section -->
+  <section id="technologies" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Irrigation Technologies</h2>
+      
+      {technologies.map((tech, index) => (
+        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
+              <h3 class="text-2xl font-bold mb-4">{tech.title}</h3>
+              <p class="text-gray-600 mb-6">{tech.description}</p>
+              
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                {tech.specs.map((spec) => (
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="text-sm text-gray-500">{spec.label}</div>
+                    <div class="font-semibold">{spec.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div class="space-y-2 mb-6">
+                {tech.benefits.map((benefit) => (
+                  <div class="flex items-center text-gray-700">
+                    <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {benefit}
+                  </div>
+                ))}
+              </div>
+
+              <div class="bg-primary/10 p-4 rounded-lg">
+                <div class="font-semibold mb-1">Case Study: {tech.caseStudy.title}</div>
+                <div class="text-primary">{tech.caseStudy.result}</div>
+              </div>
+            </div>
+            <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
+              <img 
+                src={tech.image}
+                alt={tech.title}
+                class="w-full h-[400px] object-cover rounded-lg shadow-lg"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ROI Calculator Section -->
+  <section id="calculator" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Calculate Your Potential Savings</h2>
+        
+        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+          {calculatorInputs.map((input) => (
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                {input.label}
+              </label>
+              {input.type === 'select' ? (
+                <select
+                  id={input.id}
+                  class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                >
+                  {input.options?.map((option) => (
+                    <option value={option.toLowerCase()}>{option}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={input.type}
+                  id={input.id}
+                  min={input.min}
+                  step={input.step}
+                  class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                />
+              )}
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
+          >
+            Calculate Savings
+          </button>
+        </form>
+
+        <div id="results" class="hidden mt-8 space-y-4">
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-bold mb-4">Your Potential Savings</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-sm text-gray-500">Water Savings</div>
+                <div class="text-2xl font-bold text-primary">
+                  <span id="waterSavings">0</span>m³/year
+                </div>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-sm text-gray-500">Yield Increase</div>
+                <div class="text-2xl font-bold text-primary">
+                  <span id="yieldIncrease">0</span>%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
+      <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="/contact" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
+        >
+          Get Started
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // ROI Calculator Logic
+  const calculatorForm = document.querySelector('form');
+  const resultsDiv = document.getElementById('results') as HTMLElement | null;
+  const waterSavingsSpan = document.getElementById('waterSavings') as HTMLElement | null;
+  const yieldIncreaseSpan = document.getElementById('yieldIncrease') as HTMLElement | null;
+
+  if (calculatorForm) {
+    calculatorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Get form values
+      const area = parseFloat((document.getElementById('area') as HTMLInputElement).value);
+      const crop = (document.getElementById('crop') as HTMLSelectElement).value;
+      const currentWater = parseFloat((document.getElementById('waterUsage') as HTMLInputElement).value);
+      const currentYield = parseFloat((document.getElementById('yield') as HTMLInputElement).value);
+
+      // Calculate savings (simplified example)
+      const waterSavings = Math.round(currentWater * 0.4 * area); // 40% water savings
+      const yieldIncrease = 35; // 35% yield increase
+
+      // Display results
+      if (resultsDiv && waterSavingsSpan && yieldIncreaseSpan) {
+        resultsDiv.classList.remove('hidden');
+        waterSavingsSpan.textContent = waterSavings.toLocaleString();
+        yieldIncreaseSpan.textContent = yieldIncrease.toString();
+      }
+    });
+  }
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Arbre Bio Africa Precision Irrigation Systems",
+  "description": "Advanced irrigation solutions designed for African agriculture, delivering significant water savings and yield improvements.",
+  "brand": {
+    "@type": "Brand",
+    "name": "Arbre Bio Africa"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Arbre Bio Africa",
+    "url": "https://arbrebio.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "XOF",
+    "priceValidUntil": "2025-12-31",
+    "availability": "https://schema.org/InStock"
+  },
+  "image": [
+    "https://imgur.com/699v91Q.jpg"
+  ],
+  "features": [
+    "Drip irrigation systems",
+    "Sprinkler systems",
+    "Fertigation solutions",
+    "Digital farming tools",
+    "Water treatment systems"
+  ]
+}
+</script>

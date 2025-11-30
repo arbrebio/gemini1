@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const email = Astro.url.searchParams.get('email');
+const token = Astro.url.searchParams.get('token');
+---
+
+<Layout
+  title="Unsubscribe from Newsletter"
+  description="Unsubscribe from Arbre Bio Africa's newsletter"
+  noIndex={true}
+>
+  <div class="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+      <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Unsubscribe from Newsletter</h1>
+        <p class="text-gray-600" id="status-message">Processing your unsubscribe request...</p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script define:vars={{ email, token }}>
+  async function unsubscribe() {
+    try {
+      const response = await fetch(`/api/newsletter/unsubscribe?email=${email}&token=${token}`);
+      const statusMessage = document.getElementById('status-message');
+      
+      if (response.ok) {
+        try {
+          const result = await response.json();
+          if (statusMessage && result) {
+            statusMessage.textContent = result.message || 'You have been successfully unsubscribed from our newsletter.';
+            statusMessage.className = 'text-green-600';
+          }
+        } catch (jsonError) {
+          if (statusMessage) {
+            statusMessage.textContent = 'You have been successfully unsubscribed from our newsletter.';
+            statusMessage.className = 'text-green-600';
+          }
+        }
+      } else {
+        try {
+          const errorResult = await response.json();
+          if (statusMessage && errorResult) {
+            statusMessage.textContent = errorResult.message || 'An error occurred while processing your unsubscribe request.';
+            statusMessage.className = 'text-red-600';
+          }
+        } catch (jsonError) {
+          if (statusMessage) {
+            statusMessage.textContent = 'An error occurred while processing your unsubscribe request.';
+            statusMessage.className = 'text-red-600';
+          }
+        }
+      }
+    } catch (error) {
+      const statusMessage = document.getElementById('status-message');
+      if (statusMessage) {
+        statusMessage.textContent = 'An error occurred. Please try again later.';
+        statusMessage.className = 'text-red-600';
+      }
+    }
+  }
+
+  if (email && token) {
+    unsubscribe();
+  }
+</script>

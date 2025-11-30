@@ -1,0 +1,45 @@
+{
+  "name": "ESP-TM2 Series Controllers",
+  "brand": "Rain Bird",
+  "shortDescription": "Simple, Flexible and Reliable for Residential Applications",
+  "description": "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+  "image": "https://imgur.com/NaJWgvW.jpg",
+  "category": "controllers",
+  "features": [
+    {
+      "title": "WiFi Upgradeable",
+      "description": "Upgradeable for WiFi-based remote monitoring and control"
+    },
+    {
+      "title": "Smart Scheduling",
+      "description": "Internet-based weather information for smart scheduling"
+    },
+    {
+      "title": "Multiple Stations",
+      "description": "4, 6, 8, and 12 station models available"
+    },
+    {
+      "title": "Flexible Programming",
+      "description": "Set Permanent Days Off per program"
+    }
+  ],
+  "specifications": {
+    "operating": {
+      "temperature": "Up to 149°F (65°C)",
+      "storage": "-40°F (-40°C) to 150°F (66°C)",
+      "humidity": "95% max @ 50°F to 120°F (10°C to 49°C) non-condensing"
+    },
+    "electrical": {
+      "input": "120V∿, 60Hz, 0.3A",
+      "output": "24V∿, 60Hz, 1.0A"
+    }
+  },
+  "models": {
+    "120VAC": [
+      "TM2-4-120V: 4-station",
+      "TM2-6-120V: 6-station", 
+      "TM2-8-120V: 8-station",
+      "TM2-12-120V: 12-station"
+    ]
+  }
+}

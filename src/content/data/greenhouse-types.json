@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Nethouse",
+    "description": "Ideal for tropical climates, providing optimal ventilation and insect protection while maintaining favorable growing conditions.",
+    "specs": {
+      "dimensions": "Standard spans of 8m, lengths customizable",
+      "materials": "Galvanized steel structure, high-grade insect netting",
+      "loadCapacity": "Wind load up to 100km/h",
+      "climate": "Natural ventilation with optional fan systems",
+      "lifespan": "15-20 years for structure, 5-7 years for netting",
+      "installation": "Requires level ground, basic foundation"
+    },
+    "features": [
+      "40-50 mesh UV-stabilized netting",
+      "Roll-up side ventilation",
+      "Anti-virus screening",
+      "Modular design"
+    ],
+    "advantages": [
+      "Lower initial investment",
+      "Excellent natural ventilation",
+      "Ideal for warm climates",
+      "Easy maintenance"
+    ],
+    "limitations": [
+      "Limited climate control",
+      "Not suitable for extreme weather",
+      "Less precise environment control"
+    ],
+    "roi": {
+      "payback": "2-3 years",
+      "yieldIncrease": "40-60%",
+      "waterSavings": "30-40%"
+    },
+    "image": "https://imgur.com/XxwTJh8.jpg"
+  },
+  {
+    "name": "Sawtooth Greenhouse",
+    "description": "Advanced design offering superior ventilation and climate control, perfect for year-round production in hot climates.",
+    "specs": {
+      "dimensions": "9.6m span width, customizable length",
+      "materials": "Hot-dip galvanized steel, UV-stabilized covering",
+      "loadCapacity": "Wind load up to 120km/h",
+      "climate": "Ridge ventilation with optional cooling",
+      "lifespan": "25+ years for structure, 8-10 years for covering",
+      "installation": "Requires engineered foundation"
+    },
+    "features": [
+      "Automated ridge ventilation",
+      "UV-stabilized polyethylene cover",
+      "Integrated shade system",
+      "Structural reinforcement"
+    ],
+    "advantages": [
+      "Excellent natural ventilation",
+      "Higher structural strength",
+      "Better light distribution",
+      "Suitable for automation"
+    ],
+    "limitations": [
+      "Higher initial cost",
+      "Complex installation",
+      "Requires regular maintenance"
+    ],
+    "roi": {
+      "payback": "3-4 years",
+      "yieldIncrease": "70-90%",
+      "waterSavings": "50-60%"
+    },
+    "image": "https://imgur.com/dORTVaM.jpg"
+  }
+]

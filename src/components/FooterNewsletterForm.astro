@@ -1,0 +1,123 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<form class={`space-y-4 ${className}`} id="footer-newsletter-form">
+  <div class="relative">
+    <label for="footer-email" class="sr-only">Email address</label>
+    <input 
+      type="email" 
+      id="footer-email"
+      name="email"
+      placeholder="Your email address"
+      class="w-full px-4 py-2 rounded-md bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+      required
+      aria-required="true"
+    />
+  </div>
+  <button 
+    type="submit"
+    class="w-full px-4 py-2 bg-white text-primary rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
+  >
+    <span>Subscribe</span>
+    <span class="loading-spinner hidden ml-2">
+      <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      </svg>
+    </span>
+  </button>
+  <div class="success-message hidden text-green-300"></div>
+  <div class="error-message hidden text-red-300"></div>
+</form>
+
+<script>
+  const form = document.getElementById('footer-newsletter-form') as HTMLFormElement | null;
+  const successMessage = form?.querySelector('.success-message');
+  const errorMessage = form?.querySelector('.error-message');
+  const loadingSpinner = form?.querySelector('.loading-spinner');
+  const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset messages
+      successMessage?.classList.add('hidden');
+      errorMessage?.classList.add('hidden');
+
+      // Show loading state
+      loadingSpinner?.classList.remove('hidden');
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+
+      try {
+        const email = (form.querySelector('#footer-email') as HTMLInputElement)?.value;
+
+        if (!email) {
+          throw new Error('Email is required');
+        }
+
+        // Send data to our API endpoint
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            source: 'footer',
+            consent: true
+          }),
+        });
+
+        try {
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Failed to subscribe');
+          }
+
+          // Show success message
+          if (successMessage) {
+            successMessage.textContent = result.message || 'Thank you for subscribing! Please check your email to confirm your subscription.';
+            successMessage.classList.remove('hidden');
+          }
+          form.reset();
+        } catch (jsonError) {
+          // If JSON parsing fails, create a more user-friendly error
+          if (response.ok) {
+            // If the response was OK but JSON parsing failed, show success
+            if (successMessage) {
+              successMessage.textContent = 'Thank you for subscribing! Please check your email to confirm your subscription.';
+              successMessage.classList.remove('hidden');
+            }
+            form.reset();
+            return;
+          } else {
+            throw new Error('Failed to process subscription. Please try again.');
+          }
+        }
+      } catch (error) {
+        // Show error message
+        if (errorMessage) {
+          errorMessage.textContent = error instanceof Error
+            ? error.message
+            : 'An error occurred. Please try again.';
+          errorMessage.classList.remove('hidden');
+        }
+      } finally {
+        // Reset loading state
+        loadingSpinner?.classList.add('hidden');
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+      }
+    });
+  }
+</script>

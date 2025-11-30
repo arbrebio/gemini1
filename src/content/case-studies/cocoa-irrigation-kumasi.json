@@ -1,0 +1,25 @@
+{
+  "title": "Smart Irrigation for Cocoa Farm",
+  "client": "Emmanuel Osei",
+  "location": "Kumasi, Ghana",
+  "area": "50 hectares",
+  "type": "Commercial Plantation",
+  "description": "Modernization of 50-hectare cocoa plantation with smart irrigation",
+  "challenge": "Drought periods severely impacted crop yields and quality",
+  "solution": "Implementation of automated drip irrigation system with soil moisture monitoring",
+  "results": [
+    "180% increase in cocoa yield",
+    "40% reduction in water consumption",
+    "Improved bean quality and consistency",
+    "Higher price per kg achieved through quality improvements"
+  ],
+  "testimonial": "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",
+  "clientImage": "https://imgur.com/m4XZt0I.jpg",
+  "beforeImage": "https://imgur.com/Sm4hQzW.jpg",
+  "afterImage": "https://imgur.com/FTly7JB.jpg",
+  "stats": [
+    { "label": "Water Efficiency", "value": "85%" },
+    { "label": "Yield Increase", "value": "40%" },
+    { "label": "ROI Period", "value": "2 years" }
+  ]
+}

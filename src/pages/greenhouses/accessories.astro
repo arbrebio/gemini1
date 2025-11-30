@@ -1,0 +1,658 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const structuralComponents = [
+  {
+    category: "Arches & Trusses",
+    items: [
+      {
+        name: "Premium Arch 9600",
+        specs: {
+          material: "Hot-dip galvanized steel Z600",
+          thickness: "2.0-3.0mm",
+          loadCapacity: "55 kg/m²",
+          span: "9.6 meters",
+          coating: "275g/m² zinc"
+        },
+        certifications: ["ISO 9001:2015", "EN 1090-1"],
+        image: "https://imgur.com/Fn2AVYj.jpg"
+      },
+      {
+        name: "Reinforced Truss System",
+        specs: {
+          material: "Hot-dip galvanized steel Z600",
+          thickness: "2.5-4.0mm",
+          loadCapacity: "75 kg/m²",
+          span: "8.0-12.0 meters",
+          coating: "275g/m² zinc"
+        },
+        certifications: ["ISO 9001:2015", "EN 1090-1"],
+        image: "https://imgur.com/h9Sd2nf.jpg"
+      }
+    ]
+  },
+  {
+    category: "Support Systems",
+    items: [
+      {
+        name: "Heavy-Duty Column",
+        specs: {
+          material: "Hot-dip galvanized steel Z600",
+          thickness: "3.0-4.0mm",
+          loadCapacity: "2500 kg vertical",
+          height: "3.0-6.0 meters",
+          coating: "275g/m² zinc"
+        },
+        certifications: ["ISO 9001:2015", "EN 1090-1"],
+        image: "https://imgur.com/9zbYXXU.jpg"
+      },
+      {
+        name: "Cross Bracing Kit",
+        specs: {
+          material: "Hot-dip galvanized steel wire",
+          thickness: "8mm diameter",
+          loadCapacity: "1200 kg tension",
+          length: "Customizable",
+          coating: "275g/m² zinc"
+        },
+        certifications: ["ISO 9001:2015"],
+        image: "https://imgur.com/cgLqE5E.jpg"
+      }
+    ]
+  }
+];
+
+const fasteners = [
+  {
+    category: "Structural Connectors",
+    items: [
+      {
+        name: "Heavy-Duty Bolt Set",
+        specs: {
+          material: "Grade 8.8 steel",
+          size: "M8-M12",
+          torque: "25-85 Nm",
+          coating: "Hot-dip galvanized",
+          standard: "DIN 933"
+        },
+        applications: ["Arch connections", "Main frame assembly", "Support bracing"],
+        image: "https://imgur.com/Sz7oYdN.jpg"
+      },
+      {
+        name: "Channel Connector",
+        specs: {
+          material: "Galvanized steel",
+          thickness: "2.5mm",
+          loadCapacity: "850 kg",
+          coating: "Z275",
+          standard: "EN 10346"
+        },
+        applications: ["Purlin connections", "Cross member joining", "Gutter support"],
+        image: "https://imgur.com/QGICSpN.jpg"
+      }
+    ]
+  }
+];
+
+const coverageMaterials = [
+  {
+    category: "Films & Sheets",
+    items: [
+      {
+        name: "Ultra-Clear EVA Film",
+        specs: {
+          material: "EVA copolymer",
+          thickness: "200 microns",
+          lightTransmission: "91%",
+          uvStability: "48 months",
+          thermalRetention: "85%"
+        },
+        certifications: ["EN 13206", "ISO 4892-2"],
+        image: "https://imgur.com/v1WwRzr.jpg"
+      },
+      {
+        name: "Diffused Light Film",
+        specs: {
+          material: "PE-EVA blend",
+          thickness: "200 microns",
+          lightDiffusion: "70%",
+          uvStability: "48 months",
+          thermalRetention: "82%"
+        },
+        certifications: ["EN 13206", "ISO 4892-2"],
+        image: "https://imgur.com/yLyIJMa.jpg"
+      }
+    ]
+  },
+  {
+    category: "Insect Screens",
+    items: [
+      {
+        name: "Anti-Thrip Net",
+        specs: {
+          material: "HDPE monofilament",
+          mesh: "50x25",
+          uvStability: "5 years",
+          airflow: "45%",
+          shading: "22%"
+        },
+        certifications: ["ISO 9001:2015"],
+        image: "https://imgur.com/KRKFqz1.jpg"
+      }
+    ]
+  }
+];
+
+const growingAccessories = [
+  {
+    category: "Support Systems",
+    items: [
+      {
+        name: "Crop Support Wire",
+        specs: {
+          material: "High-tensile steel",
+          diameter: "2.5mm",
+          coating: "Hot-dip galvanized",
+          strength: "700 N/mm²",
+          rollLength: "500m"
+        },
+        applications: ["Tomato support", "Cucumber training", "Vine crops"],
+        image: "https://imgur.com/U8pORSQ.jpg"
+      },
+      {
+        name: "Trellis Support System",
+        specs: {
+          material: "Galvanized steel",
+          wireSpacing: "20cm",
+          postHeight: "2.5m",
+          loadCapacity: "45 kg/m",
+          coating: "Z275"
+        },
+        applications: ["Vertical growing", "Plant training", "Row crops"],
+        image: "https://imgur.com/jKVZds5.jpg"
+      }
+    ]
+  }
+];
+
+const certifications = [
+  {
+    name: "ISO 9001:2015",
+    description: "Quality Management System",
+    icon: "🏅"
+  },
+  {
+    name: "EN 1090-1",
+    description: "Structural Steel Components",
+    icon: "🏗️"
+  },
+  {
+    name: "EN 13206",
+    description: "Greenhouse Covering Materials",
+    icon: "🌿"
+  }
+];
+---
+
+<Layout
+  title="Greenhouse Accessories & Components | Professional Grade"
+  description="Complete range of professional-grade greenhouse components and accessories. From structural elements to growing systems, discover our quality-certified products."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/qDUP4Vf.jpg"
+        alt="Professional Greenhouse Components" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+          Professional Greenhouse Components
+          <span class="block text-2xl md:text-3xl mt-2">Quality-Certified Accessories & Supplies</span>
+        </h1>
+        <div class="flex flex-wrap gap-4">
+          <a 
+            href="#quote-form"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
+          >
+            Request Quote
+          </a>
+          <a 
+            href="#technical-specs"
+            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
+          >
+            View Technical Specs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Navigation -->
+  <section class="py-8 bg-gray-50 sticky top-32 z-30 border-b">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="#structural" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">
+          Structural Components
+        </a>
+        <a href="#fasteners" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">
+          Fasteners & Connections
+        </a>
+        <a href="#coverage" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">
+          Coverage Materials
+        </a>
+        <a href="#growing" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">
+          Growing Accessories
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Structural Components -->
+  <section id="structural" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-12">Structural Components</h2>
+      
+      {structuralComponents.map((category) => (
+        <div class="mb-16">
+          <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {category.items.map((item) => (
+              <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={item.image}
+                    alt={item.name}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h4 class="text-xl font-bold mb-4">{item.name}</h4>
+                  
+                  <div class="space-y-2 mb-4">
+                    {Object.entries(item.specs).map(([key, value]) => (
+                      <div class="flex justify-between">
+                        <span class="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                        <span class="font-medium">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="flex flex-wrap gap-2">
+                    {item.certifications.map((cert) => (
+                      <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                        {cert}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Fasteners Section -->
+  <section id="fasteners" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-12">Fasteners & Connection Systems</h2>
+      
+      {fasteners.map((category) => (
+        <div class="mb-16">
+          <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {category.items.map((item) => (
+              <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={item.image}
+                    alt={item.name}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h4 class="text-xl font-bold mb-4">{item.name}</h4>
+                  
+                  <div class="space-y-2 mb-4">
+                    {Object.entries(item.specs).map(([key, value]) => (
+                      <div class="flex justify-between">
+                        <span class="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                        <span class="font-medium">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h5 class="font-bold mb-2">Applications:</h5>
+                  <ul class="space-y-1">
+                    {item.applications.map((app) => (
+                      <li class="flex items-center text-gray-700">
+                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {app}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Coverage Materials -->
+  <section id="coverage" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-12">Coverage Materials & Climate Control</h2>
+      
+      {coverageMaterials.map((category) => (
+        <div class="mb-16">
+          <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {category.items.map((item) => (
+              <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={item.image}
+                    alt={item.name}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h4 class="text-xl font-bold mb-4">{item.name}</h4>
+                  
+                  <div class="space-y-2 mb-4">
+                    {Object.entries(item.specs).map(([key, value]) => (
+                      <div class="flex justify-between">
+                        <span class="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                        <span class="font-medium">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="flex flex-wrap gap-2">
+                    {item.certifications.map((cert) => (
+                      <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                        {cert}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Growing Accessories -->
+  <section id="growing" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-12">Growing Accessories</h2>
+      
+      {growingAccessories.map((category) => (
+        <div class="mb-16">
+          <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {category.items.map((item) => (
+              <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <img 
+                    src={item.image}
+                    alt={item.name}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h4 class="text-xl font-bold mb-4">{item.name}</h4>
+                  
+                  <div class="space-y-2 mb-4">
+                    {Object.entries(item.specs).map(([key, value]) => (
+                      <div class="flex justify-between">
+                        <span class="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                        <span class="font-medium">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h5 class="font-bold mb-2">Applications:</h5>
+                  <ul class="space-y-1">
+                    {item.applications.map((app) => (
+                      <li class="flex items-center text-gray-700">
+                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {app}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Technical Specifications Section -->
+  <section id="technical-specs" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <a 
+          href="#"
+          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span class="text-sm font-medium text-gray-500">PDF</span>
+          </div>
+          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Technical Specifications</h3>
+          <p class="text-sm text-gray-500">Complete product specifications</p>
+        </a>
+
+        <a 
+          href="#"
+          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span class="text-sm font-medium text-gray-500">PDF</span>
+          </div>
+          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Installation Guide</h3>
+          <p class="text-sm text-gray-500">Step-by-step installation instructions</p>
+        </a>
+
+        <a 
+          href="#"
+          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span class="text-sm font-medium text-gray-500">PDF</span>
+          </div>
+          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">CAD Files</h3>
+          <p class="text-sm text-gray-500">Technical drawings and 3D models</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {certifications.map((cert) => (
+          <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-4xl mb-4">{cert.icon}</div>
+            <h3 class="text-xl font-bold mb-2">{cert.name}</h3>
+            <p class="text-gray-600">{cert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Form -->
+  <section id="quote-form" class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                First Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Last Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Email Address *
+            </label>
+            <input
+              type="email"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Product Category *
+            </label>
+            <select
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            >
+              <option value="">Select a category</option>
+              <option value="structural">Structural Components</option>
+              <option value="fasteners">Fasteners & Connections</option>
+              <option value="coverage">Coverage Materials</option>
+              <option value="growing">Growing Accessories</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Project Details
+            </label>
+            <textarea
+              rows="4"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              placeholder="Tell us about your project and specific requirements..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
+          >
+            Submit Quote Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
+      <p class="text-xl text-white mb-8">Contact us today for technical consultation and custom solutions.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="/contact" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
+        >
+          Contact Us
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Arbre Bio Greenhouse Components",
+  "description": "Professional-grade greenhouse components and accessories including structural elements, fasteners, coverage materials, and growing systems.",
+  "brand": {
+    "@type": "Brand",
+    "name": "Arbre Bio Africa"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Arbre Bio Africa",
+    "url": "https://arbrebio.com"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "XOF",
+    "availability": "https://schema.org/InStock"
+  },
+  "image": [
+    "https://imgur.com/YKw3f5L.jpg",
+    "https://imgur.com/L8mP4Nv.jpg",
+    "https://imgur.com/R7kTmXq.jpg"
+  ]
+}
+</script>

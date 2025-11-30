@@ -1,0 +1,504 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const products = [
+  {
+    name: "D-Net™ 0950",
+    shortDescription: "VERY LOW TRAJECTORY IMPACT SPRINKLER FOR UNIFORM UNDER-CANOPY IRRIGATION",
+    description: "With its low water trajectory angle, D-Net™ 0950 is ideally suited for precise under canopy irrigation of banana or oil palm plantations up to 10 x 10 meters or field crops with windy conditions.",
+    image: "https://imgur.com/vQFO4ob.jpg",
+    features: [
+      {
+        title: "High water distribution uniformity & Higher yield",
+        description: "Innovative 3D diffusion arm, ensures relatively high water distribution uniformity, resulting uniform crop yields."
+      },
+      {
+        title: "Efficient Water Usage",
+        description: "The lower trajectory angle of the water prevents evaporation to the air in areas with winds, and guarantees maximum water-use efficiency."
+      },
+      {
+        title: "Robust product & Long lasting performances",
+        description: "D-Net ™ 0950 has a special design that makes the sprinkler resistant to wear and ensures high performance throughout the long product life."
+      },
+      {
+        title: "Reduced labor cost & Easy maintenance",
+        description: "Versatile installation. Can be installed on solid sets or on removable field stands. Easy to maintain. A special nozzle design, allows simple cleaning of the nozzle even under pressure."
+      },
+      {
+        title: "Durability",
+        description: "D-Net™ 0950 is made of UV-protected materials, making it durable under all climate conditions and with any applied."
+      }
+    ],
+    specifications: {
+      general: {
+        type: "1/2\" impact sprinkler",
+        design: "Unique 3D arm",
+        trajectory: "9.0 degrees water angle",
+        coverage: "Up to 10X11 meters spacing"
+      },
+      performance: {
+        "Flow rates": "355, 400, 510 L/H",
+        "Nominal flow rate": "2.5 bar",
+        "Pressure range": "2.0 - 3.0 bar",
+        "Trajectory angle": "9.0 Degrees"
+      },
+      technical: {
+        "Water distribution": "Single front nozzle",
+        "Inlet connector": "1/2\" male threaded"
+      }
+    },
+    applications: {
+      type: [
+        "Irrigation"
+      ],
+      pressure: [
+        "Medium pressure",
+        "Low Pressure"
+      ],
+      coverage: [
+        "Full Coverage: Medium spacing installation",
+        "Full Coverage: Small spacing installation"
+      ],
+      crops: [
+        "Field crops",
+        "Orchards"
+      ],
+      trajectory: [
+        "Low"
+      ]
+    },
+    advantages: [
+      "Optimal water distribution uniformity",
+      "Reduced evaporation in windy conditions",
+      "Durable UV-protected materials",
+      "Easy maintenance and cleaning",
+      "Versatile installation options",
+      "Long product lifespan"
+    ],
+    limitations: [
+      "Limited to specific spacing requirements",
+      "Requires minimum operating pressure",
+      "Fixed trajectory angle"
+    ],
+    catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf"
+  },
+  {
+    name: "D-NET™ 8550 F.R.",
+    shortDescription: "DURABLE IMPACT SPRINKLER with flow regulated nozzles FOR FIELD CROPS AND VEGETABLES IRRIGATION",
+    description: "D-Net™ 8550 F.R. 1/2\" impact sprinklers, with 3D diffusion arm and unique flow regulated nozzles guarantees excellent crop uniformity and consistency for field crops and vegetables irrigation throughout the field, with sprinkler spacing up to 12x14 meters. Precise and water-efficient distribution also offers an ideal solution for crop germination and orchard cooling.",
+    image: "https://imgur.com/KWWtez3.jpg",
+    features: [
+      {
+        title: "High and uniform yields",
+        description: "Innovative 3D diffusion arm and unique flow regulated nozzles ensure the highest level of water distribution uniformity in the market, for more consistent production and higher crop yields."
+      },
+      {
+        title: "Greater water efficiency",
+        description: "Outstanding water distribution uniformity eliminates over watering and optimizes water usage."
+      },
+      {
+        title: "Long-lasting performance",
+        description: "Tough UV-protected materials withstand all climate conditions, applied nutrients and chemicals ensuring trouble-free operation over the product's life."
+      },
+      {
+        title: "Versatile installation",
+        description: "Installs on solid sets or on removable field stands."
+      },
+      {
+        title: "Labor-saving maintenance",
+        description: "Special nozzle-key is designed to make it easy to clean debris from the nozzle even under pressure."
+      }
+    ],
+    specifications: {
+      general: {
+        type: "1/2\" impact sprinkler",
+        design: "3D diffusion arm",
+        trajectory: "24 degrees water angle",
+        coverage: "Up to 12X14 meters spacing"
+      },
+      performance: {
+        "Flow rates": "590, 680, 800 L/H",
+        "Pressure regulation": "2.5 to 4.0 bar",
+        "Trajectory angle": "24 Degrees",
+        "Nozzles": "Color-coded for identification"
+      },
+      technical: {
+        "Water distribution": "Flow regulated nozzles",
+        "Inlet connector": "1/2\" male threaded"
+      }
+    },
+    applications: {
+      type: [
+        "Irrigation"
+      ],
+      pressure: [
+        "Medium pressure",
+        "Low Pressure"
+      ],
+      coverage: [
+        "Full Coverage: Small spacing installation"
+      ],
+      crops: [
+        "Field crops"
+      ],
+      trajectory: [
+        "Normal"
+      ]
+    },
+    advantages: [
+      "Highest water distribution uniformity",
+      "Flow regulation for consistent performance",
+      "UV-protected durable materials",
+      "Easy maintenance with special nozzle-key",
+      "Flexible installation options",
+      "Color-coded nozzles for easy identification"
+    ],
+    limitations: [
+      "Specific spacing requirements",
+      "Minimum pressure requirements",
+      "Fixed trajectory angle"
+    ],
+    catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf"
+  }
+];
+---
+
+<Layout
+  title="Irrigation Sprinklers - Precision Water Distribution"
+  description="Discover our range of professional irrigation sprinklers designed for optimal water distribution and crop coverage in various agricultural applications."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/0VWoT9T.jpg"
+        alt="Professional Irrigation Sprinklers" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+          Professional Sprinklers
+          <span class="block text-2xl md:text-3xl mt-2">Precision Water Distribution</span>
+        </h1>
+        <p class="text-xl text-white mb-8">
+          Advanced sprinkler solutions for optimal crop irrigation
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a 
+            href="#products"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
+          >
+            View Products
+          </a>
+          <a 
+            href="#quote-form"
+            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
+          >
+            Request Quote
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Sprinklers</h2>
+      
+      {products.map((product, index) => (
+        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
+              <h3 class="text-2xl font-bold mb-4">{product.name}</h3>
+              <p class="text-lg font-medium text-primary mb-4">{product.shortDescription}</p>
+              <p class="text-gray-600 mb-6">{product.description}</p>
+              
+              <div class="space-y-6">
+                <!-- Key Features -->
+                <div>
+                  <h4 class="font-bold mb-3">Key Features:</h4>
+                  <div class="space-y-4">
+                    {product.features.map((feature) => (
+                      <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold mb-1">{feature.title}</h5>
+                        <p class="text-gray-600 text-sm">{feature.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Technical Specifications -->
+                <div>
+                  <h4 class="font-bold mb-3">Technical Specifications:</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(product.specifications).map(([category, specs]) => (
+                      <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold mb-2 capitalize">{category}</h5>
+                        <div class="space-y-2">
+                          {Object.entries(specs).map(([key, value]) => (
+                            <div class="flex justify-between text-sm">
+                              <span class="text-gray-600">{key}:</span>
+                              <span class="font-medium">{value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Applications -->
+                <div>
+                  <h4 class="font-bold mb-3">Applications:</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(product.applications).map(([category, items]) => (
+                      <div class="bg-gray-50 p-4 rounded-lg">
+                        <h5 class="font-semibold mb-2 capitalize">{category}</h5>
+                        <ul class="space-y-1 text-sm">
+                          {items.map((item) => (
+                            <li class="flex items-center text-gray-700">
+                              <svg class="w-4 h-4 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Advantages & Limitations -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold mb-3">Advantages:</h4>
+                    <ul class="space-y-2">
+                      {product.advantages.map((advantage) => (
+                        <li class="flex items-center text-gray-700 text-sm">
+                          <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                          {advantage}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold mb-3">Limitations:</h4>
+                    <ul class="space-y-2">
+                      {product.limitations.map((limitation) => (
+                        <li class="flex items-center text-gray-700 text-sm">
+                          <svg class="w-4 h-4 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                          </svg>
+                          {limitation}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Documentation -->
+                <div>
+                  <h4 class="font-bold mb-3">Documentation:</h4>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <a 
+                      href={product.catalog}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center text-primary hover:text-primary-600 transition-colors"
+                    >
+                      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                      Download Product Catalog (PDF)
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
+              <img 
+                src={product.image}
+                alt={product.name}
+                class="w-full h-[400px] object-cover rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Quote Form -->
+  <section id="quote-form" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                First Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Last Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Email Address *
+            </label>
+            <input
+              type="email"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Product *
+            </label>
+            <select
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            >
+              <option value="">Select a product</option>
+              {products.map((product) => (
+                <option value={product.name}>{product.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Application Type *
+            </label>
+            <select
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            >
+              <option value="">Select application type</option>
+              <option value="field-crops">Field Crops</option>
+              <option value="orchards">Orchards</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Project Area (Hectares) *
+            </label>
+            <input
+              type="number"
+              required
+              min="0.1"
+              step="0.1"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Additional Requirements
+            </label>
+            <textarea
+              rows="4"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              placeholder="Tell us about your specific needs, crop types, or any questions you have..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
+          >
+            Submit Quote Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
+      <p class="text-xl text-white mb-8">Contact us today for personalized recommendations and support.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="/contact" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
+        >
+          Contact Us
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "D-Net™ 0950 Sprinkler",
+  "description": "Professional low trajectory impact sprinkler for uniform under-canopy irrigation, ideal for banana and oil palm plantations.",
+  "brand": {
+    "@type": "Brand",
+    "name": "Netafim"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Netafim",
+    "url": "https://arbrebio.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "XOF",
+    "availability": "https://schema.org/InStock"
+  },
+  "image": [
+    "https://imgur.com/KRKFqz1.jpg"
+  ]
+}
+</script>

@@ -1,0 +1,143 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featuredPosts = sortedPosts.filter(post => post.data.featured);
+const regularPosts = sortedPosts.filter(post => !post.data.featured);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(date);
+};
+---
+
+<Layout
+  title="Blog & Knowledge Hub - Agricultural Insights"
+  description="Explore our collection of articles, guides, and expert insights on modern farming techniques, greenhouse technology, and agricultural innovation in Africa."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[40vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/zyqmr7i.jpg"
+        alt="Modern Agriculture" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Blog & Knowledge Hub</h1>
+      <p class="text-xl text-white max-w-2xl">Expert insights and practical guides for modern African agriculture</p>
+    </div>
+  </section>
+
+  <!-- Featured Posts -->
+  {featuredPosts.length > 0 && (
+    <section class="py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8">Featured Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredPosts.map(post => (
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <img 
+                src={post.data.image}
+                alt={post.data.title}
+                class="w-full h-48 object-cover"
+              />
+              <div class="p-6">
+                <div class="flex items-center mb-4">
+                  <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
+                  <span class="mx-2">•</span>
+                  <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 hover:text-primary">
+                  <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                </h3>
+                <p class="text-gray-600 mb-4">{post.data.description}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-500">By {post.data.author}</span>
+                  <a 
+                    href={`/blog/${post.slug}`}
+                    class="text-primary hover:text-primary-dark font-semibold inline-flex items-center"
+                  >
+                    Read More
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Posts -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-8">Latest Articles</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {regularPosts.map(post => (
+          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <img 
+              src={post.data.image}
+              alt={post.data.title}
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
+                <span class="mx-2">•</span>
+                <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 hover:text-primary">
+                <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              </h3>
+              <p class="text-gray-600 mb-4">{post.data.description}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">By {post.data.author}</span>
+                <a 
+                  href={`/blog/${post.slug}`}
+                  class="text-primary hover:text-primary-dark font-semibold inline-flex items-center"
+                >
+                  Read More
+                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Stay Updated</h2>
+      <p class="text-xl text-white mb-8">Subscribe to our newsletter for the latest agricultural insights and tips.</p>
+      <form class="max-w-lg mx-auto flex gap-4">
+        <input 
+          type="email" 
+          placeholder="Enter your email"
+          class="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <button 
+          type="submit"
+          class="bg-white text-primary px-8 py-3 rounded-full hover:bg-opacity-90"
+        >
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,89 @@
+---
+// Component for adding accessibility enhancements to pages
+---
+
+<!-- Skip to main content link -->
+<a 
+  href="#main-content" 
+  class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50 transition-all"
+>
+  Skip to main content
+</a>
+
+<!-- Announcement region for screen readers -->
+<div 
+  id="announcement-region"
+  class="announcement sr-only"
+  aria-live="polite"
+  aria-atomic="true"
+></div>
+
+<script>
+  // Announce page changes to screen readers
+  function announcePageChange() {
+    const announcement = document.getElementById('announcement-region');
+    if (announcement) {
+      const pageTitle = document.title;
+      announcement.textContent = `Page loaded: ${pageTitle}`;
+      
+      // Clear after announcement
+      setTimeout(() => {
+        announcement.textContent = '';
+      }, 1000);
+    }
+  }
+
+  // Enhance keyboard navigation
+  function enhanceKeyboardNavigation() {
+    // Add keyboard support for custom interactive elements
+    document.querySelectorAll('[role="button"]:not(button)').forEach(element => {
+      element.addEventListener('keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+          keyEvent.preventDefault();
+          (element as HTMLElement).click();
+        }
+      });
+    });
+
+    // Improve focus management for modals and dropdowns
+    document.addEventListener('keydown', (e: Event) => {
+      const keyEvent = e as KeyboardEvent;
+      if (keyEvent.key === 'Escape') {
+        // Close any open modals or dropdowns
+        const openModals = document.querySelectorAll('[aria-expanded="true"]');
+        openModals.forEach(modal => {
+          modal.setAttribute('aria-expanded', 'false');
+          // Trigger close event if available
+          const closeEvent = new CustomEvent('close');
+          modal.dispatchEvent(closeEvent);
+        });
+      }
+    });
+  }
+
+  // Initialize accessibility enhancements
+  function initAccessibility() {
+    announcePageChange();
+    enhanceKeyboardNavigation();
+    
+    // Add ARIA labels to unlabeled interactive elements
+    document.querySelectorAll('button:not([aria-label]):not([aria-labelledby])').forEach(button => {
+      const text = button.textContent?.trim();
+      if (text) {
+        button.setAttribute('aria-label', text);
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAccessibility);
+  } else {
+    initAccessibility();
+  }
+</script>
+
+<style>
+  @import '../styles/accessibility.css';
+</style>

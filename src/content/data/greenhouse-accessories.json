@@ -1,0 +1,19 @@
+[
+  {
+    "category": "Arches & Trusses",
+    "items": [
+      {
+        "name": "Premium Arch 9600",
+        "specs": {
+          "material": "Hot-dip galvanized steel Z600",
+          "thickness": "2.0-3.0mm",
+          "loadCapacity": "55 kg/m²",
+          "span": "9.6 meters",
+          "coating": "275g/m² zinc"
+        },
+        "certifications": ["ISO 9001:2015", "EN 1090-1"],
+        "image": "https://imgur.com/Fn2AVYj.jpg"
+      }
+    ]
+  }
+]

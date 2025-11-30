@@ -1,0 +1,25 @@
+{
+  "title": "Vegetable Farm Transformation",
+  "client": "Sarah Mensah",
+  "location": "Abidjan, Côte d'Ivoire",
+  "area": "1 hectare",
+  "type": "Hydroponic Farm",
+  "description": "Complete farm modernization with greenhouses and hydroponics",
+  "challenge": "Limited growing space and inconsistent market supply",
+  "solution": "Installation of hydroponic systems in modern greenhouses",
+  "results": [
+    "500% increase in production per square meter",
+    "Year-round supply to premium markets",
+    "90% reduction in pest-related losses",
+    "Achieved organic certification"
+  ],
+  "testimonial": "Moving to hydroponics in greenhouses has revolutionized our business. We're now the preferred supplier for several high-end restaurants and supermarkets.",
+  "clientImage": "https://imgur.com/bjqispj.jpg",
+  "beforeImage": "https://imgur.com/d6UGBx9.jpg",
+  "afterImage": "https://imgur.com/mzATBKP.jpg",
+  "stats": [
+    { "label": "Annual Production", "value": "3,000 tons" },
+    { "label": "Water Savings", "value": "65%" },
+    { "label": "Employment", "value": "200+ jobs" }
+  ]
+}

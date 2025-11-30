@@ -1,0 +1,408 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Main solution categories
+const solutionCategories = [
+  {
+    id: "greenhouses",
+    title: "Protected Farming Solutions",
+    subtitle: "Climate-smart greenhouse technology for year-round production",
+    icon: "🌿",
+    image: "https://imgur.com/IZGz47e.jpg",
+    description: "Our greenhouse solutions are specifically engineered for African climate conditions, enabling farmers to grow high-value crops year-round while protecting against extreme weather, pests, and diseases.",
+    benefits: [
+      "Up to 10x higher yields compared to open-field farming",
+      "Year-round production regardless of external weather conditions",
+      "Significant reduction in water usage through precision irrigation",
+      "Protection from pests and diseases, reducing pesticide use by up to 90%"
+    ],
+    solutions: [
+      {
+        name: "High-tech Tropical Greenhouses",
+        description: "State-of-the-art greenhouses designed specifically for African climate conditions.",
+        image: "https://imgur.com/w7OS5f6.jpg",
+        link: "/greenhouses/high-tech"
+      },
+      {
+        name: "Insect-proof Nets & Films",
+        description: "Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.",
+        image: "https://imgur.com/lAI3XeF.jpg",
+        link: "/greenhouses/accessories"
+      },
+      {
+        name: "Climate Control Systems",
+        description: "Advanced automation systems for precise control of temperature, humidity, and ventilation.",
+        image: "https://imgur.com/xn6Qik0.jpg",
+        link: "/greenhouses/high-tech"
+      }
+    ]
+  },
+  {
+    id: "irrigation",
+    title: "Water Management Solutions",
+    subtitle: "Precision irrigation technology for optimal water efficiency",
+    icon: "💧",
+    image: "https://imgur.com/oe3gOtV.jpg",
+    description: "Our irrigation solutions help African farmers maximize crop yields while conserving precious water resources. From simple drip systems to advanced automated solutions, we provide technology that increases efficiency and reduces costs.",
+    benefits: [
+      "Up to 60% reduction in water usage compared to traditional methods",
+      "Increased crop yields through precise water and nutrient delivery",
+      "Reduced labor costs through automation and smart controls",
+      "Adaptable to various farm sizes, from smallholder plots to large commercial operations"
+    ],
+    solutions: [
+      {
+        name: "Drip Irrigation Systems",
+        description: "Water-efficient irrigation solutions designed for optimal crop hydration and nutrient delivery.",
+        image: "https://imgur.com/33OuKiU.jpg",
+        link: "/irrigation/drip-systems"
+      },
+      {
+        name: "Smart Filtration & Fertigation",
+        description: "Integrated systems for water filtration and fertilizer injection, ensuring optimal nutrient delivery.",
+        image: "https://imgur.com/AVECFTr.jpg",
+        link: "/irrigation/drip-systems"
+      },
+      {
+        name: "Automated Irrigation Controllers",
+        description: "Smart irrigation controllers and monitoring systems for efficient water management.",
+        image: "https://imgur.com/OJ0Dbgb.jpg",
+        link: "/irrigation/controllers"
+      }
+    ]
+  },
+  {
+    id: "substrates",
+    title: "Growing Substrate Solutions",
+    subtitle: "Premium substrates for optimal plant growth and development",
+    icon: "🌱",
+    image: "https://imgur.com/YnDCEmp.jpg",
+    description: "Our premium growing media products are designed to provide the perfect environment for plant roots, ensuring optimal water retention, aeration, and nutrient availability for maximum crop health and productivity.",
+    benefits: [
+      "Superior water retention reducing irrigation frequency by up to 50%",
+      "Excellent aeration promoting healthy root development and plant growth",
+      "pH balanced for optimal nutrient uptake and plant health",
+      "100% organic and environmentally sustainable materials"
+    ],
+    solutions: [
+      {
+        name: "Coco Peat & Coir",
+        description: "Premium quality growing solutions for hydroponics and nursery applications.",
+        image: "https://imgur.com/WgMc6pm.jpg",
+        link: "/substrates/growing-solutions"
+      },
+      {
+        name: "Organic Soil Amendments",
+        description: "Natural soil enrichment products for improved crop growth and soil health.",
+        image: "https://imgur.com/Yc1gQqw.jpg",
+        link: "/substrates/growing-solutions"
+      }
+    ]
+  },
+  {
+    id: "services",
+    title: "Agricultural Services",
+    subtitle: "Expert support from planning to implementation",
+    icon: "🚜",
+    image: "https://imgur.com/DJUivfa.jpg",
+    description: "Beyond products, we provide comprehensive agricultural services to ensure your farming operation succeeds. Our team of experts offers consultation, design, installation, training, and ongoing support tailored to your specific needs.",
+    benefits: [
+      "Customized solutions based on your specific farming conditions and goals",
+      "Expert installation ensuring optimal system performance from day one",
+      "Comprehensive training for farmers and farm managers",
+      "Ongoing technical support and maintenance services"
+    ],
+    solutions: [
+      {
+        name: "Turnkey Farm Projects",
+        description: "Comprehensive farm planning and implementation services from concept to completion.",
+        image: "https://imgur.com/CPZXVHq.jpg",
+        link: "/projects"
+      },
+      {
+        name: "Installation & Training",
+        description: "Professional installation and setup of greenhouse and irrigation systems with comprehensive training.",
+        image: "https://imgur.com/EhAcgNJ.jpg",
+        link: "/contact"
+      }
+    ]
+  }
+];
+
+// Success metrics
+const impactMetrics = [
+  { value: "10x", label: "Yield Increase", description: "Average yield increase for greenhouse vegetable production" },
+  { value: "60%", label: "Water Savings", description: "Typical water reduction with our precision irrigation systems" },
+  { value: "90%", label: "Pest Reduction", description: "Reduction in pest-related crop losses with protected farming" },
+  { value: "500+", label: "Projects Completed", description: "Successful implementations across Africa" }
+];
+
+// Testimonials from farmers
+const testimonials = [
+  {
+    quote: "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+    author: "Marie Koné",
+    role: "Vegetable Farmer",
+    location: "Yamoussoukro, Côte d'Ivoire",
+    image: "https://imgur.com/YbVGmcu.jpg"
+  },
+  {
+    quote: "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",
+    author: "Emmanuel Osei",
+    role: "Cocoa Farmer",
+    location: "Kumasi, Ghana",
+    image: "https://imgur.com/qreTzRX.jpg"
+  }
+];
+---
+
+<Layout
+  title="Products & Solutions - Agricultural Innovation for Africa"
+  description="Discover our comprehensive range of agricultural solutions including greenhouses, irrigation systems, growing media, and project management services."
+>
+  <!-- Hero Section with Video Background -->
+  <section class="relative h-[80vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3"
+        alt="African Agricultural Solutions" 
+        class="w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-center md:text-left">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
+          Transforming African Agriculture
+          <span class="block text-2xl md:text-3xl mt-4 text-primary-100">Through Innovative Solutions</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-white/90 mb-8 animate-slide-up">
+          Empowering farmers across Africa with cutting-edge technology and sustainable solutions designed for local conditions.
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+          <a 
+            href="#solutions"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105 animate-slide-up"
+            style="animation-delay: 200ms;"
+          >
+            Explore Our Solutions
+          </a>
+          <a 
+            href="/contact"
+            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105 animate-slide-up"
+            style="animation-delay: 400ms;"
+          >
+            Contact Our Experts
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Metrics Section -->
+  <section class="py-12 bg-primary">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {impactMetrics.map((metric) => (
+          <div class="text-center text-white">
+            <div class="text-4xl font-bold mb-2">{metric.value}</div>
+            <div class="text-lg font-medium mb-1">{metric.label}</div>
+            <div class="text-sm opacity-80">{metric.description}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Solutions Section -->
+  <section id="solutions" class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Our Agricultural Solutions</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Comprehensive solutions designed specifically for African farming conditions, 
+          helping farmers increase productivity, efficiency, and sustainability.
+        </p>
+      </div>
+      
+      {solutionCategories.map((category, index) => (
+        <div id={category.id} class={`mb-24 ${index !== 0 ? 'pt-16' : ''}`}>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div class={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
+              <div class="flex items-center mb-4">
+                <div class="text-4xl mr-4">{category.icon}</div>
+                <h3 class="text-3xl font-bold">{category.title}</h3>
+              </div>
+              <p class="text-xl text-primary font-medium mb-4">{category.subtitle}</p>
+              <p class="text-gray-600 mb-8">{category.description}</p>
+              
+              <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                <h4 class="font-bold text-lg mb-4">Key Benefits:</h4>
+                <ul class="space-y-3">
+                  {category.benefits.map((benefit) => (
+                    <li class="flex items-start">
+                      <svg class="w-6 h-6 text-primary mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      <span>{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <a 
+                href={`/${category.id}`}
+                class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors"
+              >
+                Learn more about our {category.title.toLowerCase()}
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </a>
+            </div>
+            <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
+              <img 
+                src={category.image}
+                alt={category.title}
+                class="w-full h-[500px] object-cover rounded-lg shadow-lg"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {category.solutions.map((solution) => (
+              <a 
+                href={solution.link}
+                class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group"
+              >
+                <div class="h-48 overflow-hidden">
+                  <img 
+                    src={solution.image}
+                    alt={solution.name}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{solution.name}</h3>
+                  <p class="text-gray-600">{solution.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-16">What Our Farmers Say</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        {testimonials.map((testimonial) => (
+          <div class="bg-white p-8 rounded-lg shadow-lg relative">
+            <div class="absolute -top-6 left-8">
+              <div class="w-12 h-12 rounded-full overflow-hidden border-4 border-white shadow-md">
+                <img 
+                  src={testimonial.image}
+                  alt={testimonial.author}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div class="pt-6">
+              <p class="text-gray-600 italic mb-6">"{testimonial.quote}"</p>
+              <div>
+                <p class="font-bold">{testimonial.author}</p>
+                <p class="text-sm text-gray-500">{testimonial.role}, {testimonial.location}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Stories Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">See Our Solutions in Action</h2>
+      <p class="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+        Discover how our agricultural solutions have transformed farms across Africa, 
+        increasing yields, improving efficiency, and creating sustainable livelihoods.
+      </p>
+      <a 
+        href="/success-stories" 
+        class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 inline-flex items-center"
+      >
+        View Success Stories
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Ready to Revolutionize Your Farming Operation?</h2>
+      <p class="text-xl text-white mb-8">Our team of agricultural experts is ready to help you implement the perfect solution for your specific needs.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="/contact" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105"
+        >
+          Schedule a Consultation
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat with an Expert
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 1s ease-out;
+  }
+
+  [style*="animation-delay"] {
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+</style>

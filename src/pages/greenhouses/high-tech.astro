@@ -1,0 +1,505 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const greenhouseTypes = [
+  {
+    name: "Nethouse",
+    description: "Ideal for tropical climates, providing optimal ventilation and insect protection while maintaining favorable growing conditions.",
+    specs: {
+      dimensions: "Standard spans of 8m, lengths customizable",
+      materials: "Galvanized steel structure, high-grade insect netting",
+      loadCapacity: "Wind load up to 100km/h",
+      climate: "Natural ventilation with optional fan systems",
+      lifespan: "15-20 years for structure, 5-7 years for netting",
+      installation: "Requires level ground, basic foundation"
+    },
+    features: [
+      "40-50 mesh UV-stabilized netting",
+      "Roll-up side ventilation",
+      "Anti-virus screening",
+      "Modular design"
+    ],
+    advantages: [
+      "Lower initial investment",
+      "Excellent natural ventilation",
+      "Ideal for warm climates",
+      "Easy maintenance"
+    ],
+    limitations: [
+      "Limited climate control",
+      "Not suitable for extreme weather",
+      "Less precise environment control"
+    ],
+    roi: {
+      payback: "2-3 years",
+      yieldIncrease: "40-60%",
+      waterSavings: "30-40%"
+    },
+    image: "https://imgur.com/HBS7ARL.jpg"
+  },
+  {
+    name: "Sawtooth Greenhouse",
+    description: "Advanced design offering superior ventilation and climate control, perfect for year-round production in hot climates.",
+    specs: {
+      dimensions: "9.6m span width, customizable length",
+      materials: "Hot-dip galvanized steel, UV-stabilized covering",
+      loadCapacity: "Wind load up to 120km/h",
+      climate: "Ridge ventilation with optional cooling",
+      lifespan: "25+ years for structure, 8-10 years for covering",
+      installation: "Requires engineered foundation"
+    },
+    features: [
+      "Automated ridge ventilation",
+      "UV-stabilized polyethylene cover",
+      "Integrated shade system",
+      "Structural reinforcement"
+    ],
+    advantages: [
+      "Excellent natural ventilation",
+      "Higher structural strength",
+      "Better light distribution",
+      "Suitable for automation"
+    ],
+    limitations: [
+      "Higher initial cost",
+      "Complex installation",
+      "Requires regular maintenance"
+    ],
+    roi: {
+      payback: "3-4 years",
+      yieldIncrease: "70-90%",
+      waterSavings: "50-60%"
+    },
+    image: "https://imgur.com/dORTVaM.jpg"
+  },
+  {
+    name: "Tunnel Greenhouse",
+    description: "Cost-effective solution providing excellent growing conditions for various crops, with good climate control capabilities.",
+    specs: {
+      dimensions: "8m or 9.6m width, modular length",
+      materials: "Galvanized steel, multi-layer covering",
+      loadCapacity: "Wind load up to 90km/h",
+      climate: "Side and end ventilation",
+      lifespan: "15-20 years structure, 4-5 years covering",
+      installation: "Minimal foundation requirements"
+    },
+    features: [
+      "Double-layer inflation option",
+      "Roll-up side walls",
+      "Front and rear ventilation",
+      "Quick installation"
+    ],
+    advantages: [
+      "Cost-effective solution",
+      "Quick deployment",
+      "Good climate control",
+      "Versatile application"
+    ],
+    limitations: [
+      "Limited span width",
+      "Lower wind resistance",
+      "Basic climate control"
+    ],
+    roi: {
+      payback: "2-3 years",
+      yieldIncrease: "50-70%",
+      waterSavings: "40-50%"
+    },
+    image: "https://imgur.com/6r1b5oY.jpg"
+  },
+  {
+    name: "Ridge and Furrow",
+    description: "Large-scale commercial greenhouse system offering maximum production area and advanced climate control capabilities.",
+    specs: {
+      dimensions: "Multiple 8m or 9.6m spans",
+      materials: "Heavy-duty galvanized steel, professional grade covering",
+      loadCapacity: "Wind load up to 150km/h",
+      climate: "Full climate control system",
+      lifespan: "30+ years structure, 8-10 years covering",
+      installation: "Requires professional installation"
+    },
+    features: [
+      "Integrated climate control",
+      "Automated ventilation",
+      "Central gutter system",
+      "Multiple compartments"
+    ],
+    advantages: [
+      "Maximum space utilization",
+      "Advanced climate control",
+      "Suitable for large operations",
+      "Higher productivity"
+    ],
+    limitations: [
+      "Highest initial investment",
+      "Complex installation",
+      "Requires skilled management"
+    ],
+    roi: {
+      payback: "4-5 years",
+      yieldIncrease: "100-150%",
+      waterSavings: "60-70%"
+    },
+    image: "https://imgur.com/2r7ziKF.jpg"
+  }
+];
+
+const certifications = [
+  { name: "ISO 9001:2015", description: "Quality Management System" },
+  { name: "EN 13031-1", description: "Greenhouse Design & Construction" },
+  { name: "ISO 14001:2015", description: "Environmental Management" }
+];
+
+const downloadableSpecs = [
+  { name: "Technical Specifications", format: "PDF", size: "2.5 MB" },
+  { name: "Installation Guide", format: "PDF", size: "3.1 MB" },
+  { name: "Maintenance Manual", format: "PDF", size: "1.8 MB" }
+];
+---
+
+<Layout
+  title="High-Tech Greenhouse Solutions"
+  description="Advanced greenhouse structures engineered for African climate conditions. Discover our range of climate-controlled growing environments for optimal crop production."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/HBS7ARL.jpg"
+        alt="High-Tech Greenhouse Solutions" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+          Advanced Greenhouse Solutions
+          <span class="block text-2xl md:text-3xl mt-2">Engineered for Optimal Growing Conditions</span>
+        </h1>
+        <div class="flex flex-wrap gap-4">
+          <a 
+            href="#quote-form"
+            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
+          >
+            Request Custom Quote
+          </a>
+          <a 
+            href="#specifications"
+            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
+          >
+            Download Technical Specifications
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Greenhouse Types -->
+  {greenhouseTypes.map((type, index) => (
+    <section class={`py-20 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
+            <h2 class="text-3xl font-bold mb-4">{type.name}</h2>
+            <p class="text-gray-600 mb-6">{type.description}</p>
+
+            <!-- Technical Specifications -->
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+              <h3 class="text-xl font-bold mb-4">Technical Specifications</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(type.specs).map(([key, value]) => (
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="text-sm text-gray-500 capitalize">{key}</div>
+                    <div class="font-semibold">{value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mb-6">
+              <h3 class="text-xl font-bold mb-4">Key Features</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {type.features.map((feature) => (
+                  <div class="flex items-center text-gray-700">
+                    <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {feature}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Advantages & Limitations -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <h3 class="text-xl font-bold mb-4">Advantages</h3>
+                <ul class="space-y-2">
+                  {type.advantages.map((advantage) => (
+                    <li class="flex items-center text-gray-700">
+                      <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      {advantage}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold mb-4">Limitations</h3>
+                <ul class="space-y-2">
+                  {type.limitations.map((limitation) => (
+                    <li class="flex items-center text-gray-700">
+                      <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                      {limitation}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <!-- ROI Projections -->
+            <div class="bg-primary/10 p-6 rounded-lg">
+              <h3 class="text-xl font-bold mb-4">ROI Projections</h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <div class="text-sm text-gray-500">Payback Period</div>
+                  <div class="font-bold text-primary">{type.roi.payback}</div>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Yield Increase</div>
+                  <div class="font-bold text-primary">{type.roi.yieldIncrease}</div>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Water Savings</div>
+                  <div class="font-bold text-primary">{type.roi.waterSavings}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
+            <img 
+              src={type.image}
+              alt={type.name}
+              class="w-full h-[500px] object-cover rounded-lg shadow-lg"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- Technical Specifications Download -->
+  <section id="specifications" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {downloadableSpecs.map((doc) => (
+            <a 
+              href="#"
+              class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-500">{doc.format}</span>
+              </div>
+              <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
+              <p class="text-sm text-gray-500">{doc.size}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {certifications.map((cert) => (
+          <div class="bg-gray-50 p-6 rounded-lg text-center">
+            <h3 class="text-xl font-bold mb-2">{cert.name}</h3>
+            <p class="text-gray-600">{cert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Form -->
+  <section id="quote-form" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Request a Custom Quote</h2>
+        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                First Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Last Name *
+              </label>
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Email Address *
+            </label>
+            <input
+              type="email"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Greenhouse Type *
+            </label>
+            <select
+              required
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            >
+              <option value="">Select a greenhouse type</option>
+              {greenhouseTypes.map((type) => (
+                <option value={type.name.toLowerCase().replace(/\s+/g, '-')}>
+                  {type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Project Location *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="City, Country"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Greenhouse Size (Square Meters) *
+            </label>
+            <input
+              type="number"
+              required
+              min="100"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Additional Requirements
+            </label>
+            <textarea
+              rows="4"
+              class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              placeholder="Tell us about your specific needs, crops you plan to grow, or any special requirements..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300"
+          >
+            Submit Quote Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
+      <p class="text-xl text-white mb-8">Contact us today for expert consultation and custom solutions.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a 
+          href="#quote-form" 
+          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
+        >
+          Get Started
+        </a>
+        <a 
+          href="https://wa.me/2250799295643" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Arbre Bio High-Tech Greenhouses",
+  "description": "Advanced greenhouse structures engineered for African climate conditions, featuring climate control and optimal growing environments.",
+  "brand": {
+    "@type": "Brand",
+    "name": "Arbre Bio Africa"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Arbre Bio Africa",
+    "url": "https://arbrebio.com"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "XOF",
+    "availability": "https://schema.org/InStock"
+  },
+  "image": [
+    "https://imgur.com/HBS7ARL.jpg",
+    "https://imgur.com/hKnWqYO.jpg",
+    "https://imgur.com/ybRfmvG.jpg",
+    "https://imgur.com/u9CfHxE.jpg"
+  ]
+}
+</script>
