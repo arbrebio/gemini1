@@ -58,8 +58,8 @@ const timeline = [
 ---
 
 <Layout
-  title="About Arbre Bio Africa - Leading Agricultural Innovation"
-  description="Discover how Arbre Bio Africa is transforming agriculture across Africa through innovative technology and sustainable solutions."
+  title={t('company.title')}
+  description={t('company.description')}
 >
   <!-- Hero Section with Parallax -->
   <section class="relative h-screen overflow-hidden">
@@ -72,7 +72,7 @@ const timeline = [
       <div class="container mx-auto px-4">
         <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
           Transforming Agriculture
-          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">Through Innovation</span>
+          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">{t('common.through-innovation')}</span>
         </h1>
         <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8 animate-slide-up">
           Empowering farmers across Africa with cutting-edge technology and sustainable solutions.
@@ -125,7 +125,7 @@ const timeline = [
     
     <div class="relative z-10 container mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center text-white">
-        <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Mission</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">{t('company.ourMission')}</h2>
         <p class="text-xl leading-relaxed">
           At Arbre Bio Africa, we're committed to revolutionizing agriculture through innovative technology and sustainable practices. Our mission is to empower farmers with solutions that increase productivity while preserving natural resources.
         </p>
@@ -136,7 +136,7 @@ const timeline = [
   <!-- Solutions Section with Hover Effects -->
   <section id="solutions" class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Solutions</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{t('company.ourSolutions')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {solutions.map((solution) => (
           <div class="bg-white rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
@@ -162,7 +162,7 @@ const timeline = [
   <!-- Timeline Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Journey</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{t('company.ourJourney')}</h2>
       <div class="max-w-4xl mx-auto relative">
         <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
         

@@ -38,7 +38,7 @@ const formatDate = (date: Date) => {
     />
     <div class="prose prose-lg max-w-none">
       <div class="flex items-center mb-8">
-        <span class="text-gray-500">{formatDate(post.data.pubDate)}</span>
+          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">{t('common.through-innovation')}</span>
         <span class="mx-2">•</span>
         <span class="text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
         <span class="mx-2">•</span>
@@ -106,7 +106,7 @@ const formatDate = (date: Date) => {
           <a 
             href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url.href}`)}`}
             class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center"
-            aria-label="Share via Email"
+            aria-label={t('hero.shareViaEmail')}
           >
             <i class="fa-solid fa-envelope mr-2"></i>
             Email
@@ -118,7 +118,7 @@ const formatDate = (date: Date) => {
     <!-- Share on Social Media -->
     <div class="container mx-auto px-4 mt-8">
       <div class="max-w-4xl mx-auto">
-        <h3 class="text-xl font-bold mb-4">Share This Article</h3>
+        <h3 class="text-xl font-bold mb-4">{t('blog.post.shareArticle')}</h3>
         <div class="flex flex-wrap gap-4">
           <a 
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`}
@@ -173,7 +173,7 @@ const formatDate = (date: Date) => {
           <a 
             href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url.href}`)}`}
             class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center"
-            aria-label="Share via Email"
+            aria-label={t('hero.shareViaEmail')}
           >
             <i class="fa-solid fa-envelope mr-2"></i>
             Email
@@ -194,7 +194,7 @@ const formatDate = (date: Date) => {
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">{t('blog.post.needExpertAdvice')}</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('common.featured-projects')}</h2>
       <p class="text-xl text-white mb-8">{t('blog.post.expertAdviceDesc')}</p>
       <a 
         href="/contact" 

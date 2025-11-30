@@ -1,4 +1,3 @@
-```
 ---
 import Layout from '../../layouts/Layout.astro';
 import { useTranslations, getStaticPaths } from '../../lib/i18n';
@@ -163,7 +162,7 @@ const testimonials = [
 ---
 
 <Layout
-  title="Success Stories - Real Results from African Farms"
+  title={t('common.success-stories-title')}
   description="Discover how Arbre Bio Africa has helped farmers across Africa increase yields and improve efficiency through modern agricultural solutions."
 >
   <!-- Hero Section -->
@@ -177,7 +176,7 @@ const testimonials = [
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Success Stories</h1>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{t('common.success-stories-heading')}</h1>
       <p class="text-xl text-white max-w-2xl">Real results from farms across Africa</p>
     </div>
   </section>
@@ -260,7 +259,7 @@ const testimonials = [
   <!-- Testimonials Slider -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('hero.whatClientsSay')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {testimonials.map((testimonial) => (
           <div class="bg-white p-6 rounded-lg shadow-lg">

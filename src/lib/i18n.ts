@@ -114,6 +114,10 @@ const translations: Record<Language, Record<string, any>> = {
     },
     hero: {
       title: 'Transforming African Agriculture Through Precision Farming Solutions',
+      transformingAgriculture: 'Transforming African Agriculture',
+      whatClientsSay: 'What Our Clients Say',
+      shareViaEmail: 'Share via Email',
+      other: 'Other',
       subtitle: 'Increase your yields by up to 10x with our modern agricultural technology',
       getStarted: 'Get Started',
       exploreSolutions: 'Explore Solutions',
@@ -137,17 +141,12 @@ const translations: Record<Language, Record<string, any>> = {
     services: {
       title: 'Our Services',
       subtitle: 'Comprehensive agricultural solutions designed for African conditions',
-      greenhouses: {
-        title: 'High-Tech Greenhouses',
-        description: 'State-of-the-art greenhouse solutions optimized for African climate conditions.'
-      },
-      greenhouse: {
-        title: 'High-Tech Greenhouses',
-        description: 'State-of-the-art greenhouse solutions optimized for African climate conditions.'
-      },
+
+
       greenhouse: {
         highTech: {
           title: 'High-Tech Greenhouse Solutions',
+          engineeredForOptimal: 'Engineered for Optimal Growing Conditions',
           description: 'Advanced greenhouse structures engineered for African climate conditions. Discover our range of climate-controlled growing environments for optimal crop production.',
           hero: {
             title: 'Advanced Greenhouse Solutions',
@@ -748,6 +747,8 @@ const translations: Record<Language, Record<string, any>> = {
         },
         benefits: {
           title: 'Why Choose Our Growing Solutions',
+          ourPremiumProducts: 'Our Premium Products',
+          ourProductionProcess: 'Our Production Process',
           retention: { title: 'Superior Water Retention', desc: 'Holds up to 9 times its weight in water, reducing irrigation frequency' },
           aeration: { title: 'Optimal Aeration', desc: 'Perfect air-to-water ratio promoting healthy root development' },
           ph: { title: 'pH Balanced', desc: 'Stable pH levels ideal for nutrient uptake' },
@@ -884,6 +885,8 @@ const translations: Record<Language, Record<string, any>> = {
       'view-technical-specs': 'View Technical Specs',
       'submit-quote-request': 'Submit Quote Request',
       'select-category': 'Select a category',
+      'select-product': 'Select a product',
+      'select-application': 'Select application type',
       'project-details': 'Project Details',
       'tell-us-about': 'Tell us about your project and specific requirements...',
       'need-expert-advice': 'Need Expert Advice?',
@@ -897,10 +900,37 @@ const translations: Record<Language, Record<string, any>> = {
       'quality-certifications': 'Quality Certifications',
       'quality-management': 'Quality Management System',
       'structural-steel': 'Structural Steel Components',
+      'structural-components': 'Structural Components',
+      'growing-accessories': 'Growing Accessories',
       'greenhouse-covering': 'Greenhouse Covering Materials',
       'professional-greenhouse': 'Professional Greenhouse Components',
       'quality-certified': 'Quality-Certified Accessories & Supplies',
       'technical-documentation': 'Technical Documentation',
+      'key-features': 'Key Features',
+      'payback-period': 'Payback Period',
+      'yield-increase': 'Yield Increase',
+      'water-savings': 'Water Savings',
+      'precision-water-management': 'Precision Water Management',
+      'precision-water-distribution': 'Precision Water Distribution',
+      'why-choose-drip': 'Why Choose Drip Irrigation',
+      'field-crops': 'Field Crops',
+      'custom-blend': 'Custom Blend',
+      'city-country-placeholder': 'City, Country',
+      'through-innovation': 'Through Innovation',
+      'featured-projects': 'Featured Projects',
+      'success-stories-title': 'Success Stories - Real Results from African Farms',
+      'success-stories-heading': 'Success Stories',
+      'greenhouse-accessories-title': 'Greenhouse Accessories & Components | Professional Grade',
+      'drip-irrigation-title': 'Drip Irrigation Systems - Precision Water Management',
+      'sprinklers-title': 'Irrigation Sprinklers - Precision Water Distribution',
+      'request-custom-quote': 'Request a Custom Quote',
+      'select-greenhouse-type': 'Select a greenhouse type',
+      'select-crop-type': 'Select crop type',
+      'vegetables': 'Vegetables',
+      'fruits': 'Fruits',
+      'orchards': 'Orchards',
+      'fasteners-connections': 'Fasteners & Connections',
+      'coverage-materials': 'Coverage Materials',
       // Image alt texts
       logoAlt: 'Arbre Bio Africa Logo',
       ogImageAlt: 'Arbre Bio Africa - Agricultural Solutions',
@@ -960,7 +990,6 @@ const translations: Record<Language, Record<string, any>> = {
       featured: 'Featured Articles',
       latest: 'Latest Articles',
       readMore: 'Read More',
-      by: 'By',
       newsletter: {
         title: 'Stay Updated',
         description: 'Subscribe to our newsletter for the latest agricultural insights and tips.',
@@ -973,10 +1002,7 @@ const translations: Record<Language, Record<string, any>> = {
         relatedArticles: 'Related Articles',
         needExpertAdvice: 'Need Expert Advice?',
         expertAdviceDesc: 'Our team is here to help you implement these solutions on your farm.',
-        by: 'By',
-        relatedArticles: 'Related Articles',
-        needExpertAdvice: 'Need Expert Advice?',
-        expertAdviceDesc: 'Our team is here to help you implement these solutions on your farm.',
+
         contactUs: 'Contact Us'
       }
     },
@@ -1236,7 +1262,10 @@ const translations: Record<Language, Record<string, any>> = {
       overview: { title: 'Company Overview', text: 'Arbre Bio Africa is dedicated to revolutionizing agriculture across Africa through innovative solutions and sustainable practices.' },
       history: { title: 'Our History', text: 'Founded in 2020, we have grown from a small startup to a leading provider of agricultural solutions across West Africa.' },
       partnerships: { title: 'Strategic Partnerships', text: 'We partner with world-leading agricultural technology companies to bring the best solutions to African farmers.' },
-      locations: { title: 'Our Locations', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Cape Town, South Africa' }
+      locations: { title: 'Our Locations', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Cape Town, South Africa' },
+      ourMission: 'Our Mission',
+      ourSolutions: 'Our Solutions',
+      ourJourney: 'Our Journey'
     },
     projects: {
       heroImage: 'Agricultural Projects',
@@ -1258,6 +1287,8 @@ const translations: Record<Language, Record<string, any>> = {
         },
         benefits: {
           title: 'Por Qué Elegir Nuestras Soluciones de Cultivo',
+          ourPremiumProducts: 'Nuestros Productos Premium',
+          ourProductionProcess: 'Nuestro Proceso de Producción',
           retention: { title: 'Retención de Agua Superior', desc: 'Retiene hasta 9 veces su peso en agua, reduciendo la frecuencia de riego' },
           aeration: { title: 'Aireación Óptima', desc: 'Relación aire-agua perfecta que promueve el desarrollo saludable de raíces' },
           ph: { title: 'pH Equilibrado', desc: 'Niveles de pH estables ideales para la absorción de nutrientes' },
@@ -1591,6 +1622,7 @@ const translations: Record<Language, Record<string, any>> = {
           },
           sprinklers: {
             title: 'Sprinkler Systems',
+            ourSprinklers: 'Our Sprinklers',
             description: 'Advanced sprinkler systems featuring precision water distribution and smart pressure regulation. Ideal for larger fields and specific crop types requiring overhead irrigation, our systems ensure optimal coverage and water efficiency.',
             specs: {
               coverage: 'Coverage Radius',
@@ -1777,6 +1809,10 @@ const translations: Record<Language, Record<string, any>> = {
     },
     hero: {
       title: 'Transformer l\'Agriculture Africaine Grâce aux Solutions d\'Agriculture de Précision',
+      transformingAgriculture: 'Transformer l\'agriculture africaine',
+      whatClientsSay: 'Ce que disent nos clients',
+      shareViaEmail: 'Partager par email',
+      other: 'Autre',
       subtitle: 'Augmentez vos rendements jusqu\'à 10 fois avec notre technologie agricole moderne',
       getStarted: 'Commencer',
       exploreSolutions: 'Explorer les Solutions',
@@ -1978,7 +2014,8 @@ const translations: Record<Language, Record<string, any>> = {
           }
         },
         substrates: {
-          title: 'Solutions de Substrats de Culture',
+          title: 'Solutions de Culture',
+          engineeredForOptimal: 'Conçu pour des conditions de croissance optimales',
           subtitle: 'Substrats premium pour une croissance et un développement optimaux des plantes',
           description: 'Nos produits de supports de culture premium sont conçus pour fournir l\'environnement parfait pour les racines des plantes, assurant une rétention d\'eau, une aération et une disponibilité des nutriments optimales pour une santé et une productivité maximales des cultures.',
           benefits: [
@@ -2050,7 +2087,7 @@ const translations: Record<Language, Record<string, any>> = {
         delivery: { title: '5. Livraison et Installation', text1: 'Les délais de livraison sont des estimations et peuvent varier en fonction de la disponibilité des produits et de l\'emplacement. Les calendriers d\'installation seront confirmés après l\'évaluation du site et le respect des exigences de préparation.', text2: 'Les responsabilités du client comprennent :', items: ['Préparation du site selon les spécifications', 'Fournir l\'accès au site d\'installation', 'Obtenir les permis nécessaires', 'Fournir les services publics requis pour l\'installation'] },
         warranties: { title: '6. Garanties et Responsabilités', text1: 'Nos produits sont accompagnés de garanties standard contre les défauts de fabrication :', items: ['Structures de serre : 10 ans', 'Systèmes d\'irrigation : 2 ans', 'Composants électroniques : 1 an'], text2: 'Les garanties ne couvrent pas les dommages dus à une mauvaise utilisation, des modifications non autorisées ou des catastrophes naturelles. Notre responsabilité est limitée à la réparation ou au remplacement des produits défectueux.' },
         returns: { title: '7. Retours et Remboursements', text: 'Les produits personnalisés et installés ne peuvent pas être retournés sauf s\'ils sont défectueux. Les produits standard peuvent être retournés dans les 14 jours s\'ils ne sont pas utilisés et dans leur emballage d\'origine. Des frais de restockage peuvent s\'appliquer.' },
-        force: { title: '8. Force Majeure', text: 'Nous ne serons pas responsables de tout retard ou défaut d\'exécution dû à des circonstances indépendantes de notre volonté raisonnable, y compris mais sans s\'y limiter les catastrophes naturelles, la guerre, les troubles civils, les conflits du travail ou les actions gouvernementales.' },
+        force: { title: '8. Force Majeure', text: 'Nous ne serons pas responsables de tout délai ou défaut d\'exécution dû à des circonstances indépendantes de notre volonté raisonnable, y compris mais sans s\'y limiter les catastrophes naturelles, la guerre, les troubles civils, les conflits du travail ou les actions gouvernementales.' },
         disputes: { title: '9. Résolution des Litiges', text: 'Tout litige sera résolu par négociation ou médiation avant d\'engager une action en justice. Cet accord est régi par les lois de la Côte d\'Ivoire, et toute procédure judiciaire sera menée à Abidjan.' },
         modifications: { title: '11. Modifications des Conditions', text: 'Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications prendront effet dès leur publication sur notre site Web. L\'utilisation continue de nos services constitue l\'acceptation des conditions modifiées.' },
         contact: { title: '12. Informations de Contact', text: 'Pour toute question concernant ces conditions, veuillez nous contacter à :', abidjan: 'Bureau d\'Abidjan :', capeTown: 'Entrepôt du Cap :' }
@@ -2073,7 +2110,10 @@ const translations: Record<Language, Record<string, any>> = {
       overview: { title: 'Aperçu de l\'Entreprise', text: 'Arbre Bio Africa se consacre à révolutionner l\'agriculture à travers l\'Afrique grâce à des solutions innovantes et des pratiques durables.' },
       history: { title: 'Notre Histoire', text: 'Fondée en 2020, nous sommes passés d\'une petite startup à un fournisseur leader de solutions agricoles en Afrique de l\'Ouest.' },
       partnerships: { title: 'Partenariats Stratégiques', text: 'Nous nous associons avec des entreprises de technologie agricole de renommée mondiale pour apporter les meilleures solutions aux agriculteurs africains.' },
-      locations: { title: 'Nos Emplacements', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Le Cap, Afrique du Sud' }
+      locations: { title: 'Nos Emplacements', abidjan: 'Abidjan, Côte d\'Ivoire', capeTown: 'Le Cap, Afrique du Sud' },
+      ourMission: 'Notre Mission',
+      ourSolutions: 'Nos Solutions',
+      ourJourney: 'Notre Parcours'
     },
     projects: {
       title: 'Projets - Réussites Agricoles',
@@ -2315,6 +2355,8 @@ const translations: Record<Language, Record<string, any>> = {
         },
         benefits: {
           title: 'Pourquoi Choisir Nos Solutions de Culture',
+          ourPremiumProducts: 'Nos Produits Premium',
+          ourProductionProcess: 'Notre Processus de Production',
           retention: { title: 'Rétention d\'Eau Supérieure', desc: 'Retient jusqu\'à 9 fois son poids en eau, réduisant la fréquence d\'irrigation' },
           aeration: { title: 'Aération Optimale', desc: 'Ratio air-eau parfait favorisant le développement sain des racines' },
           ph: { title: 'pH Équilibré', desc: 'Niveaux de pH stables idéaux pour l\'absorption des nutriments' },
@@ -2333,7 +2375,7 @@ const translations: Record<Language, Record<string, any>> = {
             type: 'Type 30',
             name: 'Mélange Premium 80/20',
             desc: 'Mélange optimisé de 80% de coco peat et 20% de copeaux de coco, offrant un ratio air-eau idéal pour un développement racinaire robuste.',
-            specs: { ec: 'Niveau EC', ph: 'Niveau pH', retention: 'Rétention d\'Eau', aeration: 'Aération' },
+            specs: { ec: 'Niveau EC', ph: 'Niveau pH', retention: 'Rétention d\'Eau', aeration: 'Aération', },
             applications: ['Agriculture commerciale', 'Culture d\'arbres fruitiers', 'Cultures à long terme', 'Culture en conteneur']
           }
         },
@@ -2403,10 +2445,10 @@ const translations: Record<Language, Record<string, any>> = {
         size: 'Taille',
         torque: 'Couple',
         standard: 'Norme',
-        dimensions: 'Dimensions',
+        dimensions: 'Afmetings',
         climate: 'Climat',
         lifespan: 'Durée de Vie',
-        installation: 'Installation',
+        installation: 'Installasie',
         lightTransmission: 'Transmission Lumineuse',
         uvStability: 'Stabilité UV',
         thermalRetention: 'Rétention Thermique',
@@ -2414,7 +2456,7 @@ const translations: Record<Language, Record<string, any>> = {
         mesh: 'Maille',
         airflow: 'Débit d\'Air',
         shading: 'Ombrage',
-        diameter: 'Diamètre',
+        diameter: 'Deursnee',
         wireSpacing: 'Espacement des Fils',
         postHeight: 'Hauteur du Poteau',
         rollLength: 'Longueur du Rouleau',
@@ -2684,6 +2726,7 @@ const translations: Record<Language, Record<string, any>> = {
         },
         sprinklers: {
           title: 'Systèmes d\'Arrosage',
+          ourSprinklers: 'Nos Arroseurs',
           subtitle: 'Couverture Uniforme pour Grandes Surfaces'
         },
         benefits: {
@@ -2700,6 +2743,8 @@ const translations: Record<Language, Record<string, any>> = {
       substrates: {
         hero: {
           title: 'Solutions de Culture Premium',
+          ourPremiumProducts: 'Nos Produits Premium',
+          ourProductionProcess: 'Notre Processus de Production',
           subtitle: 'Pour l\'Agriculture Professionnelle',
           description: 'Conçues pour un rendement maximal et une croissance durable',
           explore: 'Explorer les Solutions'
@@ -2739,6 +2784,10 @@ const translations: Record<Language, Record<string, any>> = {
     },
     hero: {
       title: 'Transformar la Agricultura Africana a Través de Soluciones de Agricultura de Precisión',
+      transformingAgriculture: 'Transformando la agricultura africana',
+      whatClientsSay: 'Lo que dicen nuestros clientes',
+      shareViaEmail: 'Compartir por correo electrónico',
+      other: 'Otro',
       subtitle: 'Aumenta tus rendimientos hasta 10 veces con nuestra tecnología agrícola moderna',
       getStarted: 'Comenzar',
       exploreSolutions: 'Explorar Soluciones',
@@ -2911,7 +2960,6 @@ const translations: Record<Language, Record<string, any>> = {
       featured: 'Artículos Destacados',
       latest: 'Últimos Artículos',
       readMore: 'Leer Más',
-      by: 'Por',
       newsletter: {
         title: 'Manténgase Actualizado',
         description: 'Suscríbase a nuestro boletín para obtener las últimas ideas y consejos agrícolas.',
@@ -3053,7 +3101,7 @@ const translations: Record<Language, Record<string, any>> = {
         title: 'Confirmar Suscripción al Boletín',
         description: 'Confirme su suscripción al boletín de Arbre Bio Africa',
         heading: 'Confirmando su Suscripción',
-        waitMessage: 'Por favor espere mientras confirmamos su suscripción...',
+        waitMessage: 'Vuelva a intentarlo más tarde.',
         success: '¡Su suscripción ha sido confirmada! Puede cerrar esta ventana.',
         error: 'Ocurrió un error al confirmar su suscripción.',
         genericError: 'Ocurrió un error. Por favor inténtelo de nuevo más tarde.'
@@ -3266,7 +3314,8 @@ const translations: Record<Language, Record<string, any>> = {
           }
         },
         substrates: {
-          title: 'Soluciones de Sustratos de Cultivo',
+          title: 'Soluciones de Invernaderos de Alta Tecnología',
+          engineeredForOptimal: 'Diseñado para condiciones de crecimiento óptimas',
           subtitle: 'Sustratos premium para un crecimiento y desarrollo óptimo de las plantas',
           description: 'Nuestros productos de medios de cultivo premium están diseñados para proporcionar el ambiente perfecto para las raíces de las plantas, asegurando una retención de agua, aireación y disponibilidad de nutrientes óptimas para una salud y productividad máximas de los cultivos.',
           benefits: [
@@ -3340,7 +3389,7 @@ const translations: Record<Language, Record<string, any>> = {
         returns: { title: '7. Devoluciones y Reembolsos', text: 'Los productos personalizados e instalados no se pueden devolver a menos que estén defectuosos. Los productos estándar pueden devolverse dentro de los 14 días si no se han usado y están en su embalaje original. Puede aplicarse una tarifa de reposición.' },
         force: { title: '8. Fuerza Mayor', text: 'No seremos responsables de ningún retraso o falla en el desempeño debido a circunstancias fuera de nuestro control razonable, incluyendo pero no limitándose a desastres naturales, guerra, disturbios civiles, disputas laborales o acciones gubernamentales.' },
         disputes: { title: '9. Resolución de Disputas', text: 'Cualquier disputa se resolverá mediante negociación o mediación antes de emprender acciones legales. Este acuerdo se rige por las leyes de Costa de Marfil, y cualquier procedimiento legal se llevará a cabo en Abidján.' },
-        modifications: { title: '11. Modificaciones a los Términos', text: 'Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios serán efectivos al publicarse en nuestro sitio web. El uso continuo de nuestros servicios constituye la aceptación de los términos modificados.' },
+        modifications: { title: '11. Modificaciones a los Términos', text: 'Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios serán efectivos al publicarse en el sitio web. El uso continuo de nuestros servicios constituye la aceptación de los términos modificados.' },
         contact: { title: '12. Información de Contacto', text: 'Para cualquier consulta sobre estos términos, contáctenos en:', abidjan: 'Oficina de Abidján:', capeTown: 'Almacén de Ciudad del Cabo:' }
       }
     },
@@ -3361,7 +3410,10 @@ const translations: Record<Language, Record<string, any>> = {
       overview: { title: 'Descripción de la Empresa', text: 'Arbre Bio Africa se dedica a revolucionar la agricultura en toda África a través de soluciones innovadoras y prácticas sostenibles.' },
       history: { title: 'Nuestra Historia', text: 'Fundada en 2020, hemos pasado de ser una pequeña startup a un proveedor líder de soluciones agrícolas en África Occidental.' },
       partnerships: { title: 'Alianzas Estratégicas', text: 'Nos asociamos con empresas de tecnología agrícola líderes en el mundo para traer las mejores soluciones a los agricultores africanos.' },
-      locations: { title: 'Nuestras Ubicaciones', abidjan: 'Abidján, Costa de Marfil', capeTown: 'Ciudad del Cabo, Sudáfrica' }
+      locations: { title: 'Nuestras Ubicaciones', abidjan: 'Abidján, Costa de Marfil', capeTown: 'Ciudad del Cabo, Sudáfrica' },
+      ourMission: 'Nuestra Misión',
+      ourSolutions: 'Nuestras Soluciones',
+      ourJourney: 'Nuestro Viaje'
     },
     projects: {
       title: 'Proyectos - Historias de Éxito Agrícola',
@@ -3459,7 +3511,8 @@ const translations: Record<Language, Record<string, any>> = {
           subtitle: 'Entrega Eficiente de Agua para Cada Cultivo'
         },
         sprinklers: {
-          title: 'Sistemas de Aspersores',
+          title: 'Sistemas de Aspersión',
+          ourSprinklers: 'Nuestros Aspersores',
           subtitle: 'Cobertura Uniforme para Grandes Áreas'
         },
         benefits: {
@@ -3476,6 +3529,8 @@ const translations: Record<Language, Record<string, any>> = {
       substrates: {
         hero: {
           title: 'Soluciones de Cultivo Premium',
+          ourPremiumProducts: 'Nuestros Productos Premium',
+          ourProductionProcess: 'Nuestro Proceso de Producción',
           subtitle: 'Para Agricultura Profesional',
           description: 'Diseñadas para máximo rendimiento y crecimiento sostenible',
           explore: 'Explorar Soluciones'
@@ -3515,6 +3570,10 @@ const translations: Record<Language, Record<string, any>> = {
     },
     hero: {
       title: 'Transformeer Afrika-Landbou Deur Presisie Boerdery Oplossings',
+      transformingAgriculture: 'Transformasie van Afrika-landbou',
+      whatClientsSay: 'Wat ons kliënte sê',
+      shareViaEmail: 'Deel via e-pos',
+      other: 'Ander',
       subtitle: 'Verhoog jou opbrengste tot 10 keer met ons moderne landbou tegnologie',
       getStarted: 'Begin',
       exploreSolutions: 'Verken Oplossings',
@@ -3538,10 +3597,6 @@ const translations: Record<Language, Record<string, any>> = {
     services: {
       title: 'Ons Dienste',
       subtitle: 'Omvattende landbou oplossings ontwerp vir Afrika toestande',
-      greenhouses: {
-        title: 'Hoë-Tegnologie Kweekhuise',
-        description: 'Gevorderde kweekhuise oplossings geoptimaliseer vir Afrika klimaat toestande.'
-      },
       greenhouse: {
         title: 'Hoë-Tegnologie Kweekhuise',
         description: 'Gevorderde kweekhuise oplossings geoptimaliseer vir Afrika klimaat toestande.'
@@ -3687,7 +3742,6 @@ const translations: Record<Language, Record<string, any>> = {
       featured: 'Uitgesoekte Artikels',
       latest: 'Nuutste Artikels',
       readMore: 'Lees Meer',
-      by: 'Deur',
       newsletter: {
         title: 'Bly Op Hoogte',
         description: 'Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.',
@@ -4043,6 +4097,7 @@ const translations: Record<Language, Record<string, any>> = {
         },
         substrates: {
           title: 'Groeisubstraat Oplossings',
+          engineeredForOptimal: 'Ontwerp vir optimale groei toestande',
           subtitle: 'Premium substrate vir optimale plantgroei en ontwikkeling',
           description: 'Ons premium groeimediaprodukte is ontwerp om die perfekte omgewing vir plantwortels te bied, wat optimale waterretensie, deurlugting en voedingstofbeskikbaarheid vir maksimum gewasgesondheid en produktiwiteit verseker.',
           benefits: [
@@ -4137,7 +4192,10 @@ const translations: Record<Language, Record<string, any>> = {
       overview: { title: 'Maatskappy Oorsig', text: 'Arbre Bio Africa is toegewy aan die revolusionering van landbou regoor Afrika deur innoverende oplossings en volhoubare praktyke.' },
       history: { title: 'Ons Geskiedenis', text: 'Gestig in 2020, het ons gegroei van \'n klein beginonderneming tot \'n toonaangewende verskaffer van landbou-oplossings regoor Wes-Afrika.' },
       partnerships: { title: 'Strategiese Vennootskappe', text: 'Ons werk saam met wêreldleier landboutegnologiemaatskappye om die beste oplossings na Afrika-boere te bring.' },
-      locations: { title: 'Ons Liggings', abidjan: 'Abidjan, Ivoorkus', capeTown: 'Kaapstad, Suid-Afrika' }
+      locations: { title: 'Ons Liggings', abidjan: 'Abidjan, Ivoorkus', capeTown: 'Kaapstad, Suid-Afrika' },
+      ourMission: 'Ons Missie',
+      ourSolutions: 'Ons Oplossings',
+      ourJourney: 'Ons Reis'
     },
     projects: {
       title: 'Projekte - Landbou Suksesverhale',
@@ -4171,6 +4229,12 @@ const translations: Record<Language, Record<string, any>> = {
         hero: { title: 'Professionele Sproeiers', subtitle: 'Presiese Waterverdeling', desc: 'Gevorderde sproeioplossings vir optimale gewasbesproeiing', viewProducts: 'Bekyk Produkte', requestQuote: 'Versoek Kwotasie' },
         products: { title: 'Ons Sproeiers', dnet0950: {}, dnet8550: {} },
         labels: { keyFeatures: 'Sleutelkenmerke', techSpecs: 'Tegniese Spesifikasies', applications: 'Toepassings', advantages: 'Voordele', limitations: 'Beperkings', documentation: 'Dokumentasie', download: 'Laai Produkkatalogus Af (PDF)' },
+        certifications: {
+          title: 'Kwaliteitsertifikate',
+          iso9001: { name: 'ISO 9001:2015', desc: 'Kwaliteit Bestuur Stelsel' },
+          iso14001: { name: 'ISO 14001:2015', desc: 'Omgewingsbestuur' },
+          ce: { name: 'CE-Merk', desc: 'Europese Konformiteit' }
+        },
         form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', product: 'Produk', selectProduct: 'Kies produk', appType: 'Toepassingstipe', selectAppType: 'Kies toepassingstipe', appTypes: {}, area: 'Projekarea (Hektaar)', requirements: 'Bykomende Vereistes', requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
         cta: { title: 'Benodig Kundige Advies?', subtitle: 'Kontak ons vandag vir persoonlike aanbevelings en ondersteuning.', contact: 'Kontak Ons', whatsapp: 'Gesels op WhatsApp' }
       }
@@ -4179,14 +4243,75 @@ const translations: Record<Language, Record<string, any>> = {
       growingSolutions: {
         title: 'Premium Groeioplossings | Organiese Kokosveen',
         description: 'Ontdek Arbre Bio Africa se premium organiese kokosveen produkte. Volhoubare groeioplossings ontwerp vir maksimum opbrengs.',
-        hero: { title: 'Volhoubare Groei Begin Hier', subtitle: 'Premium Organiese Kokosveen', desc: 'Ontwerp vir maksimum opbrengs en optimale gewasgesondheid', viewProducts: 'Bekyk Produkte', requestQuote: 'Versoek Kwotasie' },
-        benefits: { title: 'Waarom Ons Groeioplossings Kies', retention: {}, aeration: {}, ph: {}, organic: {} },
-        products: { title: 'Ons Premium Produkte', type20: {}, type30: {} },
-        process: { title: 'Ons Produksieproses', harvesting: {}, drying: {}, filtration: {}, testing: {} },
-        certifications: { title: 'Kwaliteitsertifikate', organic: {}, iso9001: {}, rhp: {} },
-        labels: { idealApps: 'Ideale Toepassings' },
-        form: { title: 'Versoek Kwotasie', firstName: 'Voornaam', lastName: 'Van', email: 'E-posadres', phone: 'Telefoonnommer', product: 'Produktipe', selectProduct: 'Kies produk', products: {}, quantity: 'Hoeveelheid (Metrieke Ton)', requirements: 'Bykomende Vereistes', requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes...', submit: 'Dien Kwotasieversoek In' },
-        cta: { title: 'Gereed om Jou Groeioperasie te Transformeer?', subtitle: 'Kontak ons vandag vir kundige advies en persoonlike oplossings.', getStarted: 'Begin', whatsapp: 'Gesels op WhatsApp' }
+        hero: {
+          title: 'Volhoubare Groei Begin Hier',
+          subtitle: 'Premium Organiese Kokosveen',
+          desc: 'Ontwerp vir maksimum opbrengs en optimale gewasgesondheid',
+          viewProducts: 'Bekyk Produkte',
+          requestQuote: 'Versoek Kwotasie'
+        },
+        benefits: {
+          title: 'Waarom Ons Groeioplossings Kies',
+          ourPremiumProducts: 'Ons Premium Produkte',
+          ourProductionProcess: 'Ons Produksieproses',
+          retention: { title: 'Superieure water retensie', desc: 'Behou tot 9 keer sy gewig in water, wat besproeiingsfrekwensie verminder' },
+          aeration: { title: 'Optimale belugting', desc: 'Perfekte lug-tot-water verhouding wat gesonde wortelontwikkeling bevorder' },
+          ph: { title: 'pH gebalanseer', desc: 'Stabiele pH-vlakke ideaal vir voedingstofopname' },
+          organic: { title: '100% organies', desc: 'Natuurlik, hernubare en omgewingsvolhoubaar' }
+        },
+        products: {
+          title: 'Ons Premium Produkte',
+          type20: {
+            type: 'Tipe 20',
+            name: 'Suiwer Kokosveen',
+            desc: 'Premium kwaliteit suiwer kokosveen, ideaal vir professionele tuinbou en hidroponiese toepassings.',
+            specs: { ec: 'EC Vlak', ph: 'pH Vlak', retention: 'Waterretensie', size: 'Partikelgrootte' },
+            applications: ['Hidroponiese groeistelsels', 'Professionele kwekerye', 'Kweekhuisverbouing', 'Vertikale boerdery']
+          },
+          type30: {
+            type: 'Tipe 30',
+            name: 'Premium 80/20 Mengsel',
+            desc: 'Geoptimaliseerde mengsel van 80% kokosveen en 20% kokoskyfies, wat \'n ideale lug-tot-water verhouding bied vir robuuste wortelontwikkeling.',
+            specs: { ec: 'EC Vlak', ph: 'pH Vlak', retention: 'Waterretensie', aeration: 'Belugting' },
+            applications: ['Kommersiële boerdery', 'Vrugteboomverbouing', 'Langtermyn gewasse', 'Houerverbouing']
+          }
+        },
+        process: {
+          title: 'Ons Produksieproses',
+          harvesting: { title: 'Natuurlike Oes', desc: 'Volhoubaar verkrygde kokosneute en verwerk met omgewingsvriendelike metodes' },
+          drying: { title: 'Son-droog', desc: 'Natuurlike son-droog proses wat optimale voginhoud verseker' },
+          filtration: { title: 'Gevorderde Filtrering', desc: 'Multi-fase filtrering wat onsuiwerhede verwyder en konstante kwaliteit verseker' },
+          testing: { title: 'Kwaliteitstoetsing', desc: 'Streng toetsing vir EC, pH en fisiese eienskappe' }
+        },
+        certifications: {
+          title: 'Kwaliteitsertifikate',
+          organic: { name: 'Organies Gesertifiseer', desc: 'Voldoen aan internasionale standaarde vir organiese boerdery' },
+          iso9001: { name: 'ISO 9001:2015', desc: 'Gesertifiseerde Kwaliteit Bestuur Stelsel' },
+          rhp: { name: 'RHP Gesertifiseer', desc: 'Voldoen aan Europese tuinboustandaarde' }
+        },
+        labels: {
+          idealApps: 'Ideale Toepassings'
+        },
+        form: {
+          title: 'Versoek Kwotasie',
+          firstName: 'Voornaam',
+          lastName: 'Van',
+          email: 'E-posadres',
+          phone: 'Telefoonnommer',
+          product: 'Produktipe',
+          selectProduct: 'Kies produk',
+          products: { type20: 'Tipe 20 - Suiwer Kokosveen', type30: 'Tipe 30 - Premium 80/20 Mengsel', custom: 'Pasgemaakte Mengsel' },
+          quantity: 'Hoeveelheid (Metrieke Ton)',
+          requirements: 'Bykomende Vereistes',
+          requirementsPlaceholder: 'Vertel ons van jou spesifieke behoeftes of pasgemaakte mengselvereistes...',
+          submit: 'Dien Kwotasieversoek In'
+        },
+        cta: {
+          title: 'Gereed om Jou Groeioperasie te Transformeer?',
+          subtitle: 'Kontak ons vandag vir kundige advies en persoonlike oplossings.',
+          getStarted: 'Begin',
+          whatsapp: 'Gesels op WhatsApp'
+        }
       }
     },
     validation: {
@@ -4338,6 +4463,7 @@ const translations: Record<Language, Record<string, any>> = {
         },
         sprinklers: {
           title: 'Sproeier Stelsels',
+          ourSprinklers: 'Ons Sproeiers',
           subtitle: 'Uniforme Dekking vir Groot Gebiede'
         },
         benefits: {
@@ -4354,6 +4480,8 @@ const translations: Record<Language, Record<string, any>> = {
       substrates: {
         hero: {
           title: 'Premium Groei Oplossings',
+          ourPremiumProducts: 'Ons Premium Produkte',
+          ourProductionProcess: 'Ons Produksieproses',
           subtitle: 'Vir Professionele Landbou',
           description: 'Ontwerp vir maksimum opbrengs en volhoubare groei',
           explore: 'Verken Oplossings'

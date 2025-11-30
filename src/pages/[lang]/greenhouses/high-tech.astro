@@ -1,6 +1,8 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+import { useTranslations, getLangFromUrl, getStaticPaths } from '../../../lib/i18n';
+
+export { getStaticPaths };
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -160,10 +162,12 @@ const downloadableSpecs = [
   { name: "Technical Specifications", format: "PDF", size: "2.5 MB" },
   { name: "Installation Guide", format: "PDF", size: "3.1 MB" },
   { name: "Maintenance Manual", format: "PDF", size: "1.8 MB" }
-];---
+];
+
+---
 
 <Layout
-  title="High-Tech Greenhouse Solutions"
+  title={t('greenhouse.highTech.title')}
   description="Advanced greenhouse structures engineered for African climate conditions. Discover our range of climate-controlled growing environments for optimal crop production."
 >
   <!-- Hero Section -->
@@ -171,7 +175,7 @@ const downloadableSpecs = [
     <div class="absolute inset-0 z-0">
       <img 
         src="https://imgur.com/HBS7ARL.jpg"
-        alt="High-Tech Greenhouse Solutions" 
+        alt={t('greenhouse.highTech.title')} 
         class="w-full h-full object-cover"
       />
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -180,7 +184,7 @@ const downloadableSpecs = [
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
           Advanced Greenhouse Solutions
-          <span class="block text-2xl md:text-3xl mt-2">Engineered for Optimal Growing Conditions</span>
+          <span class="block text-2xl md:text-3xl mt-2">{t('greenhouse.highTech.engineeredForOptimal')}</span>
         </h1>
         <div class="flex flex-wrap gap-4">
           <a 
@@ -211,7 +215,7 @@ const downloadableSpecs = [
 
             <!-- Technical Specifications -->
             <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h3 class="text-xl font-bold mb-4">Technical Specifications</h3>
+              <h3 class="text-xl font-bold mb-4">{t('common.technical-specs')}</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(type.specs).map(([key, value]) => (
                   <div class="bg-gray-50 p-4 rounded-lg">
@@ -224,7 +228,7 @@ const downloadableSpecs = [
 
             <!-- Features -->
             <div class="mb-6">
-              <h3 class="text-xl font-bold mb-4">Key Features</h3>
+              <h3 class="text-xl font-bold mb-4">{t('common.key-features')}</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {type.features.map((feature) => (
                   <div class="flex items-center text-gray-700">
@@ -272,15 +276,15 @@ const downloadableSpecs = [
               <h3 class="text-xl font-bold mb-4">ROI Projections</h3>
               <div class="grid grid-cols-3 gap-4">
                 <div>
-                  <div class="text-sm text-gray-500">Payback Period</div>
+                  <div class="text-sm text-gray-500">{t('common.payback-period')}</div>
                   <div class="font-bold text-primary">{type.roi.payback}</div>
                 </div>
                 <div>
-                  <div class="text-sm text-gray-500">Yield Increase</div>
+                  <div class="text-sm text-gray-500">{t('common.yield-increase')}</div>
                   <div class="font-bold text-primary">{type.roi.yieldIncrease}</div>
                 </div>
                 <div>
-                  <div class="text-sm text-gray-500">Water Savings</div>
+                  <div class="text-sm text-gray-500">{t('common.water-savings')}</div>
                   <div class="font-bold text-primary">{type.roi.waterSavings}</div>
                 </div>
               </div>
@@ -303,7 +307,7 @@ const downloadableSpecs = [
   <section id="specifications" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{t('common.technical-documentation')}</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {downloadableSpecs.map((doc) => (
             <a 
@@ -328,7 +332,7 @@ const downloadableSpecs = [
   <!-- Certifications -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('common.quality-certifications')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         {certifications.map((cert) => (
           <div class="bg-gray-50 p-6 rounded-lg text-center">
@@ -344,7 +348,7 @@ const downloadableSpecs = [
   <section id="quote-form" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Custom Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{t('common.request-custom-quote')}</h2>
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -399,7 +403,7 @@ const downloadableSpecs = [
               required
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
-              <option value="">Select a greenhouse type</option>
+              <option value="">{t('common.select-greenhouse-type')}</option>
               {greenhouseTypes.map((type) => (
                 <option value={type.name.toLowerCase().replace(/\s+/g, '-')}>
                   {type.name}
@@ -415,7 +419,7 @@ const downloadableSpecs = [
             <input
               type="text"
               required
-              placeholder="City, Country"
+              placeholder={t('common.city-country-placeholder')}
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
           </div>
@@ -439,7 +443,7 @@ const downloadableSpecs = [
             <textarea
               rows="4"
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-              placeholder="Tell us about your specific needs, crops you plan to grow, or any special requirements..."
+              placeholder={t('greenhouse.highTech.form.requirementsPlaceholder')}
             ></textarea>
           </div>
 

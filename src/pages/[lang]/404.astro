@@ -1,6 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl, useTranslations, defaultLang } from '../lib/i18n';
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations, defaultLang, getStaticPaths } from '../../lib/i18n';
+
+export { getStaticPaths };
 
 const lang = getLangFromUrl(Astro.url) || defaultLang;
 const t = useTranslations(lang);

@@ -1,6 +1,8 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { useTranslations, getLangFromUrl } from '../../../lib/i18n';
+import { useTranslations, getLangFromUrl, getStaticPaths } from '../../../lib/i18n';
+
+export { getStaticPaths };
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -197,10 +199,10 @@ const certifications = [
     description: "Greenhouse Covering Materials",
     icon: "🌿"
   }
-];---
+];\n---
 
 <Layout
-  title="Greenhouse Accessories & Components | Professional Grade"
+  title={t('common.greenhouse-accessories-title')}
   description="Complete range of professional-grade greenhouse components and accessories. From structural elements to growing systems, discover our quality-certified products."
 >
   <!-- Hero Section -->
@@ -260,7 +262,7 @@ const certifications = [
   <!-- Structural Components -->
   <section id="structural" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Structural Components</h2>
+      <h2 class="text-3xl font-bold mb-12">{t('common.structural-components')}</h2>
       
       {structuralComponents.map((category) => (
         <div class="mb-16">
@@ -405,7 +407,7 @@ const certifications = [
   <!-- Growing Accessories -->
   <section id="growing" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Growing Accessories</h2>
+      <h2 class="text-3xl font-bold mb-12">{t('common.growing-accessories')}</h2>
       
       {growingAccessories.map((category) => (
         <div class="mb-16">
@@ -456,7 +458,7 @@ const certifications = [
   <!-- Technical Specifications Section -->
   <section id="technical-specs" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('common.technical-documentation')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         <a 
           href="#"
@@ -468,7 +470,7 @@ const certifications = [
             </svg>
             <span class="text-sm font-medium text-gray-500">PDF</span>
           </div>
-          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Technical Specifications</h3>
+          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{t('common.technical-specs')}</h3>
           <p class="text-sm text-gray-500">Complete product specifications</p>
         </a>
 
@@ -482,7 +484,7 @@ const certifications = [
             </svg>
             <span class="text-sm font-medium text-gray-500">PDF</span>
           </div>
-          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Installation Guide</h3>
+          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{t('common.installation-guide')}</h3>
           <p class="text-sm text-gray-500">Step-by-step installation instructions</p>
         </a>
 
@@ -506,7 +508,7 @@ const certifications = [
   <!-- Certifications Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{t('common.quality-certifications')}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         {certifications.map((cert) => (
           <div class="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -523,7 +525,7 @@ const certifications = [
   <section id="quote-form" class="py-20">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{t('common.request-quote')}</h2>
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -578,11 +580,11 @@ const certifications = [
               required
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
-              <option value="">Select a category</option>
-              <option value="structural">Structural Components</option>
-              <option value="fasteners">Fasteners & Connections</option>
-              <option value="coverage">Coverage Materials</option>
-              <option value="growing">Growing Accessories</option>
+              <option value="">{t('common.select-category')}</option>
+              <option value="structural">{t('common.structural-components')}</option>
+              <option value="fasteners">{t('common.fasteners-connections')}</option>
+              <option value="coverage">{t('common.coverage-materials')}</option>
+              <option value="growing">{t('common.growing-accessories')}</option>
             </select>
           </div>
 
@@ -593,7 +595,7 @@ const certifications = [
             <textarea
               rows="4"
               class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-              placeholder="Tell us about your project and specific requirements..."
+              placeholder={t('greenhouse.quoteForm.additionalPlaceholder')}
             ></textarea>
           </div>
 
