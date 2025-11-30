@@ -1,0 +1,74 @@
+---
+const menuItems = [
+    { name: "Dashboard", href: "/admin", icon: "fa-chart-line" },
+    { name: "Customers", href: "/admin/customers", icon: "fa-users" },
+    { name: "Inventory", href: "/admin/inventory", icon: "fa-boxes" },
+    { name: "Orders", href: "/admin/orders", icon: "fa-shopping-cart" },
+    { name: "Projects", href: "/admin/projects", icon: "fa-project-diagram" },
+    { name: "Suppliers", href: "/admin/suppliers", icon: "fa-truck" },
+    { name: "Settings", href: "/admin/settings", icon: "fa-cog" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<aside
+    class="bg-[#194642] text-white w-64 min-h-screen flex flex-col transition-all duration-300"
+    id="admin-sidebar"
+>
+    <div class="p-6 flex items-center justify-center border-b border-[#2a5e59]">
+        <a href="/admin" class="flex items-center gap-2">
+            <img src="/logo-white.svg" alt="Arbre Bio" class="h-8 w-auto" />
+            <span class="font-bold text-xl tracking-tight">Admin Panel</span>
+        </a>
+    </div>
+
+    <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+        {
+            menuItems.map((item) => {
+                const isActive =
+                    currentPath === item.href ||
+                    (item.href !== "/admin" &&
+                        currentPath.startsWith(item.href));
+                return (
+                    <a
+                        href={item.href}
+                        class:list={[
+                            "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 group",
+                            isActive
+                                ? "bg-[#2a5e59] text-white shadow-md"
+                                : "text-gray-300 hover:bg-[#2a5e59] hover:text-white",
+                        ]}
+                    >
+                        <i
+                            class={`fas ${item.icon} w-5 text-center ${isActive ? "text-[#4ade80]" : "text-gray-400 group-hover:text-white"}`}
+                        />
+                        <span class="font-medium">{item.name}</span>
+                    </a>
+                );
+            })
+        }
+    </nav>
+
+    <div class="p-4 border-t border-[#2a5e59]">
+        <button
+            id="logout-btn"
+            class="flex items-center gap-3 px-4 py-3 w-full text-left text-red-300 hover:bg-red-900/20 hover:text-red-200 rounded-lg transition-colors"
+        >
+            <i class="fas fa-sign-out-alt w-5 text-center"></i>
+            <span class="font-medium">Logout</span>
+        </button>
+    </div>
+</aside>
+
+<script>
+    import { supabase } from "../../lib/supabase";
+
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async () => {
+            await supabase.auth.signOut();
+            window.location.href = "/admin/login";
+        });
+    }
+</script>

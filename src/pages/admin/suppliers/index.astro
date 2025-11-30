@@ -1,0 +1,177 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Suppliers Management">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Suppliers</h1>
+            <p class="text-gray-600">
+                Manage your supplier network and procurement
+            </p>
+        </div>
+        <button
+            id="add-supplier-btn"
+            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+            <i class="fas fa-plus"></i>
+            Add Supplier
+        </button>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
+        <div class="relative">
+            <i
+                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            ></i>
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search suppliers by name, country, or contact..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+            />
+        </div>
+    </div>
+
+    <!-- Suppliers Grid -->
+    <div
+        id="suppliers-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+        <div class="col-span-full text-center py-8 text-gray-500">
+            Loading suppliers...
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    import { supabase } from "../../../lib/supabase";
+
+    async function loadSuppliers() {
+        const grid = document.getElementById("suppliers-grid");
+        const searchInput = document.getElementById(
+            "search-input",
+        ) as HTMLInputElement;
+
+        if (!grid) return;
+
+        grid.innerHTML =
+            '<div class="col-span-full text-center py-8 text-gray-500">Loading...</div>';
+
+        try {
+            let query = supabase.from("admin_suppliers").select("*");
+
+            if (searchInput?.value) {
+                query = query.or(
+                    `name.ilike.%${searchInput.value}%,country.ilike.%${searchInput.value}%,contact_person.ilike.%${searchInput.value}%`,
+                );
+            }
+
+            const { data, error } = await query.order("name");
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                grid.innerHTML =
+                    '<div class="col-span-full text-center py-8 text-gray-500">No suppliers found</div>';
+                return;
+            }
+
+            grid.innerHTML = data
+                .map(
+                    (supplier) => `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="bg-primary/10 text-primary p-3 rounded-lg">
+                <i class="fas fa-truck text-xl"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900">${supplier.name}</h3>
+                <p class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fas fa-map-marker-alt"></i>
+                  ${supplier.country || "Unknown"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-sm text-gray-600 mb-4">
+            ${
+                supplier.contact_person
+                    ? `
+              <div class="flex items-center gap-2">
+                <i class="fas fa-user w-4 text-gray-400"></i>
+                <span>${supplier.contact_person}</span>
+              </div>
+            `
+                    : ""
+            }
+            ${
+                supplier.email
+                    ? `
+              <div class="flex items-center gap-2">
+                <i class="fas fa-envelope w-4 text-gray-400"></i>
+                <span class="truncate">${supplier.email}</span>
+              </div>
+            `
+                    : ""
+            }
+            ${
+                supplier.phone
+                    ? `
+              <div class="flex items-center gap-2">
+                <i class="fas fa-phone w-4 text-gray-400"></i>
+                <span>${supplier.phone}</span>
+              </div>
+            `
+                    : ""
+            }
+            ${
+                supplier.payment_terms
+                    ? `
+              <div class="flex items-center gap-2">
+                <i class="fas fa-credit-card w-4 text-gray-400"></i>
+                <span>${supplier.payment_terms}</span>
+              </div>
+            `
+                    : ""
+            }
+          </div>
+
+          ${
+              supplier.notes
+                  ? `
+            <p class="text-xs text-gray-500 mb-4 line-clamp-2 italic">${supplier.notes}</p>
+          `
+                  : ""
+          }
+
+          <div class="flex gap-2 pt-4 border-t border-gray-200">
+            <button class="flex-1 bg-primary/10 text-primary px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors edit-btn" data-id="${supplier.id}">
+              <i class="fas fa-edit mr-1"></i> Edit
+            </button>
+            <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors delete-btn" data-id="${supplier.id}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `,
+                )
+                .join("");
+        } catch (error) {
+            console.error("Error loading suppliers:", error);
+            grid.innerHTML =
+                '<div class="col-span-full text-center py-8 text-red-500">Error loading data</div>';
+        }
+    }
+
+    // Event Listeners
+    document
+        .getElementById("search-input")
+        ?.addEventListener("input", loadSuppliers);
+
+    // Initial load
+    loadSuppliers();
+</script>

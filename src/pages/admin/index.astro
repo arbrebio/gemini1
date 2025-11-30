@@ -1,0 +1,283 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Dashboard">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+        <p class="text-gray-600">Overview of your agricultural operations</p>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Sales -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Total Revenue</h3>
+                <div class="bg-green-100 text-green-600 p-2 rounded-lg">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span
+                    class="text-2xl font-bold text-gray-900"
+                    id="total-revenue">Loading...</span
+                >
+                <span
+                    class="text-green-500 text-sm font-medium flex items-center"
+                >
+                    <i class="fas fa-arrow-up mr-1"></i> 12%
+                </span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">vs last month</p>
+        </div>
+
+        <!-- Active Projects -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">
+                    Active Projects
+                </h3>
+                <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span
+                    class="text-2xl font-bold text-gray-900"
+                    id="active-projects">Loading...</span
+                >
+                <span class="text-blue-500 text-sm font-medium">
+                    On track
+                </span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Greenhouses & Irrigation</p>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">
+                    Pending Orders
+                </h3>
+                <div class="bg-orange-100 text-orange-600 p-2 rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span
+                    class="text-2xl font-bold text-gray-900"
+                    id="pending-orders">Loading...</span
+                >
+                <span class="text-orange-500 text-sm font-medium">
+                    Needs attention
+                </span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Awaiting processing</p>
+        </div>
+
+        <!-- Low Stock Items -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">
+                    Low Stock Alerts
+                </h3>
+                <div class="bg-red-100 text-red-600 p-2 rounded-lg">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-bold text-gray-900" id="low-stock"
+                    >Loading...</span
+                >
+                <span class="text-red-500 text-sm font-medium">
+                    Restock needed
+                </span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Items below threshold</p>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Recent Orders -->
+        <div
+            class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 lg:col-span-2"
+        >
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-gray-800">Recent Orders</h3>
+                <a
+                    href="/admin/orders"
+                    class="text-primary text-sm font-medium hover:underline"
+                    >View All</a
+                >
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3">Order ID</th>
+                            <th class="px-4 py-3">Customer</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Amount</th>
+                            <th class="px-4 py-3">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-orders-table">
+                        <tr>
+                            <td colspan="5" class="px-4 py-4 text-center"
+                                >Loading orders...</td
+                            >
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-800 mb-6">Quick Actions</h3>
+            <div class="space-y-3">
+                <a
+                    href="/admin/orders/new"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">
+                            Create New Order
+                        </p>
+                        <p class="text-xs text-gray-500">Process a new sale</p>
+                    </div>
+                </a>
+
+                <a
+                    href="/admin/customers/new"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-green-100 text-green-600 p-2 rounded-lg">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Add Customer</p>
+                        <p class="text-xs text-gray-500">Register new client</p>
+                    </div>
+                </a>
+
+                <a
+                    href="/admin/projects/new"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Start Project</p>
+                        <p class="text-xs text-gray-500">New installation</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    import { supabase } from "../../lib/supabase";
+
+    async function loadDashboardData() {
+        try {
+            // 1. Load Recent Orders
+            const { data: orders, error: ordersError } = await supabase
+                .from("admin_orders")
+                .select(
+                    `
+          id, 
+          order_number, 
+          status, 
+          total_amount, 
+          created_at,
+          admin_customers (full_name)
+        `,
+                )
+                .order("created_at", { ascending: false })
+                .limit(5);
+
+            if (!ordersError && orders) {
+                const tbody = document.getElementById("recent-orders-table");
+                if (tbody) {
+                    if (orders.length === 0) {
+                        tbody.innerHTML =
+                            '<tr><td colspan="5" class="px-4 py-4 text-center">No orders found</td></tr>';
+                    } else {
+                        tbody.innerHTML = orders
+                            .map(
+                                (order) => `
+              <tr class="bg-white border-b hover:bg-gray-50">
+                <td class="px-4 py-3 font-medium text-gray-900">#${order.order_number}</td>
+                <td class="px-4 py-3">${order.admin_customers?.full_name || "Unknown"}</td>
+                <td class="px-4 py-3">
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                    ${
+                        order.status === "delivered"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "processing"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "cancelled"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                    }">
+                    ${order.status.toUpperCase()}
+                  </span>
+                </td>
+                <td class="px-4 py-3">${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(order.total_amount || 0)}</td>
+                <td class="px-4 py-3">${new Date(order.created_at).toLocaleDateString()}</td>
+              </tr>
+            `,
+                            )
+                            .join("");
+                    }
+                }
+            }
+
+            // 2. Load Metrics (Counts)
+            // Note: In a real app, use a dedicated RPC function for performance
+
+            // Pending Orders
+            const { count: pendingCount } = await supabase
+                .from("admin_orders")
+                .select("*", { count: "exact", head: true })
+                .in("status", ["draft", "confirmed", "processing"]);
+
+            document.getElementById("pending-orders")!.textContent =
+                pendingCount?.toString() || "0";
+
+            // Active Projects
+            const { count: projectCount } = await supabase
+                .from("admin_projects")
+                .select("*", { count: "exact", head: true })
+                .in("status", ["planning", "in_progress"]);
+
+            document.getElementById("active-projects")!.textContent =
+                projectCount?.toString() || "0";
+
+            // Low Stock
+            const { count: lowStockCount } = await supabase
+                .from("admin_products")
+                .select("*", { count: "exact", head: true })
+                .lt("stock_quantity", 10); // Simplified check
+
+            document.getElementById("low-stock")!.textContent =
+                lowStockCount?.toString() || "0";
+
+            // Revenue (Simplified - sum of delivered orders)
+            // Ideally use an RPC function for this
+            document.getElementById("total-revenue")!.textContent = "---";
+        } catch (error) {
+            console.error("Error loading dashboard:", error);
+        }
+    }
+
+    loadDashboardData();
+</script>
