@@ -216,7 +216,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                                 (order) => `
               <tr class="bg-white border-b hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium text-gray-900">#${order.order_number}</td>
-                <td class="px-4 py-3">${order.admin_customers?.full_name || "Unknown"}</td>
+                <td class="px-4 py-3">${(order.admin_customers as any)?.full_name || "Unknown"}</td>
                 <td class="px-4 py-3">
                   <span class="px-2 py-1 text-xs font-semibold rounded-full 
                     ${
