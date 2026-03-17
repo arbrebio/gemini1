@@ -1,83 +1,130 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
+import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const stats = [
+  { value: '500+', label: T.projectsCompleted },
+  { value: '5', label: T.africanCountries },
+  { value: '50k+', label: lang === 'fr' ? 'Hectares Optimisés' : lang === 'es' ? 'Hectáreas Optimizadas' : 'Hektaar Geoptimaliseer' },
+  { value: '60%', label: T.waterSavings }
+];
+
+const solutions = [
+  { icon: '💧', title: T.piTitle, description: T.piDesc, stats: [`50% ${T.waterSavings}`, `40% ${T.yieldIncrease}`, '2-year ROI'] },
+  { icon: '🌱', title: T.gsTitle, description: T.gsDesc, stats: [T.organic100, `8x ${T.superiorWater}`, '5-year lifespan'] },
+  { icon: '🏗️', title: T.gcTitle, description: T.gcDesc, stats: ['40% cooler inside', '90% pest reduction', '20-year durability'] },
+  { icon: '📱', title: T.digitalTitle, description: T.digitalDesc, stats: ['24/7 monitoring', 'Real-time alerts', 'Data-driven insights'] },
+];
+
+const timeline = [
+  { year: 2020, event: T.y2020t, description: T.y2020d, icon: '🌱' },
+  { year: 2021, event: T.y2021t, description: T.y2021d, icon: '🏗️' },
+  { year: 2022, event: T.y2022t, description: T.y2022d, icon: '🤝' },
+  { year: 2023, event: T.y2023t, description: T.y2023d, icon: '🚀' },
+  { year: 2024, event: T.y2024t, description: T.y2024d, icon: '💻' },
+  { year: 2025, event: T.y2025t, description: T.y2025d, icon: '🏆' },
+];
 ---
 
-<Layout title="Oor Arbre Bio Africa | Arbre Bio Africa" description="Die verhaal agter Afrika se presisieboerdery leier — gebou van niks af in Abidjan, Ivoorkus">
+<Layout title={`${T.aboutPageTitle} | Arbre Bio Africa`} description={T.aboutPageSubtitle}>
+
+  <!-- Hero -->
   <section class="relative h-screen overflow-hidden">
     <div class="absolute inset-0 z-0">
-      <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image:url('https://imgur.com/2Pt8VXW.jpg');background-size:cover;background-position:center;"></div>
+      <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image: url('https://imgur.com/2Pt8VXW.jpg'); background-size: cover; background-position: center;"></div>
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="relative z-10 h-full flex items-center">
       <div class="container mx-auto px-4">
         <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
-          Premium l'Agriculture
-          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">Die verhaal agter Afrika se presisieboerdery leier </span>
+          {T.aboutPageTitle}
+          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">{T.aboutPageSubtitle.split('—')[0]}</span>
         </h1>
-        <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+        <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8">{T.ctaSubtitle}</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#solutions" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all">Verken Oplossings</a>
-          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all backdrop-blur-sm">Kontak Ons</a>
+          <a href={`#solutions`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{T.exploreOurSolutions}</a>
+          <a href={`${p}/contact`} class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{T.contactTitle}</a>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Stats with counter animation -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="text-center transform hover:scale-105 transition-transform"><div class="text-4xl font-bold text-primary mb-2 counter" data-target="500+">500+</div><div class="text-gray-600">Projekte Voltooi</div></div>
-        <div class="text-center transform hover:scale-105 transition-transform"><div class="text-4xl font-bold text-primary mb-2 counter" data-target="5">5</div><div class="text-gray-600">Afrika Lande</div></div>
-        <div class="text-center transform hover:scale-105 transition-transform"><div class="text-4xl font-bold text-primary mb-2 counter" data-target="50000">50k+</div><div class="text-gray-600">Hectares</div></div>
-        <div class="text-center transform hover:scale-105 transition-transform"><div class="text-4xl font-bold text-primary mb-2 counter" data-target="60">60%</div><div class="text-gray-600">Water Besparing</div></div>
+        {stats.map((stat) => (
+          <div class="text-center transform hover:scale-105 transition-transform duration-300">
+            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.value}>{stat.value}</div>
+            <div class="text-gray-600">{stat.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
+  <!-- Founder Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div><img src="https://imgur.com/LD5JZto.jpg" alt="Sydney Abouna" class="rounded-2xl shadow-xl w-full object-cover" style="max-height:500px;"/></div>
-        <div>
-          <span class="text-primary font-semibold text-sm uppercase tracking-widest">Die Stigter</span>
-          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Sydney Abouna</h2>
-          <p class="text-gray-600 text-lg leading-relaxed mb-4">My naam is Sydney Abouna. Ek het Arbre Bio Africa, Arbre Bio Ivoorkus en die Organic Tree Group gestig met een duidelike visie: om Afrika die kontinent te maak met die mees gevorderde, produktiewe en volhoubare landbou-ekosisteem ter wêreld.</p>
-          <p class="text-gray-600 text-lg leading-relaxed mb-4">Ek het hierdie maatskappy van niks af gebou — alleen, en alles self bestuur van bedrywighede en projekbestuur tot kliënteverhoudings, bemarking en vennootskappe. Elke kwekhuis wat ons bou, elke besproeiingstelsel wat ons installeer, elke boer wat ons help, is die resultaat van 'n persoonlike toewyding aan uitnemendheid en innovasie.</p>
-          <p class="text-gray-600 text-lg leading-relaxed mb-6">Vandag werk Arbre Bio in 5 Afrika-lande met 500+ voltooide projekte, vennootskappe met die Wêreldbank, die Afrikaanse Ontwikkelingsbank, GIZ, FAO, die Ivoorkus Ministerie van Landbou en toonaangewende globale agritech-maatskappye. Ons het pas begin.</p>
-          <a href={`${p}/contact`} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors">
-            Saamwerk
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </a>
+      <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <img src="https://imgur.com/LD5JZto.jpg" alt="Sydney Abouna - Founder & CEO of Arbre Bio Africa" class="rounded-2xl shadow-xl w-full object-cover" style="max-height: 500px;"/>
+          </div>
+          <div>
+            <span class="text-primary font-semibold text-sm uppercase tracking-widest">{T.theFounder}</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Sydney Abouna</h2>
+            <p class="text-gray-600 text-lg leading-relaxed mb-4">{T.founderP1}</p>
+            <p class="text-gray-600 text-lg leading-relaxed mb-4">{T.founderP2}</p>
+            <p class="text-gray-600 text-lg leading-relaxed mb-6">{T.founderP4}</p>
+            <a href={`${p}/contact`} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors duration-300">
+              {T.workWithUs}
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Mission -->
   <section class="relative py-24 overflow-hidden">
-    <div class="absolute inset-0 z-0"><div class="w-full h-full absolute top-0" style="background-image:url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c8b8d?ixlib=rb-4.0.3');background-size:cover;background-position:center;"></div><div class="absolute inset-0 bg-primary bg-opacity-90"></div></div>
-    <div class="relative z-10 container mx-auto px-4"><div class="max-w-3xl mx-auto text-center text-white">
-      <h2 class="text-3xl md:text-4xl font-bold mb-6">Ons Missie</h2>
-      <p class="text-xl leading-relaxed">Om Afrika se landbou te transformeer deur elke boer toegang te gee tot die beste presisieboerdery tegnologieë ter wêreld — opbrengste verhoog, vermorsing verminder en volhoubare voedselsisteme oor die kontinent skep.</p>
-    </div></div>
+    <div class="absolute inset-0 z-0">
+      <div class="w-full h-full absolute top-0" style="background-image: url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c8b8d?ixlib=rb-4.0.3'); background-size: cover; background-position: center;"></div>
+      <div class="absolute inset-0 bg-primary bg-opacity-90 backdrop-blur-sm"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center text-white">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">{T.ourMission}</h2>
+        <p class="text-xl leading-relaxed">{T.missionText}</p>
+      </div>
+    </div>
   </section>
 
+  <!-- Solutions -->
   <section id="solutions" class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Ons Dienste</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourServices}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {[{icon:"💧",title:"Presisie Besproeiing",desc:"Slim drup- en sproeistelsels wat tot 60% water bespaar terwyl gewasopbrengste dramaties verhoog word. Ontwerp en geïnstalleer vir Afrika se plase.",stats:["50% Water Besparing","40% Opbrengs Verhoging","2-year ROI"]},{icon:"🌱",title:"Groei Oplossings",desc:"Premium koko-turfmos substrate en organiese groeimedia vir hidroponies en grondgebaseerde verbouing van hoë-opbrengs groente en vrugte.",stats:["100% organic","8x water retention","5-year lifespan"]},{icon:"🏗️",title:"Kwekhuis Konstruksie",desc:"Hoë-tegnologie sawtooth en tonnel kweekhuise ontwerp vir Afrika se tropiese toestande, met volledige klimaatbeheer en drup besproeiing integrasie.",stats:["40% cooler inside","90% pest reduction","20-year durability"]},{icon:"📱",title:"Digitale Boerdery Gereedskap",desc:"Slim besproeiingbestuurstelsel aangedryf deur IoT-sensors en gevorderde analitiek. Monitor grondvog, weerstoestande en gewasgesondheid in werklike tyd.",stats:["24/7 monitoring","Real-time alerts","AI-powered"]},].map(s => (
-          <div class="bg-white rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition-all hover:shadow-xl">
-            <div class="text-4xl mb-4">{s.icon}</div>
-            <h3 class="text-xl font-bold mb-3">{s.title}</h3>
-            <p class="text-gray-600 mb-4">{s.desc}</p>
+        {solutions.map((solution) => (
+          <div class="bg-white rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
+            <div class="text-4xl mb-4">{solution.icon}</div>
+            <h3 class="text-xl font-bold mb-3">{solution.title}</h3>
+            <p class="text-gray-600 mb-4">{solution.description}</p>
             <div class="space-y-2">
-              {s.stats.map(stat => (<div class="flex items-center text-primary"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>{stat}</div>))}
+              {solution.stats.map((stat) => (
+                <div class="flex items-center text-primary">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  {stat}
+                </div>
+              ))}
             </div>
           </div>
         ))}
@@ -85,52 +132,80 @@ const p = `/${lang}`;
     </div>
   </section>
 
+  <!-- Timeline -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Ons Reis</h2>
-      <div class="max-w-4xl mx-auto">
-        <div class="relative">
-          <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
-          {[{year:2020,event:"Gestig in Abidjan",desc:"Sydney Abouna stig Arbre Bio Africa met die missie om landbou oor die kontinent te transformeer."},{year:2021,event:"Eerste Groot Projek",desc:"Eerste grootskaalse kwekhuisinstallasie voltooi in Ivoorkus, wat alle opbrengs teikens oortref het."},{year:2022,event:"Strategiese Vennootskappe",desc:"Vennootskappe onderteken met AZUD, Hortalan, Wêreldbank, GIZ en die Ivoorkus Ministerie van Landbou."},{year:2023,event:"Pan-Afrika Uitbreiding",desc:"500+ projekte voltooi in 5 lande: Ivoorkus, Ghana, Burkina Faso, Zimbabwe en Kenia."},{year:2024,event:"Digitale Boerdery Bekendstelling",desc:"IoT-aangedrewe slim boerdery oplossings en KI-analitiek ontplooi vir moderne plaasbestuur."},{year:2025,event:"Hortalan Gesamentlike Onderneming",desc:"Stigting van 'n toonaangewende gesamentlike onderneming met Hortalan om hul eerste tak in Ivoorkus te open — 'n mylpaal vir Wes-Afrika se landbou."},].map((item,index) => (
-            <div class={`relative mb-8 ${index % 2 === 0 ? "left-timeline" : "right-timeline"}`}>
-              <div class="flex items-center">
-                <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center z-10 text-sm font-bold">{item.year}</div>
-                <div class="bg-white p-6 rounded-lg shadow-lg ml-6 transform hover:-translate-y-1 transition-all hover:shadow-xl flex-1">
-                  <div class="text-xl font-bold text-primary mb-2">{item.year}</div>
-                  <div class="font-semibold mb-1">{item.event}</div>
-                  <div class="text-gray-600 text-sm">{item.desc}</div>
-                </div>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourJourney}</h2>
+      <div class="max-w-4xl mx-auto relative">
+        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
+        {timeline.map((item, index) => (
+          <div class={`relative mb-8 ${index % 2 === 0 ? 'left-timeline' : 'right-timeline'}`}>
+            <div class="flex items-center">
+              <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center z-10 text-xl">{item.icon}</div>
+              <div class="bg-white p-6 rounded-lg shadow-lg ml-6 transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+                <div class="text-2xl font-bold text-primary mb-2">{item.year}</div>
+                <div class="font-semibold text-gray-800 mb-1">{item.event}</div>
+                <div class="text-gray-600 text-sm">{item.description}</div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-white mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaSubtitle}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all">Kry 'n Gratis Konsultasie</a>
-        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300">{T.freeConsultation}</a>
+        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 inline-flex items-center">
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>
 
 <style>
-  .parallax-bg{transform:translateY(var(--scroll-offset,0));will-change:transform;}
-  .left-timeline{padding-right:50%;}
-  .right-timeline{padding-left:50%;}
+  .parallax-bg { transform: translateY(var(--scroll-offset, 0)); will-change: transform; }
+  .left-timeline { padding-right: 50%; }
+  .right-timeline { padding-left: 50%; }
 </style>
+
 <script is:inline>
-  document.querySelectorAll('.parallax-bg').forEach(function(el){window.addEventListener('scroll',function(){el.style.setProperty('--scroll-offset',(window.scrollY*.5)+'px');});});
-  if('IntersectionObserver' in window){
-    var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){var c=e.target,t=parseInt((c.getAttribute('data-target')||'').replace(/\D/g,''),10);if(!t)return;var s=null,d=1500;function step(ts){if(!s)s=ts;var prog=Math.min((ts-s)/d,1),ease=1-Math.pow(1-prog,3);c.textContent=Math.round(ease*t).toString();if(prog<1)requestAnimationFrame(step);else c.textContent=c.getAttribute('data-target');}requestAnimationFrame(step);obs.unobserve(c);}});}),{threshold:0.3});
-    document.querySelectorAll('.counter').forEach(function(c){obs.observe(c);});
+  // Parallax
+  const parallaxEls = document.querySelectorAll('.parallax-bg');
+  window.addEventListener('scroll', function() {
+    parallaxEls.forEach(function(el) { el.style.setProperty('--scroll-offset', (window.scrollY * 0.5) + 'px'); });
+  });
+  // Counter animation
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var c = entry.target;
+          var targetStr = c.getAttribute('data-target') || '0';
+          var target = parseInt(targetStr.replace(/\D/g, ''), 10);
+          if (!target) return;
+          var startTime = null;
+          var duration = 1500;
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            c.textContent = Math.round(eased * target).toString();
+            if (progress < 1) { requestAnimationFrame(step); }
+            else { c.textContent = targetStr; }
+          }
+          requestAnimationFrame(step);
+          obs.unobserve(c);
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.counter').forEach(function(c) { obs.observe(c); });
   }
 </script>

@@ -1,100 +1,109 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
+
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const partners = [
+  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
+  { name: "CDTA El Mirador", logo: "https://i.imgur.com/P1DPCaB.jpg", url: "https://cdtaelmirador.com/" },
+  { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", url: "https://firca.ci/" },
+  { name: "Ministère de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
+  { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", url: "http://cnra.ci/" },
+  { name: "Eureka Network", logo: "https://i.imgur.com/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
+  { name: "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", url: "https://www.worldbank.org/ext/en/home" },
+  { name: "INP-HB ESA", logo: "https://i.imgur.com/da88PlP.jpg", url: "https://www.inphb.edu.ci/ecoles/esa" },
+  { name: "Econatur", logo: "https://i.imgur.com/6GjxYNG.jpg", url: "https://econatur.net/en/" },
+  { name: "Hortalan", logo: "https://i.imgur.com/hVXMDbV.jpg", url: "https://hortalan.com/" },
+  { name: "Agrogenia Biotech", logo: "https://i.imgur.com/9aFTawp.jpg", url: "https://agrogeniabiotech.com/" },
+  { name: "African Development Bank", logo: "https://i.imgur.com/xUbaryR.jpg", url: "https://www.afdb.org/en" },
+  { name: "AZUD", logo: "https://i.imgur.com/cYKFakb.jpg", url: "https://azud.com/en/" },
+  { name: "Novagric", logo: "https://i.imgur.com/cyocoKN.jpg", url: "https://novagric.com/" },
+  { name: "PDC2V", logo: "https://i.imgur.com/BMzFHHR.jpg", url: "https://pdc2v.ci/" },
+  { name: "Agence Emploi Jeunes", logo: "https://i.imgur.com/YTmTlBr.jpg", url: "https://www.agenceemploijeunes.ci/site/" },
+  { name: "GIZ", logo: "https://i.imgur.com/g3qxeY3.jpg", url: "https://www.giz.de/en/regions/africa/cote-divoire" },
+  { name: "OMRI", logo: "https://i.imgur.com/pcM8A7v.jpg", url: "https://www.omri.org/" },
+];
 ---
 
-<Layout title="Transformeer Afrika se Landbou deur Presisieboerdery Oplossings" description="Verhoog jou opbrengste tot 10 keer met ons moderne landboutegnologie" image="https://i.imgur.com/Aab6e6c.jpg">
+<Layout title={T.heroTitle} description={T.heroSubtitle} image="https://i.imgur.com/Aab6e6c.jpg">
+
+  <!-- Hero Section -->
   <section class="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero section">
     <img src="https://i.imgur.com/Aab6e6c.jpg" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"/>
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     <div class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto" role="banner">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">Transformeer Afrika se Landbou deur Presisieboerdery Oplossings</h1>
-      <p class="text-xl md:text-2xl mb-8 animate-slide-up">Verhoog jou opbrengste tot 10 keer met ons moderne landboutegnologie</p>
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">{T.heroTitle}</h1>
+      <p class="text-xl md:text-2xl mb-8 animate-slide-up">{T.heroSubtitle}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Begin</a>
-        <a href={`${p}/solutions`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300">Verken Oplossings</a>
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 200ms;">{T.getStarted}</a>
+        <a href={`${p}/solutions`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 400ms;">{T.exploreSolutions}</a>
       </div>
     </div>
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-hidden="true">
-      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
     </div>
   </section>
 
+  <!-- Services Section -->
   <section class="py-20 bg-gray-50" aria-labelledby="services-heading">
     <div class="container mx-auto px-4">
-      <h2 id="services-heading" class="text-3xl md:text-4xl font-bold text-center mb-4">Ons Dienste</h2>
-      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">Omvattende landbou-oplossings ontwerp vir Afrika se toestande</p>
+      <h2 id="services-heading" class="text-3xl md:text-4xl font-bold text-center mb-4">{T.ourServices}</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{T.servicesSubtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
-        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
-          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">🌿</div>
-          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Hoë-Tegnologie Kweekhuise</h3>
-          <p class="text-gray-600 mb-4">Gevorderde kwekhuisoplossings geoptimaliseer vir Afrika se klimaattoestande.</p>
-          <a href={`${p}/greenhouses`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
-            Leer Meer
-            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </a>
-        </article>
-        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
-          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">💧</div>
-          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Presisie Besproeiing</h3>
-          <p class="text-gray-600 mb-4">Slim besproeiingstelsels wat watereffektiwiteit en gewasopbrengste maksimeer.</p>
-          <a href={`${p}/irrigation`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
-            Leer Meer
-            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </a>
-        </article>
-        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
-          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">🌱</div>
-          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Groei Oplossings</h3>
-          <p class="text-gray-600 mb-4">Premium koko-turfmos en substrate vir optimale plantgroei en -ontwikkeling.</p>
-          <a href={`${p}/substrates`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
-            Leer Meer
-            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </a>
-        </article>
+        {[
+          { icon: "🌿", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
+          { icon: "💧", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
+          { icon: "🌱", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
+        ].map((service, index) => (
+          <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" style={`animation-delay: ${index * 100}ms`} role="listitem">
+            <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">{service.icon}</div>
+            <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
+            <p class="text-gray-600 mb-4">{service.desc}</p>
+            <a href={service.link} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors" aria-label={`${T.learnMore} ${service.title}`}>
+              {T.learnMore}
+              <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </article>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="py-20 bg-primary text-white">
+  <!-- Stats Section -->
+  <section class="py-20 bg-primary text-white" aria-labelledby="stats-heading">
     <div class="container mx-auto px-4">
+      <h2 id="stats-heading" class="sr-only">Our Impact Statistics</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-        <div><div class="text-4xl font-bold mb-2">10x</div><p class="text-gray-300">Opbrengs Verhoging</p></div>
-        <div><div class="text-4xl font-bold mb-2">60%</div><p class="text-gray-300">Water Besparing</p></div>
-        <div><div class="text-4xl font-bold mb-2">500+</div><p class="text-gray-300">Projekte Voltooi</p></div>
-        <div><div class="text-4xl font-bold mb-2">5</div><p class="text-gray-300">Afrika Lande</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">10x</div><p class="text-gray-300">{T.yieldIncrease}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">60%</div><p class="text-gray-300">{T.waterSavings}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">500+</div><p class="text-gray-300">{T.projectsCompleted}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">5</div><p class="text-gray-300">{T.africanCountries}</p></div>
       </div>
     </div>
   </section>
 
-  <section class="py-20 bg-gray-50 overflow-hidden">
+  <!-- Partners Section -->
+  <section class="py-20 bg-gray-50 overflow-hidden" aria-labelledby="partners-heading">
     <div class="container mx-auto px-4">
       <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ons Vertroude Vennote</h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Saamwerk met toonaangewende organisasies om Afrika se landbou te transformeer</p>
+        <h2 id="partners-heading" class="text-3xl md:text-4xl font-bold mb-4">{T.trustedPartners}</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">{T.partnersSubtitle}</p>
       </div>
       <div class="partners-carousel-wrapper">
         <div class="partners-carousel">
-          {[...Array(2)].flatMap(() => [
-            {name:"Conseil Hévéa Palmier",logo:"https://i.imgur.com/shsj3KH.jpg",url:"https://conseilheveapalmier.ci/"},
-            {name:"FIRCA",logo:"https://i.imgur.com/91MTbWi.jpg",url:"https://firca.ci/"},
-            {name:"World Bank",logo:"https://i.imgur.com/W55LKPV.jpg",url:"https://www.worldbank.org"},
-            {name:"Hortalan",logo:"https://i.imgur.com/hVXMDbV.jpg",url:"https://hortalan.com/"},
-            {name:"African Development Bank",logo:"https://i.imgur.com/xUbaryR.jpg",url:"https://www.afdb.org/en"},
-            {name:"GIZ",logo:"https://i.imgur.com/g3qxeY3.jpg",url:"https://www.giz.de"},
-            {name:"AZUD",logo:"https://i.imgur.com/cYKFakb.jpg",url:"https://azud.com/en/"},
-            {name:"Novagric",logo:"https://i.imgur.com/cyocoKN.jpg",url:"https://novagric.com/"},
-            {name:"CNRA",logo:"https://i.imgur.com/6an3KC8.jpg",url:"http://cnra.ci/"},
-            {name:"INP-HB ESA",logo:"https://i.imgur.com/da88PlP.jpg",url:"https://www.inphb.edu.ci"},
-            {name:"PDC2V",logo:"https://i.imgur.com/BMzFHHR.jpg",url:"https://pdc2v.ci/"},
-            {name:"OMRI",logo:"https://i.imgur.com/pcM8A7v.jpg",url:"https://www.omri.org/"},
-          ]).map((partner) => (
-            <a href={partner.url} target="_blank" rel="noopener noreferrer" class="partner-card">
+          {[...partners, ...partners].map((partner, i) => (
+            <a href={partner.url} target="_blank" rel="noopener noreferrer" class="partner-card" aria-label={`Visit ${partner.name} website`} aria-hidden={i >= partners.length ? "true" : undefined}>
               <div class="partner-logo-container">
                 <img src={partner.logo} alt={`${partner.name} logo`} class="partner-logo" loading="lazy" width="200" height="120"/>
               </div>
@@ -105,28 +114,32 @@ const p = `/${lang}`;
     </div>
   </section>
 
-  <section class="py-20">
+  <!-- CTA Section -->
+  <section class="py-20" aria-labelledby="cta-heading">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <h2 id="cta-heading" class="text-3xl md:text-4xl font-bold mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">{T.ctaSubtitle}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Kry 'n Gratis Konsultasie</a>
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.freeConsultation}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>
 
 <style>
-  .partners-carousel-wrapper{position:relative;width:100%;overflow:hidden;mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);}
-  .partners-carousel{display:flex;gap:2rem;animation:scroll 40s linear infinite;width:max-content;}
-  .partners-carousel:hover{animation-play-state:paused;}
-  @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-  .partner-card{flex-shrink:0;width:220px;height:140px;display:flex;align-items:center;justify-content:center;background:white;border-radius:12px;padding:1.5rem;box-shadow:0 4px 6px rgba(0,0,0,0.07);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
-  .partner-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.15);}
-  .partner-logo-container{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-  .partner-logo{max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(100%) brightness(0.8);transition:all 0.4s ease;}
-  .partner-card:hover .partner-logo{filter:grayscale(0%) brightness(1);transform:scale(1.1);}
+  .partners-carousel-wrapper { position: relative; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+  .partners-carousel { display: flex; gap: 2rem; animation: scroll 40s linear infinite; width: max-content; }
+  .partners-carousel:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .partner-card { flex-shrink: 0; width: 220px; height: 140px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.07); transition: all 0.4s cubic-bezier(0.4,0,0.2,1); cursor: pointer; }
+  .partner-card:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+  .partner-logo-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .partner-logo { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(100%) brightness(0.8); transition: all 0.4s ease; }
+  .partner-card:hover .partner-logo { filter: grayscale(0%) brightness(1); transform: scale(1.1); }
+  @media (max-width: 768px) { .partners-carousel { animation-duration: 30s; gap: 1.5rem; } .partner-card { width: 180px; height: 120px; padding: 1rem; } }
+  @media (prefers-reduced-motion: reduce) { .partners-carousel { animation: none; } }
 </style>

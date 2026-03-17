@@ -1,34 +1,77 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const categories = [
+  {
+    id: "greenhouses",
+    title: T.protectedFarming,
+    subtitle: T.protectedFarmingSub,
+    icon: "🌿",
+    image: "https://imgur.com/IZGz47e.jpg",
+    description: T.protectedFarmingDesc,
+    benefits: [T.pfB1, T.pfB2, T.pfB3, T.pfB4],
+    solutions: [
+      { name: lang === 'fr' ? 'Serres Tropicales High-Tech' : lang === 'es' ? 'Invernaderos Tropicales High-Tech' : 'Hoë-Tegnologie Tropiese Kweekhuise', description: T.greenhouseServiceDesc, image: "https://imgur.com/w7OS5f6.jpg", link: `${p}/greenhouses/high-tech` },
+      { name: lang === 'fr' ? "Filets et Films Anti-Insectes" : lang === 'es' ? 'Redes y Películas Anti-Insectos' : 'Insekwerende Nette en Films', description: lang === 'fr' ? "Filets et films agricoles de qualité premium qui protègent les cultures." : lang === 'es' ? "Redes y películas agrícolas de calidad premium que protegen los cultivos." : "Premium kwaliteit landbou nette en films wat gewasse beskerm.", image: "https://imgur.com/lAI3XeF.jpg", link: `${p}/greenhouses/accessories` },
+      { name: lang === 'fr' ? 'Systèmes de Contrôle Climatique' : lang === 'es' ? 'Sistemas de Control Climático' : 'Klimaatbeheerstelsels', description: lang === 'fr' ? "Systèmes d'automatisation avancés pour un contrôle précis de la température, humidité et ventilation." : lang === 'es' ? "Sistemas de automatización avanzados para control preciso de temperatura, humedad y ventilación." : "Gevorderde outomatiseringstelsels vir presiese beheer van temperatuur, humiditeit en ventilasie.", image: "https://imgur.com/xn6Qik0.jpg", link: `${p}/greenhouses/high-tech` },
+    ]
+  },
+  {
+    id: "irrigation",
+    title: T.waterMgmt,
+    subtitle: T.waterMgmtSub,
+    icon: "💧",
+    image: "https://imgur.com/oe3gOtV.jpg",
+    description: T.waterMgmtDesc,
+    benefits: [T.wmB1, T.wmB2, T.wmB3, T.wmB4],
+    solutions: [
+      { name: T.dripTitle, description: T.irrigationServiceDesc, image: "https://imgur.com/33OuKiU.jpg", link: `${p}/irrigation/drip-systems` },
+      { name: lang === 'fr' ? 'Filtration & Fertirrigation Intelligente' : lang === 'es' ? 'Filtración y Fertigación Inteligente' : 'Slim Filtrasie & Fertirrigation', description: lang === 'fr' ? "Systèmes intégrés de filtration d'eau et injection d'engrais." : lang === 'es' ? "Sistemas integrados de filtración de agua e inyección de fertilizantes." : "Geïntegreerde stelsels vir waterfiltrering en voedingstofinjeksie.", image: "https://imgur.com/AVECFTr.jpg", link: `${p}/irrigation/drip-systems` },
+      { name: T.digitalTitle, description: T.digitalDesc, image: "https://imgur.com/OJ0Dbgb.jpg", link: `${p}/irrigation/controllers` },
+    ]
+  },
+  {
+    id: "substrates",
+    title: T.substrateSolutions,
+    subtitle: T.substrateSolutionsSub,
+    icon: "🌱",
+    image: "https://imgur.com/YnDCEmp.jpg",
+    description: T.substrateSolutionsDesc,
+    benefits: [T.ssB1, T.ssB2, T.ssB3, T.ssB4],
+    solutions: [
+      { name: lang === 'fr' ? 'Fibre de Coco & Coir' : lang === 'es' ? 'Fibra de Coco & Coir' : 'Koko-turfmos & Coir', description: lang === 'fr' ? "Solutions de culture premium pour l'hydroponique et les pépinières." : lang === 'es' ? "Soluciones de cultivo premium para hidroponía y viveros." : "Premium groei oplossings vir hidroponies en kwekery.", image: "https://imgur.com/WgMc6pm.jpg", link: `${p}/substrates/growing-solutions` },
+      { name: lang === 'fr' ? 'Amendements Organiques du Sol' : lang === 'es' ? 'Enmiendas Orgánicas del Suelo' : 'Organiese Grondverbeteringsmiddels', description: lang === 'fr' ? "Produits naturels d'enrichissement du sol pour une meilleure santé des cultures." : lang === 'es' ? "Productos naturales de enriquecimiento del suelo para mejor salud de cultivos." : "Natuurlike grondverryking produkte vir verbeterde gewasgesondheid.", image: "https://imgur.com/Yc1gQqw.jpg", link: `${p}/substrates/growing-solutions` },
+    ]
+  },
+];
 ---
 
-<Layout title="Ons Oplossings | Arbre Bio Africa" description="Omvattende landbou-oplossings ontwerp vir Afrika se toestande">
-  <section class="relative h-[60vh] flex items-center">
+<Layout title={`${T.solutionsTitle} | Arbre Bio Africa`} description={T.solutionsSubtitle}>
+
+  <section class="relative h-[50vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="https://imgur.com/IZGz47e.jpg" alt="Solutions" class="w-full h-full object-cover"/>
+      <img src="https://imgur.com/2Pt8VXW.jpg" alt="Solutions" class="w-full h-full object-cover"/>
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Ons Oplossings</h1>
-      <p class="text-xl text-white max-w-2xl">Omvattende landbou-oplossings ontwerp vir Afrika se toestande</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{T.solutionsTitle}</h1>
+      <p class="text-xl text-white max-w-2xl">{T.solutionsSubtitle}</p>
     </div>
   </section>
 
-  {[
-    {id:"greenhouses",title:"Beskermde Boerdery Oplossings",subtitle:"Slim kwekhuistegnologie vir jaarrondse produksie",icon:"🌿",image:"https://imgur.com/IZGz47e.jpg",description:"Ons kwekhuisoplossings is spesifiek ontwerp vir Afrika se klimaattoestande, wat boere in staat stel om hoëwaarde gewasse die hele jaar deur te groei terwyl hulle teen ekstreme weer, plae en siektes beskerm word.",benefits:["Tot 10 keer hoër opbrengste in vergelyking met oopveldboerdery","Jaarrondse produksie ongeag eksterne weerstoestande","Beduidende vermindering in watergebruik deur presisiebesproeiing","Beskerming teen plae en siektes, wat die gebruik van plaagdoders tot 90% verminder"],solutions:[{name:"Hoë-Tegnologie Kweekhuise",description:"Gevorderde kwekhuisoplossings geoptimaliseer vir Afrika se klimaattoestande.",image:"https://imgur.com/w7OS5f6.jpg",link:`${p}/greenhouses/high-tech`},{name:"Insect-proof Nets & Films",description:"Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.",image:"https://imgur.com/lAI3XeF.jpg",link:`${p}/greenhouses/accessories`},{name:"Climate Control Systems",description:"Advanced automation systems for precise control of temperature, humidity, and ventilation.",image:"https://imgur.com/xn6Qik0.jpg",link:`${p}/greenhouses/high-tech`}]},
-    {id:"irrigation",title:"Waterbestuur Oplossings",subtitle:"Presisie besproeiing tegnologie vir optimale watereffektiwiteit",icon:"💧",image:"https://imgur.com/oe3gOtV.jpg",description:"Ons besproeiing oplossings help Afrika se boere om gewasopbrengste te maksimeer terwyl hulle kosbare waterbronne bewaar. Van eenvoudige drupstelsels tot gevorderde outomatiese oplossings.",benefits:["Tot 60% vermindering in watergebruik in vergelyking met tradisionele metodes","Verhoogde gewasopbrengste deur presiese water- en voedingstofaflewering","Verminderde arbeidskoste deur outomatisering en slim beheerstelsels","Aanpasbaar vir verskeie plaasgroottes, van kleinsaalboere tot groot kommersiële bedrywighede"],solutions:[{name:"Drup Besproeiing Stelsels",description:"Nuutste drup besproeiing tegnologie wat presiese hoeveelhede water direk na plantworwels lewer, wat doeltreffendheid en gewasopbrengste maksimeer terwyl watervermorsing geminimaliseer word.",image:"https://imgur.com/33OuKiU.jpg",link:`${p}/irrigation/drip-systems`},{name:"Smart Filtration & Fertigation",description:"Integrated systems for water filtration and fertilizer injection.",image:"https://imgur.com/AVECFTr.jpg",link:`${p}/irrigation/drip-systems`},{name:"Digitale Boerdery Gereedskap",description:"Slim besproeiingbestuurstelsel aangedryf deur IoT-sensors en gevorderde analitiek. Monitor grondvog, weerstoestande en gewasgesondheid in werklike tyd.",image:"https://imgur.com/OJ0Dbgb.jpg",link:`${p}/irrigation/controllers`}]},
-    {id:"substrates",title:"Groei Substraat Oplossings",subtitle:"Premium substrate vir optimale plantgroei en -ontwikkeling",icon:"🌱",image:"https://imgur.com/YnDCEmp.jpg",description:"Ons premium groeimedia produkte is ontwerp om die perfekte omgewing vir plantwortels te bied, wat optimale waterretensie, belugting en voedingstofbeskikbaarheid vir maksimale gewasgesondheid verseker.",benefits:["Superieure waterretensie wat die besproeiingsfrekwensie met tot 50% verminder","Uitstekende belugting wat gesonde wortelontwikkeling en plantgroei bevorder","pH-gebalanseer vir optimale voedingstofopname en plantgesondheid","100% organies en omgewingsvolhoubaar"],solutions:[{name:"Coco Peat & Coir",description:"Premium quality growing solutions for hydroponics and nursery applications.",image:"https://imgur.com/WgMc6pm.jpg",link:`${p}/substrates/growing-solutions`},{name:"Organic Soil Amendments",description:"Natural soil enrichment products for improved crop growth.",image:"https://imgur.com/Yc1gQqw.jpg",link:`${p}/substrates/growing-solutions`}]},
-  ].map((category, categoryIndex) => (
+  {categories.map((category, categoryIndex) => (
     <section class="py-20" id={category.id}>
       <div class="container mx-auto px-4">
-        <div class={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${categoryIndex % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}>
-          <div class={categoryIndex % 2 !== 0 ? "lg:order-2" : ""}>
+        <div class={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${categoryIndex % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+          <div class={categoryIndex % 2 !== 0 ? 'lg:order-2' : ''}>
             <div class="text-5xl mb-6">{category.icon}</div>
             <h2 class="text-3xl md:text-4xl font-bold mb-4">{category.title}</h2>
             <p class="text-xl text-primary mb-6">{category.subtitle}</p>
@@ -54,7 +97,7 @@ const p = `/${lang}`;
               ))}
             </div>
           </div>
-          <div class={categoryIndex % 2 !== 0 ? "lg:order-1" : ""}>
+          <div class={categoryIndex % 2 !== 0 ? 'lg:order-1' : ''}>
             <img src={category.image} alt={category.title} class="w-full h-[500px] object-cover rounded-lg shadow-xl"/>
           </div>
         </div>
@@ -64,14 +107,15 @@ const p = `/${lang}`;
 
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-white mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaSubtitle}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Kry 'n Gratis Konsultasie</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>

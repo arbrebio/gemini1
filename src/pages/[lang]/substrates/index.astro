@@ -1,14 +1,23 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
+import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const benefits = [
+  { icon: '🏅', title: T.qualityAssured, desc: T.qualityAssuredDesc },
+  { icon: '🌱', title: T.sustainable, desc: T.sustainableDesc },
+  { icon: '👨‍🌾', title: T.expertSupport, desc: T.expertSupportDesc },
+];
 ---
 
-<Layout title="Premium Groei Oplossings | Arbre Bio Africa" description="Ontwerp vir maksimum opbrengs en volhoubare groei">
+<Layout title={`${T.subHeroTitle} | Arbre Bio Africa`} description={T.subTagline}>
+
   <section class="relative h-[50vh] flex items-center">
     <div class="absolute inset-0 z-0">
       <img src="https://imgur.com/BAlwmPw.jpg" alt="Premium Growing Solutions" class="w-full h-full object-cover"/>
@@ -17,11 +26,11 @@ const p = `/${lang}`;
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Premium Groei Oplossings
-          <span class="block text-2xl md:text-3xl mt-2">Vir Professionele Landbou</span>
+          {T.subHeroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.subHeroSub}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Ontwerp vir maksimum opbrengs en volhoubare groei</p>
-        <a href="#solutions" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 inline-block">Verken Oplossings</a>
+        <p class="text-xl text-white mb-8">{T.subTagline}</p>
+        <a href="#solutions" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 inline-block">{T.exploreSolutions}</a>
       </div>
     </div>
   </section>
@@ -29,9 +38,13 @@ const p = `/${lang}`;
   <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center"><div class="text-4xl mb-4">🏅</div><h3 class="text-xl font-bold mb-2">Kwaliteit Verseker</h3><p class="text-gray-600">Alle produkte ondergaan streng toetsing en voldoen aan internasionale kwaliteitstandaarde</p></div>
-        <div class="text-center"><div class="text-4xl mb-4">🌱</div><h3 class="text-xl font-bold mb-2">Volhoubaar</h3><p class="text-gray-600">Omgewingsverantwoordelike produksiemetodes en materiale</p></div>
-        <div class="text-center"><div class="text-4xl mb-4">👨‍🌾</div><h3 class="text-xl font-bold mb-2">Deskundige Ondersteuning</h3><p class="text-gray-600">Tegniese leiding en ondersteuning van ons landboukundiges</p></div>
+        {benefits.map(benefit => (
+          <div class="text-center">
+            <div class="text-4xl mb-4">{benefit.icon}</div>
+            <h3 class="text-xl font-bold mb-2">{benefit.title}</h3>
+            <p class="text-gray-600">{benefit.desc}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -42,26 +55,26 @@ const p = `/${lang}`;
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
           <img src="https://imgur.com/KAh1QAU.jpg" alt="Growing Solutions" class="w-full h-48 object-cover"/>
           <div class="p-6">
-            <h3 class="text-xl font-bold mb-2">Groei Oplossings</h3>
-            <p class="text-gray-600 mb-4">Premium koko-turfmos substrate en organiese groeimedia vir hidroponies en grondgebaseerde verbouing van hoë-opbrengs groente en vrugte.</p>
+            <h3 class="text-xl font-bold mb-2">{T.gsTitle}</h3>
+            <p class="text-gray-600 mb-4">{T.gsDesc}</p>
             <ul class="space-y-2 mb-4">
-              {["Superieure waterretensie","Optimale belugting","pH gebalanseer","100% organies"].map(f => (
+              {[T.superiorWater, T.optimalAeration, T.phBalanced, T.organic100].map(feature => (
                 <li class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                  <span class="text-sm text-gray-700">{f}</span>
+                  <span class="text-sm text-gray-700">{feature}</span>
                 </li>
               ))}
             </ul>
             <a href={`${p}/substrates/growing-solutions`} class="inline-flex items-center text-primary font-semibold hover:text-primary-600">
-              Leer Meer
+              {T.learnMore}
               <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
           </div>
         </div>
         <div class="bg-primary/5 rounded-lg p-8 flex flex-col justify-center">
-          <h3 class="text-2xl font-bold mb-4">Gereed om Jou Plaas te Transformeer?</h3>
-          <p class="text-gray-600 mb-6">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
-          <a href={`${p}/contact`} class="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors text-center">Kry 'n Gratis Konsultasie</a>
+          <h3 class="text-2xl font-bold mb-4">{T.ctaTitle}</h3>
+          <p class="text-gray-600 mb-6">{T.ctaSubtitle}</p>
+          <a href={`${p}/contact`} class="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors text-center">{T.freeConsultation}</a>
         </div>
       </div>
     </div>
@@ -70,11 +83,16 @@ const p = `/${lang}`;
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {[{icon:"💧",title:"Superieure waterretensie",desc:"8x better water retention than traditional soil. Reduces irrigation frequency and water costs."},{icon:"🌬️",title:"Optimale belugting",desc:"Fibrous structure enables excellent air circulation for roots, preventing root asphyxia."},{icon:"⚗️",title:"pH gebalanseer",desc:"Naturally stable pH between 5.8-6.5, ideal for most vegetable and fruit crops."},{icon:"🌿",title:"100% organies",desc:"Produced naturally from coconut. OMRI certified for organic agriculture."},].map(f => (
+        {[
+          { icon: '💧', title: T.superiorWater, desc: '8x better water retention than traditional soil. Reduces irrigation frequency and water costs.' },
+          { icon: '🌬️', title: T.optimalAeration, desc: 'Fibrous structure enables excellent air circulation for roots, preventing root asphyxia.' },
+          { icon: '⚗️', title: T.phBalanced, desc: 'Naturally stable pH between 5.8-6.5, ideal for most vegetable and fruit crops.' },
+          { icon: '🌿', title: T.organic100, desc: 'Produced naturally from coconut. OMRI certified for organic agriculture.' },
+        ].map(feature => (
           <div class="text-center p-6 bg-gray-50 rounded-xl">
-            <div class="text-4xl mb-4">{f.icon}</div>
-            <h3 class="font-bold text-lg mb-3">{f.title}</h3>
-            <p class="text-gray-600 text-sm">{f.desc}</p>
+            <div class="text-4xl mb-4">{feature.icon}</div>
+            <h3 class="font-bold text-lg mb-3">{feature.title}</h3>
+            <p class="text-gray-600 text-sm">{feature.desc}</p>
           </div>
         ))}
       </div>
@@ -83,14 +101,15 @@ const p = `/${lang}`;
 
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-white mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaSubtitle}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Kry 'n Gratis Konsultasie</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>

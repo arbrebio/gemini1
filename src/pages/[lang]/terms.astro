@@ -1,30 +1,30 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
 ---
-
-<Layout title="Diensbepalings | Arbre Bio Africa" description="Diensbepalings — Arbre Bio Africa">
+<Layout title={`${T.termsTitle} | Arbre Bio Africa`} description={T.termsTitle}>
   <div class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12">
-        <h1 class="text-3xl font-bold mb-8">Diensbepalings</h1>
+        <h1 class="text-3xl font-bold mb-8">{T.termsTitle}</h1>
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
           <p class="text-amber-800">
-            Hierdie dokument is in Engels beskikbaar. Vir vrae: 
-            <a href="mailto:farms@arbrebio.com" class="font-medium hover:underline">farms@arbrebio.com</a>
+            {T.legalNote} <a href="mailto:farms@arbrebio.com" class="font-medium hover:underline">farms@arbrebio.com</a>
           </p>
         </div>
         <p class="text-gray-600 mb-6">
-          Om die volledige weergawe te lees, besoek asseblief
+          {T.legalViewFull}
           <a href="/terms" class="text-primary hover:underline ml-1">arbrebio.com/terms</a>
         </p>
         <a href={`${p}/contact`} class="inline-flex items-center text-primary font-semibold hover:underline">
-          Kontak Ons
+          {T.legalContact}
           <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>

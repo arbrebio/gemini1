@@ -1,14 +1,63 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
+import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const featuredProjects = [
+  {
+    title: "PDC2V Greenhouse Project",
+    location: "Abidjan (Brofodoumé), Côte d'Ivoire",
+    area: "1 hectare",
+    type: "PDC2V Beneficiary Program",
+    description: "Construction of two tropical greenhouse (Sawtooth) of 500 m² each + drip irrigation system for producing Bell Pepper, tomato and all type of vegetable crops.",
+    image: "https://imgur.com/JXY1XfA.jpg",
+    stats: [{ label: "Greenhouse Area", value: "1,000 m²" }, { label: "Expected Production", value: "50 tons/year" }, { label: "Water Efficiency", value: "70%" }]
+  },
+  {
+    title: "Greenhouse Project",
+    location: "Bulawayo, Zimbabwe",
+    area: "10 hectares",
+    type: "Commercial Farm",
+    description: "State-of-the-art greenhouse facility producing premium vegetables for local and export markets.",
+    image: "https://imgur.com/XtX9fmQ.jpg",
+    stats: [{ label: "Annual Production", value: "3,000 tons" }, { label: "Water Savings", value: "65%" }, { label: "Employment", value: "200+ jobs" }]
+  },
+  {
+    title: "Smart Irrigation Project",
+    location: "Yamoussoukro, Ivory Coast",
+    area: "5 hectares",
+    type: "Government-sponsored water management initiative",
+    description: "Comprehensive water system integration including water tank installation and management systems.",
+    image: "https://imgur.com/CEQXAs2.jpg",
+    stats: [{ label: "Water Efficiency", value: "85%" }, { label: "Yield Increase", value: "40%" }, { label: "ROI Period", value: "2 years" }]
+  },
+  {
+    title: "NGO UN-FAO NETHOUSE Project",
+    location: "Burkina Faso",
+    area: "2 hectares",
+    type: "UN-OPS / FAO Project",
+    description: "Advanced research facility focusing on sustainable farming practices and crop optimization.",
+    image: "https://imgur.com/XxwTJh8.jpg",
+    stats: [{ label: "Research Projects", value: "15+" }, { label: "Partner Institutions", value: "8" }, { label: "Training Programs", value: "12/year" }]
+  }
+];
+
+const pageStats = [
+  { value: "500+", label: T.projectsCompleted },
+  { value: "12", label: T.africanCountries },
+  { value: "50,000+", label: T.hectaresMgmt },
+  { value: "98%", label: T.clientSatisfaction },
+];
 ---
 
-<Layout title="Ons Projekte | Arbre Bio Africa" description="Ontdek ons portefeulje van suksesvolle landbouprojekte regoor Afrika">
+<Layout title={`${T.projectsHeroTitle} | Arbre Bio Africa`} description={T.projectsHeroDesc}>
+
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
       <img src="https://imgur.com/XtX9fmQ.jpg" alt="Agricultural Projects" class="w-full h-full object-cover"/>
@@ -17,13 +66,13 @@ const p = `/${lang}`;
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Ons Projekte
-          <span class="block text-2xl md:text-3xl mt-2">Transformeer Afrika se Landbou</span>
+          {T.projectsHeroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.projectsHeroSubtitle}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Ontdek ons portefeulje van suksesvolle landbouprojekte regoor Afrika</p>
+        <p class="text-xl text-white mb-8">{T.projectsHeroDesc}</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#featured" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Bekyk Projekte</a>
-          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">Begin Jou Projek</a>
+          <a href="#featured" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.viewProjects}</a>
+          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.startProject}</a>
         </div>
       </div>
     </div>
@@ -32,43 +81,40 @@ const p = `/${lang}`;
   <section class="py-12 bg-primary">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="text-center text-white"><div class="text-4xl font-bold mb-2">500+</div><div class="text-sm opacity-80">Projekte Voltooi</div></div>
-        <div class="text-center text-white"><div class="text-4xl font-bold mb-2">12</div><div class="text-sm opacity-80">Afrika Lande</div></div>
-        <div class="text-center text-white"><div class="text-4xl font-bold mb-2">50,000+</div><div class="text-sm opacity-80">Hektaar Bestuur</div></div>
-        <div class="text-center text-white"><div class="text-4xl font-bold mb-2">98%</div><div class="text-sm opacity-80">Kliënttevredenheid</div></div>
+        {pageStats.map(stat => (
+          <div class="text-center text-white">
+            <div class="text-4xl font-bold mb-2">{stat.value}</div>
+            <div class="text-sm opacity-80">{stat.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
   <section id="featured" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Uitgestalde Projekte</h2>
-      {[
-        {type:"Projekte PDC2V",title:"PDC2V Greenhouse Project",location:"Abidjan (Brofodoumé), Côte d\'Ivoire",area:"1 hectare",desc:"Construction of two tropical greenhouse (Sawtooth) of 500 m² each + drip irrigation system for producing Bell Pepper, tomato and all type of vegetable crops.",image:"https://imgur.com/JXY1XfA.jpg",stats:[["Greenhouse Area","1,000 m²"],["Expected Production","50 tons/year"],["Water Efficiency","70%"]]},
-        {type:"Commercial Farm",title:"Greenhouse Project",location:"Bulawayo, Zimbabwe",area:"10 hectares",desc:"State-of-the-art greenhouse facility producing premium vegetables for local and export markets.",image:"https://imgur.com/XtX9fmQ.jpg",stats:[["Annual Production","3,000 tons"],["Water Savings","65%"],["Employment","200+ jobs"]]},
-        {type:"Government-sponsored initiative",title:"Smart Irrigation Project",location:"Yamoussoukro, Ivory Coast",area:"5 hectares",desc:"Comprehensive water system integration including water tank installation and management systems.",image:"https://imgur.com/CEQXAs2.jpg",stats:[["Water Efficiency","85%"],["Yield Increase","40%"],["ROI Period","2 years"]]},
-        {type:"UN-OPS / FAO Project",title:"NGO UN-FAO NETHOUSE Project",location:"Burkina Faso",area:"2 hectares",desc:"Advanced research facility focusing on sustainable farming practices and crop optimization.",image:"https://imgur.com/XxwTJh8.jpg",stats:[["Research Projects","15+"],["Partner Institutions","8"],["Training Programs","12/year"]]},
-      ].map((project, index) => (
-        <div class={`mb-20 ${index !== 0 ? "border-t pt-20" : ""}`}>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.featuredProjects}</h2>
+      {featuredProjects.map((project, index) => (
+        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class={index % 2 === 0 ? "order-1" : "order-1 lg:order-2"}>
+            <div class={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
               <div class="bg-primary text-white px-4 py-2 rounded-full inline-block mb-4">{project.type}</div>
               <h3 class="text-2xl font-bold mb-2">{project.title}</h3>
               <p class="text-gray-600 mb-4">
-                <span class="font-semibold">Ligging:</span> {project.location}<br/>
-                <span class="font-semibold">Oppervlak:</span> {project.area}
+                <span class="font-semibold">{T.locationLabel}</span> {project.location}<br/>
+                <span class="font-semibold">{T.areaLabel}</span> {project.area}
               </p>
-              <p class="text-gray-600 mb-6">{project.desc}</p>
+              <p class="text-gray-600 mb-6">{project.description}</p>
               <div class="grid grid-cols-3 gap-4">
-                {project.stats.map(([label,value]) => (
+                {project.stats.map(stat => (
                   <div class="bg-gray-50 p-4 rounded-lg">
-                    <div class="text-sm text-gray-500">{label}</div>
-                    <div class="font-semibold text-primary">{value}</div>
+                    <div class="text-sm text-gray-500">{stat.label}</div>
+                    <div class="font-semibold text-primary">{stat.value}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <div class={index % 2 === 0 ? "order-2" : "order-2 lg:order-1"}>
+            <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
               <img src={project.image} alt={project.title} class="w-full h-[400px] object-cover rounded-lg shadow-lg"/>
             </div>
           </div>
@@ -79,14 +125,15 @@ const p = `/${lang}`;
 
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Projek te Begin?</h2>
-      <p class="text-xl text-white mb-8">Kontak ons vandag vir deskundige konsultasie en projekbeplanning.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.readyStart}</h2>
+      <p class="text-xl text-white mb-8">{T.readyStartSub}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Begin</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.getStarted}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>

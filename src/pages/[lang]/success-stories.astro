@@ -1,27 +1,71 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const caseStudies = [
+  {
+    title: "Large-Scale Tomato Greenhouse",
+    client: "Marie Koné",
+    location: "Yamoussoukro, Côte d\'Ivoire",
+    description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
+    challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
+    solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
+    results: ["300% increase in annual yield", "Water usage reduced by 60%", "Year-round production achieved", "Product quality improvement leading to premium market prices"],
+    testimonial: "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+    afterImage: "https://imgur.com/hjafzfj.jpg"
+  },
+  {
+    title: "Smart Irrigation for Cocoa Farm",
+    client: "Emmanuel Osei",
+    location: "Kumasi, Ghana",
+    description: "Modernization of 50-hectare cocoa plantation with smart irrigation",
+    challenge: "Drought periods severely impacted crop yields and quality",
+    solution: "Implementation of automated drip irrigation system with soil moisture monitoring",
+    results: ["180% increase in cocoa yield", "40% reduction in water consumption", "Improved bean quality and consistency", "Higher price per kg achieved through quality improvements"],
+    testimonial: "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we\'re seeing much better yields than ever before.",
+    clientImage: "https://imgur.com/qreTzRX.jpg",
+    beforeImage: "https://imgur.com/CEQXAs2.jpg",
+    afterImage: "https://imgur.com/6XtSwqS.jpg"
+  },
+  {
+    title: "Hydroponic Vegetable Farm",
+    client: "Sarah Mensah",
+    location: "Abidjan, Côte d\'Ivoire",
+    description: "Establishment of hydroponic vegetable farm for premium market supply",
+    challenge: "Limited arable land and soil quality issues preventing profitable farming",
+    solution: "Installation of complete hydroponic system with coco peat growing media",
+    results: ["Year-round production of premium vegetables", "Supplying major supermarkets and restaurants", "Zero soil-borne diseases", "60% lower water usage than conventional farming"],
+    testimonial: "Moving to hydroponics in greenhouses has revolutionized our business. We\'re now the preferred supplier for several high-end restaurants and supermarkets.",
+    clientImage: "https://imgur.com/bjqispj.jpg",
+    beforeImage: "https://imgur.com/KAh1QAU.jpg",
+    afterImage: "https://imgur.com/WgMc6pm.jpg"
+  },
+];
 ---
 
-<Layout title="Suksesverhale | Arbre Bio Africa" description="Ontdek hoe Arbre Bio Africa se oplossings plase regoor Afrika getransformeer het">
+<Layout title={`${T.ssHeroTitle} | Arbre Bio Africa`} description={T.ssHeroDesc}>
+
   <section class="relative h-[50vh] flex items-center">
-    <div class="absolute inset-0 z-0"><img src="https://imgur.com/YbVGmcu.jpg" alt="Success Stories" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
+    <div class="absolute inset-0 z-0">
+      <img src="https://imgur.com/YbVGmcu.jpg" alt="Success Stories" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-black bg-opacity-55"></div>
+    </div>
     <div class="container mx-auto px-4 relative z-10 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Suksesverhale</h1>
-      <p class="text-xl text-white max-w-2xl mx-auto">Werklike Resultate van Afrika se Boere</p>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{T.ssHeroTitle}</h1>
+      <p class="text-xl text-white max-w-2xl mx-auto">{T.ssHeroSubtitle}</p>
     </div>
   </section>
 
-  {[
-    {title:"Large-Scale Tomato Greenhouse",client:"Marie Koné",location:"Yamoussoukro, Côte d\'Ivoire",description:"Implementation of a 2-hectare greenhouse facility with automated irrigation",challenge:"Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",solution:"Installation of climate-controlled greenhouses with precision irrigation systems",results:["300% increase in annual yield","Water usage reduced by 60%","Year-round production achieved","Product quality improvement leading to premium market prices"],testimonial:"The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",clientImage:"https://imgur.com/YbVGmcu.jpg",beforeImage:"https://imgur.com/tXiE4Aq.jpg",afterImage:"https://imgur.com/hjafzfj.jpg"},
-    {title:"Smart Irrigation for Cocoa Farm",client:"Emmanuel Osei",location:"Kumasi, Ghana",description:"Modernization of 50-hectare cocoa plantation with smart irrigation",challenge:"Drought periods severely impacted crop yields and quality",solution:"Implementation of automated drip irrigation system with soil moisture monitoring",results:["180% increase in cocoa yield","40% reduction in water consumption","Improved bean quality and consistency","Higher price per kg achieved through quality improvements"],testimonial:"The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",clientImage:"https://imgur.com/qreTzRX.jpg",beforeImage:"https://imgur.com/CEQXAs2.jpg",afterImage:"https://imgur.com/6XtSwqS.jpg"},
-    {title:"Hydroponic Vegetable Farm",client:"Sarah Mensah",location:"Abidjan, Côte d\'Ivoire",description:"Establishment of hydroponic vegetable farm for premium market supply",challenge:"Limited arable land and soil quality issues preventing profitable farming",solution:"Installation of complete hydroponic system with coco peat growing media",results:["Year-round production of premium vegetables","Supplying major supermarkets and restaurants","Zero soil-borne diseases","60% lower water usage than conventional farming"],testimonial:"Moving to hydroponics in greenhouses has revolutionized our business. We're now the preferred supplier for several high-end restaurants and supermarkets.",clientImage:"https://imgur.com/bjqispj.jpg",beforeImage:"https://imgur.com/KAh1QAU.jpg",afterImage:"https://imgur.com/WgMc6pm.jpg"},
-  ].map((study, index) => (
+  {caseStudies.map((study, index) => (
     <section class={`py-20 ${index % 2 !== 0 ? "bg-gray-50" : "bg-white"}`}>
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
@@ -30,23 +74,33 @@ const p = `/${lang}`;
           <p class="text-gray-600 mb-8 text-lg">{study.description}</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div class="bg-red-50 p-6 rounded-lg">
-              <h3 class="font-bold text-red-700 mb-3">Uitdaging</h3>
+              <h3 class="font-bold text-red-700 mb-3">{T.challenge}</h3>
               <p class="text-gray-700 text-sm">{study.challenge}</p>
             </div>
             <div class="bg-blue-50 p-6 rounded-lg">
-              <h3 class="font-bold text-blue-700 mb-3">Oplossing</h3>
+              <h3 class="font-bold text-blue-700 mb-3">{T.solution}</h3>
               <p class="text-gray-700 text-sm">{study.solution}</p>
             </div>
             <div class="bg-green-50 p-6 rounded-lg">
-              <h3 class="font-bold text-green-700 mb-3">Resultate</h3>
+              <h3 class="font-bold text-green-700 mb-3">{T.results}</h3>
               <ul class="space-y-1">
-                {study.results.map(r => (<li class="text-sm text-gray-700 flex items-start gap-1"><span class="text-green-600 font-bold mt-0.5">✓</span>{r}</li>))}
+                {study.results.map(r => (
+                  <li class="text-sm text-gray-700 flex items-start gap-1">
+                    <span class="text-green-600 font-bold mt-0.5">✓</span>{r}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div><p class="text-sm font-semibold text-gray-500 mb-2">Voor</p><img src={study.beforeImage} alt="Before" class="w-full h-48 object-cover rounded-lg shadow"/></div>
-            <div><p class="text-sm font-semibold text-gray-500 mb-2">Na</p><img src={study.afterImage} alt="After" class="w-full h-48 object-cover rounded-lg shadow"/></div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500 mb-2">{T.beforeLabel}</p>
+              <img src={study.beforeImage} alt="Before" class="w-full h-48 object-cover rounded-lg shadow"/>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500 mb-2">{T.afterLabel}</p>
+              <img src={study.afterImage} alt="After" class="w-full h-48 object-cover rounded-lg shadow"/>
+            </div>
           </div>
           <blockquote class="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg">
             <p class="text-gray-700 italic mb-4">"{study.testimonial}"</p>
@@ -62,12 +116,12 @@ const p = `/${lang}`;
 
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-white mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.transformFarm}</h2>
+      <p class="text-xl text-white mb-8">{T.joinFarmers}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Kry 'n Gratis Konsultasie</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>

@@ -1,14 +1,25 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
+import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
 const p = `/${lang}`;
+
+const technologies = [
+  { title: T.dripTitle, description: T.dripDesc, specs: [['Flow Rate', '1-8 L/hour'], ['Spacing Options', '20-100 cm'], ['Operating Pressure', '1-4 bar'], ['Filtration', '120 mesh']], benefits: ['Up to 70% water savings vs traditional irrigation', 'Uniform water distribution across all crops', 'Reduced fertilizer leaching', 'Minimal soil erosion and weed growth'], image: 'https://imgur.com/6XtSwqS.jpg', caseStudy: { title: 'Tomato Farm in Ghana', result: '65% increase in yield, 40% reduction in water usage' } },
+  { title: T.sprinklerTitle, description: T.sprinklerDesc, specs: [['Coverage Radius', '5-25 meters'], ['Flow Rate', '500-2000 L/hour'], ['Pressure Range', '2-5 bar'], ['Rotation', '360° coverage']], benefits: ['Even water distribution pattern', 'Adjustable spray patterns for different crops', 'Durable construction for long service life', 'Low maintenance requirements'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Maize Farm in Kenya', result: '45% increase in crop uniformity, 30% water savings' } },
+  { title: T.fertigationTitle, description: T.fertigationDesc, specs: [['Injection Rate', '0.2-40 L/hour'], ['Mixing Ratio', '1:50 - 1:1000'], ['Tank Capacity', '50-1000 L'], ['Control', 'EC/pH automated']], benefits: ['Precise nutrient delivery to crop root zone', 'Automated pH and EC control', 'Real-time monitoring and adjustment', 'Reduced fertilizer waste'], image: 'https://imgur.com/NnkgMDq.jpg', caseStudy: { title: "Vegetable Farm in Côte d'Ivoire", result: '50% reduction in fertilizer use, 40% yield increase' } },
+  { title: T.digitalTitle, description: T.digitalDesc, specs: [['Sensor Range', 'Up to 5 km'], ['Data Update', 'Every 15 min'], ['Battery Life', '5 years'], ['Accuracy', '±2% VWC']], benefits: ['Real-time monitoring and alerts', 'Data-driven irrigation decisions', 'Remote system control via mobile app', 'Predictive maintenance alerts'], image: 'https://imgur.com/3VCs7hJ.jpg', caseStudy: { title: 'Tech-enabled Farm in Nigeria', result: '35% water savings through smart scheduling' } },
+  { title: T.waterTreatmentTitle, description: T.waterTreatmentDesc, specs: [['Flow Capacity', '10-200 m³/hour'], ['Filtration Level', '20-200 micron'], ['Pressure Loss', '<0.3 bar'], ['Backwash', 'Automated']], benefits: ['Prevents emitter clogging', 'Removes harmful contaminants', 'Extends system lifespan', 'Automated self-cleaning'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Large Scale Farm in Tanzania', result: '90% reduction in system maintenance needs' } },
+];
 ---
 
-<Layout title="Presisie Besproeiing Oplossings | Arbre Bio Africa" description="Transformeer jou plaas met watereffektiewe besproeiingstelsels ontwerp vir Afrika se toestande">
+<Layout title={`${T.irrHeroTitle} | Arbre Bio Africa`} description={T.irrTagline}>
+
   <section class="relative min-h-[80vh] flex items-center">
     <div class="absolute inset-0 z-0">
       <img src="https://imgur.com/6XtSwqS.jpg" alt="Precision Irrigation" class="w-full h-full object-cover" loading="eager"/>
@@ -17,13 +28,13 @@ const p = `/${lang}`;
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Presisie Besproeiing Oplossings
-          <span class="block text-2xl md:text-3xl mt-2">Vir Afrika se Landbou</span>
+          {T.irrHeroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.irrHeroSub}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Transformeer jou plaas met watereffektiewe besproeiingstelsels ontwerp vir Afrika se toestande</p>
+        <p class="text-xl text-white mb-8">{T.irrTagline}</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#technologies" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Verken Oplossings</a>
-          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">Kry 'n Gratis Konsultasie</a>
+          <a href="#technologies" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.exploreSolutions}</a>
+          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.freeConsultation}</a>
         </div>
       </div>
     </div>
@@ -32,26 +43,20 @@ const p = `/${lang}`;
   <section class="py-12 bg-primary text-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div><div class="text-3xl font-bold mb-1">60%</div><div class="opacity-80">Water Besparing</div></div>
-        <div><div class="text-3xl font-bold mb-1">500+</div><div class="opacity-80">Projekte Voltooi</div></div>
-        <div><div class="text-3xl font-bold mb-1">40%</div><div class="opacity-80">Opbrengs Verhoging</div></div>
-        <div><div class="text-3xl font-bold mb-1">98%</div><div class="opacity-80">Kliënttevredenheid</div></div>
+        <div><div class="text-3xl font-bold mb-1">60%</div><div class="opacity-80">{T.waterSavings}</div></div>
+        <div><div class="text-3xl font-bold mb-1">500+</div><div class="opacity-80">{T.projectsCompleted}</div></div>
+        <div><div class="text-3xl font-bold mb-1">40%</div><div class="opacity-80">{T.yieldIncrease}</div></div>
+        <div><div class="text-3xl font-bold mb-1">98%</div><div class="opacity-80">{T.clientSatisfaction}</div></div>
       </div>
     </div>
   </section>
 
   <section id="technologies" class="py-20">
     <div class="container mx-auto px-4">
-      {[
-        {title:"Drup Besproeiing Stelsels",description:"Nuutste drup besproeiing tegnologie wat presiese hoeveelhede water direk na plantworwels lewer, wat doeltreffendheid en gewasopbrengste maksimeer terwyl watervermorsing geminimaliseer word.",specs:[["Vloeitempo","1-8 L/hour"],["Spasiering Opsies","20-100 cm"],["Werkdruk","1-4 bar"],["Filtrasie","120 mesh"]],benefits:["Up to 70% water savings compared to traditional irrigation","Uniform water distribution across all crops","Reduced fertilizer leaching","Minimal soil erosion and weed growth"],image:"https://imgur.com/6XtSwqS.jpg",case_study:{title:"Tomato Farm in Ghana",result:"65% increase in yield, 40% reduction in water usage"}},
-        {title:"Sproeier Stelsels",description:"Gevorderde sproeier stelsels met presisie waterverspreiding en slim drukregulering. Ideaal vir groter velde en spesifieke gewastipes wat oorhoofse besproeiing benodig.",specs:[["Bedekkingsradius","5-25 meters"],["Vloeitempo","500-2000 L/hour"],["Drukbereik","2-5 bar"],["Rotasie","360° coverage"]],benefits:["Even water distribution pattern","Adjustable spray patterns for different crops","Durable construction for long service life","Low maintenance requirements"],image:"https://imgur.com/fwHJKYs.jpg",case_study:{title:"Maize Farm in Kenya",result:"45% increase in crop uniformity, 30% water savings"}},
-        {title:"Fertirrigation Oplossings",description:"Geïntegreerde fertirrigation stelsels wat besproeiing met voedingstoftoediening kombineer, wat presiese voedingstofaflewering verseker terwyl brondoeltreffendheid gemaximaliseer word.",specs:[["Injection Rate","0.2-40 L/hour"],["Mixing Ratio","1:50 - 1:1000"],["Tank Capacity","50-1000 L"],["Control","EC/pH automated"]],benefits:["Precise nutrient delivery to crop root zone","Automated pH and EC control","Real-time monitoring and adjustment","Reduced fertilizer waste"],image:"https://imgur.com/NnkgMDq.jpg",case_study:{title:"Vegetable Farm in Côte d\'Ivoire",result:"50% reduction in fertilizer use, 40% yield increase"}},
-        {title:"Digitale Boerdery Gereedskap",description:"Slim besproeiingbestuurstelsel aangedryf deur IoT-sensors en gevorderde analitiek. Monitor grondvog, weerstoestande en gewasgesondheid in werklike tyd.",specs:[["Sensor Range","Up to 5 km"],["Data Update","Every 15 min"],["Battery Life","5 years"],["Accuracy","±2% VWC"]],benefits:["Real-time monitoring and alerts","Data-driven irrigation decisions","Remote system control via mobile app","Predictive maintenance alerts"],image:"https://imgur.com/3VCs7hJ.jpg",case_study:{title:"Tech-enabled Farm in Nigeria",result:"35% water savings through smart scheduling"}},
-        {title:"Waterbehandeling en Filtrasie",description:"Omvattende waterbehandeling oplossings wat verseker dat die besproeiingswaterkwaliteit aan gewas vereistes voldoen.",specs:[["Flow Capacity","10-200 m³/hour"],["Filtration Level","20-200 micron"],["Pressure Loss","<0.3 bar"],["Backwash","Automated"]],benefits:["Prevents emitter clogging","Removes harmful contaminants","Extends system lifespan","Automated self-cleaning"],image:"https://imgur.com/fwHJKYs.jpg",case_study:{title:"Large Scale Farm in Tanzania",result:"90% reduction in system maintenance needs"}},
-      ].map((tech, index) => (
-        <div class={`mb-20 ${index !== 0 ? "border-t pt-20" : ""}`}>
+      {technologies.map((tech, index) => (
+        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div class={index % 2 !== 0 ? "lg:order-2" : ""}>
+            <div class={index % 2 !== 0 ? 'lg:order-2' : ''}>
               <h2 class="text-2xl font-bold mb-4">{tech.title}</h2>
               <p class="text-gray-600 mb-6 leading-relaxed">{tech.description}</p>
               <div class="grid grid-cols-2 gap-4 mb-6">
@@ -71,11 +76,11 @@ const p = `/${lang}`;
                 ))}
               </ul>
               <div class="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
-                <p class="font-bold text-primary mb-1">Gevallestudie: {tech.case_study.title}</p>
-                <p class="text-gray-600 text-sm">{tech.case_study.result}</p>
+                <p class="font-bold text-primary mb-1">{T.caseStudy}: {tech.caseStudy.title}</p>
+                <p class="text-gray-600 text-sm">{tech.caseStudy.result}</p>
               </div>
             </div>
-            <div class={index % 2 !== 0 ? "lg:order-1" : ""}>
+            <div class={index % 2 !== 0 ? 'lg:order-1' : ''}>
               <img src={tech.image} alt={tech.title} class="w-full h-[400px] object-cover rounded-lg shadow-lg"/>
             </div>
           </div>
@@ -86,14 +91,15 @@ const p = `/${lang}`;
 
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
-      <p class="text-xl text-white mb-8">Transformeer jou plaas met watereffektiewe besproeiingstelsels ontwerp vir Afrika se toestande</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.irrTagline}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Kry 'n Gratis Konsultasie</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
         <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
     </div>
   </section>
+
 </Layout>
