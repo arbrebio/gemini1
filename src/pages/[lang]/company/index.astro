@@ -10,10 +10,10 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 const stats = [
-  { value: '500+', label: T.projectsCompleted },
-  { value: '5', label: T.africanCountries },
-  { value: '50k+', label: lang === 'fr' ? 'Hectares Optimisés' : lang === 'es' ? 'Hectáreas Optimizadas' : 'Hektaar Geoptimaliseer' },
-  { value: '60%', label: T.waterSavings }
+  { value: '500+', label: T.projectsCompleted, target: '500' },
+  { value: '5', label: T.africanCountries, target: '5' },
+  { value: '50k+', label: lang === 'fr' ? 'Hectares Optimisés' : lang === 'es' ? 'Hectáreas Optimizadas' : 'Hektaar Geoptimaliseer', target: '50000' },
+  { value: '60%', label: T.waterSavings, target: '60' }
 ];
 
 const solutions = [
@@ -33,7 +33,10 @@ const timeline = [
 ];
 ---
 
-<Layout title={`${T.aboutPageTitle} | Arbre Bio Africa`} description={T.aboutPageSubtitle}>
+<Layout
+  title={`${lang === 'fr' ? 'Entreprise' : lang === 'es' ? 'Empresa' : 'Maatskappy'} | Arbre Bio Africa`}
+  description={T.companyHeroTagline}
+>
 
   <!-- Hero -->
   <section class="relative h-screen overflow-hidden">
@@ -43,53 +46,32 @@ const timeline = [
     </div>
     <div class="relative z-10 h-full flex items-center">
       <div class="container mx-auto px-4">
-        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
-          {T.aboutPageTitle}
-          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">{T.aboutPageSubtitle.split('—')[0]}</span>
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+          {T.companyHeroTitle}
+          <span class="block text-3xl md:text-4xl mt-4 text-primary-100">{T.companyHeroSubtitle}</span>
         </h1>
-        <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8">{T.ctaSubtitle}</p>
+        <p class="text-xl md:text-2xl text-white/90 max-w-2xl mb-8 animate-slide-up">{T.companyHeroTagline}</p>
         <div class="flex flex-wrap gap-4">
-          <a href={`#solutions`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{T.exploreOurSolutions}</a>
+          <a href="#solutions" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{T.exploreOurSolutions}</a>
           <a href={`${p}/contact`} class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{T.contactTitle}</a>
         </div>
       </div>
     </div>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </div>
   </section>
 
-  <!-- Stats with counter animation -->
+  <!-- Stats -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((stat) => (
           <div class="text-center transform hover:scale-105 transition-transform duration-300">
-            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.value}>{stat.value}</div>
+            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.target}>{stat.value}</div>
             <div class="text-gray-600">{stat.label}</div>
           </div>
         ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Founder Section -->
-  <section class="py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="max-w-5xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <img src="https://imgur.com/LD5JZto.jpg" alt="Sydney Abouna - Founder & CEO of Arbre Bio Africa" class="rounded-2xl shadow-xl w-full object-cover" style="max-height: 500px;"/>
-          </div>
-          <div>
-            <span class="text-primary font-semibold text-sm uppercase tracking-widest">{T.theFounder}</span>
-            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Sydney Abouna</h2>
-            <p class="text-gray-600 text-lg leading-relaxed mb-4">{T.founderP1}</p>
-            <p class="text-gray-600 text-lg leading-relaxed mb-4">{T.founderP2}</p>
-            <p class="text-gray-600 text-lg leading-relaxed mb-6">{T.founderP4}</p>
-            <a href={`${p}/contact`} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors duration-300">
-              {T.workWithUs}
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -103,13 +85,40 @@ const timeline = [
     <div class="relative z-10 container mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center text-white">
         <h2 class="text-3xl md:text-4xl font-bold mb-6">{T.ourMission}</h2>
-        <p class="text-xl leading-relaxed">{T.missionText}</p>
+        <p class="text-xl leading-relaxed">{T.companyMissionText}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leadership -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourLeadership}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+        <div class="text-center">
+          <img src="https://imgur.com/LAiwg8o.png" alt={T.ceoName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <h3 class="text-xl font-bold mb-1">{T.ceoName}</h3>
+          <p class="text-primary font-semibold mb-3">{T.ceoTitle}</p>
+          <p class="text-gray-600 text-sm leading-relaxed">{T.ceoBio}</p>
+        </div>
+        <div class="text-center">
+          <img src="https://imgur.com/LD5JZto.jpg" alt={T.cooName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <h3 class="text-xl font-bold mb-1">{T.cooName}</h3>
+          <p class="text-primary font-semibold mb-3">{T.cooTitle}</p>
+          <p class="text-gray-600 text-sm leading-relaxed">{T.cooBio}</p>
+        </div>
+        <div class="text-center">
+          <img src="https://imgur.com/NU06wJT.jpg" alt={T.marketingName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <h3 class="text-xl font-bold mb-1">{T.marketingName}</h3>
+          <p class="text-primary font-semibold mb-3">{T.marketingTitle}</p>
+          <p class="text-gray-600 text-sm leading-relaxed">{T.marketingBio}</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Solutions -->
-  <section id="solutions" class="py-20 bg-white">
+  <section id="solutions" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourServices}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -133,20 +142,17 @@ const timeline = [
   </section>
 
   <!-- Timeline -->
-  <section class="py-20 bg-gray-50">
+  <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourJourney}</h2>
-      <div class="max-w-4xl mx-auto relative">
-        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
-        {timeline.map((item, index) => (
-          <div class={`relative mb-8 ${index % 2 === 0 ? 'left-timeline' : 'right-timeline'}`}>
-            <div class="flex items-center">
-              <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center z-10 text-xl">{item.icon}</div>
-              <div class="bg-white p-6 rounded-lg shadow-lg ml-6 transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
-                <div class="text-2xl font-bold text-primary mb-2">{item.year}</div>
-                <div class="font-semibold text-gray-800 mb-1">{item.event}</div>
-                <div class="text-gray-600 text-sm">{item.description}</div>
-              </div>
+      <div class="max-w-4xl mx-auto space-y-8">
+        {timeline.map((item) => (
+          <div class="flex gap-6 items-start">
+            <div class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">{item.icon}</div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-md flex-1 hover:shadow-lg transition-shadow duration-300">
+              <div class="text-2xl font-bold text-primary mb-1">{item.year}</div>
+              <div class="text-lg font-semibold text-gray-800 mb-2">{item.event}</div>
+              <div class="text-gray-600">{item.description}</div>
             </div>
           </div>
         ))}
@@ -172,39 +178,35 @@ const timeline = [
 
 <style>
   .parallax-bg { transform: translateY(var(--scroll-offset, 0)); will-change: transform; }
-  .left-timeline { padding-right: 50%; }
-  .right-timeline { padding-left: 50%; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in { animation: fadeIn 1s ease-out; }
+  .animate-slide-up { animation: slideUp 1s ease-out; }
 </style>
 
 <script is:inline>
-  // Parallax
   const parallaxEls = document.querySelectorAll('.parallax-bg');
   window.addEventListener('scroll', function() {
     parallaxEls.forEach(function(el) { el.style.setProperty('--scroll-offset', (window.scrollY * 0.5) + 'px'); });
   });
-  // Counter animation
+  function animateCounter(counter) {
+    var targetStr = counter.getAttribute('data-target') || '0';
+    var target = parseInt(targetStr.replace(/\D/g, ''), 10);
+    if (!target) return;
+    var startTime = null;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / 1500, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      counter.textContent = Math.round(eased * target).toString();
+      if (progress < 1) { requestAnimationFrame(step); }
+      else { counter.textContent = counter.getAttribute('data-target') || targetStr; }
+    }
+    requestAnimationFrame(step);
+  }
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var c = entry.target;
-          var targetStr = c.getAttribute('data-target') || '0';
-          var target = parseInt(targetStr.replace(/\D/g, ''), 10);
-          if (!target) return;
-          var startTime = null;
-          var duration = 1500;
-          function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var progress = Math.min((timestamp - startTime) / duration, 1);
-            var eased = 1 - Math.pow(1 - progress, 3);
-            c.textContent = Math.round(eased * target).toString();
-            if (progress < 1) { requestAnimationFrame(step); }
-            else { c.textContent = targetStr; }
-          }
-          requestAnimationFrame(step);
-          obs.unobserve(c);
-        }
-      });
+      entries.forEach(function(e) { if (e.isIntersecting) { animateCounter(e.target); obs.unobserve(e.target); } });
     }, { threshold: 0.3 });
     document.querySelectorAll('.counter').forEach(function(c) { obs.observe(c); });
   }

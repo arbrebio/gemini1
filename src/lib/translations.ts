@@ -69,6 +69,35 @@ export interface SiteTranslations {
   founderP3: string;
   founderP4: string;
   founderTitleCard: string;
+  // About page - Leadership team (correct version)
+  whoWeAre: string;
+  whoWeAreText: string;
+  ourMissionShort: string;
+  ourMissionShortText: string;
+  ourLeadership: string;
+  ceoTitle: string;
+  cooTitle: string;
+  marketingTitle: string;
+  ceoName: string;
+  cooName: string;
+  marketingName: string;
+  ceoBio: string;
+  cooBio: string;
+  marketingBio: string;
+  ourValues: string;
+  value1Title: string;
+  value1Desc: string;
+  value2Title: string;
+  value2Desc: string;
+  value3Title: string;
+  value3Desc: string;
+  joinUsTitle: string;
+  joinUsSubtitle: string;
+  // Company page translations
+  companyHeroTitle: string;
+  companyHeroSubtitle: string;
+  companyHeroTagline: string;
+  companyMissionText: string;
   whatWeDo: string;
   gcTitle: string;
   gcDesc: string;
@@ -286,6 +315,35 @@ const FR: SiteTranslations = {
   founderP3: "Je cherche sans relâche les meilleures techniques agricoles du monde — les solutions les plus innovantes pour augmenter les rendements, améliorer la qualité alimentaire et rendre l'agriculture rentable et durable dans les conditions climatiques uniques de l'Afrique. Je ne crois pas que les agriculteurs africains devraient se contenter de méthodes dépassées quand la technologie de classe mondiale existe.",
   founderP4: "Aujourd'hui, Arbre Bio opère dans 5 pays africains avec 500+ projets réalisés, des partenariats avec la Banque Mondiale, la BAD, la GIZ, la FAO, le Ministère ivoirien de l'Agriculture et des entreprises agritech mondiales de premier plan. Nous ne faisons que commencer.",
   founderTitleCard: "Fondatrice & PDG — Arbre Bio Africa · Arbre Bio Côte d'Ivoire · Organic Tree Group",
+  // Leadership team
+  whoWeAre: "Qui Nous Sommes",
+  whoWeAreText: "Arbre Bio Africa est un leader de l'innovation agricole, fournissant des solutions d'irrigation de précision, de serres et de substrats de culture biologique à travers l'Afrique. Notre engagement envers les pratiques agricoles durables et la technologie de pointe nous a positionnés à l'avant-garde de la transformation agricole dans la région.",
+  ourMissionShort: "Notre Mission",
+  ourMissionShortText: "Notre objectif est de transformer l'agriculture africaine en rendant les technologies agricoles modernes accessibles et durables pour chaque agriculteur à travers le continent.",
+  ourLeadership: "Notre Direction",
+  ceoTitle: "Directeur Général",
+  cooTitle: "Directeur des Opérations",
+  marketingTitle: "Responsable Stratégie Marketing",
+  ceoName: "Lethabo Ndhlovu",
+  cooName: "Sydney Abouna",
+  marketingName: "Viviane BROU",
+  ceoBio: "Avec plus de 25 ans d'expérience en ingénierie agricole et spécialisé dans l'agriculture intensive, Lethabo dirige notre mission de transformation de l'agriculture africaine.",
+  cooBio: "Sydney apporte une expertise opérationnelle approfondie dans la gestion de projets agricoles à grande échelle à travers l'Afrique.",
+  marketingBio: "Formée en hôtellerie, maintenant dans le marketing digital et le produit — focalisée sur l'aide aux clients pour se connecter aux produits avec clarté, empathie et passion pour la durabilité.",
+  ourValues: "Nos Valeurs",
+  value1Title: "Durabilité",
+  value1Desc: "Engagés dans des pratiques agricoles respectueuses de l'environnement qui préservent les ressources naturelles pour les générations futures.",
+  value2Title: "Innovation",
+  value2Desc: "Avancer continuellement la technologie agricole pour apporter les meilleures solutions d'agriculture mondiale aux agriculteurs africains.",
+  value3Title: "Partenariat",
+  value3Desc: "Construire des relations solides et durables avec les agriculteurs, les institutions et les communautés à travers le continent.",
+  joinUsTitle: "Rejoignez-Nous pour Transformer l'Agriculture Africaine",
+  joinUsSubtitle: "Travaillons ensemble pour construire un avenir plus durable et productif pour l'agriculture.",
+  // Company page
+  companyHeroTitle: "Transformer l'Agriculture",
+  companyHeroSubtitle: "Par l'Innovation",
+  companyHeroTagline: "Autonomiser les agriculteurs à travers l'Afrique avec une technologie de pointe et des solutions durables.",
+  companyMissionText: "Chez Arbre Bio Africa, nous sommes engagés à révolutionner l'agriculture grâce à une technologie innovante et des pratiques durables. Notre mission est d'autonomiser les agriculteurs avec des solutions qui augmentent la productivité tout en préservant les ressources naturelles.",
   whatWeDo: "Ce Que Nous Faisons",
   gcTitle: "Construction de Serres",
   gcDesc: "Serres sawtooth et tunnel haute technologie conçues pour les conditions tropicales africaines, avec contrôle climatique complet et irrigation goutte-à-goutte intégrée.",
@@ -502,6 +560,35 @@ const ES: SiteTranslations = {
   founderP3: "Busco incansablemente las mejores técnicas agrícolas del mundo — las soluciones más innovadoras para aumentar los rendimientos, mejorar la calidad alimentaria y hacer que la agricultura sea rentable y sostenible en las condiciones climáticas únicas de África. No creo que los agricultores africanos deban conformarse con métodos obsoletos cuando existe tecnología de clase mundial.",
   founderP4: "Hoy, Arbre Bio opera en 5 países africanos con más de 500 proyectos completados, alianzas con el Banco Mundial, el Banco Africano de Desarrollo, GIZ, FAO, el Ministerio de Agricultura de Costa de Marfil y empresas agrotecnológicas líderes a nivel mundial. Acabamos de empezar.",
   founderTitleCard: "Fundadora & CEO — Arbre Bio Africa · Arbre Bio Costa de Marfil · Organic Tree Group",
+  // Leadership team
+  whoWeAre: "Quiénes Somos",
+  whoWeAreText: "Arbre Bio Africa es líder en innovación agrícola, proporcionando soluciones de riego de precisión, invernaderos y sustratos de cultivo orgánico en toda África. Nuestro compromiso con las prácticas agrícolas sostenibles y la tecnología de vanguardia nos ha posicionado a la vanguardia de la transformación agrícola en la región.",
+  ourMissionShort: "Nuestra Misión",
+  ourMissionShortText: "Nuestro objetivo es transformar la agricultura africana haciendo que las tecnologías agrícolas modernas sean accesibles y sostenibles para cada agricultor en todo el continente.",
+  ourLeadership: "Nuestro Liderazgo",
+  ceoTitle: "Director Ejecutivo",
+  cooTitle: "Director de Operaciones",
+  marketingTitle: "Representante de Estrategia de Marketing",
+  ceoName: "Lethabo Ndhlovu",
+  cooName: "Sydney Abouna",
+  marketingName: "Viviane BROU",
+  ceoBio: "Con más de 25 años de experiencia en ingeniería agrícola y especialización en agricultura intensiva, Lethabo lidera nuestra misión de transformar la agricultura africana.",
+  cooBio: "Sydney aporta una amplia experiencia operativa en la gestión de proyectos agrícolas a gran escala en toda África.",
+  marketingBio: "Formada en hospitalidad, ahora en marketing digital y producto — enfocada en ayudar a los clientes a conectarse con los productos con claridad, empatía y pasión por la sostenibilidad.",
+  ourValues: "Nuestros Valores",
+  value1Title: "Sostenibilidad",
+  value1Desc: "Comprometidos con prácticas agrícolas respetuosas con el medio ambiente que preservan los recursos naturales para las generaciones futuras.",
+  value2Title: "Innovación",
+  value2Desc: "Avanzando continuamente la tecnología agrícola para llevar las mejores soluciones agrícolas mundiales a los agricultores africanos.",
+  value3Title: "Asociación",
+  value3Desc: "Construyendo relaciones sólidas y duraderas con agricultores, instituciones y comunidades en todo el continente.",
+  joinUsTitle: "Únete a Nosotros para Transformar la Agricultura Africana",
+  joinUsSubtitle: "Trabajemos juntos para construir un futuro más sostenible y productivo para la agricultura.",
+  // Company page
+  companyHeroTitle: "Transformando la Agricultura",
+  companyHeroSubtitle: "A través de la Innovación",
+  companyHeroTagline: "Empoderando a los agricultores de toda África con tecnología de vanguardia y soluciones sostenibles.",
+  companyMissionText: "En Arbre Bio Africa, estamos comprometidos a revolucionar la agricultura a través de tecnología innovadora y prácticas sostenibles. Nuestra misión es empoderar a los agricultores con soluciones que aumenten la productividad mientras se preservan los recursos naturales.",
   whatWeDo: "Lo Que Hacemos",
   gcTitle: "Construcción de Invernaderos",
   gcDesc: "Invernaderos sawtooth y túnel de alta tecnología diseñados para las condiciones tropicales africanas, con control climático completo e irrigación por goteo integrada.",
@@ -718,6 +805,35 @@ const AF: SiteTranslations = {
   founderP3: "Ek soek onverpoos na die wêreld se beste landboutegnieke — die mees innoverende oplossings om opbrengste te verhoog, voedsekwaliteit te verbeter en boerdery winsgewend en volhoubaar te maak in Afrika se unieke klimaattoestande. Ek glo nie dat Afrika se boere met verouderde metodes tevrede moet wees as wêreldklas-tegnologie bestaan nie.",
   founderP4: "Vandag werk Arbre Bio in 5 Afrika-lande met 500+ voltooide projekte, vennootskappe met die Wêreldbank, die Afrikaanse Ontwikkelingsbank, GIZ, FAO, die Ivoorkus Ministerie van Landbou en toonaangewende globale agritech-maatskappye. Ons het pas begin.",
   founderTitleCard: "Stigter & Uitvoerende Hoof — Arbre Bio Africa · Arbre Bio Ivoorkus · Organic Tree Group",
+  // Leadership team
+  whoWeAre: "Wie Ons Is",
+  whoWeAreText: "Arbre Bio Africa is 'n leier in landbou-innovasie, wat presisiebesproeiing, kwekhuisoplossings en organiese groeimedia regoor Afrika verskaf. Ons toewyding aan volhoubare boerderypraktyke en nuutste tegnologie het ons aan die voorpunt van landboutransformasie in die streek geplaas.",
+  ourMissionShort: "Ons Missie",
+  ourMissionShortText: "Ons doel is om Afrika se landbou te transformeer deur moderne boerdery-tegnologieë toeganklik en volhoubaar te maak vir elke boer regoor die kontinent.",
+  ourLeadership: "Ons Leierskap",
+  ceoTitle: "Uitvoerende Hoof",
+  cooTitle: "Hoof van Bedrywighede",
+  marketingTitle: "Bemarkingsstrategie Verteenwoordiger",
+  ceoName: "Lethabo Ndhlovu",
+  cooName: "Sydney Abouna",
+  marketingName: "Viviane BROU",
+  ceoBio: "Met meer as 25 jaar ervaring in landbou-ingenieurswese en spesialisasie in intensiewe boerdery, lei Lethabo ons missie om Afrika se landbou te transformeer.",
+  cooBio: "Sydney bring uitgebreide operasionele kundigheid in die bestuur van grootskaalse landbouprojekte regoor Afrika.",
+  marketingBio: "Opgelei in gasvryheid, nou in digitale bemarking en produk — gefokus op die help van kliënte om met produkte te skakel deur duidelikheid, empatie en passie vir volhoubaarheid.",
+  ourValues: "Ons Waardes",
+  value1Title: "Volhoubaarheid",
+  value1Desc: "Toegewyd aan omgewingsverantwoordelike boerderypraktyke wat natuurlike hulpbronne vir toekomstige geslagte bewaar.",
+  value2Title: "Innovasie",
+  value2Desc: "Deurlopende vordering van landboutegnologie om die beste wêreldse landbou-oplossings na Afrika se boere te bring.",
+  value3Title: "Vennootskap",
+  value3Desc: "Bou sterk, blywende verhoudings met boere, instellings en gemeenskappe regoor die kontinent.",
+  joinUsTitle: "Sluit Aan by Ons om Afrika se Landbou te Transformeer",
+  joinUsSubtitle: "Kom ons werk saam om 'n meer volhoubare en produktiewe toekoms vir boerdery te bou.",
+  // Company page
+  companyHeroTitle: "Transformeer Landbou",
+  companyHeroSubtitle: "Deur Innovasie",
+  companyHeroTagline: "Bemagtig boere regoor Afrika met nuutste tegnologie en volhoubare oplossings.",
+  companyMissionText: "By Arbre Bio Africa is ons verbind tot die rewolusionering van landbou deur innoverende tegnologie en volhoubare praktyke. Ons missie is om boere te bemagtig met oplossings wat produktiwiteit verhoog terwyl natuurlike hulpbronne bewaar word.",
   whatWeDo: "Wat Ons Doen",
   gcTitle: "Kwekhuis Konstruksie",
   gcDesc: "Hoë-tegnologie sawtooth en tonnel kweekhuise ontwerp vir Afrika se tropiese toestande, met volledige klimaatbeheer en drup besproeiing integrasie.",
