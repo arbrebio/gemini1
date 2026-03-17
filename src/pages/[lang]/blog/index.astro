@@ -1,91 +1,103 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
-import { pt } from "../../../lib/pageTranslations";
 import type { Language } from "../../../lib/i18n";
-
+import {{ getCollection }} from 'astro:content';
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
-const p = pt(lang); const b = p.blog;
-const prefix = `/${lang}`;
+const p = `/${lang}`;
+---
 
-const posts = await getCollection('blog');
+{const posts = await getCollection('blog');
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const featuredPosts = sortedPosts.filter(post => post.data.featured);
 const regularPosts = sortedPosts.filter(post => !post.data.featured);
+const locales: Record<string, string> = { fr: "fr-FR", es: "es-ES", af: "af-ZA", en: "en-US" };
+const formatDate = (date: Date) => new Intl.DateTimeFormat(locales[lang] || "en-US", { year:"numeric", month:"long", day:"numeric" }).format(date);}
 
-const formatDate = (date: Date) => {
-  const locales: Record<string, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA', en: 'en-US' };
-  return new Intl.DateTimeFormat(locales[lang] || 'en-US', { year:'numeric', month:'long', day:'numeric' }).format(date);
-};
----
-<Layout title={b.meta.title} description={b.meta.description}>
+<Layout title="Blog & Kennissentrum | Arbre Bio Africa" description="Deskundige insigte en praktiese gidse vir moderne Afrika landbou">
   <section class="relative h-[40vh] flex items-center">
-    <div class="absolute inset-0 z-0"><img src="https://imgur.com/zyqmr7i.jpg" alt="Blog" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
-    <div class="container mx-auto px-4 relative z-10 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{b.hero.title}</h1>
-      <p class="text-xl text-white max-w-2xl mx-auto">{b.hero.subtitle}</p>
+    <div class="absolute inset-0 z-0">
+      <img src="https://imgur.com/zyqmr7i.jpg" alt="Modern Agriculture" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Blog & Kennissentrum</h1>
+      <p class="text-xl text-white max-w-2xl">Deskundige insigte en praktiese gidse vir moderne Afrika landbou</p>
     </div>
   </section>
 
   {featuredPosts.length > 0 && (
-    <section class="py-16 bg-white">
+    <section class="py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8">{b.featuredTitle}</h2>
+        <h2 class="text-3xl font-bold mb-8">Uitstaande Artikels</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPosts.map(post => (
-            <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
-              <div class="overflow-hidden h-48"><img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/></div>
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
               <div class="p-6">
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-xs font-semibold text-primary uppercase tracking-wide bg-primary/10 px-2 py-1 rounded">{post.data.category}</span>
-                  <span class="text-xs text-gray-500">{formatDate(post.data.pubDate)}</span>
+                <div class="flex items-center mb-4">
+                  <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
+                  <span class="mx-2">•</span>
+                  <span class="text-sm text-primary capitalize">{post.data.category.replace("-"," ")}</span>
                 </div>
-                <h3 class="text-lg font-bold mb-3 leading-tight group-hover:text-primary transition-colors">{post.data.title}</h3>
-                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{post.data.description}</p>
-                <a href={`/blog/${post.slug}`} class="inline-flex items-center text-primary font-semibold text-sm gap-1 hover:gap-2 transition-all">
-                  {b.readMore}<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <h3 class="text-xl font-bold mb-2 hover:text-primary">
+                  <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                </h3>
+                <p class="text-gray-600 mb-4">{post.data.description}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-500">Deur {post.data.author}</span>
+                  <a href={`/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                    Lees Meer
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-8">Nuutste Artikels</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {regularPosts.map(post => (
+          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
+                <span class="mx-2">•</span>
+                <span class="text-sm text-primary capitalize">{post.data.category.replace("-"," ")}</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 hover:text-primary">
+                <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              </h3>
+              <p class="text-gray-600 mb-4">{post.data.description}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">Deur {post.data.author}</span>
+                <a href={`/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                  Lees Meer
+                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
               </div>
-            </article>
-          ))}
-        </div>
+            </div>
+          </article>
+        ))}
       </div>
-    </section>
-  )}
+    </div>
+  </section>
 
-  {regularPosts.length > 0 && (
-    <section class="py-16 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8">{b.latestTitle}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {regularPosts.map(post => (
-            <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
-              <div class="overflow-hidden h-44"><img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/></div>
-              <div class="p-5">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-xs font-semibold text-primary uppercase tracking-wide">{post.data.category}</span>
-                  <span class="text-gray-300">·</span>
-                  <span class="text-xs text-gray-500">{formatDate(post.data.pubDate)}</span>
-                </div>
-                <h3 class="text-base font-bold mb-2 leading-tight group-hover:text-primary transition-colors">{post.data.title}</h3>
-                <a href={`/blog/${post.slug}`} class="inline-flex items-center text-primary font-semibold text-sm gap-1">{b.readMore}</a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <section class="py-16 bg-primary/5">
+  <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-2xl font-bold mb-4">{b.newsletterTitle}</h2>
-      <p class="text-gray-600 mb-6">{b.newsletterText}</p>
-      <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <input type="email" placeholder={b.newsletterPlaceholder} required class="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent"/>
-        <button type="submit" class="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors font-medium">{b.subscribe}</button>
+      <h2 class="text-3xl font-bold text-white mb-6">Bly Op Hoogte</h2>
+      <p class="text-xl text-white mb-8">Teken in op ons nuusbrief vir die nuutste landbou-insigte en wenke.</p>
+      <form class="max-w-lg mx-auto flex gap-4">
+        <input type="email" placeholder="Voer jou e-pos in" class="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white"/>
+        <button type="submit" class="bg-white text-primary px-8 py-3 rounded-full hover:bg-opacity-90">Teken In</button>
       </form>
     </div>
   </section>

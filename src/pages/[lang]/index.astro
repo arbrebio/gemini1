@@ -1,122 +1,132 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
-import { useTranslations } from "../../lib/i18n";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
-
 const { lang } = Astro.params as { lang: Language };
-const t = useTranslations(lang);
-const prefix = `/${lang}`;
-
-const services = [
-  { icon: "🌿", title: t("services.greenhouses.title"), description: t("services.greenhouses.description"), link: `${prefix}/greenhouses` },
-  { icon: "💧", title: t("services.irrigation.title"), description: t("services.irrigation.description"), link: `${prefix}/irrigation` },
-  { icon: "🌱", title: t("services.substrates.title"), description: t("services.substrates.description"), link: `${prefix}/substrates/growing-solutions` },
-];
-
-const partners = [
-  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", website: "https://conseilheveapalmier.ci/" },
-  { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", website: "https://firca.ci/" },
-  { name: t("stats.countries") === "Pays Africains" ? "Banque Mondiale" : "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", website: "https://www.worldbank.org" },
-  { name: "Hortalan", logo: "https://i.imgur.com/hVXMDbV.jpg", website: "https://hortalan.com/" },
-  { name: "African Development Bank", logo: "https://i.imgur.com/xUbaryR.jpg", website: "https://www.afdb.org/en" },
-  { name: "GIZ", logo: "https://i.imgur.com/g3qxeY3.jpg", website: "https://www.giz.de/en/regions/africa/cote-divoire" },
-  { name: "AZUD", logo: "https://i.imgur.com/cYKFakb.jpg", website: "https://azud.com/en/" },
-  { name: "Novagric", logo: "https://i.imgur.com/cyocoKN.jpg", website: "https://novagric.com/" },
-  { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", website: "http://cnra.ci/" },
-  { name: "PDC2V", logo: "https://i.imgur.com/BMzFHHR.jpg", website: "https://pdc2v.ci/" },
-  { name: "OMRI", logo: "https://i.imgur.com/pcM8A7v.jpg", website: "https://www.omri.org/" },
-  { name: "INP-HB ESA", logo: "https://i.imgur.com/da88PlP.jpg", website: "https://www.inphb.edu.ci/ecoles/esa" },
-];
+const p = `/${lang}`;
 ---
 
-<Layout title={t("hero.title")} description={t("hero.subtitle")} image="https://i.imgur.com/Aab6e6c.jpg">
-  <!-- Hero -->
-  <section class="relative min-h-screen flex items-center">
-    <div class="absolute inset-0 z-0">
-      <img src="https://i.imgur.com/Aab6e6c.jpg" alt="Precision agriculture Africa" class="w-full h-full object-cover" loading="eager"/>
-      <div class="absolute inset-0 bg-black bg-opacity-55"></div>
+<Layout title="Transformeer Afrika se Landbou deur Presisieboerdery Oplossings" description="Verhoog jou opbrengste tot 10 keer met ons moderne landboutegnologie" image="https://i.imgur.com/Aab6e6c.jpg">
+  <section class="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero section">
+    <img src="https://i.imgur.com/Aab6e6c.jpg" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"/>
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto" role="banner">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">Transformeer Afrika se Landbou deur Presisieboerdery Oplossings</h1>
+      <p class="text-xl md:text-2xl mb-8 animate-slide-up">Verhoog jou opbrengste tot 10 keer met ons moderne landboutegnologie</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Begin</a>
+        <a href={`${p}/solutions`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300">Verken Oplossings</a>
+      </div>
     </div>
-    <div class="relative z-10 container mx-auto px-4 py-32">
-      <div class="max-w-4xl">
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">{t("hero.title")}</h1>
-        <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl">{t("hero.subtitle")}</p>
-        <div class="flex flex-wrap gap-4">
-          <a href={`${prefix}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">{t("hero.cta.primary")}</a>
-          <a href={`${prefix}/greenhouses`} class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 transform hover:scale-105">{t("hero.cta.secondary")}</a>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-hidden="true">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gray-50" aria-labelledby="services-heading">
+    <div class="container mx-auto px-4">
+      <h2 id="services-heading" class="text-3xl md:text-4xl font-bold text-center mb-4">Ons Dienste</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">Omvattende landbou-oplossings ontwerp vir Afrika se toestande</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
+        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
+          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">🌿</div>
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Hoë-Tegnologie Kweekhuise</h3>
+          <p class="text-gray-600 mb-4">Gevorderde kwekhuisoplossings geoptimaliseer vir Afrika se klimaattoestande.</p>
+          <a href={`${p}/greenhouses`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
+            Leer Meer
+            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </article>
+        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
+          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">💧</div>
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Presisie Besproeiing</h3>
+          <p class="text-gray-600 mb-4">Slim besproeiingstelsels wat watereffektiwiteit en gewasopbrengste maksimeer.</p>
+          <a href={`${p}/irrigation`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
+            Leer Meer
+            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </article>
+        <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" role="listitem">
+          <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">🌱</div>
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">Groei Oplossings</h3>
+          <p class="text-gray-600 mb-4">Premium koko-turfmos en substrate vir optimale plantgroei en -ontwikkeling.</p>
+          <a href={`${p}/substrates`} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors">
+            Leer Meer
+            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-primary text-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+        <div><div class="text-4xl font-bold mb-2">10x</div><p class="text-gray-300">Opbrengs Verhoging</p></div>
+        <div><div class="text-4xl font-bold mb-2">60%</div><p class="text-gray-300">Water Besparing</p></div>
+        <div><div class="text-4xl font-bold mb-2">500+</div><p class="text-gray-300">Projekte Voltooi</p></div>
+        <div><div class="text-4xl font-bold mb-2">5</div><p class="text-gray-300">Afrika Lande</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gray-50 overflow-hidden">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ons Vertroude Vennote</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Saamwerk met toonaangewende organisasies om Afrika se landbou te transformeer</p>
+      </div>
+      <div class="partners-carousel-wrapper">
+        <div class="partners-carousel">
+          {[...Array(2)].flatMap(() => [
+            {name:"Conseil Hévéa Palmier",logo:"https://i.imgur.com/shsj3KH.jpg",url:"https://conseilheveapalmier.ci/"},
+            {name:"FIRCA",logo:"https://i.imgur.com/91MTbWi.jpg",url:"https://firca.ci/"},
+            {name:"World Bank",logo:"https://i.imgur.com/W55LKPV.jpg",url:"https://www.worldbank.org"},
+            {name:"Hortalan",logo:"https://i.imgur.com/hVXMDbV.jpg",url:"https://hortalan.com/"},
+            {name:"African Development Bank",logo:"https://i.imgur.com/xUbaryR.jpg",url:"https://www.afdb.org/en"},
+            {name:"GIZ",logo:"https://i.imgur.com/g3qxeY3.jpg",url:"https://www.giz.de"},
+            {name:"AZUD",logo:"https://i.imgur.com/cYKFakb.jpg",url:"https://azud.com/en/"},
+            {name:"Novagric",logo:"https://i.imgur.com/cyocoKN.jpg",url:"https://novagric.com/"},
+            {name:"CNRA",logo:"https://i.imgur.com/6an3KC8.jpg",url:"http://cnra.ci/"},
+            {name:"INP-HB ESA",logo:"https://i.imgur.com/da88PlP.jpg",url:"https://www.inphb.edu.ci"},
+            {name:"PDC2V",logo:"https://i.imgur.com/BMzFHHR.jpg",url:"https://pdc2v.ci/"},
+            {name:"OMRI",logo:"https://i.imgur.com/pcM8A7v.jpg",url:"https://www.omri.org/"},
+          ]).map((partner) => (
+            <a href={partner.url} target="_blank" rel="noopener noreferrer" class="partner-card">
+              <div class="partner-logo-container">
+                <img src={partner.logo} alt={`${partner.name} logo`} class="partner-logo" loading="lazy" width="200" height="120"/>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Services -->
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">{t("services.title")}</h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">{t("services.subtitle")}</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {services.map((s) => (
-          <div class="bg-white rounded-xl shadow-lg p-8 text-center transform hover:-translate-y-2 transition-all duration-300 hover:shadow-xl border border-gray-100">
-            <div class="text-5xl mb-5">{s.icon}</div>
-            <h3 class="text-xl font-bold mb-3">{s.title}</h3>
-            <p class="text-gray-600 mb-6">{s.description}</p>
-            <a href={s.link} class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors gap-1">
-              {t("services.learnMore")}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Stats -->
-  <section class="py-20 bg-primary text-white">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div><div class="text-5xl font-bold mb-2">10x</div><div class="text-white/80 text-lg">{t("stats.yieldIncrease")}</div></div>
-        <div><div class="text-5xl font-bold mb-2">60%</div><div class="text-white/80 text-lg">{t("stats.waterSavings")}</div></div>
-        <div><div class="text-5xl font-bold mb-2">500+</div><div class="text-white/80 text-lg">{t("stats.projectsCompleted")}</div></div>
-        <div><div class="text-5xl font-bold mb-2">5</div><div class="text-white/80 text-lg">{t("stats.africanCountries")}</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Partners -->
-  <section class="py-16 bg-gray-50 overflow-hidden">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-bold text-center mb-10 text-gray-800">
-        {lang === 'fr' ? 'Nos Partenaires de Confiance' : lang === 'es' ? 'Nuestros Socios de Confianza' : lang === 'af' ? 'Ons Vertroude Vennote' : 'Our Trusted Partners'}
-      </h2>
-      <div class="partner-scroll flex gap-10 items-center">
-        {[...partners, ...partners].map((p) => (
-          <a href={p.website} target="_blank" rel="noopener noreferrer" class="flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
-            <img src={p.logo} alt={p.name} class="h-10 w-auto object-contain"/>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="py-20 bg-white">
+  <section class="py-20">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-6">{t("cta.title")}</h2>
-      <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">{t("cta.subtitle")}</p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${prefix}/contact`} class="bg-primary text-white px-8 py-4 rounded-full text-lg hover:bg-primary-600 transition-colors duration-300 shadow-lg transform hover:scale-105">{t("cta.consultation")}</a>
-        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-4 rounded-full text-lg hover:opacity-90 transition-opacity duration-300 shadow-lg transform hover:scale-105">{t("cta.whatsapp")}</a>
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Gereed om Jou Plaas te Transformeer?</h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Kry 'n Gratis Konsultasie</a>
+        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
+          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+        </a>
       </div>
     </div>
   </section>
 </Layout>
 
 <style>
-  @keyframes partnerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .partner-scroll { animation: partnerScroll 35s linear infinite; width: max-content; }
-  .partner-scroll:hover { animation-play-state: paused; }
+  .partners-carousel-wrapper{position:relative;width:100%;overflow:hidden;mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);}
+  .partners-carousel{display:flex;gap:2rem;animation:scroll 40s linear infinite;width:max-content;}
+  .partners-carousel:hover{animation-play-state:paused;}
+  @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .partner-card{flex-shrink:0;width:220px;height:140px;display:flex;align-items:center;justify-content:center;background:white;border-radius:12px;padding:1.5rem;box-shadow:0 4px 6px rgba(0,0,0,0.07);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);cursor:pointer;}
+  .partner-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.15);}
+  .partner-logo-container{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+  .partner-logo{max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(100%) brightness(0.8);transition:all 0.4s ease;}
+  .partner-card:hover .partner-logo{filter:grayscale(0%) brightness(1);transform:scale(1.1);}
 </style>

@@ -1,28 +1,28 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../../lib/langPaths";
-import { useTranslations } from "../../../lib/i18n";
 import type { Language } from "../../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
-const t = useTranslations(lang);
-const prefix = `/${lang}`;
+const p = `/${lang}`;
 ---
-<Layout title={t("pages.irrigation.hero.title") + " | Arbre Bio Africa"} description={t("pages.irrigation.technologies.drip.description") || "Arbre Bio Africa"}>
-  <section class="relative h-[45vh] flex items-center">
-    <div class="absolute inset-0 z-0"><img src="https://imgur.com/33OuKiU.jpg" alt="" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
+
+<Layout title="Drup Besproeiing Stelsels | Arbre Bio Africa" description="Transformeer jou plaas met watereffektiewe besproeiingstelsels ontwerp vir Afrika se toestande">
+  <section class="relative h-[50vh] flex items-center">
+    <div class="absolute inset-0 z-0"><img src="https://imgur.com/6XtSwqS.jpg" alt="" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
     <div class="container mx-auto px-4 relative z-10">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">{t("pages.irrigation.hero.title")}</h1>
-      <p class="text-xl text-white max-w-2xl">{t("pages.irrigation.technologies.drip.description")}</p>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Drup Besproeiing Stelsels</h1>
+      <p class="text-xl text-white max-w-2xl">Vir Afrika se Landbou</p>
     </div>
   </section>
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4 text-center">
-      <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">{t("pages.irrigation.technologies.drip.description")}</p>
-      <a href={`${prefix}/contact`} class="bg-primary text-white px-8 py-4 rounded-full text-lg hover:bg-primary-600 transition-colors inline-block">
-        {lang==='fr'?'Demander un Devis':lang==='es'?'Solicitar Presupuesto':lang==='af'?"Versoek 'n Kwotasie":'Request a Quote'}
-      </a>
+      <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Transformeer jou plaas met watereffektiewe besproeiingstelsels ontwerp vir Afrika se toestande</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${p}/irrigation`} class="bg-primary text-white px-8 py-4 rounded-full text-lg hover:bg-primary-600 transition-colors">Verken Oplossings</a>
+        <a href={`${p}/contact`} class="border-2 border-primary text-primary px-8 py-4 rounded-full text-lg hover:bg-primary/5 transition-colors">Kry 'n Gratis Konsultasie</a>
+      </div>
     </div>
   </section>
 </Layout>

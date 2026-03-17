@@ -1,60 +1,77 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllLangPaths } from "../../lib/langPaths";
-import { pt } from "../../lib/pageTranslations";
 import type { Language } from "../../lib/i18n";
 
 export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
-const p = pt(lang); const s = p.solutions;
-const prefix = `/${lang}`;
-const imgs = ['https://imgur.com/IZGz47e.jpg','https://imgur.com/oe3gOtV.jpg','https://imgur.com/YnDCEmp.jpg'];
+const p = `/${lang}`;
 ---
-<Layout title={s.meta.title} description={s.meta.description}>
-  <section class="relative h-[50vh] flex items-center">
-    <div class="absolute inset-0 z-0"><img src="https://imgur.com/2Pt8VXW.jpg" alt="Solutions" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
-    <div class="container mx-auto px-4 relative z-10 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{s.hero.title}</h1>
-      <p class="text-xl text-white max-w-2xl mx-auto">{s.hero.subtitle}</p>
+
+<Layout title="Ons Oplossings | Arbre Bio Africa" description="Omvattende landbou-oplossings ontwerp vir Afrika se toestande">
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img src="https://imgur.com/IZGz47e.jpg" alt="Solutions" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Ons Oplossings</h1>
+      <p class="text-xl text-white max-w-2xl">Omvattende landbou-oplossings ontwerp vir Afrika se toestande</p>
     </div>
   </section>
 
-  <section class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="space-y-20">
-        {s.categories.map((cat, i) => (
-          <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-            <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
-              <img src={imgs[i]} alt={cat.title} class="w-full h-80 object-cover rounded-2xl shadow-xl"/>
-            </div>
-            <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
-              <h2 class="text-3xl font-bold mb-3">{cat.title}</h2>
-              <p class="text-primary font-semibold mb-4">{cat.subtitle}</p>
-              <p class="text-gray-600 mb-6 leading-relaxed">{cat.description}</p>
-              <ul class="space-y-3 mb-8">
-                {cat.benefits.map(b => (
-                  <li class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    <span class="text-gray-700">{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <a href={cat.link} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors gap-2">
-                {lang === 'fr' ? 'En Savoir Plus' : lang === 'es' ? 'Saber Más' : lang === 'af' ? 'Leer Meer' : 'Learn More'}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-              </a>
+  {[
+    {id:"greenhouses",title:"Beskermde Boerdery Oplossings",subtitle:"Slim kwekhuistegnologie vir jaarrondse produksie",icon:"🌿",image:"https://imgur.com/IZGz47e.jpg",description:"Ons kwekhuisoplossings is spesifiek ontwerp vir Afrika se klimaattoestande, wat boere in staat stel om hoëwaarde gewasse die hele jaar deur te groei terwyl hulle teen ekstreme weer, plae en siektes beskerm word.",benefits:["Tot 10 keer hoër opbrengste in vergelyking met oopveldboerdery","Jaarrondse produksie ongeag eksterne weerstoestande","Beduidende vermindering in watergebruik deur presisiebesproeiing","Beskerming teen plae en siektes, wat die gebruik van plaagdoders tot 90% verminder"],solutions:[{name:"Hoë-Tegnologie Kweekhuise",description:"Gevorderde kwekhuisoplossings geoptimaliseer vir Afrika se klimaattoestande.",image:"https://imgur.com/w7OS5f6.jpg",link:`${p}/greenhouses/high-tech`},{name:"Insect-proof Nets & Films",description:"Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.",image:"https://imgur.com/lAI3XeF.jpg",link:`${p}/greenhouses/accessories`},{name:"Climate Control Systems",description:"Advanced automation systems for precise control of temperature, humidity, and ventilation.",image:"https://imgur.com/xn6Qik0.jpg",link:`${p}/greenhouses/high-tech`}]},
+    {id:"irrigation",title:"Waterbestuur Oplossings",subtitle:"Presisie besproeiing tegnologie vir optimale watereffektiwiteit",icon:"💧",image:"https://imgur.com/oe3gOtV.jpg",description:"Ons besproeiing oplossings help Afrika se boere om gewasopbrengste te maksimeer terwyl hulle kosbare waterbronne bewaar. Van eenvoudige drupstelsels tot gevorderde outomatiese oplossings.",benefits:["Tot 60% vermindering in watergebruik in vergelyking met tradisionele metodes","Verhoogde gewasopbrengste deur presiese water- en voedingstofaflewering","Verminderde arbeidskoste deur outomatisering en slim beheerstelsels","Aanpasbaar vir verskeie plaasgroottes, van kleinsaalboere tot groot kommersiële bedrywighede"],solutions:[{name:"Drup Besproeiing Stelsels",description:"Nuutste drup besproeiing tegnologie wat presiese hoeveelhede water direk na plantworwels lewer, wat doeltreffendheid en gewasopbrengste maksimeer terwyl watervermorsing geminimaliseer word.",image:"https://imgur.com/33OuKiU.jpg",link:`${p}/irrigation/drip-systems`},{name:"Smart Filtration & Fertigation",description:"Integrated systems for water filtration and fertilizer injection.",image:"https://imgur.com/AVECFTr.jpg",link:`${p}/irrigation/drip-systems`},{name:"Digitale Boerdery Gereedskap",description:"Slim besproeiingbestuurstelsel aangedryf deur IoT-sensors en gevorderde analitiek. Monitor grondvog, weerstoestande en gewasgesondheid in werklike tyd.",image:"https://imgur.com/OJ0Dbgb.jpg",link:`${p}/irrigation/controllers`}]},
+    {id:"substrates",title:"Groei Substraat Oplossings",subtitle:"Premium substrate vir optimale plantgroei en -ontwikkeling",icon:"🌱",image:"https://imgur.com/YnDCEmp.jpg",description:"Ons premium groeimedia produkte is ontwerp om die perfekte omgewing vir plantwortels te bied, wat optimale waterretensie, belugting en voedingstofbeskikbaarheid vir maksimale gewasgesondheid verseker.",benefits:["Superieure waterretensie wat die besproeiingsfrekwensie met tot 50% verminder","Uitstekende belugting wat gesonde wortelontwikkeling en plantgroei bevorder","pH-gebalanseer vir optimale voedingstofopname en plantgesondheid","100% organies en omgewingsvolhoubaar"],solutions:[{name:"Coco Peat & Coir",description:"Premium quality growing solutions for hydroponics and nursery applications.",image:"https://imgur.com/WgMc6pm.jpg",link:`${p}/substrates/growing-solutions`},{name:"Organic Soil Amendments",description:"Natural soil enrichment products for improved crop growth.",image:"https://imgur.com/Yc1gQqw.jpg",link:`${p}/substrates/growing-solutions`}]},
+  ].map((category, categoryIndex) => (
+    <section class="py-20" id={category.id}>
+      <div class="container mx-auto px-4">
+        <div class={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${categoryIndex % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}>
+          <div class={categoryIndex % 2 !== 0 ? "lg:order-2" : ""}>
+            <div class="text-5xl mb-6">{category.icon}</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">{category.title}</h2>
+            <p class="text-xl text-primary mb-6">{category.subtitle}</p>
+            <p class="text-gray-600 mb-8 leading-relaxed">{category.description}</p>
+            <ul class="space-y-4 mb-8">
+              {category.benefits.map(benefit => (
+                <li class="flex items-start gap-3">
+                  <svg class="w-6 h-6 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span class="text-gray-700">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="grid grid-cols-1 gap-4">
+              {category.solutions.map(solution => (
+                <a href={solution.link} class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors group">
+                  <img src={solution.image} alt={solution.name} class="w-16 h-16 object-cover rounded"/>
+                  <div>
+                    <h4 class="font-bold group-hover:text-primary transition-colors">{solution.name}</h4>
+                    <p class="text-sm text-gray-600">{solution.description}</p>
+                  </div>
+                  <svg class="w-5 h-5 text-primary ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              ))}
             </div>
           </div>
-        ))}
+          <div class={categoryIndex % 2 !== 0 ? "lg:order-1" : ""}>
+            <img src={category.image} alt={category.title} class="w-full h-[500px] object-cover rounded-lg shadow-xl"/>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  ))}
 
-  <section class="py-16 bg-primary text-white">
+  <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-4">{s.ctaTitle}</h2>
-      <p class="text-xl text-white/90 mb-8">{s.ctaText}</p>
-      <a href={`${prefix}/contact`} class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transition-all transform hover:scale-105 inline-block">{s.ctaBtn}</a>
+      <h2 class="text-3xl font-bold text-white mb-6">Gereed om Jou Plaas te Transformeer?</h2>
+      <p class="text-xl text-white mb-8">Sluit aan by honderde suksesvolle boere regoor Afrika wat hul landboupraktyke revolusioneer het met ons oplossings.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Kry 'n Gratis Konsultasie</a>
+        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+          <i class="fab fa-whatsapp mr-2"></i>Gesels op WhatsApp
+        </a>
+      </div>
     </div>
   </section>
 </Layout>
