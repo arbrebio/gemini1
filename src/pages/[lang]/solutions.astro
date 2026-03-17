@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../lib/langPaths";
+import { pt } from "../../lib/pageTranslations";
+import type { Language } from "../../lib/i18n";
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const p = pt(lang); const s = p.solutions;
+const prefix = `/${lang}`;
+const imgs = ['https://imgur.com/IZGz47e.jpg','https://imgur.com/oe3gOtV.jpg','https://imgur.com/YnDCEmp.jpg'];
+---
+<Layout title={s.meta.title} description={s.meta.description}>
+  <section class="relative h-[50vh] flex items-center">
+    <div class="absolute inset-0 z-0"><img src="https://imgur.com/2Pt8VXW.jpg" alt="Solutions" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-55"></div></div>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{s.hero.title}</h1>
+      <p class="text-xl text-white max-w-2xl mx-auto">{s.hero.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="space-y-20">
+        {s.categories.map((cat, i) => (
+          <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+            <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
+              <img src={imgs[i]} alt={cat.title} class="w-full h-80 object-cover rounded-2xl shadow-xl"/>
+            </div>
+            <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
+              <h2 class="text-3xl font-bold mb-3">{cat.title}</h2>
+              <p class="text-primary font-semibold mb-4">{cat.subtitle}</p>
+              <p class="text-gray-600 mb-6 leading-relaxed">{cat.description}</p>
+              <ul class="space-y-3 mb-8">
+                {cat.benefits.map(b => (
+                  <li class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-gray-700">{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href={cat.link} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors gap-2">
+                {lang === 'fr' ? 'En Savoir Plus' : lang === 'es' ? 'Saber Más' : lang === 'af' ? 'Leer Meer' : 'Learn More'}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">{s.ctaTitle}</h2>
+      <p class="text-xl text-white/90 mb-8">{s.ctaText}</p>
+      <a href={`${prefix}/contact`} class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transition-all transform hover:scale-105 inline-block">{s.ctaBtn}</a>
+    </div>
+  </section>
+</Layout>

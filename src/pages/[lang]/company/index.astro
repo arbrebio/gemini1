@@ -1,0 +1,130 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../../lib/langPaths";
+import { pt } from "../../../lib/pageTranslations";
+import { useTranslations } from "../../../lib/i18n";
+import type { Language } from "../../../lib/i18n";
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const p = pt(lang); const c = p.company; const tl = p.timeline;
+const t = useTranslations(lang);
+const prefix = `/${lang}`;
+
+const statValues = ['500+','5','50k+','60%'];
+const solutions = [
+  { icon:'💧', title:t('services.irrigation.title'), desc:t('services.irrigation.description'), stats:['50%','40%','2yr'] },
+  { icon:'🌱', title:t('services.substrates.title'), desc:t('services.substrates.description'), stats:['100%','8x','5yr'] },
+  { icon:'🏗️', title:t('services.greenhouses.title'), desc:t('services.greenhouses.description'), stats:['40%','90%','20yr'] },
+  { icon:'📱', title:'Digital Farming', desc:'IoT-based monitoring and AI-driven analytics for smart agriculture', stats:['24/7','Real-time','AI-powered'] },
+];
+---
+<Layout title={c.meta.title} description={c.meta.description}>
+  <!-- Hero -->
+  <section class="relative h-screen overflow-hidden">
+    <div class="absolute inset-0 z-0"><div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image:url('https://imgur.com/2Pt8VXW.jpg');background-size:cover;background-position:center;"></div><div class="absolute inset-0 bg-black bg-opacity-50"></div></div>
+    <div class="relative z-10 h-full flex items-center">
+      <div class="container mx-auto px-4">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">{c.hero.title}<span class="block text-3xl md:text-4xl mt-4 text-primary-100">{c.hero.subtitle}</span></h1>
+        <div class="flex flex-wrap gap-4">
+          <a href={`#${lang}-solutions`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{c.solutionsTitle}</a>
+          <a href={`${prefix}/contact`} class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">{t('contact.title')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {c.stats.map((label, i) => (
+          <div class="text-center transform hover:scale-105 transition-transform duration-300">
+            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={statValues[i]}>{statValues[i]}</div>
+            <div class="text-gray-600">{label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Founder -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div><img src="https://imgur.com/LD5JZto.jpg" alt={c.founderName} class="rounded-2xl shadow-xl w-full object-cover" style="max-height:500px;"/></div>
+        <div>
+          <span class="text-primary font-semibold text-sm uppercase tracking-widest">{c.founderLabel}</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">{c.founderName}</h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-4">{c.founderDesc}</p>
+          <p class="text-gray-600 text-lg leading-relaxed mb-4">{c.founderDesc2}</p>
+          <p class="text-gray-600 text-lg leading-relaxed mb-6">{c.founderDesc3}</p>
+          <a href={`${prefix}/contact`} class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors">
+            {c.founderCta}<svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0 z-0"><div class="w-full h-full absolute top-0" style="background-image:url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c8b8d?ixlib=rb-4.0.3');background-size:cover;background-position:center;"></div><div class="absolute inset-0 bg-primary bg-opacity-90"></div></div>
+    <div class="relative z-10 container mx-auto px-4"><div class="max-w-3xl mx-auto text-center text-white"><h2 class="text-3xl md:text-4xl font-bold mb-6">{c.missionTitle}</h2><p class="text-xl leading-relaxed">{c.missionText}</p></div></div>
+  </section>
+
+  <!-- Solutions -->
+  <section id={`${lang}-solutions`} class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{c.solutionsTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {solutions.map(s => (
+          <div class="bg-white rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
+            <div class="text-4xl mb-4">{s.icon}</div>
+            <h3 class="text-xl font-bold mb-3">{s.title}</h3>
+            <p class="text-gray-600 mb-4">{s.desc}</p>
+            <div class="space-y-2">
+              {s.stats.map(stat => (<div class="flex items-center text-primary"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>{stat}</div>))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{c.journeyTitle}</h2>
+      <div class="max-w-4xl mx-auto space-y-8">
+        {tl.map(item => (
+          <div class="flex gap-6 items-start">
+            <div class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">{item.icon}</div>
+            <div class="bg-white p-6 rounded-lg shadow-md flex-1 hover:shadow-lg transition-shadow">
+              <div class="text-2xl font-bold text-primary mb-1">{item.year}</div>
+              <div class="text-lg font-semibold text-gray-800 mb-2">{item.event}</div>
+              <div class="text-gray-600">{item.description}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">{c.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{c.ctaText}</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${prefix}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all">{c.ctaBtn1}</a>
+        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all">{c.ctaBtn2}</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+<style>.parallax-bg{transform:translateY(var(--scroll-offset,0));will-change:transform;}</style>
+<script is:inline>
+  document.querySelectorAll('.parallax-bg').forEach(function(el){window.addEventListener('scroll',function(){el.style.setProperty('--scroll-offset',(window.scrollY*.5)+'px');});});
+  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){var c=e.target,t=parseInt((c.getAttribute('data-target')||'').replace(/\D/g,''),10);if(!t)return;var s=null,d=1500;function step(ts){if(!s)s=ts;var p=Math.min((ts-s)/d,1),ease=1-Math.pow(1-p,3);c.textContent=Math.round(ease*t).toString();if(p<1)requestAnimationFrame(step);else c.textContent=c.getAttribute('data-target');}requestAnimationFrame(step);obs.unobserve(c);}});},{threshold:0.3});document.querySelectorAll('.counter').forEach(function(c){obs.observe(c);});}
+</script>

@@ -3,16 +3,9 @@ import Layout from '../../layouts/Layout.astro';
 
 const stats = [
   { value: '500+', label: 'Projects Completed' },
-  { value: '9', label: 'African Countries' },
+  { value: '5', label: 'African Countries' },
   { value: '50k+', label: 'Hectares Optimized' },
   { value: '60%', label: 'Average Water Savings' }
-];
-
-const partners = [
-  { name: 'United Nations', category: 'International Organizations', logo: 'https://imgur.com/b1iqh4C.jpg' },
-  { name: 'FAO', category: 'International Organizations', logo: 'https://imgur.com/oM0xDtE.jpg' },
-  { name: 'Government of Kenya', category: 'Government', logo: 'https://i.imgur.com/DEF789.png' },
-  { name: 'SAPH', category: 'Agribusiness', logo: 'https://imgur.com/J7eUN6b.jpg' }
 ];
 
 const solutions = [
@@ -43,19 +36,20 @@ const solutions = [
 ];
 
 const timeline = [
-  { year: 2014, event: 'Founded in California', icon: '🌎' },
-  { year: 2018, event: 'First African project in Kenya', icon: '🌍' },
-  { year: 2020, event: 'Expansion to West Africa', icon: '🚀' },
-  { year: 2022, event: 'Launch of Digital Farming Solutions', icon: '💻' },
-  { year: 2023, event: 'Reached 500+ Projects Milestone', icon: '🏆' }
+  { year: 2020, event: 'Arbre Bio Founded', description: 'Founded in Abidjan, Côte d\'Ivoire by Sydney Abouna with a bold vision to transform African agriculture through precision farming', icon: '🌱' },
+  { year: 2021, event: 'First Major Greenhouse Project', description: 'Delivered our first large-scale greenhouse installation, setting the standard for modern agriculture in Côte d\'Ivoire', icon: '🏗️' },
+  { year: 2022, event: 'Strategic Partnerships', description: 'Formed key partnerships with AZUD, Hortalan, World Bank, GIZ and the Ministry of Agriculture', icon: '🤝' },
+  { year: 2023, event: 'Pan-African Expansion', description: 'Expanded to 5 African countries completing 500+ projects across Côte d\'Ivoire, Ghana, Burkina Faso, Zimbabwe and Kenya', icon: '🚀' },
+  { year: 2024, event: 'Digital Farming & IoT Launch', description: 'Launched smart farming solutions with IoT monitoring and AI-powered analytics for modern farm management', icon: '💻' },
+  { year: 2025, event: 'Hortalan Joint Venture', description: 'Establishing a landmark joint venture with Hortalan to open their first branch in Côte d\'Ivoire', icon: '🏆' }
 ];
 ---
 
 <Layout
   title="About Arbre Bio Africa - Leading Agricultural Innovation"
-  description="Discover how Arbre Bio Africa is transforming agriculture across Africa through innovative technology and sustainable solutions."
+  description="Discover how Arbre Bio Africa is transforming agriculture across Africa through innovative precision farming technology and sustainable solutions."
 >
-  <!-- Hero Section with Parallax -->
+  <!-- Hero Section -->
   <section class="relative h-screen overflow-hidden">
     <div class="absolute inset-0 z-0">
       <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image: url('https://imgur.com/2Pt8VXW.jpg'); background-size: cover; background-position: center;"></div>
@@ -72,23 +66,16 @@ const timeline = [
           Empowering farmers across Africa with cutting-edge technology and sustainable solutions.
         </p>
         <div class="flex flex-wrap gap-4">
-          <a 
-            href="#solutions"
-            class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
-          >
+          <a href="#solutions" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
             Explore Solutions
           </a>
-          <a 
-            href="/contact"
-            class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
-          >
+          <a href="/contact" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
             Contact Us
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Scroll Indicator -->
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
       <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
@@ -96,13 +83,13 @@ const timeline = [
     </div>
   </section>
 
-  <!-- Stats Section with Counter Animation -->
+  <!-- Stats Section -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((stat) => (
           <div class="text-center transform hover:scale-105 transition-transform duration-300">
-            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.value}>0</div>
+            <div class="text-4xl font-bold text-primary mb-2 counter" data-target={stat.value}>{stat.value}</div>
             <div class="text-gray-600">{stat.label}</div>
           </div>
         ))}
@@ -110,7 +97,47 @@ const timeline = [
     </div>
   </section>
 
-  <!-- Mission Section with Parallax -->
+  <!-- Founder Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <img 
+              src="https://imgur.com/LD5JZto.jpg" 
+              alt="Sydney Abouna - Founder & CEO of Arbre Bio Africa"
+              class="rounded-2xl shadow-xl w-full object-cover"
+              style="max-height: 500px;"
+            />
+          </div>
+          <div>
+            <span class="text-primary font-semibold text-sm uppercase tracking-widest">Our Founder</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Sydney Abouna</h2>
+            <p class="text-gray-600 text-lg leading-relaxed mb-4">
+              Sydney Abouna is the founder of Arbre Bio Africa, Arbre Bio Côte d'Ivoire and the Organic Tree Group — a precision agriculture company with a single bold mission: to become the #1 agricultural innovation company in Africa.
+            </p>
+            <p class="text-gray-600 text-lg leading-relaxed mb-4">
+              Driven by a deep belief that African farmers deserve access to the world's best farming technologies, Sydney built Arbre Bio from the ground up — personally managing every aspect of the business from project execution and client relations to strategic partnerships and research.
+            </p>
+            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+              Today, Arbre Bio works with the World Bank, African Development Bank, GIZ, FAO, the Ministry of Agriculture and leading international agritech companies including Hortalan, AZUD and Novagric — bringing world-class precision farming solutions to farmers across 5 African countries.
+            </p>
+            <a 
+              href="/contact" 
+              class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-full hover:bg-primary-600 transition-colors duration-300"
+            >
+              Work with Sydney
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0 z-0">
       <div class="parallax-bg w-full h-[120%] absolute top-0" style="background-image: url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c8b8d?ixlib=rb-4.0.3'); background-size: cover; background-position: center;"></div>
@@ -121,13 +148,13 @@ const timeline = [
       <div class="max-w-3xl mx-auto text-center text-white">
         <h2 class="text-3xl md:text-4xl font-bold mb-6">Our Mission</h2>
         <p class="text-xl leading-relaxed">
-          At Arbre Bio Africa, we're committed to revolutionizing agriculture through innovative technology and sustainable practices. Our mission is to empower farmers with solutions that increase productivity while preserving natural resources.
+          At Arbre Bio Africa, we're committed to revolutionizing agriculture through innovative technology and sustainable practices. Our mission is to empower farmers with solutions that increase productivity while preserving natural resources — making Africa the leader in modern, high-yield, eco-friendly farming.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Solutions Section with Hover Effects -->
+  <!-- Solutions Section -->
   <section id="solutions" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Solutions</h2>
@@ -157,22 +184,21 @@ const timeline = [
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Journey</h2>
-      <div class="max-w-4xl mx-auto relative">
-        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
-        
-        {timeline.map((item, index) => (
-          <div class={`relative mb-8 ${index % 2 === 0 ? 'left-timeline' : 'right-timeline'}`}>
-            <div class="flex items-center">
-              <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center z-10">
+      <div class="max-w-4xl mx-auto">
+        <div class="space-y-8">
+          {timeline.map((item, index) => (
+            <div class={`flex gap-6 items-start ${index % 2 === 0 ? '' : 'flex-row-reverse'} md:flex-row`}>
+              <div class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0 shadow-lg">
                 {item.icon}
               </div>
-              <div class="bg-white p-6 rounded-lg shadow-lg ml-6 transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
-                <div class="text-2xl font-bold text-primary mb-2">{item.year}</div>
-                <div class="text-gray-600">{item.event}</div>
+              <div class="bg-white p-6 rounded-lg shadow-md flex-1 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-2xl font-bold text-primary mb-1">{item.year}</div>
+                <div class="text-lg font-semibold text-gray-800 mb-2">{item.event}</div>
+                <div class="text-gray-600">{item.description}</div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -181,21 +207,12 @@ const timeline = [
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
-      <p class="text-xl text-white mb-8">Join hundreds of successful farmers across Africa.</p>
+      <p class="text-xl text-white mb-8">Join hundreds of successful farmers across Africa who trust Arbre Bio.</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a 
-          href="/contact" 
-          class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300"
-        >
-          Get Started
+        <a href="/contact" class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300">
+          Get a Free Consultation
         </a>
-        <a 
-          href="https://wa.me/2250799295643" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 inline-flex items-center"
-        >
-          <i class="fab fa-whatsapp mr-2"></i>
+        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transform hover:scale-105 transition-all duration-300 inline-flex items-center">
           Chat on WhatsApp
         </a>
       </div>
@@ -209,83 +226,73 @@ const timeline = [
     will-change: transform;
   }
 
-  .left-timeline {
-    padding-right: 50%;
-  }
-
-  .right-timeline {
-    padding-left: 50%;
-  }
-
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
   @keyframes slideUp {
-    from { 
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to { 
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .animate-fade-in {
-    animation: fadeIn 1s ease-out;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 1s ease-out;
-  }
+  .animate-fade-in { animation: fadeIn 1s ease-out; }
+  .animate-slide-up { animation: slideUp 1s ease-out; }
 </style>
 
-<script>
+<script is:inline>
   // Parallax Effect
   const parallaxElements = document.querySelectorAll('.parallax-bg');
-  
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-
-    parallaxElements.forEach((element) => {
-      const htmlElement = element as HTMLElement;
-      const offset = scrolled * 0.5;
-      htmlElement.style.setProperty('--scroll-offset', `${offset}px`);
+  window.addEventListener('scroll', function() {
+    var scrolled = window.scrollY;
+    parallaxElements.forEach(function(element) {
+      element.style.setProperty('--scroll-offset', (scrolled * 0.5) + 'px');
     });
   });
 
-  // Stats Counter Animation
-  const counters = document.querySelectorAll<HTMLElement>('.counter');
+  // Stats Counter Animation - bulletproof version
+  function animateCounter(counter) {
+    var targetStr = counter.getAttribute('data-target') || '0';
+    var target = parseInt(targetStr.replace(/\D/g, ''), 10);
+    if (!target || target <= 0) return;
+    
+    var start = 0;
+    var duration = 1500;
+    var startTime = null;
 
-  const animateCounter = (counter: HTMLElement) => {
-    const target = parseInt(counter.getAttribute('data-target')?.replace(/\D/g, '') || '0');
-    let current = 0;
-    const increment = target / 50;
-
-    const updateCounter = () => {
-      if (current < target) {
-        current += increment;
-        counter.textContent = Math.ceil(current).toString();
-        requestAnimationFrame(updateCounter);
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      var current = Math.round(eased * target);
+      counter.textContent = current.toString();
+      if (progress < 1) {
+        requestAnimationFrame(step);
       } else {
-        counter.textContent = counter.getAttribute('data-target') || '0';
+        counter.textContent = targetStr; // show final formatted value e.g. "500+" or "60%"
       }
-    };
+    }
 
-    updateCounter();
-  };
+    requestAnimationFrame(step);
+  }
 
-  // Intersection Observer for counters
-  const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateCounter(entry.target as HTMLElement);
-        observer.unobserve(entry.target);
-      }
+  // Use IntersectionObserver to trigger animation when visible
+  var counters = document.querySelectorAll('.counter');
+  
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    counters.forEach(function(c) { observer.observe(c); });
+  } else {
+    // Fallback: just show the values immediately
+    counters.forEach(function(c) {
+      c.textContent = c.getAttribute('data-target') || c.textContent;
     });
-  }, { threshold: 0.5 });
-
-  counters.forEach(counter => observer.observe(counter));
+  }
 </script>

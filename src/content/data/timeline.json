@@ -1,32 +1,38 @@
 [
   {
     "year": 2020,
-    "event": "Company Founded",
-    "description": "Established in Abidjan, Côte d'Ivoire with a vision to revolutionize African agriculture",
-    "icon": "🏢"
+    "event": "Arbre Bio Founded",
+    "description": "Founded in Abidjan, Côte d'Ivoire by Sydney Abouna with a bold vision to revolutionize African agriculture through precision farming",
+    "icon": "🌱"
   },
   {
     "year": 2021,
-    "event": "First Major Project",
-    "description": "Completed our first large-scale greenhouse installation in Ghana",
-    "icon": "🌿"
+    "event": "First Major Greenhouse Project",
+    "description": "Successfully delivered our first large-scale greenhouse installation, setting the standard for modern agriculture in Côte d'Ivoire",
+    "icon": "🏗️"
   },
   {
     "year": 2022,
     "event": "Strategic Partnerships",
-    "description": "Formed partnerships with NGS and AZUD to bring world-class agricultural solutions to Africa",
+    "description": "Formed key partnerships with AZUD, Hortalan, World Bank, GIZ and the Ministry of Agriculture, establishing Arbre Bio as a trusted leader",
     "icon": "🤝"
   },
   {
     "year": 2023,
-    "event": "Regional Expansion",
-    "description": "Expanded operations to Nigeria and Ghana, serving over 100 agricultural projects",
+    "event": "Pan-African Expansion",
+    "description": "Expanded operations across 5 African countries including Côte d'Ivoire, Ghana, Burkina Faso, Zimbabwe and Kenya, completing 500+ projects",
     "icon": "🚀"
   },
   {
     "year": 2024,
-    "event": "Digital Innovation",
-    "description": "Launched smart farming solutions with IoT integration and AI-powered analytics",
+    "event": "Digital Farming & IoT Launch",
+    "description": "Launched smart farming solutions integrating IoT monitoring, AI-powered analytics and remote farm management systems",
     "icon": "💻"
+  },
+  {
+    "year": 2025,
+    "event": "Hortalan Joint Venture",
+    "description": "Establishing a landmark joint venture with Hortalan to open their first branch in Côte d'Ivoire — a major milestone for West African agriculture",
+    "icon": "🏆"
   }
 ]

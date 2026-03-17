@@ -6,27 +6,24 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   integrations: [
     tailwind(),
-    mdx(), 
+    mdx(),
     sitemap({
       i18n: {
         defaultLocale: 'en',
         locales: {
           en: 'en',
           fr: 'fr',
-          es: 'es',
-          af: 'af'
         }
       },
-      filter: (page) => 
-        !page.includes('/newsletter/confirm') && 
-        !page.includes('/newsletter/unsubscribe') &&
+      filter: (page) =>
+        !page.includes('/newsletter/') &&
         !page.includes('/404') &&
         !page.includes('/500') &&
-        !page.includes('/api/'),
+        !page.includes('/api/') &&
+        !page.includes('/admin/'),
       changefreq: 'weekly',
       lastmod: new Date().toISOString(),
       serialize: (item) => {
-        // Customize sitemap entries
         if (item.url.includes('/blog/')) {
           item.changefreq = 'monthly';
           item.priority = 0.7;
@@ -52,12 +49,8 @@ export default defineConfig({
         output: {
           manualChunks: (id) => {
             if (id.includes('node_modules')) {
-              if (id.includes('@supabase/supabase-js')) {
-                return 'supabase';
-              }
-              if (id.includes('zod')) {
-                return 'zod';
-              }
+              if (id.includes('@supabase/supabase-js')) return 'supabase';
+              if (id.includes('zod')) return 'zod';
               return 'vendor';
             }
           }
@@ -71,14 +64,8 @@ export default defineConfig({
       chunkSizeWarningLimit: 400,
       target: 'es2020',
       terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-          passes: 2
-        },
-        mangle: {
-          safari10: true
-        }
+        compress: { drop_console: true, drop_debugger: true, passes: 2 },
+        mangle: { safari10: true }
       }
     },
     ssr: {

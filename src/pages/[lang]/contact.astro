@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../lib/langPaths";
+import { pt } from "../../lib/pageTranslations";
+import type { Language } from "../../lib/i18n";
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const p = pt(lang); const c = p.contact;
+const prefix = `/${lang}`;
+---
+<Layout title={c.meta.title} description={c.meta.description}>
+  <section class="relative h-[40vh] flex items-center">
+    <div class="absolute inset-0 z-0"><img src="https://imgur.com/YyhVyLx.jpg" alt="Contact" class="w-full h-full object-cover"/><div class="absolute inset-0 bg-black bg-opacity-50"></div></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{c.hero.title}</h1>
+      <p class="text-xl text-white max-w-2xl">{c.hero.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h2 class="text-3xl font-bold mb-6">{c.formTitle}</h2>
+          <form class="space-y-6" id="contact-form" action="/api/contact" method="POST">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div><label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.firstName} *</label><input type="text" id="firstName" name="firstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/></div>
+              <div><label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.lastName} *</label><input type="text" id="lastName" name="lastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/></div>
+            </div>
+            <div><label for="email" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.email} *</label><input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/></div>
+            <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.phone}</label><input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"/></div>
+            <div>
+              <label for="interest" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.interest} *</label>
+              <select id="interest" name="interest" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                <option value="">—</option>
+                {c.interests.map(opt => <option value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div><label for="message" class="block text-sm font-medium text-gray-700 mb-1">{c.fields.message} *</label><textarea id="message" name="message" rows={5} required placeholder={c.placeholder} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea></div>
+            <input type="hidden" name="lang" value={lang}/>
+            <button type="submit" class="w-full bg-primary text-white py-4 px-8 rounded-lg text-lg font-semibold hover:bg-primary-600 transition-colors duration-300 transform hover:scale-[1.02]">{c.fields.submit}</button>
+          </form>
+        </div>
+        <div class="space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold mb-6">{c.officesTitle}</h2>
+            <div class="space-y-6">
+              <div class="bg-gray-50 p-6 rounded-xl"><h3 class="font-bold text-lg mb-2 text-primary">{c.abidjanTitle}</h3><p class="text-gray-600">Cocody Riviera 3, Jacque Prevert 2<br/>Abidjan, Côte d'Ivoire</p><a href="tel:+22521218069" class="text-primary font-medium mt-2 block hover:underline">+225 21 21 80 69 50</a><a href="mailto:farms@arbrebio.com" class="text-primary font-medium hover:underline">farms@arbrebio.com</a></div>
+              <div class="bg-gray-50 p-6 rounded-xl"><h3 class="font-bold text-lg mb-2 text-primary">{c.capetownTitle}</h3><p class="text-gray-600">Van Biljon Business Park, Winelands Cl,<br/>Stikland Industrial, Cape Town, 7530</p><a href="tel:+27795330267" class="text-primary font-medium mt-2 block hover:underline">+27 79 533 0267</a><a href="mailto:CPT@arbrebio.com" class="text-primary font-medium hover:underline">CPT@arbrebio.com</a></div>
+            </div>
+          </div>
+          <div class="bg-primary/5 border border-primary/20 p-6 rounded-xl">
+            <h3 class="font-bold text-xl mb-3">{c.whatsappTitle}</h3>
+            <p class="text-gray-600 mb-4">{c.whatsappText}</p>
+            <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-[#25D366] text-white px-6 py-3 rounded-full hover:opacity-90 transition-opacity font-semibold"><i class="fa-brands fa-whatsapp text-xl"></i>{c.whatsappBtn}</a>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-xl">
+            <h3 class="font-bold text-lg mb-4">{c.followTitle}</h3>
+            <div class="flex gap-4">
+              <a href="https://www.facebook.com/arbrebioafrica" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://linkedin.com/company/arbre-bio-africa" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="https://twitter.com/ArbreBio" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
