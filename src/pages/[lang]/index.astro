@@ -11,10 +11,10 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 const partners = [
-  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
+  { name: "Conseil HÃ©vÃ©a Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
   { name: "CDTA El Mirador", logo: "https://i.imgur.com/P1DPCaB.jpg", url: "https://cdtaelmirador.com/" },
   { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", url: "https://firca.ci/" },
-  { name: "Ministère de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
+  { name: "MinistÃ¨re de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
   { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", url: "http://cnra.ci/" },
   { name: "Eureka Network", logo: "https://i.imgur.com/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
   { name: "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", url: "https://www.worldbank.org/ext/en/home" },
@@ -60,9 +60,9 @@ const partners = [
       <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{T.servicesSubtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
         {[
-          { icon: "🌿", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
-          { icon: "💧", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
-          { icon: "🌱", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
+          { icon: "ð¿", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
+          { icon: "ð§", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
+          { icon: "ð±", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
         ].map((service, index) => (
           <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" style={`animation-delay: ${index * 100}ms`} role="listitem">
             <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">{service.icon}</div>
@@ -121,7 +121,7 @@ const partners = [
       <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">{T.ctaSubtitle}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.freeConsultation}</a>
-        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
           <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
