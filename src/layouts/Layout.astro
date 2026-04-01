@@ -209,11 +209,11 @@ const breadcrumbData = {
       (() => {
         const l = (Astro.currentLocale || Astro.params?.lang || 'en').toLowerCase();
         const map = { fr: 'fr_FR', en: 'en_US', es: 'es_ES', af: 'af_ZA' };
-        return map[l] || 'fr_FR';
+        return (map as Record<string, string>)[l] || 'fr_FR';
       })()
     } />
   
-    <meta property="og:description" content={description || "Solutions d'agriculture de précision en Côte d'Ivoire et en Afrique — Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
+    <meta property="og:description" content={description || "Solutions d'agriculture de prÃ©cision en CÃ´te d'Ivoire et en Afrique â Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
   
     {/* Hreflang - Multilingual SEO */}
     {(() => {
