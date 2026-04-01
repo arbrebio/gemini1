@@ -43,16 +43,16 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
               <div class="p-6">
                 <div class="flex items-center mb-4">
                   <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
-                  <span class="mx-2">•</span>
+                  <span class="mx-2">â¢</span>
                   <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
                 </div>
                 <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                  <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                  <a href={`/${lang}/blog/${post.slug}`}>{post.data.title}</a>
                 </h3>
                 <p class="text-gray-600 mb-4">{post.data.description}</p>
                 <div class="flex items-center justify-between">
                   <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                  <a href={`/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                  <a href={`/${lang}/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
                     {T.readMore}
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                   </a>
@@ -75,16 +75,16 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
             <div class="p-6">
               <div class="flex items-center mb-4">
                 <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
-                <span class="mx-2">•</span>
+                <span class="mx-2">â¢</span>
                 <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
               </div>
               <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                <a href={`/${lang}/blog/${post.slug}`}>{post.data.title}</a>
               </h3>
               <p class="text-gray-600 mb-4">{post.data.description}</p>
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                <a href={`/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                <a href={`/${lang}/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
                   {T.readMore}
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
