@@ -11,11 +11,11 @@ export const config = {
   contact: {
     adminEmail: 'farms@arbrebio.com',
     senderName: 'Arbre Bio Africa',
-    whatsappNumber: '+2250799295643',
+    whatsappNumber: '+2250500552525',
     offices: [
       {
         city: 'Abidjan',
-        country: 'Côte d\'Ivoire',
+        country: 'CÃ´te d\'Ivoire',
         address: 'Cocody Riviera 3, Jacque Prevert 2',
         phone: '+225 21 21 80 69 50',
         email: 'farms@arbrebio.com',
