@@ -213,7 +213,7 @@ const breadcrumbData = {
       })()
     } />
   
-    <meta property="og:description" content={description || "Solutions d'agriculture de prÃ©cision en CÃ´te d'Ivoire et en Afrique â Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
+    <meta property="og:description" content={description || "Solutions d'agriculture de prÃÂ©cision en CÃÂ´te d'Ivoire et en Afrique Ã¢ÂÂ Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
   
     {/* Hreflang - Multilingual SEO */}
     {(() => {
@@ -239,7 +239,54 @@ const breadcrumbData = {
         <link rel="alternate" hreflang="x-default" href={enUrl} />
       </>);
     })()}
-  </head>
+  
+  <!-- Organization / LocalBusiness structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": ["Organization", "LocalBusiness"],
+    "@id": "https://www.arbrebio.com/#organization",
+    "name": "Arbre Bio Africa",
+    "alternateName": "Arbre Bio Côte d'Ivoire",
+    "url": "https://www.arbrebio.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.arbrebio.com/logo.png",
+      "width": 200,
+      "height": 60
+    },
+    "description": "Leader en agriculture de précision en Afrique. Serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
+    "telephone": "+2250500552525",
+    "email": "farms@arbrebio.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "CI",
+      "addressRegion": "Abidjan",
+      "addressLocality": "Abidjan"
+    },
+    "areaServed": [
+      { "@type": "Continent", "name": "Africa" },
+      { "@type": "Country", "name": "Côte d'Ivoire" },
+      { "@type": "Country", "name": "Senegal" },
+      { "@type": "Country", "name": "Ghana" },
+      { "@type": "Country", "name": "Burkina Faso" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Solutions Agriculture de Précision",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serres agricoles tunnel et multi-chapelles" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Systèmes d'irrigation goutte-à-goutte" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Substrats coco peat et growing media" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fertilisants et phytosanitaires" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de précision" } }
+      ]
+    },
+    "sameAs": [
+      "https://www.facebook.com/arbrebioafrica",
+      "https://www.linkedin.com/company/arbre-bio-africa"
+    ]
+  })} />
+</head>
   <body class="bg-white antialiased">
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50">
