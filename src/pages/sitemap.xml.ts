@@ -18,7 +18,7 @@ export async function GET() {
       const loc = lang === "" ? site + page : site + lang + (page === "/" ? "/" : page);
       const alternates = langs.map(l => {
         const href = l === "" ? site + page : site + l + (page === "/" ? "/" : page);
-        return `<xhtml:link rel="alternate" hreflang="${hreflangCodes[l]}" href="${href}"/>`;
+        return `<xhtml:link rel="alternate" hreflang="${(hreflangCodes as Record<string, string>)[l]}" href="${href}"/>`;
       }).join("\n        ");
       urls.push(`  <url>
     <loc>${loc}</loc>
