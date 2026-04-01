@@ -35,12 +35,12 @@ const t = useTranslations(lang);
 // Optimize meta content
 const optimizedTitle = generateMetaTitle(title);
 const optimizedDescription = generateMetaDescription(description);
-const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://arbrebio.com');
+const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com');
 
 // Generate structured data
 const organizationSchema = {
   "name": "Arbre Bio Africa",
-  "url": Astro.site?.toString() || "https://arbrebio.com",
+  "url": Astro.site?.toString() || "https://www.arbrebio.com",
   "logo": "https://i.imgur.com/79cS79J.png",
   "description": "Leading provider of precision farming solutions in Africa",
   "address": {
@@ -60,7 +60,7 @@ const organizationSchema = {
   ]
 };
 
-const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, Astro.site?.toString() || 'https://arbrebio.com') as { itemListElement?: any[] };
+const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com') as { itemListElement?: any[] };
 const breadcrumbData = {
   items: breadcrumbSchema.itemListElement || []
 };
@@ -204,6 +204,41 @@ const breadcrumbData = {
         });
       }
     </script>
+  
+    <meta property="og:locale" content={
+      (() => {
+        const l = (Astro.currentLocale || Astro.params?.lang || 'en').toLowerCase();
+        const map = { fr: 'fr_FR', en: 'en_US', es: 'es_ES', af: 'af_ZA' };
+        return map[l] || 'fr_FR';
+      })()
+    } />
+  
+    <meta property="og:description" content={description || "Solutions d'agriculture de précision en Côte d'Ivoire et en Afrique — Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
+  
+    {/* Hreflang - Multilingual SEO */}
+    {(() => {
+      const base = "https://www.arbrebio.com";
+      const rawPath = Astro.url.pathname;
+      // Strip language prefix to get canonical path
+      const langPrefixes = ['/fr/', '/es/', '/af/', '/fr', '/es', '/af'];
+      let path = rawPath;
+      for (const pfx of langPrefixes) {
+        if (path.startsWith(pfx)) { path = path.replace(pfx, '/'); break; }
+        if (path === pfx.trimEnd()) { path = '/'; break; }
+      }
+      if (!path.startsWith('/')) path = '/' + path;
+      const enUrl  = base + (path === '/' ? '' : path);
+      const frUrl  = base + '/fr' + (path === '/' ? '' : path);
+      const esUrl  = base + '/es' + (path === '/' ? '' : path);
+      const afUrl  = base + '/af' + (path === '/' ? '' : path);
+      return (<>
+        <link rel="alternate" hreflang="en" href={enUrl} />
+        <link rel="alternate" hreflang="fr" href={frUrl} />
+        <link rel="alternate" hreflang="es" href={esUrl} />
+        <link rel="alternate" hreflang="af" href={afUrl} />
+        <link rel="alternate" hreflang="x-default" href={enUrl} />
+      </>);
+    })()}
   </head>
   <body class="bg-white antialiased">
     <!-- Skip to main content for accessibility -->
