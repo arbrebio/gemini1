@@ -12,8 +12,8 @@ const p = `/${lang}`;
 const caseStudies = [
   {
     title: "Large-Scale Tomato Greenhouse",
-    client: "Marie Koné",
-    location: "Yamoussoukro, Côte d\'Ivoire",
+    client: "Marie KonÃ©",
+    location: "Yamoussoukro, CÃ´te d\'Ivoire",
     description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
     challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
     solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
@@ -39,7 +39,7 @@ const caseStudies = [
   {
     title: "Hydroponic Vegetable Farm",
     client: "Sarah Mensah",
-    location: "Abidjan, Côte d\'Ivoire",
+    location: "Abidjan, CÃ´te d\'Ivoire",
     description: "Establishment of hydroponic vegetable farm for premium market supply",
     challenge: "Limited arable land and soil quality issues preventing profitable farming",
     solution: "Installation of complete hydroponic system with coco peat growing media",
@@ -70,7 +70,7 @@ const caseStudies = [
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-3xl font-bold mb-2">{study.title}</h2>
-          <p class="text-gray-500 mb-8">{study.client} — {study.location}</p>
+          <p class="text-gray-500 mb-8">{study.client} â {study.location}</p>
           <p class="text-gray-600 mb-8 text-lg">{study.description}</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div class="bg-red-50 p-6 rounded-lg">
@@ -86,7 +86,7 @@ const caseStudies = [
               <ul class="space-y-1">
                 {study.results.map(r => (
                   <li class="text-sm text-gray-700 flex items-start gap-1">
-                    <span class="text-green-600 font-bold mt-0.5">✓</span>{r}
+                    <span class="text-green-600 font-bold mt-0.5">â</span>{r}
                   </li>
                 ))}
               </ul>
@@ -120,7 +120,7 @@ const caseStudies = [
       <p class="text-xl text-white mb-8">{T.joinFarmers}</p>
       <div class="flex flex-wrap justify-center gap-4">
         <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
-        <a href="https://wa.me/2250799295643" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
           <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>
       </div>
