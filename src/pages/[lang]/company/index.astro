@@ -12,24 +12,24 @@ const p = `/${lang}`;
 const stats = [
   { value: '500+', label: T.projectsCompleted, target: '500' },
   { value: '5', label: T.africanCountries, target: '5' },
-  { value: '50k+', label: lang === 'fr' ? 'Hectares OptimisÃ©s' : lang === 'es' ? 'HectÃ¡reas Optimizadas' : 'Hektaar Geoptimaliseer', target: '50000' },
+  { value: '50k+', label: lang === 'fr' ? 'Hectares OptimisÃÂ©s' : lang === 'es' ? 'HectÃÂ¡reas Optimizadas' : 'Hektaar Geoptimaliseer', target: '50000' },
   { value: '60%', label: T.waterSavings, target: '60' }
 ];
 
 const solutions = [
-  { icon: 'ð§', title: T.piTitle, description: T.piDesc, stats: [`50% ${T.waterSavings}`, `40% ${T.yieldIncrease}`, '2-year ROI'] },
-  { icon: 'ð±', title: T.gsTitle, description: T.gsDesc, stats: [T.organic100, `8x ${T.superiorWater}`, '5-year lifespan'] },
-  { icon: 'ðï¸', title: T.gcTitle, description: T.gcDesc, stats: ['40% cooler inside', '90% pest reduction', '20-year durability'] },
-  { icon: 'ð±', title: T.digitalTitle, description: T.digitalDesc, stats: ['24/7 monitoring', 'Real-time alerts', 'Data-driven insights'] },
+  { icon: 'Ã°ÂÂÂ§', title: T.piTitle, description: T.piDesc, stats: [`50% ${T.waterSavings}`, `40% ${T.yieldIncrease}`, '2-year ROI'] },
+  { icon: 'Ã°ÂÂÂ±', title: T.gsTitle, description: T.gsDesc, stats: [T.organic100, `8x ${T.superiorWater}`, '5-year lifespan'] },
+  { icon: 'Ã°ÂÂÂÃ¯Â¸Â', title: T.gcTitle, description: T.gcDesc, stats: ['40% cooler inside', '90% pest reduction', '20-year durability'] },
+  { icon: 'Ã°ÂÂÂ±', title: T.digitalTitle, description: T.digitalDesc, stats: ['24/7 monitoring', 'Real-time alerts', 'Data-driven insights'] },
 ];
 
 const timeline = [
-  { year: 2020, event: T.y2020t, description: T.y2020d, icon: 'ð±' },
-  { year: 2021, event: T.y2021t, description: T.y2021d, icon: 'ðï¸' },
-  { year: 2022, event: T.y2022t, description: T.y2022d, icon: 'ð¤' },
-  { year: 2023, event: T.y2023t, description: T.y2023d, icon: 'ð' },
-  { year: 2024, event: T.y2024t, description: T.y2024d, icon: 'ð»' },
-  { year: 2025, event: T.y2025t, description: T.y2025d, icon: 'ð' },
+  { year: 2020, event: T.y2020t, description: T.y2020d, icon: 'Ã°ÂÂÂ±' },
+  { year: 2021, event: T.y2021t, description: T.y2021d, icon: 'Ã°ÂÂÂÃ¯Â¸Â' },
+  { year: 2022, event: T.y2022t, description: T.y2022d, icon: 'Ã°ÂÂ¤Â' },
+  { year: 2023, event: T.y2023t, description: T.y2023d, icon: 'Ã°ÂÂÂ' },
+  { year: 2024, event: T.y2024t, description: T.y2024d, icon: 'Ã°ÂÂÂ»' },
+  { year: 2025, event: T.y2025t, description: T.y2025d, icon: 'Ã°ÂÂÂ' },
 ];
 ---
 
@@ -173,6 +173,96 @@ const timeline = [
       </div>
     </div>
   </section>
+
+
+  <!-- SEO: Company mission + Africa focus -->
+  <section class="py-20 bg-white" aria-labelledby="mission-africa-heading">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="text-center mb-12">
+        <h2 id="mission-africa-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {lang === 'fr' ? "Notre Mission : Révolutionner l'Agriculture Africaine par la Précision" : lang === 'es' ? "Nuestra Misión: Revolucionar la Agricultura Africana mediante la Precisión" : "Our Mission: Revolutionise African Agriculture Through Precision"}
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          {lang === 'fr' ? "Arbre Bio Africa est née d'un constat simple : les agriculteurs africains ont accès aux mêmes cultures, aux mêmes marchés et au même soleil que leurs homologues européens ou asiatiques — mais pas aux mêmes outils. Notre mission est de combler ce fossé technologique en rendant l'agriculture de précision accessible, rentable et durable pour chaque exploitation en Afrique." : lang === 'es' ? "Arbre Bio Africa nació de una constatación: los agricultores africanos tienen acceso a los mismos cultivos y mercados que sus homólogos europeos, pero no a las mismas herramientas." : "Arbre Bio Africa was born from a simple observation: African farmers have access to the same crops and markets as their European counterparts — but not the same tools."}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">
+            {lang === 'fr' ? "Pourquoi Arbre Bio Africa Existe" : lang === 'es' ? "Por Qué Existe Arbre Bio Africa" : "Why Arbre Bio Africa Exists"}
+          </h3>
+          <div class="space-y-4 text-gray-600">
+            <p>
+              {lang === 'fr' ? "L'Afrique nourrit 1,4 milliard de personnes avec moins de 5% des investissements agricoles mondiaux. Les agriculteurs africains travaillent souvent sans accès à l'eau contrôlée, aux semences améliorées, aux substrats professionnels ou aux fertilisants adaptés. Le résultat : des rendements 3 à 10 fois inférieurs à ceux obtenus avec les mêmes cultures dans les pays développés." : "Africa feeds 1.4 billion people with less than 5% of global agricultural investment. African farmers often lack controlled water, improved seeds, professional substrates or adapted fertilisers — resulting in yields 3-10× lower than those achieved with the same crops in developed countries."}
+            </p>
+            <p>
+              {lang === 'fr' ? "Arbre Bio Africa fournit les solutions pour inverser cette tendance : serres adaptées au climat tropical, irrigation goutte-à-goutte de précision, substrats coco peat, engrais et phytosanitaires — avec un suivi agronomique complet. Notre objectif : que chaque agriculteur de Côte d'Ivoire et d'Afrique de l'Ouest puisse doubler ses rendements et accéder aux marchés premium." : "Arbre Bio Africa provides solutions to reverse this trend: climate-adapted greenhouses, precision drip irrigation, coco peat substrates, fertilisers and crop protection — with complete agronomic follow-up. Our goal: every farmer in Côte d'Ivoire and West Africa can double their yields and access premium markets."}
+            </p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          {[
+            { num: "2×", label: lang === 'fr' ? "Rendements moyens doublés" : "Average yields doubled" },
+            { num: "70%", label: lang === 'fr' ? "Économie d'eau avec goutte-à-goutte" : "Water saving with drip" },
+            { num: "12-18", label: lang === 'fr' ? "Mois de ROI moyen" : "Months average ROI" },
+            { num: "100%", label: lang === 'fr' ? "Suivi agronomique inclus" : "Agronomic follow-up included" }
+          ].map((stat) => (
+            <div class="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
+              <div class="text-3xl font-bold text-green-600 mb-2">{stat.num}</div>
+              <div class="text-sm text-gray-600 font-medium">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Partenariat Hortalan -->
+      <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-10 border border-green-100">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">
+          {lang === 'fr' ? "Partenariat Stratégique avec Hortalan" : lang === 'es' ? "Asociación Estratégica con Hortalan" : "Strategic Partnership with Hortalan"}
+        </h3>
+        <p class="text-gray-600 text-center max-w-3xl mx-auto">
+          {lang === 'fr' ? "Arbre Bio Africa est en cours d'établissement d'une joint-venture avec Hortalan, référence européenne en horticulture professionnelle. Ce partenariat permettra d'ouvrir la première filiale Hortalan en Côte d'Ivoire, apportant les technologies horticoles européennes les plus avancées aux agriculteurs africains — serres high-tech, systèmes d'irrigation automatisés, programmes phytosanitaires certifiés et expertise agro-industrielle de niveau mondial." : lang === 'es' ? "Arbre Bio Africa está estableciendo una joint-venture con Hortalan, referencia europea en horticultura profesional, para abrir la primera filial Hortalan en Costa de Marfil." : "Arbre Bio Africa is establishing a joint venture with Hortalan, European reference in professional horticulture, to open the first Hortalan branch in Côte d'Ivoire — bringing world-class European horticultural technology to African farmers."}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO: FAQ à propos d'Arbre Bio -->
+  <section class="py-20 bg-gray-50" aria-labelledby="faq-company">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 id="faq-company" class="text-3xl font-bold text-center text-gray-900 mb-12">
+        {lang === 'fr' ? "Questions Fréquentes sur Arbre Bio Africa" : lang === 'es' ? "Preguntas Frecuentes sobre Arbre Bio Africa" : "FAQ: About Arbre Bio Africa"}
+      </h2>
+      <div class="space-y-6">
+        {[
+          { q: lang === 'fr' ? "Qu'est-ce qu'Arbre Bio Africa ?" : "What is Arbre Bio Africa?", a: lang === 'fr' ? "Arbre Bio Africa est une société spécialisée dans les solutions d'agriculture de précision pour l'Afrique. Fondée par Sydney, experte en agriculture de précision, la société fournit des serres agricoles, systèmes d'irrigation goutte-à-goutte, substrats coco peat, fertilisants et produits phytosanitaires adaptés aux conditions africaines. Basée en Côte d'Ivoire, elle intervient dans toute l'Afrique de l'Ouest." : "Arbre Bio Africa is a precision agriculture solutions company for Africa. Founded by Sydney, a precision agriculture expert, it provides greenhouses, drip irrigation, coco peat substrates, fertilisers and crop protection products adapted to African conditions. Based in Côte d'Ivoire, it operates across West Africa." },
+          { q: lang === 'fr' ? "Quels sont les domaines d'expertise d'Arbre Bio Africa ?" : "What are Arbre Bio Africa's areas of expertise?", a: lang === 'fr' ? "Arbre Bio Africa est experte en : 1) Serres agricoles (tunnel, multi-chapelle, high-tech). 2) Irrigation de précision (goutte-à-goutte, aspersion, fertigation). 3) Substrats horticoles (coco peat, fibre de coco, perlite, vermiculite). 4) Fertilisation et protection phytosanitaire. 5) Suivi agronomique et conseil technique. 6) Formation des équipes agricoles africaines." : "Arbre Bio Africa specialises in: 1) Agricultural greenhouses (tunnel, multi-span, high-tech). 2) Precision irrigation (drip, sprinkler, fertigation). 3) Horticultural substrates (coco peat, coir, perlite, vermiculite). 4) Fertilisation and crop protection. 5) Agronomic monitoring and technical advice. 6) Training for African agricultural teams." },
+          { q: lang === 'fr' ? "Dans quels pays Arbre Bio Africa intervient-elle ?" : "In which countries does Arbre Bio Africa operate?", a: lang === 'fr' ? "Arbre Bio Africa intervient principalement en Côte d'Ivoire où sont basées nos équipes, et livre ses solutions dans toute l'Afrique de l'Ouest et Centrale : Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin, Cameroun, Gabon. Nous facilitons l'import-export et la logistique pour tous les pays de la zone CEDEAO." : "Arbre Bio Africa operates primarily from Côte d'Ivoire and delivers solutions across West and Central Africa: Senegal, Ghana, Burkina Faso, Mali, Togo, Benin, Cameroon, Gabon. We facilitate import-export and logistics for all ECOWAS countries." },
+          { q: lang === 'fr' ? "Comment contacter Arbre Bio Africa ?" : "How to contact Arbre Bio Africa?", a: lang === 'fr' ? "Vous pouvez contacter Arbre Bio Africa par WhatsApp au +225 05 00 55 25 25 (réponse rapide 7j/7), par email à farms@arbrebio.com, ou via le formulaire de contact de notre site. Pour un devis personnalisé sur nos serres, systèmes d'irrigation ou substrats, notre équipe répond généralement dans les 24 heures ouvrables." : "Contact Arbre Bio Africa by WhatsApp at +225 05 00 55 25 25 (fast response 7 days/week), by email at farms@arbrebio.com, or via our website contact form. For a personalised quote on greenhouses, irrigation or substrates, we typically respond within 24 business hours." },
+          { q: lang === 'fr' ? "Arbre Bio Africa propose-t-elle du financement pour les équipements agricoles ?" : "Does Arbre Bio Africa offer financing for agricultural equipment?", a: lang === 'fr' ? "Arbre Bio Africa peut accompagner les agriculteurs et agri-entrepreneurs dans l'accès aux financements agricoles disponibles en Afrique de l'Ouest : fonds d'investissement agricoles, microfinancement, coopératives agricoles et programmes d'aide au développement. Nous préparons les dossiers techniques nécessaires aux demandes de financement. Contactez-nous pour discuter de votre projet et de vos besoins de financement." : "Arbre Bio Africa can support farmers and agri-entrepreneurs in accessing agricultural financing in West Africa: agricultural investment funds, microfinancing, agricultural cooperatives and development aid programmes. We prepare the technical files needed for financing applications." }
+        ].map((item) => (
+          <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">{item.q}</h3>
+            <p class="text-gray-600 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Qu est-ce qu Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Arbre Bio Africa est une société spécialisée en agriculture de précision pour l Afrique : serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants. Basée en Côte d Ivoire, elle intervient dans toute l Afrique de l Ouest." } },
+      { "@type": "Question", "name": "Quels sont les domaines d expertise d Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Serres agricoles, irrigation de précision, substrats horticoles (coco peat, fibre de coco, perlite), fertilisation, protection phytosanitaire, suivi agronomique et formation." } },
+      { "@type": "Question", "name": "Dans quels pays Arbre Bio Africa intervient-elle ?", "acceptedAnswer": { "@type": "Answer", "text": "Côte d Ivoire (siège), Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin, Cameroun, Gabon — toute l Afrique de l Ouest et Centrale." } },
+      { "@type": "Question", "name": "Comment contacter Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "WhatsApp +225 05 00 55 25 25 (7j/7), email farms@arbrebio.com, ou formulaire de contact sur le site. Réponse sous 24h." } },
+      { "@type": "Question", "name": "Arbre Bio Africa propose-t-elle du financement ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous accompagnons les agriculteurs dans l accès aux financements agricoles en Afrique de l Ouest : fonds agricoles, microfinancement, coopératives et programmes d aide au développement." } }
+    ]
+  })} />
+
 
 </Layout>
 
