@@ -79,6 +79,6 @@ export const socialMediaLinks = [
 
 export const whatsappLink = {
   name: 'WhatsApp',
-  url: 'https://wa.me/2250799295643',
+  url: 'https://wa.me/2250500552525',
   icon: 'fa-brands fa-whatsapp'
 };
