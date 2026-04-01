@@ -11,95 +11,284 @@ const p = `/${lang}`;
 
 const technologies = [
   { title: T.dripTitle, description: T.dripDesc, specs: [['Flow Rate', '1-8 L/hour'], ['Spacing Options', '20-100 cm'], ['Operating Pressure', '1-4 bar'], ['Filtration', '120 mesh']], benefits: ['Up to 70% water savings vs traditional irrigation', 'Uniform water distribution across all crops', 'Reduced fertilizer leaching', 'Minimal soil erosion and weed growth'], image: 'https://imgur.com/6XtSwqS.jpg', caseStudy: { title: 'Tomato Farm in Ghana', result: '65% increase in yield, 40% reduction in water usage' } },
-  { title: T.sprinklerTitle, description: T.sprinklerDesc, specs: [['Coverage Radius', '5-25 meters'], ['Flow Rate', '500-2000 L/hour'], ['Pressure Range', '2-5 bar'], ['Rotation', '360Â° coverage']], benefits: ['Even water distribution pattern', 'Adjustable spray patterns for different crops', 'Durable construction for long service life', 'Low maintenance requirements'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Maize Farm in Kenya', result: '45% increase in crop uniformity, 30% water savings' } },
-  { title: T.fertigationTitle, description: T.fertigationDesc, specs: [['Injection Rate', '0.2-40 L/hour'], ['Mixing Ratio', '1:50 - 1:1000'], ['Tank Capacity', '50-1000 L'], ['Control', 'EC/pH automated']], benefits: ['Precise nutrient delivery to crop root zone', 'Automated pH and EC control', 'Real-time monitoring and adjustment', 'Reduced fertilizer waste'], image: 'https://imgur.com/NnkgMDq.jpg', caseStudy: { title: "Vegetable Farm in CÃ´te d'Ivoire", result: '50% reduction in fertilizer use, 40% yield increase' } },
-  { title: T.digitalTitle, description: T.digitalDesc, specs: [['Sensor Range', 'Up to 5 km'], ['Data Update', 'Every 15 min'], ['Battery Life', '5 years'], ['Accuracy', 'Â±2% VWC']], benefits: ['Real-time monitoring and alerts', 'Data-driven irrigation decisions', 'Remote system control via mobile app', 'Predictive maintenance alerts'], image: 'https://imgur.com/3VCs7hJ.jpg', caseStudy: { title: 'Tech-enabled Farm in Nigeria', result: '35% water savings through smart scheduling' } },
-  { title: T.waterTreatmentTitle, description: T.waterTreatmentDesc, specs: [['Flow Capacity', '10-200 mÂ³/hour'], ['Filtration Level', '20-200 micron'], ['Pressure Loss', '<0.3 bar'], ['Backwash', 'Automated']], benefits: ['Prevents emitter clogging', 'Removes harmful contaminants', 'Extends system lifespan', 'Automated self-cleaning'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Large Scale Farm in Tanzania', result: '90% reduction in system maintenance needs' } },
+  { title: T.sprinklerTitle, description: T.sprinklerDesc, specs: [['Coverage Radius', '5-25 meters'], ['Flow Rate', '500-2000 L/hour'], ['Pressure Range', '2-5 bar'], ['Rotation', '360ÃÂ° coverage']], benefits: ['Even water distribution pattern', 'Adjustable spray patterns for different crops', 'Durable construction for long service life', 'Low maintenance requirements'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Maize Farm in Kenya', result: '45% increase in crop uniformity, 30% water savings' } },
+  { title: T.fertigationTitle, description: T.fertigationDesc, specs: [['Injection Rate', '0.2-40 L/hour'], ['Mixing Ratio', '1:50 - 1:1000'], ['Tank Capacity', '50-1000 L'], ['Control', 'EC/pH automated']], benefits: ['Precise nutrient delivery to crop root zone', 'Automated pH and EC control', 'Real-time monitoring and adjustment', 'Reduced fertilizer waste'], image: 'https://imgur.com/NnkgMDq.jpg', caseStudy: { title: "Vegetable Farm in CÃÂ´te d'Ivoire", result: '50% reduction in fertilizer use, 40% yield increase' } },
+  { title: T.digitalTitle, description: T.digitalDesc, specs: [['Sensor Range', 'Up to 5 km'], ['Data Update', 'Every 15 min'], ['Battery Life', '5 years'], ['Accuracy', 'ÃÂ±2% VWC']], benefits: ['Real-time monitoring and alerts', 'Data-driven irrigation decisions', 'Remote system control via mobile app', 'Predictive maintenance alerts'], image: 'https://imgur.com/3VCs7hJ.jpg', caseStudy: { title: 'Tech-enabled Farm in Nigeria', result: '35% water savings through smart scheduling' } },
+  { title: T.waterTreatmentTitle, description: T.waterTreatmentDesc, specs: [['Flow Capacity', '10-200 mÃÂ³/hour'], ['Filtration Level', '20-200 micron'], ['Pressure Loss', '<0.3 bar'], ['Backwash', 'Automated']], benefits: ['Prevents emitter clogging', 'Removes harmful contaminants', 'Extends system lifespan', 'Automated self-cleaning'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Large Scale Farm in Tanzania', result: '90% reduction in system maintenance needs' } },
 ];
 ---
+<Layout title={lang === 'fr' ? "Systèmes d'Irrigation Agricole en Afrique | Goutte-à-Goutte, Aspersion & Fertigation | Arbre Bio" : lang === 'es' ? "Sistemas de Riego Agrícola en África | Arbre Bio" : "Agricultural Irrigation Systems in Africa | Drip, Sprinkler & Fertigation | Arbre Bio"} description={lang === 'fr' ? "Arbre Bio Africa installe les meilleurs systèmes d'irrigation : goutte-à-goutte, aspersion, fertigation et contrôleurs intelligents. Économisez jusqu'à 70% d'eau et doublez vos rendements en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Los mejores sistemas de riego: goteo, aspersión y fertigación. Ahorre hasta 70% de agua en África." : "The best irrigation systems: drip, sprinkler, fertigation. Save up to 70% water in Africa."} lang={lang}>
 
-<Layout title={`${T.irrHeroTitle} | Arbre Bio Africa`} description={T.irrTagline}>
-
-  <section class="relative min-h-[80vh] flex items-center">
-    <div class="absolute inset-0 z-0">
-      <img src="https://imgur.com/6XtSwqS.jpg" alt="Precision Irrigation" class="w-full h-full object-cover" loading="eager"/>
-      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+  {/* Hero */}
+  <section class="relative bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-700 text-white py-20 px-4 overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[url('/images/irrigation-hero.jpg')] bg-cover bg-center"></div>
+    <div class="relative max-w-6xl mx-auto text-center">
+      <p class="text-cyan-300 font-semibold text-sm uppercase tracking-widest mb-4">
+        {lang === 'fr' ? "Systèmes d'Irrigation" : lang === 'es' ? "Sistemas de Riego" : "Irrigation Systems"}
+      </p>
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+        {lang === 'fr' ? "L'Irrigation Intelligente pour une Agriculture Rentable en Afrique" : lang === 'es' ? "Riego Inteligente para Agricultura Rentable en África" : "Smart Irrigation for Profitable Farming in Africa"}
+      </h1>
+      <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+        {lang === 'fr' ? "Économisez jusqu'à 70% d'eau, doublez vos rendements et automatisez votre ferme grâce aux systèmes d'irrigation de précision Arbre Bio Africa — installés et maintenus par nos experts en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Ahorre hasta 70% de agua y duplique sus rendimientos con sistemas de riego de precisión." : "Save up to 70% water and double your yields with precision irrigation systems."}
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center mb-12">
+        <a href={`/${lang}/contact`} class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
+          {T.freeConsultation}
+        </a>
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-8 rounded-lg transition-colors">
+          {T.chatWhatsApp}
+        </a>
+      </div>
+      {/* Key stats */}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        {[
+          { value: "70%", label: lang === 'fr' ? "Économie d'eau" : lang === 'es' ? "Ahorro de agua" : "Water savings" },
+          { value: "2×", label: lang === 'fr' ? "Rendement moyen" : lang === 'es' ? "Rendimiento" : "Avg. yield boost" },
+          { value: "200+", label: lang === 'fr' ? "Projets installés" : lang === 'es' ? "Proyectos instalados" : "Projects installed" },
+          { value: "98%", label: lang === 'fr' ? "Satisfaction client" : lang === 'es' ? "Satisfacción cliente" : "Client satisfaction" }
+        ].map(s => (
+          <div class="bg-white/10 backdrop-blur rounded-xl p-4">
+            <div class="text-3xl font-bold text-cyan-300">{s.value}</div>
+            <div class="text-sm text-blue-200 mt-1">{s.label}</div>
+          </div>
+        ))}
+      </div>
     </div>
-    <div class="container mx-auto px-4 relative z-10">
-      <div class="max-w-4xl">
-        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          {T.irrHeroTitle}
-          <span class="block text-2xl md:text-3xl mt-2">{T.irrHeroSub}</span>
-        </h1>
-        <p class="text-xl text-white mb-8">{T.irrTagline}</p>
-        <div class="flex flex-wrap gap-4">
-          <a href="#technologies" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.exploreSolutions}</a>
-          <a href={`${p}/contact`} class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.freeConsultation}</a>
+  </section>
+
+  {/* Why Irrigation Section */}
+  <section class="py-16 px-4 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <h2 class="text-3xl font-bold text-blue-900 mb-6">
+            {lang === 'fr' ? "Pourquoi l'Irrigation de Précision est Essentielle en Afrique ?" : lang === 'es' ? "¿Por qué el riego de precisión es esencial en África?" : "Why Precision Irrigation is Essential in Africa"}
+          </h2>
+          <p class="text-gray-700 mb-4 leading-relaxed">
+            {lang === 'fr' ? "L'Afrique de l'Ouest fait face à des défis hydriques croissants : sécheresses prolongées, irrégularité des pluies, et pression sur les ressources en eau souterraines. Dans ce contexte, l'irrigation de précision n'est plus un luxe — c'est une nécessité économique pour tout agriculteur qui souhaite produire de façon rentable et durable." : lang === 'es' ? "África Occidental enfrenta desafíos hídricos crecientes: sequías prolongadas, lluvia irregular. El riego de precisión ya no es un lujo sino una necesidad económica." : "West Africa faces growing water challenges: prolonged droughts, irregular rainfall. Precision irrigation is no longer a luxury but an economic necessity."}
+          </p>
+          <p class="text-gray-700 mb-4 leading-relaxed">
+            {lang === 'fr' ? "Un système d'irrigation conventionnel par aspersion ou par surface perd entre 40% et 60% de l'eau apportée par évaporation et ruissellement. Un système goutte-à-goutte de précision, correctement installé et piloté, délivre l'eau directement à la zone racinaire avec une efficience supérieure à 90%. La différence de rendement — et de facture d'eau — est considérable." : lang === 'es' ? "Un sistema convencional pierde 40-60% del agua. El riego por goteo entrega agua directamente a la raíz con eficiencia superior al 90%." : "Conventional systems waste 40–60% of water. Precision drip delivers water directly to the root zone at over 90% efficiency."}
+          </p>
+          <p class="text-gray-700 leading-relaxed">
+            {lang === 'fr' ? "Arbre Bio Africa conçoit, installe et entretient des systèmes d'irrigation sur mesure pour toutes les tailles d'exploitation, des petits jardins maraîchers aux grandes fermes commerciales sous serre. Nos ingénieurs calculent précisément vos besoins en eau, dimensionnent votre réseau et programment vos contrôleurs pour une gestion totalement automatisée." : lang === 'es' ? "Arbre Bio Africa diseña e instala sistemas de riego a medida para todos los tamaños de explotación." : "Arbre Bio Africa designs and installs custom irrigation for all farm sizes, from small market gardens to large commercial greenhouses."}
+          </p>
+        </div>
+        <div class="space-y-4">
+          {[
+            { icon: "💧", title: lang === 'fr' ? "Efficience Hydrique Maximale" : "Maximum Water Efficiency", desc: lang === 'fr' ? "Jusqu'à 90% d'efficience vs 50-60% pour l'aspersion traditionnelle. Chaque litre d'eau est utilisé là où il est nécessaire." : "Up to 90% efficiency vs 50–60% for traditional sprinklers." },
+            { icon: "🌱", title: lang === 'fr' ? "Croissance Accélérée des Cultures" : "Accelerated Crop Growth", desc: lang === 'fr' ? "L'humidité constante à la zone racinaire favorise une croissance régulière et réduit le stress hydrique qui affecte la qualité des fruits et légumes." : "Constant root-zone moisture promotes steady growth and reduces water stress." },
+            { icon: "💊", title: lang === 'fr' ? "Fertigation Intégrée" : "Integrated Fertigation", desc: lang === 'fr' ? "Distribuez engrais et nutriments directement via votre réseau d'irrigation. Réduisez les coûts d'engrais de 30% tout en améliorant l'assimilation." : "Deliver fertilisers directly through your irrigation network, cutting costs 30%." },
+            { icon: "📱", title: lang === 'fr' ? "Pilotage Automatisé & Connecté" : "Automated & Connected Control", desc: lang === 'fr' ? "Contrôleurs intelligents avec programmation horaire, capteurs d'humidité, et gestion à distance depuis votre smartphone." : "Smart controllers with scheduling, moisture sensors and remote smartphone management." },
+            { icon: "🏆", title: lang === 'fr' ? "ROI Rapide" : "Fast ROI", desc: lang === 'fr' ? "Nos clients récupèrent leur investissement en 1 à 2 saisons grâce aux économies d'eau, d'engrais et à l'augmentation des rendements." : "Our clients recover their investment in 1–2 seasons through water and fertiliser savings." }
+          ].map(item => (
+            <div class="flex gap-4 p-4 bg-blue-50 rounded-xl">
+              <span class="text-2xl flex-shrink-0">{item.icon}</span>
+              <div>
+                <div class="font-bold text-blue-900 mb-1">{item.title}</div>
+                <div class="text-gray-600 text-sm">{item.desc}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   </section>
 
-  <section class="py-12 bg-primary text-white">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div><div class="text-3xl font-bold mb-1">60%</div><div class="opacity-80">{T.waterSavings}</div></div>
-        <div><div class="text-3xl font-bold mb-1">500+</div><div class="opacity-80">{T.projectsCompleted}</div></div>
-        <div><div class="text-3xl font-bold mb-1">40%</div><div class="opacity-80">{T.yieldIncrease}</div></div>
-        <div><div class="text-3xl font-bold mb-1">98%</div><div class="opacity-80">{T.clientSatisfaction}</div></div>
+  {/* Products Section */}
+  <section class="py-16 px-4 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-4">
+        {lang === 'fr' ? "Nos Systèmes d'Irrigation" : lang === 'es' ? "Nuestros Sistemas de Riego" : "Our Irrigation Systems"}
+      </h2>
+      <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
+        {lang === 'fr' ? "De l'irrigation goutte-à-goutte à l'aspersion automatisée, découvrez nos solutions complètes pour chaque type de culture et d'exploitation agricole en Afrique." : lang === 'es' ? "Desde el goteo hasta la aspersión automatizada, soluciones completas para cada tipo de cultivo en África." : "From drip to automated sprinklers, complete solutions for every crop type in Africa."}
+      </p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-blue-500">
+          <div class="text-4xl mb-3">💧</div>
+          <h3 class="text-xl font-bold text-blue-900 mb-2">{T.dripTitle}</h3>
+          <p class="text-gray-600 text-sm mb-4">{T.dripDesc}</p>
+          <ul class="text-xs text-gray-500 space-y-1">
+            <li>✓ {lang === 'fr' ? "Goutteurs compensants pression" : "Pressure-compensating drippers"}</li>
+            <li>✓ {lang === 'fr' ? "Tuyaux anti-colmatage" : "Anti-clogging tubing"}</li>
+            <li>✓ {lang === 'fr' ? "Filtres à sable et à disques" : "Sand and disc filters"}</li>
+            <li>✓ {lang === 'fr' ? "Vannes de secteur automatisées" : "Automated zone valves"}</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-cyan-500">
+          <div class="text-4xl mb-3">🌊</div>
+          <h3 class="text-xl font-bold text-blue-900 mb-2">{T.sprinklerTitle}</h3>
+          <p class="text-gray-600 text-sm mb-4">{T.sprinklerDesc}</p>
+          <ul class="text-xs text-gray-500 space-y-1">
+            <li>✓ {lang === 'fr' ? "Asperseurs rotatifs et fixes" : "Rotary and fixed sprinklers"}</li>
+            <li>✓ {lang === 'fr' ? "Micro-aspersion sous serre" : "Micro-sprinklers for greenhouses"}</li>
+            <li>✓ {lang === 'fr' ? "Canons d'arrosage grandes surfaces" : "Rain guns for large areas"}</li>
+            <li>✓ {lang === 'fr' ? "Rampes d'arrosage mobiles" : "Mobile irrigation booms"}</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-green-500">
+          <div class="text-4xl mb-3">🧪</div>
+          <h3 class="text-xl font-bold text-blue-900 mb-2">{T.fertigationTitle}</h3>
+          <p class="text-gray-600 text-sm mb-4">{T.fertigationDesc}</p>
+          <ul class="text-xs text-gray-500 space-y-1">
+            <li>✓ {lang === 'fr' ? "Injecteurs Venturi" : "Venturi injectors"}</li>
+            <li>✓ {lang === 'fr' ? "Pompes doseuses électroniques" : "Electronic dosing pumps"}</li>
+            <li>✓ {lang === 'fr' ? "Sondes EC/pH en ligne" : "In-line EC/pH probes"}</li>
+            <li>✓ {lang === 'fr' ? "Cuves de mélange inox" : "Stainless mixing tanks"}</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-purple-500">
+          <div class="text-4xl mb-3">📱</div>
+          <h3 class="text-xl font-bold text-blue-900 mb-2">{T.digitalTitle}</h3>
+          <p class="text-gray-600 text-sm mb-4">{T.digitalDesc}</p>
+          <ul class="text-xs text-gray-500 space-y-1">
+            <li>✓ {lang === 'fr' ? "Contrôleurs Wi-Fi & 4G" : "Wi-Fi & 4G controllers"}</li>
+            <li>✓ {lang === 'fr' ? "Capteurs d'humidité du sol" : "Soil moisture sensors"}</li>
+            <li>✓ {lang === 'fr' ? "Application mobile iOS/Android" : "iOS/Android mobile app"}</li>
+            <li>✓ {lang === 'fr' ? "Alertes et rapports en temps réel" : "Real-time alerts and reports"}</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-orange-500">
+          <div class="text-4xl mb-3">🔬</div>
+          <h3 class="text-xl font-bold text-blue-900 mb-2">{T.waterTreatmentTitle}</h3>
+          <p class="text-gray-600 text-sm mb-4">{T.waterTreatmentDesc}</p>
+          <ul class="text-xs text-gray-500 space-y-1">
+            <li>✓ {lang === 'fr' ? "Filtration multi-étages" : "Multi-stage filtration"}</li>
+            <li>✓ {lang === 'fr' ? "Traitement UV anti-algues" : "UV anti-algae treatment"}</li>
+            <li>✓ {lang === 'fr' ? "Déminéralisation et osmose inverse" : "Demineralisation and RO"}</li>
+            <li>✓ {lang === 'fr' ? "Analyse et correction du pH" : "pH analysis and correction"}</li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-sm p-6 text-white">
+          <div class="text-4xl mb-3">🎯</div>
+          <h3 class="text-xl font-bold mb-2">
+            {lang === 'fr' ? "Conception Sur Mesure" : lang === 'es' ? "Diseño a Medida" : "Custom Design"}
+          </h3>
+          <p class="text-blue-100 text-sm mb-4">
+            {lang === 'fr' ? "Chaque exploitation est unique. Nos ingénieurs réalisent une étude hydraulique complète de votre terrain avant toute installation." : lang === 'es' ? "Cada explotación es única. Nuestros ingenieros realizan un estudio hidráulico completo." : "Every farm is unique. Our engineers carry out a full hydraulic study before installation."}
+          </p>
+          <a href={`/${lang}/contact`} class="inline-block bg-white text-blue-700 font-bold py-2 px-6 rounded-lg text-sm hover:bg-blue-50 transition-colors">
+            {lang === 'fr' ? "Demander une étude gratuite" : lang === 'es' ? "Solicitar estudio gratuito" : "Request free study"}
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="technologies" class="py-20">
-    <div class="container mx-auto px-4">
-      {technologies.map((tech, index) => (
-        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div class={index % 2 !== 0 ? 'lg:order-2' : ''}>
-              <h2 class="text-2xl font-bold mb-4">{tech.title}</h2>
-              <p class="text-gray-600 mb-6 leading-relaxed">{tech.description}</p>
-              <div class="grid grid-cols-2 gap-4 mb-6">
-                {tech.specs.map(([label, value]) => (
-                  <div class="bg-gray-50 p-4 rounded-lg">
-                    <p class="text-sm text-gray-500">{label}</p>
-                    <p class="font-bold text-primary">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <ul class="space-y-2 mb-6">
-                {tech.benefits.map(benefit => (
-                  <li class="flex items-start gap-2 text-gray-700">
-                    <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-              <div class="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
-                <p class="font-bold text-primary mb-1">{T.caseStudy}: {tech.caseStudy.title}</p>
-                <p class="text-gray-600 text-sm">{tech.caseStudy.result}</p>
-              </div>
+  {/* Process Section */}
+  <section class="py-16 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">
+        {lang === 'fr' ? "Notre Processus d'Installation" : lang === 'es' ? "Nuestro Proceso de Instalación" : "Our Installation Process"}
+      </h2>
+      <div class="space-y-6">
+        {[
+          { step: "01", title: lang === 'fr' ? "Audit & Analyse du Terrain" : "Site Audit & Analysis", desc: lang === 'fr' ? "Visite de votre exploitation, analyse de la qualité de l'eau, cartographie du terrain, évaluation des besoins en eau de vos cultures et dimensionnement du réseau." : "Site visit, water quality analysis, terrain mapping and irrigation network sizing." },
+          { step: "02", title: lang === 'fr' ? "Conception du Système" : "System Design", desc: lang === 'fr' ? "Élaboration du schéma hydraulique, sélection des équipements adaptés (goutteurs, filtres, contrôleurs), établissement du devis détaillé et du planning d'installation." : "Hydraulic design, equipment selection and detailed quotation." },
+          { step: "03", title: lang === 'fr' ? "Installation & Mise en Service" : "Installation & Commissioning", desc: lang === 'fr' ? "Pose des réseaux par notre équipe technique certifiée, raccordements hydrauliques et électriques, programmation des contrôleurs et tests de fonctionnement complets." : "Installation by our certified team, hydraulic connections and full commissioning tests." },
+          { step: "04", title: lang === 'fr' ? "Formation & Suivi" : "Training & Follow-up", desc: lang === 'fr' ? "Formation complète de votre équipe à l'utilisation et à l'entretien du système, avec documentation technique en français. Contrat de maintenance disponible." : "Full team training, French technical documentation and optional maintenance contract." }
+        ].map(item => (
+          <div class="flex gap-6 items-start">
+            <div class="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+              {item.step}
             </div>
-            <div class={index % 2 !== 0 ? 'lg:order-1' : ''}>
-              <img src={tech.image} alt={tech.title} class="w-full h-[400px] object-cover rounded-lg shadow-lg"/>
+            <div>
+              <h3 class="font-bold text-blue-900 text-lg mb-1">{item.title}</h3>
+              <p class="text-gray-600">{item.desc}</p>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </section>
 
-  <section class="bg-primary py-16">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
-      <p class="text-xl text-white mb-8">{T.irrTagline}</p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
-        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
+  {/* FAQ Section */}
+  <section class="py-16 px-4 bg-gray-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">
+        {lang === 'fr' ? "Questions Fréquentes sur l'Irrigation" : lang === 'es' ? "Preguntas Frecuentes sobre Riego" : "Irrigation FAQ"}
+      </h2>
+      <div class="space-y-6">
+        {[
+          {
+            q: lang === 'fr' ? "Quel système d'irrigation est le plus adapté aux cultures maraîchères en Afrique de l'Ouest ?" : "Which irrigation system suits market garden crops in West Africa?",
+            a: lang === 'fr' ? "Pour les cultures maraîchères (tomates, poivrons, oignons, laitues), le goutte-à-goutte est le système le plus rentable en Afrique de l'Ouest. Il offre la meilleure efficience hydrique, est compatible avec la fertigation, et permet de maintenir une humidité constante à la zone racinaire malgré les chaleurs. Pour les grandes cultures céréalières ou fourragères, l'aspersion par rampe ou canon d'arrosage est préférable." : "For market garden crops, drip irrigation offers the best water efficiency and fertigation compatibility in West Africa.",
+          },
+          {
+            q: lang === 'fr' ? "Combien coûte l'installation d'un système d'irrigation goutte-à-goutte en Côte d'Ivoire ?" : "What does drip irrigation installation cost in Côte d'Ivoire?",
+            a: lang === 'fr' ? "Le coût d'un système d'irrigation goutte-à-goutte dépend de la superficie, du type de culture, du dénivelé et des équipements choisis. Pour un hectare de maraîchage sous serre, les coûts d'installation oscillent généralement entre 1,5 et 4 millions FCFA selon la complexité. Arbre Bio Africa propose une étude gratuite et un devis détaillé sans engagement pour votre projet." : "Installation cost depends on area, crop type and equipment. Contact us for a free study and detailed quote.",
+          },
+          {
+            q: lang === 'fr' ? "Est-il possible de coupler l'irrigation goutte-à-goutte avec un système de fertigation ?" : "Can drip irrigation be coupled with a fertigation system?",
+            a: lang === 'fr' ? "Absolument. La fertigation — injection d'engrais et nutriments directement dans le réseau d'irrigation — est l'une des pratiques les plus efficaces de l'agriculture de précision. Elle permet de réduire les pertes d'engrais par lessivage de 30 à 50%, d'améliorer l'assimilation des nutriments par les plantes, et de réduire les coûts d'application. Tous nos systèmes goutte-à-goutte sont conçus pour être compatibles avec la fertigation." : "Yes. Fertigation reduces fertiliser losses by 30–50% and improves nutrient uptake. All our drip systems are fertigation-compatible.",
+          },
+          {
+            q: lang === 'fr' ? "Arbre Bio Africa assure-t-il la maintenance des systèmes d'irrigation installés ?" : "Does Arbre Bio Africa handle maintenance of installed irrigation systems?",
+            a: lang === 'fr' ? "Oui. Nous proposons des contrats de maintenance préventive et curative pour tous les systèmes que nous installons. Ces contrats incluent des visites d'inspection régulières, le nettoyage des filtres et goutteurs, la vérification des pressions et débits, et l'intervention rapide en cas de panne. Nous disposons d'une équipe technique basée en Côte d'Ivoire pour des interventions rapides sur site." : "Yes. We offer preventive and corrective maintenance contracts with regular inspections, filter cleaning and rapid on-site intervention.",
+          },
+          {
+            q: lang === 'fr' ? "Quelle économie d'eau peut-on réaliser avec un système goutte-à-goutte par rapport à l'irrigation traditionnelle ?" : "How much water can drip irrigation save versus traditional methods?",
+            a: lang === 'fr' ? "En comparaison avec l'irrigation de surface ou l'arrosage manuel, un système goutte-à-goutte bien conçu permet d'économiser entre 40% et 70% de l'eau consommée. Avec un système couplé à des capteurs d'humidité et un contrôleur intelligent, l'économie peut dépasser 70%. Sur une exploitation de maraîchage commerciale, cela représente des économies significatives sur les coûts de pompage et d'énergie." : "A well-designed drip system saves 40–70% of water versus surface irrigation, exceeding 70% with smart soil moisture sensors.",
+          }
+        ].map((item, i) => (
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="font-bold text-blue-900 text-lg mb-3">{item.q}</h3>
+            <p class="text-gray-700 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="py-16 px-4 bg-blue-900 text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">
+        {lang === 'fr' ? "Obtenez une Étude d'Irrigation Gratuite" : lang === 'es' ? "Obtenga un Estudio de Riego Gratuito" : "Get a Free Irrigation Study"}
+      </h2>
+      <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">
+        {lang === 'fr' ? "Nos ingénieurs analysent votre exploitation et vous proposent le système d'irrigation optimal avec une simulation de retour sur investissement." : lang === 'es' ? "Nuestros ingenieros analizan su explotación y proponen el sistema óptimo con ROI simulado." : "Our engineers analyse your farm and propose the optimal irrigation system with ROI simulation."}
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href={`/${lang}/contact`} class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
+          {T.freeConsultation}
+        </a>
+        <a href={`/${lang}/irrigation/drip-systems`} class="border-2 border-white text-white hover:bg-white hover:text-blue-900 font-bold py-3 px-8 rounded-lg transition-colors">
+          {lang === 'fr' ? "Voir nos systèmes goutte-à-goutte" : lang === 'es' ? "Ver sistemas de goteo" : "See our drip systems"}
         </a>
       </div>
     </div>
   </section>
+
+  {/* FAQ Schema */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": lang === 'fr' ? [
+      {
+        "@type": "Question",
+        "name": "Quel système d'irrigation est le plus adapté aux cultures maraîchères en Afrique de l'Ouest ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Pour les cultures maraîchères, le goutte-à-goutte est le système le plus rentable en Afrique de l'Ouest. Il offre la meilleure efficience hydrique et est compatible avec la fertigation." }
+      },
+      {
+        "@type": "Question",
+        "name": "Quelle économie d'eau peut-on réaliser avec un système goutte-à-goutte ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Un système goutte-à-goutte bien conçu permet d'économiser entre 40% et 70% de l'eau consommée par rapport à l'irrigation de surface, dépassant 70% avec des capteurs d'humidité intelligents." }
+      },
+      {
+        "@type": "Question",
+        "name": "Est-il possible de coupler l'irrigation goutte-à-goutte avec un système de fertigation ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Absolument. La fertigation réduit les pertes d'engrais de 30 à 50% et améliore l'assimilation des nutriments. Tous nos systèmes goutte-à-goutte sont conçus pour être compatibles avec la fertigation." }
+      }
+    ] : []
+  })} />
 
 </Layout>
