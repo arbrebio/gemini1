@@ -37,7 +37,7 @@ export default defineConfig({
       }
     })
   ],
-  site: 'https://arbrebio.com',
+  site: 'https://www.arbrebio.com',
   output: 'static',
   server: {
     host: true,
