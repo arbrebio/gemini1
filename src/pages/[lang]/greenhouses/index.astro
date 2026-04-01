@@ -11,13 +11,13 @@ const p = `/${lang}`;
 
 const features = [
   { title: T.climateAdaptive, description: T.climateAdaptiveDesc, stats: ['40% cooler interior', '60% humidity control', '92% light transmission'], image: 'https://imgur.com/XtX9fmQ.jpg' },
-  { title: T.structuralDurability, description: T.structuralDurabilityDesc, stats: ['20+ years lifespan', '150 km/h wind resistance', '25 kg/mÃÂ² load capacity'], image: 'https://imgur.com/hKnWqYO.jpg' },
+  { title: T.structuralDurability, description: T.structuralDurabilityDesc, stats: ['20+ years lifespan', '150 km/h wind resistance', '25 kg/mÃÂÃÂ² load capacity'], image: 'https://imgur.com/hKnWqYO.jpg' },
   { title: T.advancedCoverage, description: T.advancedCoverageDesc, stats: ['5-year UV warranty', '92% light transmission', '25% better heat retention'], image: 'https://imgur.com/ybRfmvG.jpg' },
   { title: T.smartVentilation, description: T.smartVentilationDesc, stats: ['60 air changes/hour', '50-mesh insect protection', 'Smart climate control'], image: 'https://imgur.com/u9CfHxE.jpg' },
 ];
 
 const specifications = [
-  { category: 'Structure', items: [['Frame Material', 'Hot-dip galvanized steel', 'Superior corrosion resistance, 20+ years lifespan'], ['Connection System', 'Patented bolt-lock technology', '300% stronger than traditional welded joints'], ['Wind Resistance', 'Up to 150 km/h', 'Exceeds industry standards by 50%'], ['Snow Load', '25 kg/mÃÂ²', 'Designed for varied climate conditions']] },
+  { category: 'Structure', items: [['Frame Material', 'Hot-dip galvanized steel', 'Superior corrosion resistance, 20+ years lifespan'], ['Connection System', 'Patented bolt-lock technology', '300% stronger than traditional welded joints'], ['Wind Resistance', 'Up to 150 km/h', 'Exceeds industry standards by 50%'], ['Snow Load', '25 kg/mÃÂÃÂ²', 'Designed for varied climate conditions']] },
   { category: 'Coverage', items: [['Material', 'Multi-layer UV-stabilized polyethylene', '92% light transmission'], ['UV Protection', 'Advanced UV-A/B/C blocking', 'Extended crop protection and film life'], ['Thermal Properties', 'IR heat retention technology', '25% better temperature regulation'], ['Warranty', '5-year UV warranty', 'Industry-leading coverage guarantee']] },
   { category: 'Ventilation', items: [['System Type', 'Automated ridge and side ventilation', 'Perfect climate control'], ['Air Exchange Rate', '45-60 air changes/hour', '50% better than standard systems'], ['Control System', 'Smart climate controller', 'Automated response to weather changes'], ['Insect Protection', '50-mesh anti-insect screens', 'Maximum pest protection']] },
 ];
@@ -35,19 +35,19 @@ const comparisons = [
   },
 ];
 ---
-<Layout title={lang === 'fr' ? "Serres Agricoles en Afrique | Serres Tunnel, Multi-Chapelle & High-Tech | Arbre Bio Africa" : lang === 'es' ? "Invernaderos Agrícolas en África | Arbre Bio Africa" : "Agricultural Greenhouses in Africa | Tunnel, Multi-Span & High-Tech | Arbre Bio Africa"} description={lang === 'fr' ? "Arbre Bio Africa construit et installe des serres agricoles professionnelles en Afrique : serres tunnel, multi-chapelles et high-tech. Doublez vos rendements et produisez toute l'année en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Construcción de invernaderos profesionales en África: túnel, multi-nave y alta tecnología." : "Professional greenhouse construction in Africa: tunnel, multi-span and high-tech greenhouses."} lang={lang}>
+<Layout title={lang === 'fr' ? "Serres Agricoles en Afrique | Serres Tunnel, Multi-Chapelle & High-Tech | Arbre Bio Africa" : lang === 'es' ? "Invernaderos AgrÃ­colas en Ãfrica | Arbre Bio Africa" : "Agricultural Greenhouses in Africa | Tunnel, Multi-Span & High-Tech | Arbre Bio Africa"} description={lang === 'fr' ? "Arbre Bio Africa construit et installe des serres agricoles professionnelles en Afrique : serres tunnel, multi-chapelles et high-tech. Doublez vos rendements et produisez toute l'annÃ©e en CÃ´te d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "ConstrucciÃ³n de invernaderos profesionales en Ãfrica: tÃºnel, multi-nave y alta tecnologÃ­a." : "Professional greenhouse construction in Africa: tunnel, multi-span and high-tech greenhouses."}>
 
   {/* Hero */}
   <section class="relative bg-gradient-to-br from-green-900 via-emerald-800 to-teal-700 text-white py-20 px-4">
     <div class="max-w-6xl mx-auto text-center">
       <p class="text-emerald-300 font-semibold text-sm uppercase tracking-widest mb-4">
-        {lang === 'fr' ? "Serres Agricoles Professionnelles" : lang === 'es' ? "Invernaderos Agrícolas" : "Professional Agricultural Greenhouses"}
+        {lang === 'fr' ? "Serres Agricoles Professionnelles" : lang === 'es' ? "Invernaderos AgrÃ­colas" : "Professional Agricultural Greenhouses"}
       </p>
       <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-        {lang === 'fr' ? "Serres Agricoles Haute Performance pour l'Afrique" : lang === 'es' ? "Invernaderos de Alto Rendimiento para África" : "High-Performance Agricultural Greenhouses for Africa"}
+        {lang === 'fr' ? "Serres Agricoles Haute Performance pour l'Afrique" : lang === 'es' ? "Invernaderos de Alto Rendimiento para Ãfrica" : "High-Performance Agricultural Greenhouses for Africa"}
       </h1>
       <p class="text-xl text-emerald-100 max-w-3xl mx-auto mb-8">
-        {lang === 'fr' ? "Produisez toute l'année avec des serres conçues pour le climat africain. Arbre Bio Africa installe des serres tunnel, multi-chapelles et high-tech en Côte d'Ivoire et en Afrique de l'Ouest — avec irrigation goutte-à-goutte et substrats inclus." : lang === 'es' ? "Produzca durante todo el año con invernaderos diseñados para el clima africano." : "Produce year-round with greenhouses designed for the African climate."}
+        {lang === 'fr' ? "Produisez toute l'annÃ©e avec des serres conÃ§ues pour le climat africain. Arbre Bio Africa installe des serres tunnel, multi-chapelles et high-tech en CÃ´te d'Ivoire et en Afrique de l'Ouest â avec irrigation goutte-Ã -goutte et substrats inclus." : lang === 'es' ? "Produzca durante todo el aÃ±o con invernaderos diseÃ±ados para el clima africano." : "Produce year-round with greenhouses designed for the African climate."}
       </p>
       <div class="flex flex-wrap gap-4 justify-center mb-12">
         <a href={`/${lang}/contact`} class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
@@ -59,9 +59,9 @@ const comparisons = [
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
         {[
-          { value: "3×", label: lang === 'fr' ? "Rendement vs plein air" : "Yield vs open field" },
+          { value: "3Ã", label: lang === 'fr' ? "Rendement vs plein air" : "Yield vs open field" },
           { value: "12", label: lang === 'fr' ? "Mois de production" : "Months production" },
-          { value: "50+", label: lang === 'fr' ? "Serres installées" : "Greenhouses installed" },
+          { value: "50+", label: lang === 'fr' ? "Serres installÃ©es" : "Greenhouses installed" },
           { value: "15", label: lang === 'fr' ? "Ans de garantie structure" : "Yr structure warranty" }
         ].map(s => (
           <div class="bg-white/10 backdrop-blur rounded-xl p-4">
@@ -79,24 +79,24 @@ const comparisons = [
       <div class="grid md:grid-cols-2 gap-12 items-start">
         <div>
           <h2 class="text-3xl font-bold text-green-900 mb-6">
-            {lang === 'fr' ? "Pourquoi Investir dans une Serre Agricole en Afrique ?" : lang === 'es' ? "¿Por qué invertir en un invernadero en África?" : "Why Invest in an Agricultural Greenhouse in Africa?"}
+            {lang === 'fr' ? "Pourquoi Investir dans une Serre Agricole en Afrique ?" : lang === 'es' ? "Â¿Por quÃ© invertir en un invernadero en Ãfrica?" : "Why Invest in an Agricultural Greenhouse in Africa?"}
           </h2>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "L'agriculture africaine fait face à des défis considérables : chaleur extrême, sécheresses, inondations, ravageurs, maladies. Une serre agricole bien conçue crée un microclimat contrôlé qui protège vos cultures de ces aléas et vous permet de produire des fruits et légumes de qualité premium toute l'année, indépendamment des saisons et des conditions météo." : lang === 'es' ? "Una buena serre crea un microclima controlado que protege sus cultivos de la temperatura extrema, sequías y plagas." : "A well-designed greenhouse creates a controlled microclimate that protects your crops from heat, drought, pests and disease."}
+            {lang === 'fr' ? "L'agriculture africaine fait face Ã  des dÃ©fis considÃ©rables : chaleur extrÃªme, sÃ©cheresses, inondations, ravageurs, maladies. Une serre agricole bien conÃ§ue crÃ©e un microclimat contrÃ´lÃ© qui protÃ¨ge vos cultures de ces alÃ©as et vous permet de produire des fruits et lÃ©gumes de qualitÃ© premium toute l'annÃ©e, indÃ©pendamment des saisons et des conditions mÃ©tÃ©o." : lang === 'es' ? "Una buena serre crea un microclima controlado que protege sus cultivos de la temperatura extrema, sequÃ­as y plagas." : "A well-designed greenhouse creates a controlled microclimate that protects your crops from heat, drought, pests and disease."}
           </p>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "En Côte d'Ivoire et en Afrique de l'Ouest, les serres agricoles permettent de multiplier les cycles de production, d'obtenir des calibres et une qualité constante pour les marchés locaux et d'exportation, et de réduire l'usage de pesticides grâce à la protection physique offerte par la structure et les filets anti-insectes." : lang === 'es' ? "En Côte d'Ivoire, los invernaderos permiten multiplicar los ciclos de producción y obtener calidad constante." : "In Côte d'Ivoire, greenhouses multiply production cycles and deliver consistent quality for local and export markets."}
+            {lang === 'fr' ? "En CÃ´te d'Ivoire et en Afrique de l'Ouest, les serres agricoles permettent de multiplier les cycles de production, d'obtenir des calibres et une qualitÃ© constante pour les marchÃ©s locaux et d'exportation, et de rÃ©duire l'usage de pesticides grÃ¢ce Ã  la protection physique offerte par la structure et les filets anti-insectes." : lang === 'es' ? "En CÃ´te d'Ivoire, los invernaderos permiten multiplicar los ciclos de producciÃ³n y obtener calidad constante." : "In CÃ´te d'Ivoire, greenhouses multiply production cycles and deliver consistent quality for local and export markets."}
           </p>
           <p class="text-gray-700 leading-relaxed">
-            {lang === 'fr' ? "Arbre Bio Africa est votre partenaire de confiance pour la conception, la fabrication et l'installation de serres agricoles professionnelles en Afrique. Nous proposons des solutions clé-en-main adaptées à chaque budget et à chaque projet, de la petite serre familiale à la grande exploitation commerciale." : lang === 'es' ? "Arbre Bio Africa es su socio de confianza para el diseño y construcción de invernaderos en África." : "Arbre Bio Africa is your trusted partner for greenhouse design and installation in Africa."}
+            {lang === 'fr' ? "Arbre Bio Africa est votre partenaire de confiance pour la conception, la fabrication et l'installation de serres agricoles professionnelles en Afrique. Nous proposons des solutions clÃ©-en-main adaptÃ©es Ã  chaque budget et Ã  chaque projet, de la petite serre familiale Ã  la grande exploitation commerciale." : lang === 'es' ? "Arbre Bio Africa es su socio de confianza para el diseÃ±o y construcciÃ³n de invernaderos en Ãfrica." : "Arbre Bio Africa is your trusted partner for greenhouse design and installation in Africa."}
           </p>
         </div>
         <div class="space-y-4">
           {[
-            { icon: "☀️", title: lang === 'fr' ? T.climateAdaptive : lang === 'es' ? "Adaptado al Clima" : T.climateAdaptive, desc: lang === 'fr' ? T.climateAdaptiveDesc : T.climateAdaptiveDesc },
-            { icon: "🏗️", title: lang === 'fr' ? T.structuralDurability : T.structuralDurability, desc: lang === 'fr' ? T.structuralDurabilityDesc : T.structuralDurabilityDesc },
-            { icon: "🌬️", title: lang === 'fr' ? T.smartVentilation : T.smartVentilation, desc: lang === 'fr' ? T.smartVentilationDesc : T.smartVentilationDesc },
-            { icon: "🛡️", title: lang === 'fr' ? T.advancedCoverage : T.advancedCoverage, desc: lang === 'fr' ? T.advancedCoverageDesc : T.advancedCoverageDesc }
+            { icon: "âï¸", title: lang === 'fr' ? T.climateAdaptive : lang === 'es' ? "Adaptado al Clima" : T.climateAdaptive, desc: lang === 'fr' ? T.climateAdaptiveDesc : T.climateAdaptiveDesc },
+            { icon: "ðï¸", title: lang === 'fr' ? T.structuralDurability : T.structuralDurability, desc: lang === 'fr' ? T.structuralDurabilityDesc : T.structuralDurabilityDesc },
+            { icon: "ð¬ï¸", title: lang === 'fr' ? T.smartVentilation : T.smartVentilation, desc: lang === 'fr' ? T.smartVentilationDesc : T.smartVentilationDesc },
+            { icon: "ð¡ï¸", title: lang === 'fr' ? T.advancedCoverage : T.advancedCoverage, desc: lang === 'fr' ? T.advancedCoverageDesc : T.advancedCoverageDesc }
           ].map(item => (
             <div class="flex gap-4 p-4 bg-green-50 rounded-xl">
               <span class="text-2xl flex-shrink-0">{item.icon}</span>
@@ -118,29 +118,29 @@ const comparisons = [
         {lang === 'fr' ? "Nos Types de Serres Agricoles" : lang === 'es' ? "Nuestros Tipos de Invernaderos" : "Our Greenhouse Types"}
       </h2>
       <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
-        {lang === 'fr' ? "Du tunnel plastique simple à la serre high-tech climatisée, nous avons la solution adaptée à votre budget et à vos objectifs de production." : lang === 'es' ? "Desde el túnel plástico simple hasta el invernadero hi-tech climatizado." : "From simple plastic tunnels to climate-controlled high-tech greenhouses."}
+        {lang === 'fr' ? "Du tunnel plastique simple Ã  la serre high-tech climatisÃ©e, nous avons la solution adaptÃ©e Ã  votre budget et Ã  vos objectifs de production." : lang === 'es' ? "Desde el tÃºnel plÃ¡stico simple hasta el invernadero hi-tech climatizado." : "From simple plastic tunnels to climate-controlled high-tech greenhouses."}
       </p>
       <div class="grid md:grid-cols-3 gap-8">
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div class="bg-green-600 p-6 text-white">
-            <div class="text-3xl mb-2">⛺</div>
+            <div class="text-3xl mb-2">âº</div>
             <h3 class="text-xl font-bold">
-              {lang === 'fr' ? "Serre Tunnel" : lang === 'es' ? "Invernadero Túnel" : "Tunnel Greenhouse"}
+              {lang === 'fr' ? "Serre Tunnel" : lang === 'es' ? "Invernadero TÃºnel" : "Tunnel Greenhouse"}
             </h3>
             <p class="text-green-200 text-sm mt-1">
-              {lang === 'fr' ? "Solution économique et efficace" : "Economic and effective solution"}
+              {lang === 'fr' ? "Solution Ã©conomique et efficace" : "Economic and effective solution"}
             </p>
           </div>
           <div class="p-6">
             <p class="text-gray-600 text-sm mb-4">
-              {lang === 'fr' ? "La serre tunnel est la solution d'entrée de gamme idéale pour les agriculteurs qui souhaitent se lancer dans la culture sous serre avec un investissement maîtrisé. Structure légère en acier galvanisé, couverture polyéthylène haute résistance." : "The tunnel greenhouse is the ideal entry-level solution for farmers starting greenhouse growing with controlled investment."}
+              {lang === 'fr' ? "La serre tunnel est la solution d'entrÃ©e de gamme idÃ©ale pour les agriculteurs qui souhaitent se lancer dans la culture sous serre avec un investissement maÃ®trisÃ©. Structure lÃ©gÃ¨re en acier galvanisÃ©, couverture polyÃ©thylÃ¨ne haute rÃ©sistance." : "The tunnel greenhouse is the ideal entry-level solution for farmers starting greenhouse growing with controlled investment."}
             </p>
             <ul class="text-xs text-gray-500 space-y-1">
-              <li>✓ {lang === 'fr' ? "Largeur de 6 à 10 mètres" : "6 to 10 metres wide"}</li>
-              <li>✓ {lang === 'fr' ? "Longueur sur mesure" : "Custom length"}</li>
-              <li>✓ {lang === 'fr' ? "Film PE anti-UV 4 ou 6 saisons" : "4 or 6-season anti-UV PE film"}</li>
-              <li>✓ {lang === 'fr' ? "Filets anti-insectes intégrés" : "Integrated insect nets"}</li>
-              <li>✓ {lang === 'fr' ? "Installation rapide 3-5 jours" : "Fast installation 3–5 days"}</li>
+              <li>â {lang === 'fr' ? "Largeur de 6 Ã  10 mÃ¨tres" : "6 to 10 metres wide"}</li>
+              <li>â {lang === 'fr' ? "Longueur sur mesure" : "Custom length"}</li>
+              <li>â {lang === 'fr' ? "Film PE anti-UV 4 ou 6 saisons" : "4 or 6-season anti-UV PE film"}</li>
+              <li>â {lang === 'fr' ? "Filets anti-insectes intÃ©grÃ©s" : "Integrated insect nets"}</li>
+              <li>â {lang === 'fr' ? "Installation rapide 3-5 jours" : "Fast installation 3â5 days"}</li>
             </ul>
           </div>
         </div>
@@ -150,7 +150,7 @@ const comparisons = [
             <div class="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded">
               {lang === 'fr' ? "POPULAIRE" : "POPULAR"}
             </div>
-            <div class="text-3xl mb-2">🏠</div>
+            <div class="text-3xl mb-2">ð </div>
             <h3 class="text-xl font-bold">
               {lang === 'fr' ? "Serre Multi-Chapelle" : lang === 'es' ? "Invernadero Multi-Nave" : "Multi-Span Greenhouse"}
             </h3>
@@ -160,41 +160,41 @@ const comparisons = [
           </div>
           <div class="p-6">
             <p class="text-gray-600 text-sm mb-4">
-              {lang === 'fr' ? "La serre multi-chapelle est la solution préférée des agriculteurs commerciaux en Afrique. Sa structure modulaire permet d'agrandir facilement la surface couverte, et sa hauteur sous faîtage garantit une excellente ventilation naturelle — essentielle sous les tropiques." : "The multi-span greenhouse is the preferred solution for commercial farmers in Africa, with modular structure for easy expansion."}
+              {lang === 'fr' ? "La serre multi-chapelle est la solution prÃ©fÃ©rÃ©e des agriculteurs commerciaux en Afrique. Sa structure modulaire permet d'agrandir facilement la surface couverte, et sa hauteur sous faÃ®tage garantit une excellente ventilation naturelle â essentielle sous les tropiques." : "The multi-span greenhouse is the preferred solution for commercial farmers in Africa, with modular structure for easy expansion."}
             </p>
             <ul class="text-xs text-gray-500 space-y-1">
-              <li>✓ {lang === 'fr' ? "Structure acier galvanisé haute résistance" : "High-strength galvanised steel structure"}</li>
-              <li>✓ {lang === 'fr' ? "Ventilation zénithale et latérale" : "Zenithal and lateral ventilation"}</li>
-              <li>✓ {lang === 'fr' ? "Compatible irrigation goutte-à-goutte" : "Compatible with drip irrigation"}</li>
-              <li>✓ {lang === 'fr' ? "Portes coulissantes et voies de circulation" : "Sliding doors and internal pathways"}</li>
-              <li>✓ {lang === 'fr' ? "Modules de 8 × 50m extensibles" : "8 × 50 m expandable modules"}</li>
+              <li>â {lang === 'fr' ? "Structure acier galvanisÃ© haute rÃ©sistance" : "High-strength galvanised steel structure"}</li>
+              <li>â {lang === 'fr' ? "Ventilation zÃ©nithale et latÃ©rale" : "Zenithal and lateral ventilation"}</li>
+              <li>â {lang === 'fr' ? "Compatible irrigation goutte-Ã -goutte" : "Compatible with drip irrigation"}</li>
+              <li>â {lang === 'fr' ? "Portes coulissantes et voies de circulation" : "Sliding doors and internal pathways"}</li>
+              <li>â {lang === 'fr' ? "Modules de 8 Ã 50m extensibles" : "8 Ã 50 m expandable modules"}</li>
             </ul>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div class="bg-blue-800 p-6 text-white">
-            <div class="text-3xl mb-2">🏭</div>
+            <div class="text-3xl mb-2">ð­</div>
             <h3 class="text-xl font-bold">
               {lang === 'fr' ? "Serre High-Tech" : lang === 'es' ? "Invernadero High-Tech" : "High-Tech Greenhouse"}
             </h3>
             <p class="text-blue-200 text-sm mt-1">
-              {lang === 'fr' ? "Maximum de performance et de contrôle" : "Maximum performance and control"}
+              {lang === 'fr' ? "Maximum de performance et de contrÃ´le" : "Maximum performance and control"}
             </p>
           </div>
           <div class="p-6">
             <p class="text-gray-600 text-sm mb-4">
-              {lang === 'fr' ? "La serre high-tech est l'outil de production agricole le plus performant disponible. Elle intègre la régulation climatique automatisée, l'irrigation et la fertigation de précision, et des systèmes de monitoring en temps réel pour une agriculture de précision totale." : "The high-tech greenhouse integrates automated climate control, precision irrigation and real-time monitoring."}
+              {lang === 'fr' ? "La serre high-tech est l'outil de production agricole le plus performant disponible. Elle intÃ¨gre la rÃ©gulation climatique automatisÃ©e, l'irrigation et la fertigation de prÃ©cision, et des systÃ¨mes de monitoring en temps rÃ©el pour une agriculture de prÃ©cision totale." : "The high-tech greenhouse integrates automated climate control, precision irrigation and real-time monitoring."}
             </p>
             <ul class="text-xs text-gray-500 space-y-1">
-              <li>✓ {lang === 'fr' ? "Climatisation et rafraîchissement évaporatif" : "Air conditioning and evaporative cooling"}</li>
-              <li>✓ {lang === 'fr' ? "Écran thermique motorisé" : "Motorised thermal screen"}</li>
-              <li>✓ {lang === 'fr' ? "Fertigation automatisée EC/pH" : "Automated EC/pH fertigation"}</li>
-              <li>✓ {lang === 'fr' ? "Capteurs CO₂, T°, hygrométrie" : "CO₂, temperature, humidity sensors"}</li>
-              <li>✓ {lang === 'fr' ? "Pilotage via app mobile" : "Mobile app control"}</li>
+              <li>â {lang === 'fr' ? "Climatisation et rafraÃ®chissement Ã©vaporatif" : "Air conditioning and evaporative cooling"}</li>
+              <li>â {lang === 'fr' ? "Ãcran thermique motorisÃ©" : "Motorised thermal screen"}</li>
+              <li>â {lang === 'fr' ? "Fertigation automatisÃ©e EC/pH" : "Automated EC/pH fertigation"}</li>
+              <li>â {lang === 'fr' ? "Capteurs COâ, TÂ°, hygromÃ©trie" : "COâ, temperature, humidity sensors"}</li>
+              <li>â {lang === 'fr' ? "Pilotage via app mobile" : "Mobile app control"}</li>
             </ul>
             <a href={`/${lang}/greenhouses/high-tech`} class="mt-4 inline-block text-blue-700 font-semibold text-sm hover:underline">
-              {lang === 'fr' ? "En savoir plus →" : "Learn more →"}
+              {lang === 'fr' ? "En savoir plus â" : "Learn more â"}
             </a>
           </div>
         </div>
@@ -206,21 +206,21 @@ const comparisons = [
   <section class="py-16 px-4 bg-white">
     <div class="max-w-6xl mx-auto">
       <h2 class="text-3xl font-bold text-green-900 text-center mb-4">
-        {lang === 'fr' ? "Cultures Recommandées sous Serre en Afrique" : lang === 'es' ? "Cultivos Recomendados en Invernadero en África" : "Recommended Greenhouse Crops in Africa"}
+        {lang === 'fr' ? "Cultures RecommandÃ©es sous Serre en Afrique" : lang === 'es' ? "Cultivos Recomendados en Invernadero en Ãfrica" : "Recommended Greenhouse Crops in Africa"}
       </h2>
       <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
-        {lang === 'fr' ? "Nos serres sont optimisées pour les cultures à haute valeur ajoutée qui bénéficient le plus d'un environnement contrôlé sous les tropiques." : "Our greenhouses are optimised for high-value crops that benefit most from a controlled environment in the tropics."}
+        {lang === 'fr' ? "Nos serres sont optimisÃ©es pour les cultures Ã  haute valeur ajoutÃ©e qui bÃ©nÃ©ficient le plus d'un environnement contrÃ´lÃ© sous les tropiques." : "Our greenhouses are optimised for high-value crops that benefit most from a controlled environment in the tropics."}
       </p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { emoji: "🍅", name: lang === 'fr' ? "Tomates" : "Tomatoes", detail: lang === 'fr' ? "Rendement 15–25 kg/m²/an" : "15–25 kg/m²/yr" },
-          { emoji: "🌶️", name: lang === 'fr' ? "Poivrons & Piments" : "Peppers", detail: lang === 'fr' ? "Rendement 8–15 kg/m²/an" : "8–15 kg/m²/yr" },
-          { emoji: "🥒", name: lang === 'fr' ? "Concombres" : "Cucumbers", detail: lang === 'fr' ? "Rendement 25–40 kg/m²/an" : "25–40 kg/m²/yr" },
-          { emoji: "🥬", name: lang === 'fr' ? "Laitues & Salades" : "Lettuce", detail: lang === 'fr' ? "6–8 cycles par an" : "6–8 cycles/yr" },
-          { emoji: "🌿", name: lang === 'fr' ? "Herbes Aromatiques" : "Herbs", detail: lang === 'fr' ? "Valeur premium export" : "Premium export value" },
-          { emoji: "🍓", name: lang === 'fr' ? "Fraises" : "Strawberries", detail: lang === 'fr' ? "Hors-sol, haute valeur" : "Soil-less, high value" },
-          { emoji: "🌺", name: lang === 'fr' ? "Fleurs Coupées" : "Cut Flowers", detail: lang === 'fr' ? "Marché local & export" : "Local & export market" },
-          { emoji: "🌱", name: lang === 'fr' ? "Plants & Pépinière" : "Seedlings", detail: lang === 'fr' ? "Taux de reprise 95%+" : "95%+ survival rate" }
+          { emoji: "ð", name: lang === 'fr' ? "Tomates" : "Tomatoes", detail: lang === 'fr' ? "Rendement 15â25 kg/mÂ²/an" : "15â25 kg/mÂ²/yr" },
+          { emoji: "ð¶ï¸", name: lang === 'fr' ? "Poivrons & Piments" : "Peppers", detail: lang === 'fr' ? "Rendement 8â15 kg/mÂ²/an" : "8â15 kg/mÂ²/yr" },
+          { emoji: "ð¥", name: lang === 'fr' ? "Concombres" : "Cucumbers", detail: lang === 'fr' ? "Rendement 25â40 kg/mÂ²/an" : "25â40 kg/mÂ²/yr" },
+          { emoji: "ð¥¬", name: lang === 'fr' ? "Laitues & Salades" : "Lettuce", detail: lang === 'fr' ? "6â8 cycles par an" : "6â8 cycles/yr" },
+          { emoji: "ð¿", name: lang === 'fr' ? "Herbes Aromatiques" : "Herbs", detail: lang === 'fr' ? "Valeur premium export" : "Premium export value" },
+          { emoji: "ð", name: lang === 'fr' ? "Fraises" : "Strawberries", detail: lang === 'fr' ? "Hors-sol, haute valeur" : "Soil-less, high value" },
+          { emoji: "ðº", name: lang === 'fr' ? "Fleurs CoupÃ©es" : "Cut Flowers", detail: lang === 'fr' ? "MarchÃ© local & export" : "Local & export market" },
+          { emoji: "ð±", name: lang === 'fr' ? "Plants & PÃ©piniÃ¨re" : "Seedlings", detail: lang === 'fr' ? "Taux de reprise 95%+" : "95%+ survival rate" }
         ].map(crop => (
           <div class="bg-green-50 rounded-xl p-4 text-center">
             <div class="text-3xl mb-2">{crop.emoji}</div>
@@ -236,29 +236,29 @@ const comparisons = [
   <section class="py-16 px-4 bg-gray-50">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-3xl font-bold text-green-900 text-center mb-12">
-        {lang === 'fr' ? "Questions Fréquentes sur les Serres Agricoles" : lang === 'es' ? "Preguntas Frecuentes sobre Invernaderos" : "Greenhouse FAQ"}
+        {lang === 'fr' ? "Questions FrÃ©quentes sur les Serres Agricoles" : lang === 'es' ? "Preguntas Frecuentes sobre Invernaderos" : "Greenhouse FAQ"}
       </h2>
       <div class="space-y-6">
         {[
           {
-            q: lang === 'fr' ? "Quel type de serre choisir pour débuter en culture sous serre en Côte d'Ivoire ?" : "Which greenhouse type is best for starting in Côte d'Ivoire?",
-            a: lang === 'fr' ? "Pour un premier projet de culture sous serre en Côte d'Ivoire, nous recommandons généralement la serre tunnel ou la serre multi-chapelle de taille modeste (500 à 2000 m²). Ces structures offrent un bon rapport coût/bénéfice et permettent d'acquérir l'expérience nécessaire avant d'investir dans une serre high-tech. Arbre Bio Africa vous propose une consultation gratuite pour évaluer la solution la mieux adaptée à votre terrain, votre budget et votre projet de production." : "For a first greenhouse project in Côte d'Ivoire, we recommend a tunnel or modest multi-span greenhouse (500–2000 m²). Contact us for a free consultation.",
+            q: lang === 'fr' ? "Quel type de serre choisir pour dÃ©buter en culture sous serre en CÃ´te d'Ivoire ?" : "Which greenhouse type is best for starting in CÃ´te d'Ivoire?",
+            a: lang === 'fr' ? "Pour un premier projet de culture sous serre en CÃ´te d'Ivoire, nous recommandons gÃ©nÃ©ralement la serre tunnel ou la serre multi-chapelle de taille modeste (500 Ã  2000 mÂ²). Ces structures offrent un bon rapport coÃ»t/bÃ©nÃ©fice et permettent d'acquÃ©rir l'expÃ©rience nÃ©cessaire avant d'investir dans une serre high-tech. Arbre Bio Africa vous propose une consultation gratuite pour Ã©valuer la solution la mieux adaptÃ©e Ã  votre terrain, votre budget et votre projet de production." : "For a first greenhouse project in CÃ´te d'Ivoire, we recommend a tunnel or modest multi-span greenhouse (500â2000 mÂ²). Contact us for a free consultation.",
           },
           {
-            q: lang === 'fr' ? "Combien coûte une serre agricole en Côte d'Ivoire ?" : "How much does a greenhouse cost in Côte d'Ivoire?",
-            a: lang === 'fr' ? "Le coût d'une serre agricole en Côte d'Ivoire varie considérablement selon le type (tunnel, multi-chapelle, high-tech), la superficie, les équipements intégrés (irrigation, ventilation, écrans) et les options de financement. À titre indicatif, une serre tunnel basique coûte entre 3 000 et 8 000 FCFA/m², une serre multi-chapelle entre 8 000 et 20 000 FCFA/m², et une serre high-tech au-delà de 30 000 FCFA/m². Arbre Bio Africa établit un devis détaillé gratuit et vous aide à optimiser votre investissement." : "Greenhouse costs vary significantly by type. Contact Arbre Bio Africa for a free detailed quote tailored to your project.",
+            q: lang === 'fr' ? "Combien coÃ»te une serre agricole en CÃ´te d'Ivoire ?" : "How much does a greenhouse cost in CÃ´te d'Ivoire?",
+            a: lang === 'fr' ? "Le coÃ»t d'une serre agricole en CÃ´te d'Ivoire varie considÃ©rablement selon le type (tunnel, multi-chapelle, high-tech), la superficie, les Ã©quipements intÃ©grÃ©s (irrigation, ventilation, Ã©crans) et les options de financement. Ã titre indicatif, une serre tunnel basique coÃ»te entre 3 000 et 8 000 FCFA/mÂ², une serre multi-chapelle entre 8 000 et 20 000 FCFA/mÂ², et une serre high-tech au-delÃ  de 30 000 FCFA/mÂ². Arbre Bio Africa Ã©tablit un devis dÃ©taillÃ© gratuit et vous aide Ã  optimiser votre investissement." : "Greenhouse costs vary significantly by type. Contact Arbre Bio Africa for a free detailed quote tailored to your project.",
           },
           {
             q: lang === 'fr' ? "Quelle culture est la plus rentable sous serre en Afrique de l'Ouest ?" : "What is the most profitable greenhouse crop in West Africa?",
-            a: lang === 'fr' ? "Les cultures les plus rentables sous serre en Afrique de l'Ouest sont généralement les tomates cerises et cocktail (prix premium sur les marchés urbains et d'exportation), les poivrons de couleur, les herbes aromatiques (basilic, persil, coriandre), les laitues et mescluns, et les fraises hors-sol. La rentabilité dépend aussi fortement de votre accès aux marchés et de votre stratégie commerciale. Nos conseillers peuvent vous aider à définir le plan de production le plus rentable pour votre région." : "The most profitable greenhouse crops in West Africa are cherry tomatoes, coloured peppers, aromatic herbs, lettuce and soil-less strawberries.",
+            a: lang === 'fr' ? "Les cultures les plus rentables sous serre en Afrique de l'Ouest sont gÃ©nÃ©ralement les tomates cerises et cocktail (prix premium sur les marchÃ©s urbains et d'exportation), les poivrons de couleur, les herbes aromatiques (basilic, persil, coriandre), les laitues et mescluns, et les fraises hors-sol. La rentabilitÃ© dÃ©pend aussi fortement de votre accÃ¨s aux marchÃ©s et de votre stratÃ©gie commerciale. Nos conseillers peuvent vous aider Ã  dÃ©finir le plan de production le plus rentable pour votre rÃ©gion." : "The most profitable greenhouse crops in West Africa are cherry tomatoes, coloured peppers, aromatic herbs, lettuce and soil-less strawberries.",
           },
           {
-            q: lang === 'fr' ? "Les serres Arbre Bio Africa résistent-elles aux conditions climatiques extrêmes ?" : "Do Arbre Bio Africa greenhouses withstand extreme climate conditions?",
-            a: lang === 'fr' ? "Oui. Toutes nos serres sont conçues et dimensionnées pour résister aux conditions climatiques de l'Afrique de l'Ouest : vents forts (jusqu'à 120 km/h pour les structures renforcées), pluies torrentielles, chaleur intense (jusqu'à 45°C en saison sèche). La structure en acier galvanisé anti-corrosion, les films UV stabilisés et les systèmes de ventilation sont spécifiquement choisis pour leur durabilité sous les tropiques." : "Yes. All our greenhouses are engineered for West African conditions: strong winds, torrential rain and intense heat, with anti-corrosion galvanised steel and UV-stabilised films.",
+            q: lang === 'fr' ? "Les serres Arbre Bio Africa rÃ©sistent-elles aux conditions climatiques extrÃªmes ?" : "Do Arbre Bio Africa greenhouses withstand extreme climate conditions?",
+            a: lang === 'fr' ? "Oui. Toutes nos serres sont conÃ§ues et dimensionnÃ©es pour rÃ©sister aux conditions climatiques de l'Afrique de l'Ouest : vents forts (jusqu'Ã  120 km/h pour les structures renforcÃ©es), pluies torrentielles, chaleur intense (jusqu'Ã  45Â°C en saison sÃ¨che). La structure en acier galvanisÃ© anti-corrosion, les films UV stabilisÃ©s et les systÃ¨mes de ventilation sont spÃ©cifiquement choisis pour leur durabilitÃ© sous les tropiques." : "Yes. All our greenhouses are engineered for West African conditions: strong winds, torrential rain and intense heat, with anti-corrosion galvanised steel and UV-stabilised films.",
           },
           {
-            q: lang === 'fr' ? "Arbre Bio Africa propose-t-il un accompagnement technique après l'installation de la serre ?" : "Does Arbre Bio Africa provide technical support after greenhouse installation?",
-            a: lang === 'fr' ? "Absolument. L'accompagnement post-installation est au cœur de notre modèle. Nous formons votre équipe à la gestion de la serre, à l'irrigation, à la conduite des cultures et à la prévention des maladies. Nous proposons des visites de suivi agronomique régulières et un service d'assistance technique disponible par WhatsApp et téléphone. Notre objectif est que votre serre soit productive dès la première saison." : "Yes. Post-installation support is core to our model: team training, agronomic follow-up visits and technical assistance by WhatsApp and phone.",
+            q: lang === 'fr' ? "Arbre Bio Africa propose-t-il un accompagnement technique aprÃ¨s l'installation de la serre ?" : "Does Arbre Bio Africa provide technical support after greenhouse installation?",
+            a: lang === 'fr' ? "Absolument. L'accompagnement post-installation est au cÅur de notre modÃ¨le. Nous formons votre Ã©quipe Ã  la gestion de la serre, Ã  l'irrigation, Ã  la conduite des cultures et Ã  la prÃ©vention des maladies. Nous proposons des visites de suivi agronomique rÃ©guliÃ¨res et un service d'assistance technique disponible par WhatsApp et tÃ©lÃ©phone. Notre objectif est que votre serre soit productive dÃ¨s la premiÃ¨re saison." : "Yes. Post-installation support is core to our model: team training, agronomic follow-up visits and technical assistance by WhatsApp and phone.",
           }
         ].map((item, i) => (
           <div class="bg-white rounded-xl p-6 shadow-sm">
@@ -293,18 +293,18 @@ const comparisons = [
     "mainEntity": lang === 'fr' ? [
       {
         "@type": "Question",
-        "name": "Quel type de serre choisir pour débuter en culture sous serre en Côte d'Ivoire ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pour un premier projet, nous recommandons une serre tunnel ou multi-chapelle de 500 à 2000 m². Ces structures offrent un bon rapport coût/bénéfice et permettent d'acquérir l'expérience nécessaire. Arbre Bio Africa propose une consultation gratuite." }
+        "name": "Quel type de serre choisir pour dÃ©buter en culture sous serre en CÃ´te d'Ivoire ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Pour un premier projet, nous recommandons une serre tunnel ou multi-chapelle de 500 Ã  2000 mÂ². Ces structures offrent un bon rapport coÃ»t/bÃ©nÃ©fice et permettent d'acquÃ©rir l'expÃ©rience nÃ©cessaire. Arbre Bio Africa propose une consultation gratuite." }
       },
       {
         "@type": "Question",
         "name": "Quelle culture est la plus rentable sous serre en Afrique de l'Ouest ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Les cultures les plus rentables sont les tomates cerises, les poivrons de couleur, les herbes aromatiques, les laitues et les fraises hors-sol. Nos conseillers peuvent vous aider à définir le plan de production optimal pour votre région." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Les cultures les plus rentables sont les tomates cerises, les poivrons de couleur, les herbes aromatiques, les laitues et les fraises hors-sol. Nos conseillers peuvent vous aider Ã  dÃ©finir le plan de production optimal pour votre rÃ©gion." }
       },
       {
         "@type": "Question",
-        "name": "Combien coûte une serre agricole en Côte d'Ivoire ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Le coût varie selon le type : serre tunnel entre 3 000 et 8 000 FCFA/m², serre multi-chapelle entre 8 000 et 20 000 FCFA/m², serre high-tech au-delà de 30 000 FCFA/m². Arbre Bio Africa établit un devis gratuit et personnalisé." }
+        "name": "Combien coÃ»te une serre agricole en CÃ´te d'Ivoire ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Le coÃ»t varie selon le type : serre tunnel entre 3 000 et 8 000 FCFA/mÂ², serre multi-chapelle entre 8 000 et 20 000 FCFA/mÂ², serre high-tech au-delÃ  de 30 000 FCFA/mÂ². Arbre Bio Africa Ã©tablit un devis gratuit et personnalisÃ©." }
       }
     ] : []
   })} />
