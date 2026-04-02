@@ -13,7 +13,7 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 ---
 
-<Layout title={`${T.contactTitle} | Arbre Bio Africa`} description={T.contactSubtitle}>
+<Layout title={({'fr':'Contactez Arbre Bio Africa | Devis Gratuit','en':'Contact Arbre Bio Africa | Free Quote','es':'Contacta Arbre Bio Africa | Presupuesto Gratis','af':'Kontak Arbre Bio Africa | Gratis Kwotasie'} as Record<string,string>)[lang]||'Contact Arbre Bio Africa | Free Quote'} description={T.contactSubtitle}>
 
   <section class="relative h-[40vh] flex items-center">
     <div class="absolute inset-0 z-0">
