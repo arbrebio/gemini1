@@ -11,10 +11,10 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 const partners = [
-  { name: "Conseil HÃÂÃÂ©vÃÂÃÂ©a Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
+  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
   { name: "CDTA El Mirador", logo: "https://i.imgur.com/P1DPCaB.jpg", url: "https://cdtaelmirador.com/" },
   { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", url: "https://firca.ci/" },
-  { name: "MinistÃÂÃÂ¨re de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
+  { name: "Ministère de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
   { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", url: "http://cnra.ci/" },
   { name: "Eureka Network", logo: "https://i.imgur.com/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
   { name: "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", url: "https://www.worldbank.org/ext/en/home" },
@@ -60,9 +60,9 @@ const partners = [
       <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{T.servicesSubtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
         {[
-          { icon: "ÃÂ°ÃÂÃÂÃÂ¿", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
-          { icon: "ÃÂ°ÃÂÃÂÃÂ§", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
-          { icon: "ÃÂ°ÃÂÃÂÃÂ±", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
+          { icon: "ð¿", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
+          { icon: "ð§", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
+          { icon: "ð±", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
         ].map((service, index) => (
           <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" style={`animation-delay: ${index * 100}ms`} role="listitem">
             <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true">{service.icon}</div>
@@ -129,15 +129,15 @@ const partners = [
   </section>
 
 
-  <!-- SEO: Agriculture de prÃ©cision section -->
+  <!-- SEO: Agriculture de précision section -->
   <section class="py-20 bg-white" aria-labelledby="precision-ag-heading">
     <div class="container mx-auto px-4 max-w-6xl">
       <div class="text-center mb-12">
         <h2 id="precision-ag-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          {lang === 'fr' ? "L'Agriculture de PrÃ©cision en Afrique : La RÃ©volution Verte" : lang === 'es' ? "Agricultura de PrecisiÃ³n en Ãfrica" : "Precision Agriculture in Africa"}
+          {lang === 'fr' ? "L'Agriculture de Précision en Afrique : La Révolution Verte" : lang === 'es' ? "Agricultura de Precisión en África" : "Precision Agriculture in Africa"}
         </h2>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          {lang === 'fr' ? "L'agriculture de prÃ©cision transforme les exploitations agricoles africaines. GrÃ¢ce aux technologies modernes â serres climatisÃ©es, irrigation goutte-Ã -goutte, substrats coco peat et engrais foliaires â les agriculteurs de CÃ´te d'Ivoire et d'Afrique de l'Ouest doublent leurs rendements tout en rÃ©duisant leur consommation d'eau de 70%." : lang === 'es' ? "La agricultura de precisiÃ³n transforma las explotaciones agrÃ­colas africanas con tecnologÃ­a moderna." : "Precision agriculture transforms African farms with modern technology â greenhouses, drip irrigation, coco peat substrates and foliar fertilizers."}
+          {lang === 'fr' ? "L'agriculture de précision transforme les exploitations agricoles africaines. Grâce aux technologies modernes — serres climatisées, irrigation goutte-à-goutte, substrats coco peat et engrais foliaires — les agriculteurs de Côte d'Ivoire et d'Afrique de l'Ouest doublent leurs rendements tout en réduisant leur consommation d'eau de 70%." : lang === 'es' ? "La agricultura de precisión transforma las explotaciones agrícolas africanas con tecnología moderna." : "Precision agriculture transforms African farms with modern technology — greenhouses, drip irrigation, coco peat substrates and foliar fertilizers."}
         </p>
       </div>
 
@@ -145,19 +145,19 @@ const partners = [
         <div class="bg-green-50 rounded-2xl p-8 border border-green-100">
           <div class="text-4xl mb-4">ð¿</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">
-            {lang === 'fr' ? "Serres & Tunnels Agricoles" : lang === 'es' ? "Invernaderos y TÃºneles" : "Greenhouses & Tunnels"}
+            {lang === 'fr' ? "Serres & Tunnels Agricoles" : lang === 'es' ? "Invernaderos y Túneles" : "Greenhouses & Tunnels"}
           </h3>
           <p class="text-gray-600">
-            {lang === 'fr' ? "Nos serres tunnel et serres multi-chapelles permettent de produire toute l'annÃ©e en Afrique, indÃ©pendamment des saisons des pluies. Protection contre les ravageurs, maÃ®trise du microclimat et rendements multipliÃ©s par 3 Ã  5 pour les tomates, poivrons, concombres et fraises." : lang === 'es' ? "Nuestros invernaderos tÃºnel y multi-nave permiten producir todo el aÃ±o en Ãfrica." : "Our tunnel and multi-span greenhouses enable year-round production in Africa regardless of rainy seasons."}
+            {lang === 'fr' ? "Nos serres tunnel et serres multi-chapelles permettent de produire toute l'année en Afrique, indépendamment des saisons des pluies. Protection contre les ravageurs, maîtrise du microclimat et rendements multipliés par 3 à 5 pour les tomates, poivrons, concombres et fraises." : lang === 'es' ? "Nuestros invernaderos túnel y multi-nave permiten producir todo el año en África." : "Our tunnel and multi-span greenhouses enable year-round production in Africa regardless of rainy seasons."}
           </p>
         </div>
         <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
           <div class="text-4xl mb-4">ð§</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">
-            {lang === 'fr' ? "Irrigation Goutte-Ã -Goutte & Aspersion" : lang === 'es' ? "Riego por Goteo y AspersiÃ³n" : "Drip & Sprinkler Irrigation"}
+            {lang === 'fr' ? "Irrigation Goutte-à-Goutte & Aspersion" : lang === 'es' ? "Riego por Goteo y Aspersión" : "Drip & Sprinkler Irrigation"}
           </h3>
           <p class="text-gray-600">
-            {lang === 'fr' ? "L'irrigation goutte-Ã -goutte est la technique la plus efficiente en Afrique tropicale. Elle Ã©conomise jusqu'Ã  70% d'eau par rapport Ã  l'irrigation gravitaire, rÃ©duit les maladies foliaires et permet la fertigation â apport simultanÃ© d'eau et d'engrais directement Ã  la racine des plantes." : lang === 'es' ? "El riego por goteo ahorra hasta 70% de agua y permite la fertigaciÃ³n directa." : "Drip irrigation saves up to 70% water and enables direct root-zone fertigation."}
+            {lang === 'fr' ? "L'irrigation goutte-à-goutte est la technique la plus efficiente en Afrique tropicale. Elle économise jusqu'à 70% d'eau par rapport à l'irrigation gravitaire, réduit les maladies foliaires et permet la fertigation — apport simultané d'eau et d'engrais directement à la racine des plantes." : lang === 'es' ? "El riego por goteo ahorra hasta 70% de agua y permite la fertigación directa." : "Drip irrigation saves up to 70% water and enables direct root-zone fertigation."}
           </p>
         </div>
         <div class="bg-amber-50 rounded-2xl p-8 border border-amber-100">
@@ -166,7 +166,7 @@ const partners = [
             {lang === 'fr' ? "Substrats Coco Peat & Fibre de Coco" : lang === 'es' ? "Sustratos Coco Peat" : "Coco Peat & Coconut Fibre Substrates"}
           </h3>
           <p class="text-gray-600">
-            {lang === 'fr' ? "La tourbe de coco (coco peat) est le substrat hors-sol idÃ©al pour l'Afrique : excellente rÃ©tention d'eau, bonne aÃ©ration des racines, 100% naturel et biodÃ©gradable. UtilisÃ© en hors-sol (hydroponie) ou en amÃ©lioration de sol, il amÃ©liore structuralement les sols tropicaux argileux ou sableux et booste les rendements de 40 Ã  80%." : lang === 'es' ? "La turba de coco es el sustrato ideal para Ãfrica: excelente retenciÃ³n de agua, aireaciÃ³n de raÃ­ces." : "Coco peat is the ideal substrate for Africa: excellent water retention, root aeration, 100% natural."}
+            {lang === 'fr' ? "La tourbe de coco (coco peat) est le substrat hors-sol idéal pour l'Afrique : excellente rétention d'eau, bonne aération des racines, 100% naturel et biodégradable. Utilisé en hors-sol (hydroponie) ou en amélioration de sol, il améliore structuralement les sols tropicaux argileux ou sableux et booste les rendements de 40 à 80%." : lang === 'es' ? "La turba de coco es el sustrato ideal para África: excelente retención de agua, aireación de raíces." : "Coco peat is the ideal substrate for Africa: excellent water retention, root aeration, 100% natural."}
           </p>
         </div>
       </div>
@@ -178,16 +178,16 @@ const partners = [
             {lang === 'fr' ? "Fertilisants, Engrais & Phytosanitaires" : lang === 'es' ? "Fertilizantes y Fitosanitarios" : "Fertilizers & Crop Protection"}
           </h3>
           <p class="text-gray-600">
-            {lang === 'fr' ? "Une fertilisation prÃ©cise est la clÃ© d'une production agricole rentable. Nos programmes de fertilisation combinent engrais minÃ©raux NPK, engrais foliaires, biostimulants et produits phytosanitaires homologuÃ©s pour maximiser la qualitÃ© et la quantitÃ© des rÃ©coltes en toute sÃ©curitÃ© alimentaire." : lang === 'es' ? "Una fertilizaciÃ³n precisa con NPK, foliares y fitosanitarios homologados maximiza la rentabilidad." : "Precise fertilization with NPK, foliar sprays and approved crop protection products maximizes yield safely."}
+            {lang === 'fr' ? "Une fertilisation précise est la clé d'une production agricole rentable. Nos programmes de fertilisation combinent engrais minéraux NPK, engrais foliaires, biostimulants et produits phytosanitaires homologués pour maximiser la qualité et la quantité des récoltes en toute sécurité alimentaire." : lang === 'es' ? "Una fertilización precisa con NPK, foliares y fitosanitarios homologados maximiza la rentabilidad." : "Precise fertilization with NPK, foliar sprays and approved crop protection products maximizes yield safely."}
           </p>
         </div>
         <div class="bg-green-50 rounded-2xl p-8 border border-green-100">
           <div class="text-4xl mb-4">ð</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">
-            {lang === 'fr' ? "Suivi Agronomique & Conseil Technique" : lang === 'es' ? "Seguimiento AgronÃ³mico y Asesoramiento" : "Agronomic Monitoring & Technical Advice"}
+            {lang === 'fr' ? "Suivi Agronomique & Conseil Technique" : lang === 'es' ? "Seguimiento Agronómico y Asesoramiento" : "Agronomic Monitoring & Technical Advice"}
           </h3>
           <p class="text-gray-600">
-            {lang === 'fr' ? "Au-delÃ  de la vente d'Ã©quipements, Arbre Bio Africa accompagne chaque agriculteur avec un suivi agronomique personnalisÃ© : analyse de sol, plan de fertilisation, gestion des ravageurs et des maladies, optimisation des cycles culturaux. Notre objectif : votre rentabilitÃ© maximale." : lang === 'es' ? "MÃ¡s allÃ¡ de la venta de equipos, Arbre Bio acompaÃ±a a cada agricultor con seguimiento agronÃ³mico." : "Beyond equipment sales, Arbre Bio Africa supports each farmer with personalised agronomic follow-up."}
+            {lang === 'fr' ? "Au-delà de la vente d'équipements, Arbre Bio Africa accompagne chaque agriculteur avec un suivi agronomique personnalisé : analyse de sol, plan de fertilisation, gestion des ravageurs et des maladies, optimisation des cycles culturaux. Notre objectif : votre rentabilité maximale." : lang === 'es' ? "Más allá de la venta de equipos, Arbre Bio acompaña a cada agricultor con seguimiento agronómico." : "Beyond equipment sales, Arbre Bio Africa supports each farmer with personalised agronomic follow-up."}
           </p>
         </div>
       </div>
@@ -198,29 +198,29 @@ const partners = [
   <section class="py-20 bg-gray-50" aria-labelledby="faq-heading">
     <div class="container mx-auto px-4 max-w-4xl">
       <h2 id="faq-heading" class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-        {lang === 'fr' ? "Questions FrÃ©quentes sur l'Agriculture de PrÃ©cision en Afrique" : lang === 'es' ? "Preguntas Frecuentes" : "FAQ: Precision Agriculture in Africa"}
+        {lang === 'fr' ? "Questions Fréquentes sur l'Agriculture de Précision en Afrique" : lang === 'es' ? "Preguntas Frecuentes" : "FAQ: Precision Agriculture in Africa"}
       </h2>
       <div class="space-y-6">
         {[
           {
-            q: lang === 'fr' ? "Qu'est-ce que l'agriculture de prÃ©cision et pourquoi est-elle adaptÃ©e Ã  l'Afrique ?" : "What is precision agriculture and why is it suited for Africa?",
-            a: lang === 'fr' ? "L'agriculture de prÃ©cision est une approche qui utilise des technologies modernes â serres, irrigation goutte-Ã -goutte, substrats optimisÃ©s, capteurs et analyse de donnÃ©es â pour maximiser les rendements tout en rÃ©duisant les intrants. En Afrique, elle est particuliÃ¨rement adaptÃ©e car elle permet de s'affranchir des alÃ©as climatiques (sÃ©cheresse, pluies torrentielles), d'Ã©conomiser l'eau et de produire des cultures de qualitÃ© exportable toute l'annÃ©e." : "Precision agriculture uses modern technologies to maximise yields while reducing inputs â ideal for Africa's variable climate."
+            q: lang === 'fr' ? "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?" : "What is precision agriculture and why is it suited for Africa?",
+            a: lang === 'fr' ? "L'agriculture de précision est une approche qui utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés, capteurs et analyse de données — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle est particulièrement adaptée car elle permet de s'affranchir des aléas climatiques (sécheresse, pluies torrentielles), d'économiser l'eau et de produire des cultures de qualité exportable toute l'année." : "Precision agriculture uses modern technologies to maximise yields while reducing inputs — ideal for Africa's variable climate."
           },
           {
-            q: lang === 'fr' ? "Quel est le coÃ»t d'une serre agricole en CÃ´te d'Ivoire ?" : "What is the cost of a greenhouse in CÃ´te d'Ivoire?",
-            a: lang === 'fr' ? "Le coÃ»t d'une serre agricole en CÃ´te d'Ivoire varie selon le type et la surface : une serre tunnel simple commence Ã  partir de 3 500 â¬/100mÂ², tandis qu'une serre multi-chapelle high-tech avec climate control peut atteindre 40 000 â¬/ha. Arbre Bio Africa propose des solutions adaptÃ©es Ã  chaque budget, avec financement et installation inclus. Contactez-nous pour un devis personnalisÃ©." : "Greenhouse costs in CÃ´te d'Ivoire vary by type and size. Contact us for a personalised quote."
+            q: lang === 'fr' ? "Quel est le coût d'une serre agricole en Côte d'Ivoire ?" : "What is the cost of a greenhouse in Côte d'Ivoire?",
+            a: lang === 'fr' ? "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type et la surface : une serre tunnel simple commence à partir de 3 500 €/100m², tandis qu'une serre multi-chapelle high-tech avec climate control peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget, avec financement et installation inclus. Contactez-nous pour un devis personnalisé." : "Greenhouse costs in Côte d'Ivoire vary by type and size. Contact us for a personalised quote."
           },
           {
-            q: lang === 'fr' ? "Comment l'irrigation goutte-Ã -goutte amÃ©liore-t-elle les rendements en Afrique ?" : "How does drip irrigation improve yields in Africa?",
-            a: lang === 'fr' ? "L'irrigation goutte-Ã -goutte amÃ©liore les rendements agricoles en Afrique de 3 faÃ§ons principales : 1) Apport d'eau prÃ©cis Ã  la rhizosphÃ¨re (Ã©conomie de 70% d'eau), 2) Fertigation (engrais et eau simultanÃ©ment), 3) RÃ©duction des maladies foliaires liÃ©es Ã  l'humiditÃ©. En pratique, nos clients en CÃ´te d'Ivoire constatent une augmentation des rendements de 80 Ã  200% par rapport Ã  l'irrigation traditionnelle." : "Drip irrigation improves yields through precise water delivery, fertigation, and reduced foliage disease."
+            q: lang === 'fr' ? "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?" : "How does drip irrigation improve yields in Africa?",
+            a: lang === 'fr' ? "L'irrigation goutte-à-goutte améliore les rendements agricoles en Afrique de 3 façons principales : 1) Apport d'eau précis à la rhizosphère (économie de 70% d'eau), 2) Fertigation (engrais et eau simultanément), 3) Réduction des maladies foliaires liées à l'humidité. En pratique, nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle." : "Drip irrigation improves yields through precise water delivery, fertigation, and reduced foliage disease."
           },
           {
-            q: lang === 'fr' ? "Quelle est la diffÃ©rence entre coco peat, fibre de coco et tourbe de coco ?" : "What is the difference between coco peat, coir fibre and coco peat substrate?",
-            a: lang === 'fr' ? "Ces trois termes dÃ©signent des produits issus de la noix de coco : la fibre de coco (coir) est la partie fibreuse de l'enveloppe, utilisÃ©e en paillage et amÃ©lioration de sol. La tourbe de coco ou coco peat est la partie fine et spongieuse, idÃ©ale comme substrat hors-sol (hydroponie, culture en bac). En Afrique de l'Ouest, les deux sont utilisÃ©s pour amÃ©liorer la rÃ©tention d'eau des sols sableux et la structure des sols argileux tropicaux." : "Coco fibre is the coarse fibrous part; coco peat is the fine spongy part â both improve tropical soil structure."
+            q: lang === 'fr' ? "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?" : "What is the difference between coco peat, coir fibre and coco peat substrate?",
+            a: lang === 'fr' ? "Ces trois termes désignent des produits issus de la noix de coco : la fibre de coco (coir) est la partie fibreuse de l'enveloppe, utilisée en paillage et amélioration de sol. La tourbe de coco ou coco peat est la partie fine et spongieuse, idéale comme substrat hors-sol (hydroponie, culture en bac). En Afrique de l'Ouest, les deux sont utilisés pour améliorer la rétention d'eau des sols sableux et la structure des sols argileux tropicaux." : "Coco fibre is the coarse fibrous part; coco peat is the fine spongy part — both improve tropical soil structure."
           },
           {
             q: lang === 'fr' ? "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?" : "Does Arbre Bio Africa deliver across West Africa?",
-            a: lang === 'fr' ? "Oui, Arbre Bio Africa livre ses Ã©quipements et intrants agricoles dans toute l'Afrique de l'Ouest : CÃ´te d'Ivoire, SÃ©nÃ©gal, Ghana, Burkina Faso, Mali, Togo, BÃ©nin et autres pays de la zone CEDEAO. Nous assurons l'installation, la formation et le suivi technique sur site. Contactez-nous au +225 05 00 55 25 25 ou par WhatsApp pour un devis gratuit." : "Yes, we deliver equipment and inputs across West Africa with installation, training and on-site support."
+            a: lang === 'fr' ? "Oui, Arbre Bio Africa livre ses équipements et intrants agricoles dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin et autres pays de la zone CEDEAO. Nous assurons l'installation, la formation et le suivi technique sur site. Contactez-nous au +225 05 00 55 25 25 ou par WhatsApp pour un devis gratuit." : "Yes, we deliver equipment and inputs across West Africa with installation, training and on-site support."
           }
         ].map((item) => (
           <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
@@ -238,34 +238,34 @@ const partners = [
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Qu'est-ce que l'agriculture de prÃ©cision et pourquoi est-elle adaptÃ©e Ã  l'Afrique ?",
+        "name": "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "L'agriculture de prÃ©cision utilise des technologies modernes â serres, irrigation goutte-Ã -goutte, substrats optimisÃ©s â pour maximiser les rendements tout en rÃ©duisant les intrants. En Afrique, elle permet de s'affranchir des alÃ©as climatiques et de produire toute l'annÃ©e."
+          "text": "L'agriculture de précision utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle permet de s'affranchir des aléas climatiques et de produire toute l'année."
         }
       },
       {
         "@type": "Question",
-        "name": "Quel est le coÃ»t d'une serre agricole en CÃ´te d'Ivoire ?",
+        "name": "Quel est le coût d'une serre agricole en Côte d'Ivoire ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Le coÃ»t d'une serre agricole en CÃ´te d'Ivoire varie selon le type : une serre tunnel simple commence Ã  partir de 3 500 â¬/100mÂ², une serre multi-chapelle high-tech peut atteindre 40 000 â¬/ha. Arbre Bio Africa propose des solutions adaptÃ©es Ã  chaque budget avec financement et installation inclus."
+          "text": "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type : une serre tunnel simple commence à partir de 3 500 €/100m², une serre multi-chapelle high-tech peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget avec financement et installation inclus."
         }
       },
       {
         "@type": "Question",
-        "name": "Comment l'irrigation goutte-Ã -goutte amÃ©liore-t-elle les rendements en Afrique ?",
+        "name": "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "L'irrigation goutte-Ã -goutte Ã©conomise 70% d'eau, permet la fertigation et rÃ©duit les maladies foliaires. Nos clients en CÃ´te d'Ivoire constatent une augmentation des rendements de 80 Ã  200% par rapport Ã  l'irrigation traditionnelle."
+          "text": "L'irrigation goutte-à-goutte économise 70% d'eau, permet la fertigation et réduit les maladies foliaires. Nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle."
         }
       },
       {
         "@type": "Question",
-        "name": "Quelle est la diffÃ©rence entre coco peat, fibre de coco et tourbe de coco ?",
+        "name": "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "La fibre de coco est la partie fibreuse utilisÃ©e en paillage. La tourbe de coco (coco peat) est la partie fine et spongieuse, idÃ©ale comme substrat hors-sol. Les deux amÃ©liorent la rÃ©tention d'eau des sols africains."
+          "text": "La fibre de coco est la partie fibreuse utilisée en paillage. La tourbe de coco (coco peat) est la partie fine et spongieuse, idéale comme substrat hors-sol. Les deux améliorent la rétention d'eau des sols africains."
         }
       },
       {
@@ -273,7 +273,7 @@ const partners = [
         "name": "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Oui, Arbre Bio Africa livre dans toute l'Afrique de l'Ouest : CÃ´te d'Ivoire, SÃ©nÃ©gal, Ghana, Burkina Faso, Mali, Togo, BÃ©nin. Nous assurons l'installation, la formation et le suivi technique sur site."
+          "text": "Oui, Arbre Bio Africa livre dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Nous assurons l'installation, la formation et le suivi technique sur site."
         }
       }
     ]
