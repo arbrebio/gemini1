@@ -10,9 +10,9 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 const benefits = [
-  { icon: 'ð', title: T.qualityAssured, desc: T.qualityAssuredDesc },
-  { icon: 'ð±', title: T.sustainable, desc: T.sustainableDesc },
-  { icon: 'ð¨‍ð¾', title: T.expertSupport, desc: T.expertSupportDesc },
+  { icon: '🏅', title: T.qualityAssured, desc: T.qualityAssuredDesc },
+  { icon: '🌱', title: T.sustainable, desc: T.sustainableDesc },
+  { icon: '👨‍🌾', title: T.expertSupport, desc: T.expertSupportDesc },
 ];
 ---
 
@@ -84,10 +84,10 @@ const benefits = [
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
-          { icon: 'ð§', title: T.superiorWater, desc: '8x better water retention than traditional soil. Reduces irrigation frequency and water costs.' },
-          { icon: 'ð¬️', title: T.optimalAeration, desc: 'Fibrous structure enables excellent air circulation for roots, preventing root asphyxia.' },
+          { icon: '💧', title: T.superiorWater, desc: '8x better water retention than traditional soil. Reduces irrigation frequency and water costs.' },
+          { icon: '🌬️', title: T.optimalAeration, desc: 'Fibrous structure enables excellent air circulation for roots, preventing root asphyxia.' },
           { icon: '⚗️', title: T.phBalanced, desc: 'Naturally stable pH between 5.8-6.5, ideal for most vegetable and fruit crops.' },
-          { icon: 'ð¿', title: T.organic100, desc: 'Produced naturally from coconut. OMRI certified for organic agriculture.' },
+          { icon: '🌿', title: T.organic100, desc: 'Produced naturally from coconut. OMRI certified for organic agriculture.' },
         ].map(feature => (
           <div class="text-center p-6 bg-gray-50 rounded-xl">
             <div class="text-4xl mb-4">{feature.icon}</div>
