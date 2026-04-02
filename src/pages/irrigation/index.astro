@@ -30,7 +30,7 @@ const technologies = [
       { label: 'Coverage Radius', value: '5-25 meters' },
       { label: 'Flow Rate', value: '500-2000 L/hour' },
       { label: 'Pressure Range', value: '2-5 bar' },
-      { label: 'Rotation', value: '360Â° coverage' }
+      { label: 'Rotation', value: '360° coverage' }
     ],
     benefits: [
       'Even water distribution pattern',
@@ -61,7 +61,7 @@ const technologies = [
     ],
     image: 'https://imgur.com/NnkgMDq.jpg',
     caseStudy: {
-      title: 'Vegetable Farm in CÃ´te d\'Ivoire',
+      title: 'Vegetable Farm in Côte d\'Ivoire',
       result: '50% reduction in fertilizer use, 40% yield increase'
     }
   },
@@ -72,7 +72,7 @@ const technologies = [
       { label: 'Sensor Range', value: 'Up to 5 km' },
       { label: 'Data Update', value: 'Every 15 min' },
       { label: 'Battery Life', value: '5 years' },
-      { label: 'Accuracy', value: 'Â±2% VWC' }
+      { label: 'Accuracy', value: '±2% VWC' }
     ],
     benefits: [
       'Real-time monitoring and alerts',
@@ -90,7 +90,7 @@ const technologies = [
     title: 'Water Treatment & Filtration',
     description: 'Comprehensive water treatment solutions that ensure irrigation water quality meets crop requirements. Our systems remove contaminants, prevent clogging, and maintain system efficiency throughout the growing season.',
     specs: [
-      { label: 'Flow Capacity', value: '10-200 mÂ³/hour' },
+      { label: 'Flow Capacity', value: '10-200 m³/hour' },
       { label: 'Filtration Level', value: '20-200 micron' },
       { label: 'Pressure Loss', value: '<0.3 bar' },
       { label: 'Backwash', value: 'Automated' }
@@ -140,7 +140,7 @@ const stats = [
 const calculatorInputs = [
   { label: 'Land Area (Hectares)', id: 'area', type: 'number' as const, min: 0.1, step: 0.1 },
   { label: 'Crop Type', id: 'crop', type: 'select' as const, options: ['Vegetables', 'Cereals', 'Fruits', 'Other'] },
-  { label: 'Current Water Usage (mÂ³/ha/year)', id: 'waterUsage', type: 'number' as const, min: 0 },
+  { label: 'Current Water Usage (m³/ha/year)', id: 'waterUsage', type: 'number' as const, min: 0 },
   { label: 'Current Yield (tons/ha)', id: 'yield', type: 'number' as const, min: 0 }
 ];
 ---
@@ -299,7 +299,7 @@ const calculatorInputs = [
               <div class="bg-gray-50 p-4 rounded-lg">
                 <div class="text-sm text-gray-500">Water Savings</div>
                 <div class="text-2xl font-bold text-primary">
-                  <span id="waterSavings">0</span>mÂ³/year
+                  <span id="waterSavings">0</span>m³/year
                 </div>
               </div>
               <div class="bg-gray-50 p-4 rounded-lg">
