@@ -9,7 +9,7 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 ---
-<Layout title={lang === 'fr' ? "Substrats & Solutions de Culture | Fibre de Coco, Tourbe, Perlite | Arbre Bio Africa" : lang === 'es' ? "Sustratos y Soluciones de Cultivo | Arbre Bio Africa" : "Growing Media & Substrates | Coco Peat, Perlite | Arbre Bio Africa"} description={lang === 'fr' ? "DÃ©couvrez nos substrats de culture premium : fibre de coco, tourbe de coco, perlite et vermiculite. Solutions professionnelles pour l'agriculture sous serre et l'hydroponie en Afrique." : lang === 'es' ? "Sustratos de cultivo premium: fibra de coco, turba de coco, perlita. Soluciones para invernaderos en Ãfrica." : "Premium growing substrates: coco peat, coco fibre, perlite, vermiculite. Professional solutions for greenhouse farming in Africa."}>
+<Layout title={lang === 'fr' ? "Substrats & Solutions de Culture | Fibre de Coco, Tourbe, Perlite | Arbre Bio Africa" : lang === 'es' ? "Sustratos y Soluciones de Cultivo | Arbre Bio Africa" : "Growing Media & Substrates | Coco Peat, Perlite | Arbre Bio Africa"} description={lang === 'fr' ? "Découvrez nos substrats de culture premium : fibre de coco, tourbe de coco, perlite et vermiculite. Solutions professionnelles pour l'agriculture sous serre et l'hydroponie en Afrique." : lang === 'es' ? "Sustratos de cultivo premium: fibra de coco, turba de coco, perlita. Soluciones para invernaderos en África." : "Premium growing substrates: coco peat, coco fibre, perlite, vermiculite. Professional solutions for greenhouse farming in Africa."}>
 
   {/* Hero Section */}
   <section class="relative bg-gradient-to-br from-green-900 via-green-800 to-emerald-700 text-white py-20 px-4">
@@ -18,10 +18,10 @@ const p = `/${lang}`;
         {lang === 'fr' ? 'Substrats & Solutions de Culture' : lang === 'es' ? 'Sustratos de Cultivo' : 'Growing Media & Substrates'}
       </p>
       <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-        {lang === 'fr' ? 'Solutions de Culture Premium pour une Agriculture Performante en Afrique' : lang === 'es' ? 'Soluciones de Cultivo Premium para Agricultura en Ãfrica' : 'Premium Growing Solutions for High-Performance Farming in Africa'}
+        {lang === 'fr' ? 'Solutions de Culture Premium pour une Agriculture Performante en Afrique' : lang === 'es' ? 'Soluciones de Cultivo Premium para Agricultura en África' : 'Premium Growing Solutions for High-Performance Farming in Africa'}
       </h1>
       <p class="text-xl text-emerald-100 max-w-3xl mx-auto mb-8">
-        {lang === 'fr' ? "Arbre Bio Africa vous propose les meilleurs substrats de culture : fibre de coco, tourbe de coco, perlite et vermiculite. Optimisez vos rendements avec des solutions adaptÃ©es au climat africain." : lang === 'es' ? "Los mejores sustratos de cultivo: fibra de coco, turba de coco, perlita y vermiculita para agricultura africana." : "The best growing substrates: coco fibre, coco peat, perlite and vermiculite for African agriculture."}
+        {lang === 'fr' ? "Arbre Bio Africa vous propose les meilleurs substrats de culture : fibre de coco, tourbe de coco, perlite et vermiculite. Optimisez vos rendements avec des solutions adaptées au climat africain." : lang === 'es' ? "Los mejores sustratos de cultivo: fibra de coco, turba de coco, perlita y vermiculita para agricultura africana." : "The best growing substrates: coco fibre, coco peat, perlite and vermiculite for African agriculture."}
       </p>
       <div class="flex flex-wrap gap-4 justify-center">
         <a href={`/${lang}/contact`} class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
@@ -40,30 +40,30 @@ const p = `/${lang}`;
       <div class="grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h2 class="text-3xl font-bold text-green-900 mb-6">
-            {lang === 'fr' ? "Qu'est-ce qu'un Substrat de Culture ?" : lang === 'es' ? "Â¿QuÃ© es un Sustrato de Cultivo?" : "What is Growing Media?"}
+            {lang === 'fr' ? "Qu'est-ce qu'un Substrat de Culture ?" : lang === 'es' ? "¿Qué es un Sustrato de Cultivo?" : "What is Growing Media?"}
           </h2>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "Un substrat de culture est le milieu dans lequel les plantes dÃ©veloppent leurs racines. Contrairement au sol naturel, un substrat professionnel est formulÃ© pour offrir l'Ã©quilibre parfait entre rÃ©tention d'eau, aÃ©ration des racines et apport en nutriments. En agriculture de prÃ©cision, le choix du substrat dÃ©termine directement la qualitÃ© et le rendement de votre production." : lang === 'es' ? "Un sustrato de cultivo es el medio en el que las plantas desarrollan sus raÃ­ces, formulado para el equilibrio perfecto entre retenciÃ³n de agua, aireaciÃ³n y nutrientes." : "Growing media is the medium in which plants develop their roots, engineered for the perfect balance of water retention, root aeration and nutrient delivery."}
+            {lang === 'fr' ? "Un substrat de culture est le milieu dans lequel les plantes développent leurs racines. Contrairement au sol naturel, un substrat professionnel est formulé pour offrir l'équilibre parfait entre rétention d'eau, aération des racines et apport en nutriments. En agriculture de précision, le choix du substrat détermine directement la qualité et le rendement de votre production." : lang === 'es' ? "Un sustrato de cultivo es el medio en el que las plantas desarrollan sus raíces, formulado para el equilibrio perfecto entre retención de agua, aireación y nutrientes." : "Growing media is the medium in which plants develop their roots, engineered for the perfect balance of water retention, root aeration and nutrient delivery."}
           </p>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "En Afrique de l'Ouest, oÃ¹ les conditions climatiques sont souvent extrÃªmes â chaleur intense, sÃ©cheresse, pluies abondantes â l'utilisation de substrats adaptÃ©s permet de maÃ®triser l'environnement racinaire et d'obtenir des rÃ©coltes de qualitÃ© toute l'annÃ©e, en serre comme en plein air." : lang === 'es' ? "En Ãfrica Occidental, los sustratos adaptados permiten controlar el entorno radicular y obtener cosechas de calidad durante todo el aÃ±o." : "In West Africa, adapted substrates allow you to control the root environment and achieve quality harvests year-round."}
+            {lang === 'fr' ? "En Afrique de l'Ouest, où les conditions climatiques sont souvent extrêmes — chaleur intense, sécheresse, pluies abondantes — l'utilisation de substrats adaptés permet de maîtriser l'environnement racinaire et d'obtenir des récoltes de qualité toute l'année, en serre comme en plein air." : lang === 'es' ? "En África Occidental, los sustratos adaptados permiten controlar el entorno radicular y obtener cosechas de calidad durante todo el año." : "In West Africa, adapted substrates allow you to control the root environment and achieve quality harvests year-round."}
           </p>
           <p class="text-gray-700 leading-relaxed">
-            {lang === 'fr' ? "Arbre Bio Africa importe et distribue les substrats de culture les plus performants du marchÃ©, sÃ©lectionnÃ©s spÃ©cifiquement pour les conditions africaines : rÃ©sistance aux tempÃ©ratures Ã©levÃ©es, compatibilitÃ© avec l'irrigation goutte-Ã -goutte et les systÃ¨mes hydroponiques, et adaptation aux cultures tropicales." : lang === 'es' ? "Arbre Bio Africa importa y distribuye los mejores sustratos del mercado, seleccionados especÃ­ficamente para las condiciones africanas." : "Arbre Bio Africa imports and distributes the highest-performing substrates on the market, selected specifically for African conditions."}
+            {lang === 'fr' ? "Arbre Bio Africa importe et distribue les substrats de culture les plus performants du marché, sélectionnés spécifiquement pour les conditions africaines : résistance aux températures élevées, compatibilité avec l'irrigation goutte-à-goutte et les systèmes hydroponiques, et adaptation aux cultures tropicales." : lang === 'es' ? "Arbre Bio Africa importa y distribuye los mejores sustratos del mercado, seleccionados específicamente para las condiciones africanas." : "Arbre Bio Africa imports and distributes the highest-performing substrates on the market, selected specifically for African conditions."}
           </p>
         </div>
         <div class="bg-green-50 rounded-2xl p-8">
           <h3 class="text-xl font-bold text-green-900 mb-6">
-            {lang === 'fr' ? "Pourquoi Choisir un Substrat Professionnel ?" : lang === 'es' ? "Â¿Por quÃ© elegir un sustrato profesional?" : "Why Choose Professional Growing Media?"}
+            {lang === 'fr' ? "Pourquoi Choisir un Substrat Professionnel ?" : lang === 'es' ? "¿Por qué elegir un sustrato profesional?" : "Why Choose Professional Growing Media?"}
           </h3>
           <ul class="space-y-4">
             {[
-              lang === 'fr' ? "â Rendements jusqu'Ã  3Ã supÃ©rieurs au sol naturel" : "â Yields up to 3Ã higher than natural soil",
-              lang === 'fr' ? "â Ãconomie d'eau de 40 Ã  70% avec l'irrigation goutte-Ã -goutte" : "â Water savings of 40â70% with drip irrigation",
-              lang === 'fr' ? "â ContrÃ´le prÃ©cis du pH et de la conductivitÃ© Ã©lectrique (EC)" : "â Precise control of pH and electrical conductivity (EC)",
-              lang === 'fr' ? "â RÃ©duction des maladies racinaires et des pathogÃ¨nes du sol" : "â Reduction of root diseases and soil pathogens",
-              lang === 'fr' ? "â Compatible avec la culture hors-sol et l'hydroponie" : "â Compatible with soil-less and hydroponic culture",
-              lang === 'fr' ? "â Disponible en CÃ´te d'Ivoire et livraison en Afrique de l'Ouest" : "â Available in CÃ´te d'Ivoire, delivery across West Africa"
+              lang === 'fr' ? "✅ Rendements jusqu'à 3× supérieurs au sol naturel" : "✅ Yields up to 3× higher than natural soil",
+              lang === 'fr' ? "✅ Économie d'eau de 40 à 70% avec l'irrigation goutte-à-goutte" : "✅ Water savings of 40–70% with drip irrigation",
+              lang === 'fr' ? "✅ Contrôle précis du pH et de la conductivité électrique (EC)" : "✅ Precise control of pH and electrical conductivity (EC)",
+              lang === 'fr' ? "✅ Réduction des maladies racinaires et des pathogènes du sol" : "✅ Reduction of root diseases and soil pathogens",
+              lang === 'fr' ? "✅ Compatible avec la culture hors-sol et l'hydroponie" : "✅ Compatible with soil-less and hydroponic culture",
+              lang === 'fr' ? "✅ Disponible en Côte d'Ivoire et livraison en Afrique de l'Ouest" : "✅ Available in Côte d'Ivoire, delivery across West Africa"
             ].map(item => (
               <li class="flex items-start gap-3 text-gray-700">
                 <span class="text-sm">{item}</span>
@@ -82,47 +82,47 @@ const p = `/${lang}`;
         {lang === 'fr' ? "Nos Substrats de Culture" : lang === 'es' ? "Nuestros Sustratos" : "Our Growing Substrates"}
       </h2>
       <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
-        {lang === 'fr' ? "Chaque substrat est sÃ©lectionnÃ© et testÃ© pour maximiser vos rendements en Afrique. DÃ©couvrez notre gamme complÃ¨te de solutions de culture professionnelles." : lang === 'es' ? "Cada sustrato es seleccionado y probado para maximizar sus rendimientos en Ãfrica." : "Each substrate is selected and tested to maximise your yields in Africa."}
+        {lang === 'fr' ? "Chaque substrat est sélectionné et testé pour maximiser vos rendements en Afrique. Découvrez notre gamme complète de solutions de culture professionnelles." : lang === 'es' ? "Cada sustrato es seleccionado y probado para maximizar sus rendimientos en África." : "Each substrate is selected and tested to maximise your yields in Africa."}
       </p>
       <div class="grid md:grid-cols-2 gap-8">
 
         {/* Coco Peat / Fibre de Coco */}
         <div class="bg-white rounded-2xl shadow-sm p-8 border border-green-100">
-          <div class="text-4xl mb-4">ð¥¥</div>
+          <div class="text-4xl mb-4">🥥</div>
           <h3 class="text-2xl font-bold text-green-900 mb-3">
             {lang === 'fr' ? "Fibre de Coco & Tourbe de Coco (Coco Peat)" : lang === 'es' ? "Fibra de Coco & Turba de Coco" : "Coco Fibre & Coco Peat"}
           </h3>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "La fibre de coco et la tourbe de coco (coco peat) sont les substrats de culture les plus populaires en agriculture moderne. Issus de la transformation des coques de noix de coco, ces substrats sont 100% naturels, biodÃ©gradables et renouvelables." : lang === 'es' ? "La fibra de coco y la turba de coco son los sustratos mÃ¡s populares en agricultura moderna." : "Coco fibre and coco peat are the most popular growing substrates in modern agriculture."}
+            {lang === 'fr' ? "La fibre de coco et la tourbe de coco (coco peat) sont les substrats de culture les plus populaires en agriculture moderne. Issus de la transformation des coques de noix de coco, ces substrats sont 100% naturels, biodégradables et renouvelables." : lang === 'es' ? "La fibra de coco y la turba de coco son los sustratos más populares en agricultura moderna." : "Coco fibre and coco peat are the most popular growing substrates in modern agriculture."}
           </p>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "La tourbe de coco possÃ¨de une capacitÃ© de rÃ©tention d'eau exceptionnelle (jusqu'Ã  10 fois son poids) tout en maintenant une excellente aÃ©ration des racines. Son pH neutre (5,5 Ã  6,5) est idÃ©al pour la majoritÃ© des cultures maraÃ®chÃ¨res, fruitiÃ¨res et florales." : lang === 'es' ? "La turba de coco tiene una capacidad de retenciÃ³n de agua excepcional y pH neutro ideal para la mayorÃ­a de los cultivos." : "Coco peat has exceptional water retention (up to 10Ã its weight) while maintaining excellent root aeration."}
+            {lang === 'fr' ? "La tourbe de coco possède une capacité de rétention d'eau exceptionnelle (jusqu'à 10 fois son poids) tout en maintenant une excellente aération des racines. Son pH neutre (5,5 à 6,5) est idéal pour la majorité des cultures maraîchères, fruitières et florales." : lang === 'es' ? "La turba de coco tiene una capacidad de retención de agua excepcional y pH neutro ideal para la mayoría de los cultivos." : "Coco peat has exceptional water retention (up to 10× its weight) while maintaining excellent root aeration."}
           </p>
           <div class="bg-green-50 rounded-lg p-4">
             <p class="font-semibold text-green-900 text-sm mb-2">
-              {lang === 'fr' ? "Applications idÃ©ales :" : lang === 'es' ? "Aplicaciones ideales:" : "Ideal applications:"}
+              {lang === 'fr' ? "Applications idéales :" : lang === 'es' ? "Aplicaciones ideales:" : "Ideal applications:"}
             </p>
             <p class="text-gray-600 text-sm">
-              {lang === 'fr' ? "Tomates, poivrons, concombres, fraises, fleurs coupÃ©es, culture hydroponique, pÃ©piniÃ¨res, propagation de boutures" : lang === 'es' ? "Tomates, pimientos, pepinos, fresas, flores, hidropÃ³nica, viveros" : "Tomatoes, peppers, cucumbers, strawberries, cut flowers, hydroponics, nurseries"}
+              {lang === 'fr' ? "Tomates, poivrons, concombres, fraises, fleurs coupées, culture hydroponique, pépinières, propagation de boutures" : lang === 'es' ? "Tomates, pimientos, pepinos, fresas, flores, hidropónica, viveros" : "Tomatoes, peppers, cucumbers, strawberries, cut flowers, hydroponics, nurseries"}
             </p>
           </div>
         </div>
 
         {/* Perlite */}
         <div class="bg-white rounded-2xl shadow-sm p-8 border border-green-100">
-          <div class="text-4xl mb-4">âª</div>
+          <div class="text-4xl mb-4">⚪</div>
           <h3 class="text-2xl font-bold text-green-900 mb-3">
-            {lang === 'fr' ? "Perlite Horticole" : lang === 'es' ? "Perlita HortÃ­cola" : "Horticultural Perlite"}
+            {lang === 'fr' ? "Perlite Horticole" : lang === 'es' ? "Perlita Hortícola" : "Horticultural Perlite"}
           </h3>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "La perlite est un matÃ©riau volcanique expansÃ© utilisÃ© pour amÃ©liorer le drainage et l'aÃ©ration des substrats. LÃ©gÃ¨re, stÃ©rile et inerte, elle est idÃ©ale pour les mÃ©langes de substrats et les cultures hydroponiques." : lang === 'es' ? "La perlita es un material volcÃ¡nico expandido para mejorar el drenaje y aireaciÃ³n de los sustratos." : "Perlite is an expanded volcanic material used to improve drainage and aeration in growing substrates."}
+            {lang === 'fr' ? "La perlite est un matériau volcanique expansé utilisé pour améliorer le drainage et l'aération des substrats. Légère, stérile et inerte, elle est idéale pour les mélanges de substrats et les cultures hydroponiques." : lang === 'es' ? "La perlita es un material volcánico expandido para mejorar el drenaje y aireación de los sustratos." : "Perlite is an expanded volcanic material used to improve drainage and aeration in growing substrates."}
           </p>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "MÃ©langÃ©e Ã  la tourbe de coco ou Ã  d'autres substrats organiques, la perlite amÃ©liore significativement la structure du milieu de culture, Ã©vite le compactage et favorise le dÃ©veloppement racinaire. Elle est particuliÃ¨rement recommandÃ©e pour les cultures sous serre Ã  haute densitÃ© de plantation." : lang === 'es' ? "Mezclada con turba de coco, mejora la estructura del sustrato y favorece el desarrollo radicular." : "Mixed with coco peat, perlite significantly improves substrate structure and prevents compaction."}
+            {lang === 'fr' ? "Mélangée à la tourbe de coco ou à d'autres substrats organiques, la perlite améliore significativement la structure du milieu de culture, évite le compactage et favorise le développement racinaire. Elle est particulièrement recommandée pour les cultures sous serre à haute densité de plantation." : lang === 'es' ? "Mezclada con turba de coco, mejora la estructura del sustrato y favorece el desarrollo radicular." : "Mixed with coco peat, perlite significantly improves substrate structure and prevents compaction."}
           </p>
           <div class="bg-green-50 rounded-lg p-4">
             <p class="font-semibold text-green-900 text-sm mb-2">
-              {lang === 'fr' ? "Proportions recommandÃ©es :" : lang === 'es' ? "Proporciones recomendadas:" : "Recommended ratios:"}
+              {lang === 'fr' ? "Proportions recommandées :" : lang === 'es' ? "Proporciones recomendadas:" : "Recommended ratios:"}
             </p>
             <p class="text-gray-600 text-sm">
               {lang === 'fr' ? "70% coco peat + 30% perlite pour tomates & poivrons | 80% coco + 20% perlite pour fleurs et herbes aromatiques" : lang === 'es' ? "70% coco peat + 30% perlita para tomates | 80% coco + 20% perlita para flores" : "70% coco peat + 30% perlite for tomatoes | 80% coco + 20% perlite for flowers"}
@@ -132,34 +132,34 @@ const p = `/${lang}`;
 
         {/* Vermiculite */}
         <div class="bg-white rounded-2xl shadow-sm p-8 border border-green-100">
-          <div class="text-4xl mb-4">ðª¨</div>
+          <div class="text-4xl mb-4">🪨</div>
           <h3 class="text-2xl font-bold text-green-900 mb-3">
             {lang === 'fr' ? "Vermiculite" : "Vermiculite"}
           </h3>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "La vermiculite est un minÃ©ral naturel expansÃ© qui amÃ©liore la rÃ©tention d'eau et d'Ã©lÃ©ments nutritifs dans le substrat. Son pouvoir tampon exceptionnel stabilise le pH et facilite l'absorption des nutriments par les plantes." : lang === 'es' ? "La vermiculita mejora la retenciÃ³n de agua y nutrientes en el sustrato." : "Vermiculite improves water and nutrient retention in growing substrates."}
+            {lang === 'fr' ? "La vermiculite est un minéral naturel expansé qui améliore la rétention d'eau et d'éléments nutritifs dans le substrat. Son pouvoir tampon exceptionnel stabilise le pH et facilite l'absorption des nutriments par les plantes." : lang === 'es' ? "La vermiculita mejora la retención de agua y nutrientes en el sustrato." : "Vermiculite improves water and nutrient retention in growing substrates."}
           </p>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "ParticuliÃ¨rement utile pour les semis, la propagation de boutures et les cultures sensibles, la vermiculite crÃ©e un environnement racinaire stable et favorise la germination rapide des graines. Elle est aussi utilisÃ©e pour le stockage et le transport de plants fragiles." : lang === 'es' ? "Especialmente Ãºtil para semilleros, propagaciÃ³n de esquejes y cultivos sensibles." : "Particularly useful for seedlings, cutting propagation and sensitive crops."}
+            {lang === 'fr' ? "Particulièrement utile pour les semis, la propagation de boutures et les cultures sensibles, la vermiculite crée un environnement racinaire stable et favorise la germination rapide des graines. Elle est aussi utilisée pour le stockage et le transport de plants fragiles." : lang === 'es' ? "Especialmente útil para semilleros, propagación de esquejes y cultivos sensibles." : "Particularly useful for seedlings, cutting propagation and sensitive crops."}
           </p>
           <div class="bg-green-50 rounded-lg p-4">
             <p class="text-gray-600 text-sm">
-              {lang === 'fr' ? "IdÃ©ale pour : semis, pÃ©piniÃ¨res, bouturage, culture de plantes mÃ©dicinales et aromatiques" : lang === 'es' ? "Ideal para: semilleros, viveros, enraizamiento" : "Ideal for: seedlings, nurseries, rooting cuttings"}
+              {lang === 'fr' ? "Idéale pour : semis, pépinières, bouturage, culture de plantes médicinales et aromatiques" : lang === 'es' ? "Ideal para: semilleros, viveros, enraizamiento" : "Ideal for: seedlings, nurseries, rooting cuttings"}
             </p>
           </div>
         </div>
 
-        {/* MÃ©langes professionnels */}
+        {/* Mélanges professionnels */}
         <div class="bg-white rounded-2xl shadow-sm p-8 border border-green-100">
-          <div class="text-4xl mb-4">ð±</div>
+          <div class="text-4xl mb-4">🌱</div>
           <h3 class="text-2xl font-bold text-green-900 mb-3">
-            {lang === 'fr' ? "MÃ©langes Substrats Sur Mesure" : lang === 'es' ? "Mezclas de Sustratos a Medida" : "Custom Substrate Mixes"}
+            {lang === 'fr' ? "Mélanges Substrats Sur Mesure" : lang === 'es' ? "Mezclas de Sustratos a Medida" : "Custom Substrate Mixes"}
           </h3>
           <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "Arbre Bio Africa propose des mÃ©langes de substrats sur mesure, formulÃ©s en fonction de votre culture spÃ©cifique, de votre systÃ¨me d'irrigation et de vos objectifs de production. Nos agronomes analysent vos besoins et vous proposent la formulation optimale." : lang === 'es' ? "Arbre Bio Africa ofrece mezclas de sustratos a medida segÃºn su cultivo e irrigaciÃ³n." : "Arbre Bio Africa offers custom substrate blends formulated to your specific crop, irrigation system and production goals."}
+            {lang === 'fr' ? "Arbre Bio Africa propose des mélanges de substrats sur mesure, formulés en fonction de votre culture spécifique, de votre système d'irrigation et de vos objectifs de production. Nos agronomes analysent vos besoins et vous proposent la formulation optimale." : lang === 'es' ? "Arbre Bio Africa ofrece mezclas de sustratos a medida según su cultivo e irrigación." : "Arbre Bio Africa offers custom substrate blends formulated to your specific crop, irrigation system and production goals."}
           </p>
           <p class="text-gray-700 leading-relaxed">
-            {lang === 'fr' ? "Que vous cultiviez des tomates cerises sous serre high-tech, des fraises en culture hors-sol, ou des plantes aromatiques en hydroponie, nous avons le mÃ©lange parfait pour maximiser vos rendements et la qualitÃ© de votre production." : lang === 'es' ? "Ya sea tomates cherry en invernadero o fresas sin suelo, tenemos la mezcla perfecta." : "Whether you grow cherry tomatoes in a high-tech greenhouse or hydroponic herbs, we have the perfect mix."}
+            {lang === 'fr' ? "Que vous cultiviez des tomates cerises sous serre high-tech, des fraises en culture hors-sol, ou des plantes aromatiques en hydroponie, nous avons le mélange parfait pour maximiser vos rendements et la qualité de votre production." : lang === 'es' ? "Ya sea tomates cherry en invernadero o fresas sin suelo, tenemos la mezcla perfecta." : "Whether you grow cherry tomatoes in a high-tech greenhouse or hydroponic herbs, we have the perfect mix."}
           </p>
         </div>
       </div>
@@ -170,34 +170,34 @@ const p = `/${lang}`;
   <section class="py-16 px-4 bg-white">
     <div class="max-w-6xl mx-auto">
       <h2 class="text-3xl font-bold text-green-900 text-center mb-12">
-        {lang === 'fr' ? "Applications & SystÃ¨mes de Culture" : lang === 'es' ? "Aplicaciones y Sistemas de Cultivo" : "Applications & Growing Systems"}
+        {lang === 'fr' ? "Applications & Systèmes de Culture" : lang === 'es' ? "Aplicaciones y Sistemas de Cultivo" : "Applications & Growing Systems"}
       </h2>
       <div class="grid md:grid-cols-3 gap-8">
         <div class="text-center p-6">
-          <div class="text-5xl mb-4">ð </div>
+          <div class="text-5xl mb-4">🏠</div>
           <h3 class="text-xl font-bold text-green-900 mb-3">
             {lang === 'fr' ? "Culture Sous Serre" : lang === 'es' ? "Cultivo en Invernadero" : "Greenhouse Growing"}
           </h3>
           <p class="text-gray-600 text-sm leading-relaxed">
-            {lang === 'fr' ? "Nos substrats sont optimisÃ©s pour les serres multi-chapelles et tunnels, avec une parfaite compatibilitÃ© avec les systÃ¨mes d'irrigation goutte-Ã -goutte intÃ©grÃ©s aux serres Arbre Bio." : lang === 'es' ? "Nuestros sustratos estÃ¡n optimizados para invernaderos con riego por goteo." : "Our substrates are optimised for multi-span greenhouses with integrated drip irrigation systems."}
+            {lang === 'fr' ? "Nos substrats sont optimisés pour les serres multi-chapelles et tunnels, avec une parfaite compatibilité avec les systèmes d'irrigation goutte-à-goutte intégrés aux serres Arbre Bio." : lang === 'es' ? "Nuestros sustratos están optimizados para invernaderos con riego por goteo." : "Our substrates are optimised for multi-span greenhouses with integrated drip irrigation systems."}
           </p>
         </div>
         <div class="text-center p-6">
-          <div class="text-5xl mb-4">ð§</div>
+          <div class="text-5xl mb-4">💧</div>
           <h3 class="text-xl font-bold text-green-900 mb-3">
-            {lang === 'fr' ? "Hydroponie & Culture Hors-Sol" : lang === 'es' ? "HidroponÃ­a y Cultivo Sin Suelo" : "Hydroponics & Soil-less Culture"}
+            {lang === 'fr' ? "Hydroponie & Culture Hors-Sol" : lang === 'es' ? "Hidroponía y Cultivo Sin Suelo" : "Hydroponics & Soil-less Culture"}
           </h3>
           <p class="text-gray-600 text-sm leading-relaxed">
-            {lang === 'fr' ? "La tourbe de coco est le support idÃ©al pour les systÃ¨mes hydroponiques NFT, DWC et goutte-Ã -goutte. Elle offre une excellente stabilitÃ© mÃ©canique et une aÃ©ration racinaire optimale." : lang === 'es' ? "La turba de coco es ideal para NFT, DWC y sistemas hidropÃ³nicos." : "Coco peat is the ideal medium for NFT, DWC and drip hydroponic systems."}
+            {lang === 'fr' ? "La tourbe de coco est le support idéal pour les systèmes hydroponiques NFT, DWC et goutte-à-goutte. Elle offre une excellente stabilité mécanique et une aération racinaire optimale." : lang === 'es' ? "La turba de coco es ideal para NFT, DWC y sistemas hidropónicos." : "Coco peat is the ideal medium for NFT, DWC and drip hydroponic systems."}
           </p>
         </div>
         <div class="text-center p-6">
-          <div class="text-5xl mb-4">ð¿</div>
+          <div class="text-5xl mb-4">🌿</div>
           <h3 class="text-xl font-bold text-green-900 mb-3">
-            {lang === 'fr' ? "PÃ©piniÃ¨res & Multiplication" : lang === 'es' ? "Viveros y MultiplicaciÃ³n" : "Nurseries & Propagation"}
+            {lang === 'fr' ? "Pépinières & Multiplication" : lang === 'es' ? "Viveros y Multiplicación" : "Nurseries & Propagation"}
           </h3>
           <p class="text-gray-600 text-sm leading-relaxed">
-            {lang === 'fr' ? "Nos substrats lÃ©gers et stÃ©riles garantissent un excellent taux de germination et de reprise des boutures. IdÃ©al pour les pÃ©piniÃ¨res professionnelles et les producteurs de plants." : lang === 'es' ? "Nuestros sustratos garantizan una excelente germinaciÃ³n y enraizamiento." : "Our light, sterile substrates ensure excellent germination rates and cutting success."}
+            {lang === 'fr' ? "Nos substrats légers et stériles garantissent un excellent taux de germination et de reprise des boutures. Idéal pour les pépinières professionnelles et les producteurs de plants." : lang === 'es' ? "Nuestros sustratos garantizan una excelente germinación y enraizamiento." : "Our light, sterile substrates ensure excellent germination rates and cutting success."}
           </p>
         </div>
       </div>
@@ -208,29 +208,29 @@ const p = `/${lang}`;
   <section class="py-16 px-4 bg-gray-50">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-3xl font-bold text-green-900 text-center mb-12">
-        {lang === 'fr' ? "Questions FrÃ©quentes sur les Substrats" : lang === 'es' ? "Preguntas Frecuentes sobre Sustratos" : "Frequently Asked Questions about Substrates"}
+        {lang === 'fr' ? "Questions Fréquentes sur les Substrats" : lang === 'es' ? "Preguntas Frecuentes sobre Sustratos" : "Frequently Asked Questions about Substrates"}
       </h2>
       <div class="space-y-6">
         {[
           {
-            q: lang === 'fr' ? "Quelle est la diffÃ©rence entre fibre de coco et tourbe de coco ?" : "What is the difference between coco fibre and coco peat?",
-            a: lang === 'fr' ? "La fibre de coco (coir fibre) est composÃ©e de fibres longues extraites de la coque de noix de coco. Elle offre une excellente aÃ©ration et drainage. La tourbe de coco (coco peat ou coir pith) est la poudre fine rÃ©sultant du mÃªme processus. Elle est plus fine, retient mieux l'eau et est idÃ©ale comme base de substrat. En pratique, les deux sont souvent utilisÃ©s en mÃ©lange pour obtenir l'Ã©quilibre parfait." : "Coco fibre consists of long fibres for drainage; coco peat is the fine powder with superior water retention. Both are often blended.",
+            q: lang === 'fr' ? "Quelle est la différence entre fibre de coco et tourbe de coco ?" : "What is the difference between coco fibre and coco peat?",
+            a: lang === 'fr' ? "La fibre de coco (coir fibre) est composée de fibres longues extraites de la coque de noix de coco. Elle offre une excellente aération et drainage. La tourbe de coco (coco peat ou coir pith) est la poudre fine résultant du même processus. Elle est plus fine, retient mieux l'eau et est idéale comme base de substrat. En pratique, les deux sont souvent utilisés en mélange pour obtenir l'équilibre parfait." : "Coco fibre consists of long fibres for drainage; coco peat is the fine powder with superior water retention. Both are often blended.",
           },
           {
-            q: lang === 'fr' ? "Les substrats coco sont-ils adaptÃ©s au climat de la CÃ´te d'Ivoire et d'Afrique de l'Ouest ?" : "Are coco substrates suitable for West African climates?",
-            a: lang === 'fr' ? "Absolument. La tourbe de coco est particuliÃ¨rement bien adaptÃ©e aux pays Ã  climat chaud et humide comme la CÃ´te d'Ivoire, le Ghana, le SÃ©nÃ©gal ou le BÃ©nin. Elle rÃ©siste aux tempÃ©ratures Ã©levÃ©es, maintient l'humiditÃ© racinaire et se dÃ©grade beaucoup plus lentement que la tourbe de sphaigne sous les tropiques. C'est pour cette raison qu'Arbre Bio Africa recommande la tourbe de coco comme substrat de base dans toutes ses installations." : "Yes. Coco peat is particularly well adapted to hot, humid climates in West Africa and degrades more slowly than sphagnum peat in tropical conditions.",
+            q: lang === 'fr' ? "Les substrats coco sont-ils adaptés au climat de la Côte d'Ivoire et d'Afrique de l'Ouest ?" : "Are coco substrates suitable for West African climates?",
+            a: lang === 'fr' ? "Absolument. La tourbe de coco est particulièrement bien adaptée aux pays à climat chaud et humide comme la Côte d'Ivoire, le Ghana, le Sénégal ou le Bénin. Elle résiste aux températures élevées, maintient l'humidité racinaire et se dégrade beaucoup plus lentement que la tourbe de sphaigne sous les tropiques. C'est pour cette raison qu'Arbre Bio Africa recommande la tourbe de coco comme substrat de base dans toutes ses installations." : "Yes. Coco peat is particularly well adapted to hot, humid climates in West Africa and degrades more slowly than sphagnum peat in tropical conditions.",
           },
           {
-            q: lang === 'fr' ? "Combien de fois peut-on rÃ©utiliser un substrat coco ?" : "How many times can coco substrate be reused?",
-            a: lang === 'fr' ? "Un substrat de coco de qualitÃ© premium peut Ãªtre rÃ©utilisÃ© 2 Ã  3 cycles de culture avant nÃ©cessiter un remplacement. Entre chaque cycle, il est recommandÃ© de le stÃ©riliser Ã  la vapeur ou chimiquement pour Ã©liminer les pathogÃ¨nes. Arbre Bio Africa peut vous conseiller sur les protocoles de dÃ©sinfection adaptÃ©s Ã  votre situation." : "A premium coco substrate can be reused for 2â3 crop cycles before replacement, with proper sterilisation between cycles.",
+            q: lang === 'fr' ? "Combien de fois peut-on réutiliser un substrat coco ?" : "How many times can coco substrate be reused?",
+            a: lang === 'fr' ? "Un substrat de coco de qualité premium peut être réutilisé 2 à 3 cycles de culture avant nécessiter un remplacement. Entre chaque cycle, il est recommandé de le stériliser à la vapeur ou chimiquement pour éliminer les pathogènes. Arbre Bio Africa peut vous conseiller sur les protocoles de désinfection adaptés à votre situation." : "A premium coco substrate can be reused for 2–3 crop cycles before replacement, with proper sterilisation between cycles.",
           },
           {
             q: lang === 'fr' ? "Quel substrat choisir pour cultiver des tomates sous serre en Afrique ?" : "Which substrate is best for greenhouse tomatoes in Africa?",
-            a: lang === 'fr' ? "Pour la culture de tomates sous serre en Afrique, nous recommandons un mÃ©lange de 70% tourbe de coco + 30% perlite. Ce mÃ©lange offre une rÃ©tention d'eau suffisante pour Ã©viter le stress hydrique entre les irrigations, une aÃ©ration racinaire optimale pour Ã©viter l'asphyxie racinaire, et un excellent drainage pour Ã©viter la stagnation de l'eau. Ce mÃ©lange est utilisÃ© avec succÃ¨s dans nos fermes partenaires en CÃ´te d'Ivoire." : "For greenhouse tomatoes in Africa, we recommend 70% coco peat + 30% perlite for optimal water retention and root aeration.",
+            a: lang === 'fr' ? "Pour la culture de tomates sous serre en Afrique, nous recommandons un mélange de 70% tourbe de coco + 30% perlite. Ce mélange offre une rétention d'eau suffisante pour éviter le stress hydrique entre les irrigations, une aération racinaire optimale pour éviter l'asphyxie racinaire, et un excellent drainage pour éviter la stagnation de l'eau. Ce mélange est utilisé avec succès dans nos fermes partenaires en Côte d'Ivoire." : "For greenhouse tomatoes in Africa, we recommend 70% coco peat + 30% perlite for optimal water retention and root aeration.",
           },
           {
             q: lang === 'fr' ? "Arbre Bio Africa livre-t-il les substrats dans toute l'Afrique de l'Ouest ?" : "Does Arbre Bio Africa deliver substrates across West Africa?",
-            a: lang === 'fr' ? "Oui. Arbre Bio Africa assure la livraison de substrats de culture dans toute la CÃ´te d'Ivoire ainsi que vers les pays voisins (Ghana, Burkina Faso, Mali, SÃ©nÃ©gal, BÃ©nin). Contactez-nous pour un devis de livraison adaptÃ© Ã  votre volume de commande." : "Yes. Arbre Bio Africa delivers growing substrates across CÃ´te d'Ivoire and to neighbouring West African countries.",
+            a: lang === 'fr' ? "Oui. Arbre Bio Africa assure la livraison de substrats de culture dans toute la Côte d'Ivoire ainsi que vers les pays voisins (Ghana, Burkina Faso, Mali, Sénégal, Bénin). Contactez-nous pour un devis de livraison adapté à votre volume de commande." : "Yes. Arbre Bio Africa delivers growing substrates across Côte d'Ivoire and to neighbouring West African countries.",
           }
         ].map((item, i) => (
           <div class="bg-white rounded-xl p-6 shadow-sm">
@@ -250,10 +250,10 @@ const p = `/${lang}`;
   <section class="py-16 px-4 bg-green-900 text-white">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-4">
-        {lang === 'fr' ? "PrÃªt Ã  Optimiser Votre Production ?" : lang === 'es' ? "Â¿Listo para Optimizar su ProducciÃ³n?" : "Ready to Optimise Your Production?"}
+        {lang === 'fr' ? "Prêt à Optimiser Votre Production ?" : lang === 'es' ? "¿Listo para Optimizar su Producción?" : "Ready to Optimise Your Production?"}
       </h2>
       <p class="text-emerald-200 text-lg mb-8 max-w-2xl mx-auto">
-        {lang === 'fr' ? "Contactez nos experts en agriculture de prÃ©cision pour une recommandation personnalisÃ©e de substrats adaptÃ©e Ã  votre culture et Ã  votre rÃ©gion." : lang === 'es' ? "Contacte a nuestros expertos para una recomendaciÃ³n personalizada de sustratos." : "Contact our precision agriculture experts for personalised substrate recommendations."}
+        {lang === 'fr' ? "Contactez nos experts en agriculture de précision pour une recommandation personnalisée de substrats adaptée à votre culture et à votre région." : lang === 'es' ? "Contacte a nuestros expertos para una recomendación personalizada de sustratos." : "Contact our precision agriculture experts for personalised substrate recommendations."}
       </p>
       <div class="flex flex-wrap gap-4 justify-center">
         <a href={`/${lang}/contact`} class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
@@ -274,18 +274,18 @@ const p = `/${lang}`;
     "mainEntity": lang === 'fr' ? [
       {
         "@type": "Question",
-        "name": "Quelle est la diffÃ©rence entre fibre de coco et tourbe de coco ?",
+        "name": "Quelle est la différence entre fibre de coco et tourbe de coco ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "La fibre de coco (coir fibre) est composÃ©e de fibres longues pour l'aÃ©ration et le drainage. La tourbe de coco (coco peat) est la poudre fine avec une meilleure rÃ©tention d'eau. Les deux sont souvent utilisÃ©s en mÃ©lange pour l'Ã©quilibre parfait."
+          "text": "La fibre de coco (coir fibre) est composée de fibres longues pour l'aération et le drainage. La tourbe de coco (coco peat) est la poudre fine avec une meilleure rétention d'eau. Les deux sont souvent utilisés en mélange pour l'équilibre parfait."
         }
       },
       {
         "@type": "Question",
-        "name": "Les substrats coco sont-ils adaptÃ©s au climat de la CÃ´te d'Ivoire et d'Afrique de l'Ouest ?",
+        "name": "Les substrats coco sont-ils adaptés au climat de la Côte d'Ivoire et d'Afrique de l'Ouest ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Oui. La tourbe de coco est parfaitement adaptÃ©e aux pays Ã  climat chaud et humide comme la CÃ´te d'Ivoire. Elle rÃ©siste aux tempÃ©ratures Ã©levÃ©es et se dÃ©grade plus lentement que la tourbe de sphaigne sous les tropiques."
+          "text": "Oui. La tourbe de coco est parfaitement adaptée aux pays à climat chaud et humide comme la Côte d'Ivoire. Elle résiste aux températures élevées et se dégrade plus lentement que la tourbe de sphaigne sous les tropiques."
         }
       },
       {
@@ -293,7 +293,7 @@ const p = `/${lang}`;
         "name": "Quel substrat choisir pour cultiver des tomates sous serre en Afrique ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Pour la culture de tomates sous serre en Afrique, nous recommandons 70% tourbe de coco + 30% perlite. Ce mÃ©lange offre une rÃ©tention d'eau optimale et une excellente aÃ©ration racinaire."
+          "text": "Pour la culture de tomates sous serre en Afrique, nous recommandons 70% tourbe de coco + 30% perlite. Ce mélange offre une rétention d'eau optimale et une excellente aération racinaire."
         }
       }
     ] : []
