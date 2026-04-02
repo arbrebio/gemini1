@@ -12,8 +12,8 @@ const p = `/${lang}`;
 const caseStudies = [
   {
     title: "Large-Scale Tomato Greenhouse",
-    client: "Marie KonÃÂ©",
-    location: "Yamoussoukro, CÃÂ´te d\'Ivoire",
+    client: "Marie KonÃÂÃÂ©",
+    location: "Yamoussoukro, CÃÂÃÂ´te d\'Ivoire",
     description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
     challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
     solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
@@ -39,7 +39,7 @@ const caseStudies = [
   {
     title: "Hydroponic Vegetable Farm",
     client: "Sarah Mensah",
-    location: "Abidjan, CÃÂ´te d\'Ivoire",
+    location: "Abidjan, CÃÂÃÂ´te d\'Ivoire",
     description: "Establishment of hydroponic vegetable farm for premium market supply",
     challenge: "Limited arable land and soil quality issues preventing profitable farming",
     solution: "Installation of complete hydroponic system with coco peat growing media",
@@ -52,7 +52,7 @@ const caseStudies = [
 ];
 ---
 
-<Layout title={`${T.ssHeroTitle} | Arbre Bio Africa`} description={T.ssHeroDesc}>
+<Layout title={({'fr':'Témoignages & Résultats Agricoles | Arbre Bio Africa','en':'Agriculture Success Stories | Arbre Bio Africa','es':'Casos de Éxito en Agricultura | Arbre Bio Africa','af':'Suksesverhale in Landbou | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Agriculture Success Stories | Arbre Bio Africa'} description={T.ssHeroDesc}>
 
   <section class="relative h-[50vh] flex items-center">
     <div class="absolute inset-0 z-0">
@@ -70,7 +70,7 @@ const caseStudies = [
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-3xl font-bold mb-2">{study.title}</h2>
-          <p class="text-gray-500 mb-8">{study.client} Ã¢ÂÂ {study.location}</p>
+          <p class="text-gray-500 mb-8">{study.client} ÃÂ¢ÃÂÃÂ {study.location}</p>
           <p class="text-gray-600 mb-8 text-lg">{study.description}</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div class="bg-red-50 p-6 rounded-lg">
@@ -86,7 +86,7 @@ const caseStudies = [
               <ul class="space-y-1">
                 {study.results.map(r => (
                   <li class="text-sm text-gray-700 flex items-start gap-1">
-                    <span class="text-green-600 font-bold mt-0.5">Ã¢ÂÂ</span>{r}
+                    <span class="text-green-600 font-bold mt-0.5">ÃÂ¢ÃÂÃÂ</span>{r}
                   </li>
                 ))}
               </ul>
@@ -130,42 +130,42 @@ const caseStudies = [
   <!-- Results Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-4">Résultats Mesurables de l'Agriculture de Précision en Afrique</h2>
-      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">L'agriculture de précision transforme les exploitations africaines. Nos clients en Côte d'Ivoire et en Afrique de l'Ouest obtiennent des résultats concrets grâce à nos serres, systèmes d'irrigation, substrats fibre de coco et programmes de fertilisation.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">RÃ©sultats Mesurables de l'Agriculture de PrÃ©cision en Afrique</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">L'agriculture de prÃ©cision transforme les exploitations africaines. Nos clients en CÃ´te d'Ivoire et en Afrique de l'Ouest obtiennent des rÃ©sultats concrets grÃ¢ce Ã  nos serres, systÃ¨mes d'irrigation, substrats fibre de coco et programmes de fertilisation.</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-green-700">🍅 Tomates sous Serre — Yamoussoukro</h3>
-          <p class="text-gray-600 mb-4">Un producteur de Yamoussoukro est passé de 8 tonnes/ha en plein champ à <strong>47 tonnes/ha</strong> sous serre tunnel avec irrigation goutte-à-goutte et substrat fibre de coco Arbre Bio. Le substrat tourbe de coco a permis une gestion optimale de l'eau et des engrais hydrosolubles.</p>
+          <h3 class="text-2xl font-bold mb-4 text-green-700">ð Tomates sous Serre â Yamoussoukro</h3>
+          <p class="text-gray-600 mb-4">Un producteur de Yamoussoukro est passÃ© de 8 tonnes/ha en plein champ Ã  <strong>47 tonnes/ha</strong> sous serre tunnel avec irrigation goutte-Ã -goutte et substrat fibre de coco Arbre Bio. Le substrat tourbe de coco a permis une gestion optimale de l'eau et des engrais hydrosolubles.</p>
           <div class="grid grid-cols-3 gap-4">
             <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">+488%</div><div class="text-sm text-gray-600">Rendement</div></div>
-            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">-65%</div><div class="text-sm text-gray-600">Eau utilisée</div></div>
+            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">-65%</div><div class="text-sm text-gray-600">Eau utilisÃ©e</div></div>
             <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">22 mois</div><div class="text-sm text-gray-600">ROI</div></div>
           </div>
         </div>
         <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-blue-700">🫑 Poivrons Hydroponiques — Abidjan</h3>
-          <p class="text-gray-600 mb-4">Une ferme péri-urbaine d'Abidjan cultive des poivrons colorés en hors-sol avec substrat perlite-fibre de coco et fertilisation de précision. Production continue 12 mois/an, livrée directement aux supermarchés locaux.</p>
+          <h3 class="text-2xl font-bold mb-4 text-blue-700">ð« Poivrons Hydroponiques â Abidjan</h3>
+          <p class="text-gray-600 mb-4">Une ferme pÃ©ri-urbaine d'Abidjan cultive des poivrons colorÃ©s en hors-sol avec substrat perlite-fibre de coco et fertilisation de prÃ©cision. Production continue 12 mois/an, livrÃ©e directement aux supermarchÃ©s locaux.</p>
           <div class="grid grid-cols-3 gap-4">
             <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">52 t/ha</div><div class="text-sm text-gray-600">Rendement</div></div>
             <div class="text-center bg-purple-50 p-3 rounded-lg"><div class="text-2xl font-bold text-purple-600">12 mois</div><div class="text-sm text-gray-600">Saison</div></div>
-            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">3x</div><div class="text-sm text-gray-600">Prix marché</div></div>
+            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">3x</div><div class="text-sm text-gray-600">Prix marchÃ©</div></div>
           </div>
         </div>
         <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-purple-700">🥒 Concombres Irrigués — Bouaké</h3>
-          <p class="text-gray-600 mb-4">Grâce à un système d'aspersion programmé et à un programme phytosanitaire intégré, ce producteur de Bouaké a réduit ses pertes post-récolte de 40 % et triplé son chiffre d'affaires en deux saisons.</p>
+          <h3 class="text-2xl font-bold mb-4 text-purple-700">ð¥ Concombres IrriguÃ©s â BouakÃ©</h3>
+          <p class="text-gray-600 mb-4">GrÃ¢ce Ã  un systÃ¨me d'aspersion programmÃ© et Ã  un programme phytosanitaire intÃ©grÃ©, ce producteur de BouakÃ© a rÃ©duit ses pertes post-rÃ©colte de 40 % et triplÃ© son chiffre d'affaires en deux saisons.</p>
           <div class="grid grid-cols-3 gap-4">
             <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">-40%</div><div class="text-sm text-gray-600">Pertes</div></div>
             <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">3x</div><div class="text-sm text-gray-600">Chiffre d'affaires</div></div>
-            <div class="text-center bg-yellow-50 p-3 rounded-lg"><div class="text-2xl font-bold text-yellow-600">2 saisons</div><div class="text-sm text-gray-600">Durée</div></div>
+            <div class="text-center bg-yellow-50 p-3 rounded-lg"><div class="text-2xl font-bold text-yellow-600">2 saisons</div><div class="text-sm text-gray-600">DurÃ©e</div></div>
           </div>
         </div>
         <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-orange-700">🌿 Herbes Aromatiques — Dakar</h3>
-          <p class="text-gray-600 mb-4">Une startup agri-tech de Dakar cultive basilic, menthe et persil sous serre avec substrat tourbe de coco et éclairage LED. Cycles de production de 3 semaines, distribution dans les hôtels et restaurants haut de gamme du Sénégal.</p>
+          <h3 class="text-2xl font-bold mb-4 text-orange-700">ð¿ Herbes Aromatiques â Dakar</h3>
+          <p class="text-gray-600 mb-4">Une startup agri-tech de Dakar cultive basilic, menthe et persil sous serre avec substrat tourbe de coco et Ã©clairage LED. Cycles de production de 3 semaines, distribution dans les hÃ´tels et restaurants haut de gamme du SÃ©nÃ©gal.</p>
           <div class="grid grid-cols-3 gap-4">
             <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">18 cycles/an</div><div class="text-sm text-gray-600">Production</div></div>
-            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">5x</div><div class="text-sm text-gray-600">Valeur ajoutée</div></div>
+            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">5x</div><div class="text-sm text-gray-600">Valeur ajoutÃ©e</div></div>
             <div class="text-center bg-red-50 p-3 rounded-lg"><div class="text-2xl font-bold text-red-600">0 pesticide</div><div class="text-sm text-gray-600">Chimique</div></div>
           </div>
         </div>
@@ -176,28 +176,28 @@ const caseStudies = [
   <!-- FAQ Section -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h2 class="text-3xl font-bold text-center mb-4">Questions Fréquentes sur les Résultats Agricoles</h2>
-      <p class="text-gray-600 text-center mb-12">Découvrez comment nos clients africains transforment leur agriculture grâce aux techniques de précision.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">Questions FrÃ©quentes sur les RÃ©sultats Agricoles</h2>
+      <p class="text-gray-600 text-center mb-12">DÃ©couvrez comment nos clients africains transforment leur agriculture grÃ¢ce aux techniques de prÃ©cision.</p>
       <div class="space-y-4">
         <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Les résultats varient selon la culture, mais en moyenne nos clients obtiennent : tomates 40 à 60 t/ha (vs 8 à 12 t/ha en plein champ), poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha, laitues 30 cycles/an. Ces performances sont rendues possibles grâce à la combinaison serre + irrigation de précision + substrat fibre de coco + fertilisation hydrosoluble adaptée.</div>
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quels rendements peut-on espÃ©rer avec une serre et l'irrigation goutte-Ã -goutte en Afrique ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Les rÃ©sultats varient selon la culture, mais en moyenne nos clients obtiennent : tomates 40 Ã  60 t/ha (vs 8 Ã  12 t/ha en plein champ), poivrons 45 Ã  55 t/ha, concombres 60 Ã  80 t/ha, laitues 30 cycles/an. Ces performances sont rendues possibles grÃ¢ce Ã  la combinaison serre + irrigation de prÃ©cision + substrat fibre de coco + fertilisation hydrosoluble adaptÃ©e.</div>
         </details>
         <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte par rapport à l'irrigation traditionnelle ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">L'irrigation goutte-à-goutte avec programmateur intelligent permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation par gravité ou aspersion classique. En Côte d'Ivoire, où l'eau représente 30 à 40 % des coûts d'exploitation maraîchère, cette économie est critique pour la rentabilité. Le substrat tourbe de coco amplifie encore cet effet grâce à sa capacité de rétention d'eau supérieure à la terre.</div>
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Combien d'eau Ã©conomise-t-on avec l'irrigation goutte-Ã -goutte par rapport Ã  l'irrigation traditionnelle ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">L'irrigation goutte-Ã -goutte avec programmateur intelligent permet d'Ã©conomiser entre 50 % et 70 % d'eau par rapport Ã  l'irrigation par gravitÃ© ou aspersion classique. En CÃ´te d'Ivoire, oÃ¹ l'eau reprÃ©sente 30 Ã  40 % des coÃ»ts d'exploitation maraÃ®chÃ¨re, cette Ã©conomie est critique pour la rentabilitÃ©. Le substrat tourbe de coco amplifie encore cet effet grÃ¢ce Ã  sa capacitÃ© de rÃ©tention d'eau supÃ©rieure Ã  la terre.</div>
         </details>
         <details class="border border-gray-200 rounded-lg overflow-hidden">
           <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quel est le retour sur investissement (ROI) typique pour une installation de serre en Afrique de l'Ouest ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Pour une installation complète (serre tunnel 2 000 m² + irrigation + substrats), le retour sur investissement est généralement atteint en 18 à 36 mois selon la culture et le circuit de distribution. Les cultures à haute valeur ajoutée comme les tomates cerise, poivrons, herbes aromatiques et fraises permettent les ROI les plus rapides (12 à 24 mois). Contactez-nous pour une étude de rentabilité personnalisée.</div>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Pour une installation complÃ¨te (serre tunnel 2 000 mÂ² + irrigation + substrats), le retour sur investissement est gÃ©nÃ©ralement atteint en 18 Ã  36 mois selon la culture et le circuit de distribution. Les cultures Ã  haute valeur ajoutÃ©e comme les tomates cerise, poivrons, herbes aromatiques et fraises permettent les ROI les plus rapides (12 Ã  24 mois). Contactez-nous pour une Ã©tude de rentabilitÃ© personnalisÃ©e.</div>
         </details>
         <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, la fibre de coco et la tourbe de coco sont particulièrement bien adaptées aux conditions africaines. Contrairement à la tourbe classique, le coco peat résiste à la chaleur, conserve sa structure sur 3 à 5 ans, ne se compacte pas et maintient une porosité stable même sous des températures de 35-40°C. Sa capacité de rétention d'eau (650 % de son poids) et son pH neutre (5,5-6,5) en font le substrat idéal pour la culture maraîchère intensive en Afrique.</div>
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">La fibre de coco (coco peat) est-elle adaptÃ©e aux conditions climatiques africaines ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, la fibre de coco et la tourbe de coco sont particuliÃ¨rement bien adaptÃ©es aux conditions africaines. Contrairement Ã  la tourbe classique, le coco peat rÃ©siste Ã  la chaleur, conserve sa structure sur 3 Ã  5 ans, ne se compacte pas et maintient une porositÃ© stable mÃªme sous des tempÃ©ratures de 35-40Â°C. Sa capacitÃ© de rÃ©tention d'eau (650 % de son poids) et son pH neutre (5,5-6,5) en font le substrat idÃ©al pour la culture maraÃ®chÃ¨re intensive en Afrique.</div>
         </details>
         <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa propose-t-il un suivi après installation pour garantir les résultats ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, chaque projet inclut un programme de suivi agronomique post-installation : visites terrain régulières, analyses de nutriments dans les plantes et substrats, ajustement des programmes de fertilisation et de protection phytosanitaire, formation continue des équipes. Notre objectif est que chaque client atteigne les rendements cibles dans les 2 premières saisons et les maintienne sur le long terme.</div>
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa propose-t-il un suivi aprÃ¨s installation pour garantir les rÃ©sultats ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, chaque projet inclut un programme de suivi agronomique post-installation : visites terrain rÃ©guliÃ¨res, analyses de nutriments dans les plantes et substrats, ajustement des programmes de fertilisation et de protection phytosanitaire, formation continue des Ã©quipes. Notre objectif est que chaque client atteigne les rendements cibles dans les 2 premiÃ¨res saisons et les maintienne sur le long terme.</div>
         </details>
       </div>
     </div>
@@ -208,11 +208,11 @@ const caseStudies = [
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {"@type":"Question","name":"Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne : tomates 40 à 60 t/ha, poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha. Ces performances combinent serre, irrigation de précision, substrat fibre de coco et fertilisation hydrosoluble."}},
-      {"@type":"Question","name":"Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte ?","acceptedAnswer":{"@type":"Answer","text":"L'irrigation goutte-à-goutte permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation traditionnelle. Le substrat tourbe de coco amplifie cet effet grâce à sa capacité de rétention d'eau."}},
-      {"@type":"Question","name":"Quel est le retour sur investissement typique pour une serre en Afrique de l'Ouest ?","acceptedAnswer":{"@type":"Answer","text":"Pour une installation complète (serre 2 000 m² + irrigation + substrats), le ROI est atteint en 18 à 36 mois. Les cultures à haute valeur ajoutée permettent un ROI en 12 à 24 mois."}},
-      {"@type":"Question","name":"La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?","acceptedAnswer":{"@type":"Answer","text":"Oui, le coco peat résiste à la chaleur, conserve sa structure 3 à 5 ans, ne se compacte pas à 35-40°C et retient 650 % de son poids en eau. C'est le substrat idéal pour l'Afrique."}},
-      {"@type":"Question","name":"Arbre Bio Africa propose-t-il un suivi après installation ?","acceptedAnswer":{"@type":"Answer","text":"Oui, chaque projet inclut un suivi agronomique : visites terrain, analyses substrats, ajustement fertilisation et protection phytosanitaire, formation des équipes pour atteindre les rendements cibles."}}
+      {"@type":"Question","name":"Quels rendements peut-on espÃ©rer avec une serre et l'irrigation goutte-Ã -goutte en Afrique ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne : tomates 40 Ã  60 t/ha, poivrons 45 Ã  55 t/ha, concombres 60 Ã  80 t/ha. Ces performances combinent serre, irrigation de prÃ©cision, substrat fibre de coco et fertilisation hydrosoluble."}},
+      {"@type":"Question","name":"Combien d'eau Ã©conomise-t-on avec l'irrigation goutte-Ã -goutte ?","acceptedAnswer":{"@type":"Answer","text":"L'irrigation goutte-Ã -goutte permet d'Ã©conomiser entre 50 % et 70 % d'eau par rapport Ã  l'irrigation traditionnelle. Le substrat tourbe de coco amplifie cet effet grÃ¢ce Ã  sa capacitÃ© de rÃ©tention d'eau."}},
+      {"@type":"Question","name":"Quel est le retour sur investissement typique pour une serre en Afrique de l'Ouest ?","acceptedAnswer":{"@type":"Answer","text":"Pour une installation complÃ¨te (serre 2 000 mÂ² + irrigation + substrats), le ROI est atteint en 18 Ã  36 mois. Les cultures Ã  haute valeur ajoutÃ©e permettent un ROI en 12 Ã  24 mois."}},
+      {"@type":"Question","name":"La fibre de coco (coco peat) est-elle adaptÃ©e aux conditions climatiques africaines ?","acceptedAnswer":{"@type":"Answer","text":"Oui, le coco peat rÃ©siste Ã  la chaleur, conserve sa structure 3 Ã  5 ans, ne se compacte pas Ã  35-40Â°C et retient 650 % de son poids en eau. C'est le substrat idÃ©al pour l'Afrique."}},
+      {"@type":"Question","name":"Arbre Bio Africa propose-t-il un suivi aprÃ¨s installation ?","acceptedAnswer":{"@type":"Answer","text":"Oui, chaque projet inclut un suivi agronomique : visites terrain, analyses substrats, ajustement fertilisation et protection phytosanitaire, formation des Ã©quipes pour atteindre les rendements cibles."}}
     ]
   }
   </script>
