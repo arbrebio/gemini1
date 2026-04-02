@@ -15,7 +15,7 @@ export const config = {
     offices: [
       {
         city: 'Abidjan',
-        country: 'CÃ´te d\'Ivoire',
+        country: 'Côte d\'Ivoire',
         address: 'Cocody Riviera 3, Jacque Prevert 2',
         phone: '+225 21 21 80 69 50',
         email: 'farms@arbrebio.com',
