@@ -29,7 +29,7 @@ const {
   modifiedTime
 } = Astro.props;
 
-const lang = defaultLang;
+const lang = (Astro.params.lang ?? defaultLang) as typeof defaultLang;
 const t = useTranslations(lang);
 
 // Optimize meta content
@@ -124,7 +124,7 @@ const breadcrumbData = {
         },
         optional: {
           siteName: "Arbre Bio Africa",
-          locale: lang,
+          locale: ({'en':'en_US','fr':'fr_FR','es':'es_ES','af':'af_ZA'} as Record<string,string>)[lang] || 'en_US',
           ...(author && { author }),
           ...(publishedTime && { publishedTime }),
           ...(modifiedTime && { modifiedTime })
@@ -149,7 +149,6 @@ const breadcrumbData = {
           { name: "apple-mobile-web-app-status-bar-style", content: "default" }
         ],
         link: [
-          { rel: "canonical", href: canonicalURL },
           { rel: "sitemap", href: "/sitemap-index.xml" }
         ]
       }}
@@ -205,15 +204,8 @@ const breadcrumbData = {
       }
     </script>
   
-    <meta property="og:locale" content={
-      (() => {
-        const l = (Astro.currentLocale || Astro.params?.lang || 'en').toLowerCase();
-        const map = { fr: 'fr_FR', en: 'en_US', es: 'es_ES', af: 'af_ZA' };
-        return (map as Record<string, string>)[l] || 'fr_FR';
-      })()
-    } />
   
-    <meta property="og:description" content={description || "Solutions d'agriculture de prÃÂ©cision en CÃÂ´te d'Ivoire et en Afrique Ã¢ÂÂ Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
+    <meta property="og:description" content={description || "Solutions d'agriculture de prÃÂÃÂ©cision en CÃÂÃÂ´te d'Ivoire et en Afrique ÃÂ¢ÃÂÃÂ Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
   
     {/* Hreflang - Multilingual SEO */}
     {(() => {
@@ -246,7 +238,7 @@ const breadcrumbData = {
     "@type": ["Organization", "LocalBusiness"],
     "@id": "https://www.arbrebio.com/#organization",
     "name": "Arbre Bio Africa",
-    "alternateName": "Arbre Bio Côte d'Ivoire",
+    "alternateName": "Arbre Bio CÃ´te d'Ivoire",
     "url": "https://www.arbrebio.com",
     "logo": {
       "@type": "ImageObject",
@@ -254,7 +246,7 @@ const breadcrumbData = {
       "width": 200,
       "height": 60
     },
-    "description": "Leader en agriculture de précision en Afrique. Serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
+    "description": "Leader en agriculture de prÃ©cision en Afrique. Serres agricoles, irrigation goutte-Ã -goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
     "telephone": "+2250500552525",
     "email": "farms@arbrebio.com",
     "address": {
@@ -265,20 +257,20 @@ const breadcrumbData = {
     },
     "areaServed": [
       { "@type": "Continent", "name": "Africa" },
-      { "@type": "Country", "name": "Côte d'Ivoire" },
+      { "@type": "Country", "name": "CÃ´te d'Ivoire" },
       { "@type": "Country", "name": "Senegal" },
       { "@type": "Country", "name": "Ghana" },
       { "@type": "Country", "name": "Burkina Faso" }
     ],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Solutions Agriculture de Précision",
+      "name": "Solutions Agriculture de PrÃ©cision",
       "itemListElement": [
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serres agricoles tunnel et multi-chapelles" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Systèmes d'irrigation goutte-à-goutte" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "SystÃ¨mes d'irrigation goutte-Ã -goutte" } },
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Substrats coco peat et growing media" } },
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fertilisants et phytosanitaires" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de précision" } }
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de prÃ©cision" } }
       ]
     },
     "sameAs": [
