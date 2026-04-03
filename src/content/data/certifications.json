@@ -1,0 +1,17 @@
+[
+  {
+    "name": "ISO 9001:2015",
+    "description": "Quality Management System",
+    "icon": "medal"
+  },
+  {
+    "name": "EN 1090-1",
+    "description": "Structural Steel Components",
+    "icon": "greenhouse"
+  },
+  {
+    "name": "EN 13206",
+    "description": "Greenhouse Covering Materials",
+    "icon": "leaf"
+  }
+]

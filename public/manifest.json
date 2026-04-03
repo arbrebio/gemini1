@@ -1,0 +1,54 @@
+{
+  "name": "Arbre Bio Africa",
+  "short_name": "Arbre Bio",
+  "description": "Leading provider of precision farming solutions in Africa",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#194642",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/79cS79J.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/79cS79J.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/79cS79J.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Contact Arbre Bio Africa",
+      "url": "/contact"
+    },
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "description": "Read our latest articles",
+      "url": "/blog"
+    }
+  ],
+  "categories": ["agriculture", "business", "productivity"],
+  "screenshots": [
+    {
+      "src": "https://i.imgur.com/Aab6e6c.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide",
+      "label": "Arbre Bio Africa Homepage"
+    }
+  ],
+  "lang": "en",
+  "dir": "ltr"
+}

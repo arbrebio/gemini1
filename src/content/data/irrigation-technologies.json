@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Drip Irrigation Systems",
+    "description": "State-of-the-art drip irrigation technology that delivers precise amounts of water directly to plant roots, maximizing efficiency and crop yields while minimizing water waste.",
+    "specs": [
+      { "label": "Flow Rate", "value": "1-8 L/hour" },
+      { "label": "Spacing Options", "value": "20-100 cm" },
+      { "label": "Operating Pressure", "value": "1-4 bar" },
+      { "label": "Filtration", "value": "120 mesh" }
+    ],
+    "benefits": [
+      "Up to 70% water savings compared to traditional irrigation",
+      "Uniform water distribution across all crops",
+      "Reduced fertilizer leaching",
+      "Minimal soil erosion and weed growth"
+    ],
+    "image": "https://imgur.com/6XtSwqS.jpg",
+    "caseStudy": {
+      "title": "Tomato Farm in Ghana",
+      "result": "65% increase in yield, 40% reduction in water usage"
+    }
+  },
+  {
+    "title": "Sprinkler Systems",
+    "description": "Advanced sprinkler systems featuring precision water distribution and smart pressure regulation. Ideal for larger fields and specific crop types.",
+    "specs": [
+      { "label": "Coverage Radius", "value": "5-25 meters" },
+      { "label": "Flow Rate", "value": "500-2000 L/hour" },
+      { "label": "Pressure Range", "value": "2-5 bar" },
+      { "label": "Rotation", "value": "360° coverage" }
+    ],
+    "benefits": [
+      "Even water distribution pattern",
+      "Adjustable spray patterns for different crops",
+      "Durable construction for long service life",
+      "Low maintenance requirements"
+    ],
+    "image": "https://imgur.com/fwHJKYs.jpg",
+    "caseStudy": {
+      "title": "Maize Farm in Kenya",
+      "result": "45% increase in crop uniformity, 30% water savings"
+    }
+  }
+]

@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from "../../../layouts/Layout.astro";
+import { useT } from "../../../lib/translations";
+import type { Language } from "../../../lib/i18n";
+
+// Generate paths for all blog posts in all 3 languages
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const langs = ['fr', 'es', 'af'];
+  return posts.flatMap(post =>
+    langs.map(lang => ({
+      params: { lang, slug: post.slug },
+      props: { post },
+    }))
+  );
+}
+
+const { lang } = Astro.params as { lang: Language };
+const { post } = Astro.props;
+const { Content } = await post.render();
+const T = useT(lang as any);
+const p = `/${lang}`;
+
+const localeMap: Record<string, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA', en: 'en-US' };
+const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+}).format(date);
+---
+
+<Layout title={post.data.title} description={post.data.description} image={post.data.image}>
+
+  <!-- Hero -->
+  <section class="relative h-[45vh] flex items-end pb-12">
+    <div class="absolute inset-0 z-0">
+      <img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-primary text-white text-sm px-3 py-1 rounded-full capitalize">{post.data.category.replace('-', ' ')}</span>
+          <span class="text-white/80 text-sm">{formatDate(post.data.pubDate)}</span>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-bold text-white mb-2">{post.data.title}</h1>
+        <p class="text-white/80">{T.byAuthor} {post.data.author}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Article Content -->
+  <section class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+
+        <!-- Navigation back to blog -->
+        <a href={`${p}/blog`} class="inline-flex items-center text-primary hover:text-primary-600 font-semibold mb-8 transition-colors">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          {lang === 'fr' ? 'Retour au Blog' : lang === 'es' ? 'Volver al Blog' : 'Terug na Blog'}
+        </a>
+
+        <!-- Article body -->
+        <article class="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primary prose-img:rounded-xl prose-img:shadow-lg">
+          <Content/>
+        </article>
+
+        <!-- Author & Share -->
+        <div class="mt-12 pt-8 border-t border-gray-200">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <span class="text-primary font-bold text-sm">{post.data.author.charAt(0)}</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800">{post.data.author}</p>
+                <p class="text-sm text-gray-500">Arbre Bio Africa</p>
+              </div>
+            </div>
+            <a href={`${p}/blog`} class="inline-flex items-center bg-primary text-white px-5 py-2.5 rounded-full hover:bg-primary-600 transition-colors text-sm font-medium">
+              {lang === 'fr' ? 'Plus d\'articles' : lang === 'es' ? 'Más artículos' : 'Meer artikels'}
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-gray-50 py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">{T.ctaTitle}</h2>
+      <p class="text-gray-600 mb-8 max-w-xl mx-auto">{T.ctaSubtitle}</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${p}/contact`} class="bg-primary text-white px-8 py-3 rounded-full text-lg hover:bg-primary-600 transition-colors">{T.freeConsultation}</a>
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

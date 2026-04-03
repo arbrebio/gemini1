@@ -1,0 +1,70 @@
+---
+import { generateSrcSet, generateSizes, optimizeImageUrl, getWebPUrl } from '../lib/imageOptimization';
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  sizes?: string;
+  class?: string;
+  useWebP?: boolean;
+  responsive?: boolean;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+  fetchpriority,
+  sizes,
+  class: className,
+  useWebP = true,
+  responsive = false
+} = Astro.props;
+
+// Generate responsive attributes
+const srcset = undefined;
+const sizesAttr = undefined;
+const optimizedSrc = width ? optimizeImageUrl(src, width) : src;
+const webpSrc = null;
+---
+
+{useWebP && webpSrc ? (
+  <picture>
+    <source
+      srcset={webpSrc}
+      type="image/webp"
+      sizes={sizesAttr || undefined}
+    />
+    <img
+      src={optimizedSrc}
+      srcset={srcset || undefined}
+      sizes={sizesAttr || undefined}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      class={className}
+      decoding="async"
+    />
+  </picture>
+) : (
+  <img
+    src={optimizedSrc}
+    srcset={srcset || undefined}
+    sizes={sizesAttr || undefined}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    class={className}
+    decoding="async"
+  />
+)}

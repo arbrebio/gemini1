@@ -1,0 +1,295 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface CaseStudy {
+  title: string;
+  client: string;
+  location: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  results: string[];
+  testimonial: string;
+  clientImage: string;
+  beforeImage: string;
+  afterImage: string;
+}
+
+const caseStudies: CaseStudy[] = [
+  {
+    title: "Large-Scale Tomato Greenhouse",
+    client: "Marie Koné",
+    location: "Yamoussoukro, Côte d'Ivoire",
+    description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
+    challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
+    solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
+    results: [
+      "300% increase in annual yield",
+      "Water usage reduced by 60%",
+      "Year-round production achieved",
+      "Product quality improvement leading to premium market prices"
+    ],
+    testimonial: "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+    afterImage: "https://imgur.com/hjafzfj.jpg"
+  },
+  {
+    title: "Smart Irrigation for Cocoa Farm",
+    client: "Emmanuel Osei",
+    location: "Kumasi, Ghana",
+    description: "Modernization of 50-hectare cocoa plantation with smart irrigation",
+    challenge: "Drought periods severely impacted crop yields and quality",
+    solution: "Implementation of automated drip irrigation system with soil moisture monitoring",
+    results: [
+      "180% increase in cocoa yield",
+      "40% reduction in water consumption",
+      "Improved bean quality and consistency",
+      "Higher price per kg achieved through quality improvements"
+    ],
+    testimonial: "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",
+    clientImage: "https://imgur.com/m4XZt0I.jpg",
+    beforeImage: "https://imgur.com/Sm4hQzW.jpg",
+    afterImage: "https://imgur.com/FTly7JB.jpg"
+  },
+  {
+    title: "Vegetable Farm Transformation",
+    client: "Sarah Mensah",
+    location: "Abidjan, Côte d'Ivoire",
+    description: "Complete farm modernization with greenhouses and hydroponics",
+    challenge: "Limited growing space and inconsistent market supply",
+    solution: "Installation of hydroponic systems in modern greenhouses",
+    results: [
+      "500% increase in production per square meter",
+      "Year-round supply to premium markets",
+      "90% reduction in pest-related losses",
+      "Achieved organic certification"
+    ],
+    testimonial: "Moving to hydroponics in greenhouses has revolutionized our business. We're now the preferred supplier for several high-end restaurants and supermarkets.",
+    clientImage: "https://imgur.com/bjqispj.jpg",
+    beforeImage: "https://imgur.com/d6UGBx9.jpg",
+    afterImage: "https://imgur.com/mzATBKP.jpg"
+  },
+  {
+    title: "Pacobo, Toumodi Tropical Greenhouse 250 m² x 2",
+    client: "Ghassan",
+    location: "Pacobo, Côte d'Ivoire",
+    description: "Installation of two 250 m² greenhouses dedicated to tomato and vegetable crop nurseries.",
+    challenge: "Traditional nursery setups are under-performing, with insect pressure and excessive heat consistently preventing germination rates from reaching the 90% performance threshold.",
+    solution: "Deploy a climate-controlled tropical greenhouse with optimized airflow dynamics, paired with a fully integrated drip-irrigation and fertigation backbone engineered and installed by Arbre Bio Africa. This turnkey configuration drives germination performance up to 99.99%, ensuring predictable, uniform, and scalable seedling production.",
+    results: [
+      "Germination rates increased to a verified 99.99%",
+      "Uniform seedlings with reduced losses",
+      "More stable and efficient production cycle",
+      "Streamlined operations"
+    ],
+    testimonial: "Thanks to the greenhouse and drip-irrigation solution deployed by Arbre Bio Africa, our germination performance has completely transformed. We're now achieving 99.99% consistency, with strong, uniform seedlings every cycle. This upgrade streamlined our operations and reduced losses significantly. It's one of the best investments we've made.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://i.imgur.com/7LRhbGQ.jpg",
+    afterImage: "https://i.imgur.com/1BqfnT6.jpg"
+  },
+  {
+    title: "Brofodoume, Abidjan Tropical Greenhouse 500 m² x 2 (Tomato & Bell Pepper) PDC2V beneficiary",
+    client: "Coulibaly Fousseni",
+    location: "Brofodoume, Côte d'Ivoire",
+    description: "Installation of two 500 m² greenhouses dedicated to tomato and bell pepper crop horticulture.",
+    challenge: "Open-field cultivation exposed to insect infestations and inconsistent yields.",
+    solution: "Boost productivity with Arbre Bio Africa's tropical horticulture greenhouse, featuring advanced climate control, optimized airflow, and a fully integrated drip irrigation system for maximum crop performance.",
+    results: [
+      "Tomatoes: +65–80% yield increase with uniform fruits",
+      "Bell Peppers: +50–70% yield increase with larger fruits",
+      "Reduced pest damage significantly",
+      "35–40% water savings",
+      "Optimized nutrient delivery",
+      "Consistent harvests and higher profitability"
+    ],
+    testimonial: "Since installing Arbre Bio Africa's tropical greenhouse and drip irrigation system, our tomato and bell pepper yields have skyrocketed. The quality of the produce is outstanding, pest issues are virtually gone, and water usage has dropped significantly. This solution has transformed our farm into a highly productive, efficient, and profitable operation.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://i.imgur.com/V1agtHR.jpg",
+    afterImage: "https://i.imgur.com/RukeS15.jpg"
+  },
+  {
+    title: "Sassandra, Tropical Greenhouse (2) 400 m² + (1) 500 m² (Bell Pepper) PDC2V beneficiary",
+    client: "Konan Kouassi",
+    location: "Sassandra, Côte d'Ivoire",
+    description: "Installation of two 400 m² greenhouses and one 500 m² dedicated to tomato and bell pepper crop horticulture.",
+    challenge: "Cultivation in open-field conditions faced multiple risks, including insect infestations, low production rates, and uneven terrain, which complicates greenhouse installation.",
+    solution: "Implement climate control with optimized airflow within a tropical horticultural greenhouse. Stabilize the land for secure greenhouse installation and provide a borehole powered by a solar panel for reliable water supply.",
+    results: [
+      "Significant increase in crop yield due to controlled climate",
+      "Reduction in crop losses from insect attacks",
+      "Stable greenhouse installation on uneven land",
+      "Sustainable water supply via solar-powered borehole",
+      "Reduced operational costs",
+      "Overall improvement in production efficiency and profitability"
+    ],
+    testimonial: "Thanks to the tropical greenhouse solution, our farm has seen a remarkable increase in yield and crop quality. The climate control system keeps our plants healthy, while the solar-powered borehole ensures a reliable water supply. Even on uneven land, the greenhouse stands strong and secure. This investment has truly transformed our production and efficiency.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://i.imgur.com/yXO0iip.jpg",
+    afterImage: "https://i.imgur.com/2ae4sUI.jpg"
+  }
+];
+
+const testimonials = [
+  {
+    name: "Jean Kouassi",
+    role: "Farm Owner",
+    location: "Bouaké, Côte d'Ivoire",
+    image: "https://imgur.com/7P4E0Ac.jpg",
+    text: "The expertise and support from Arbre Bio have been invaluable. Our farm's productivity has doubled since implementing their solutions."
+  },
+  {
+    name: "Aisha Diallo",
+    role: "Agricultural Cooperative President",
+    location: "Abidjan, Côte d'Ivoire",
+    image: "https://imgur.com/MT6lgiD.jpg",
+    text: "Working with Arbre Bio has transformed our cooperative. Their technology and training have helped our members increase their incomes significantly."
+  },
+  {
+    name: "Kwame Olei",
+    role: "Commercial Farmer",
+    location: "Accra, Ghana",
+    image: "https://imgur.com/9Xk7pCh.jpg",
+    text: "The greenhouse solutions provided by Arbre Bio have exceeded our expectations. We're now producing premium quality vegetables year-round."
+  }
+];
+---
+
+<Layout
+  title="Success Stories - Real Results from African Farms"
+  description="Discover how Arbre Bio Africa has helped farmers across Africa increase yields and improve efficiency through modern agricultural solutions."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[50vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3"
+        alt="Successful African Farm" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Success Stories</h1>
+      <p class="text-xl text-white max-w-2xl">Real results from farms across Africa</p>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section class="py-16">
+    <div class="container mx-auto px-4">
+      {caseStudies.map((study, index) => (
+        <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h2 class="text-3xl font-bold mb-4">{study.title}</h2>
+              <div class="flex items-center mb-6">
+                <img 
+                  src={study.clientImage} 
+                  alt={study.client}
+                  class="w-16 h-16 rounded-full object-cover mr-4"
+                />
+                <div>
+                  <h3 class="font-bold">{study.client}</h3>
+                  <p class="text-gray-600">{study.location}</p>
+                </div>
+              </div>
+              <p class="text-gray-700 mb-6">{study.description}</p>
+              <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 class="font-bold mb-2">Challenge:</h3>
+                <p class="text-gray-700">{study.challenge}</p>
+              </div>
+              <div class="bg-primary/10 p-6 rounded-lg">
+                <h3 class="font-bold mb-2">Solution:</h3>
+                <p class="text-gray-700">{study.solution}</p>
+              </div>
+            </div>
+            <div>
+              <div class="grid grid-cols-1 gap-4">
+                <div>
+                  <p class="font-semibold mb-2">Before Implementation:</p>
+                  <img 
+                    src={study.beforeImage} 
+                    alt="Before implementation"
+                    class="w-full h-48 object-cover rounded-lg"
+                  />
+                </div>
+                <div>
+                  <p class="font-semibold mb-2">After Implementation:</p>
+                  <img 
+                    src={study.afterImage} 
+                    alt="After implementation"
+                    class="w-full h-48 object-cover rounded-lg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h3 class="font-bold mb-4">Results Achieved:</h3>
+              <ul class="space-y-2">
+                {study.results.map((result) => (
+                  <li class="flex items-center text-gray-700">
+                    <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {result}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="bg-primary/10 p-6 rounded-lg">
+              <h3 class="font-bold mb-4">Client Testimonial:</h3>
+              <blockquote class="text-gray-700 italic">"{study.testimonial}"</blockquote>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Testimonials Slider -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {testimonials.map((testimonial) => (
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex items-center mb-4">
+              <img 
+                src={testimonial.image} 
+                alt={testimonial.name}
+                class="w-16 h-16 rounded-full object-cover mr-4"
+              />
+              <div>
+                <h3 class="font-bold">{testimonial.name}</h3>
+                <p class="text-gray-600">{testimonial.role}</p>
+                <p class="text-gray-500 text-sm">{testimonial.location}</p>
+              </div>
+            </div>
+            <blockquote class="text-gray-700 italic">"{testimonial.text}"</blockquote>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
+      <p class="text-xl text-white mb-8">Join our growing list of successful farmers across Africa.</p>
+      <a 
+        href="/contact" 
+        class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
+      >
+        Get Started Today
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+</Layout>

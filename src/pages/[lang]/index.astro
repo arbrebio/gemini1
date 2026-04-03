@@ -1,0 +1,298 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
+import type { Language } from "../../lib/i18n";
+import EmojiIcon from '../../components/EmojiIcon.astro';
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+
+const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
+const p = `/${lang}`;
+
+const partners = [
+  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
+  { name: "CDTA El Mirador", logo: "https://i.imgur.com/P1DPCaB.jpg", url: "https://cdtaelmirador.com/" },
+  { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", url: "https://firca.ci/" },
+  { name: "Ministère de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
+  { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", url: "http://cnra.ci/" },
+  { name: "Eureka Network", logo: "https://i.imgur.com/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
+  { name: "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", url: "https://www.worldbank.org/ext/en/home" },
+  { name: "INP-HB ESA", logo: "https://i.imgur.com/da88PlP.jpg", url: "https://www.inphb.edu.ci/ecoles/esa" },
+  { name: "Econatur", logo: "https://i.imgur.com/6GjxYNG.jpg", url: "https://econatur.net/en/" },
+  { name: "Hortalan", logo: "https://i.imgur.com/hVXMDbV.jpg", url: "https://hortalan.com/" },
+  { name: "Agrogenia Biotech", logo: "https://i.imgur.com/9aFTawp.jpg", url: "https://agrogeniabiotech.com/" },
+  { name: "African Development Bank", logo: "https://i.imgur.com/xUbaryR.jpg", url: "https://www.afdb.org/en" },
+  { name: "AZUD", logo: "https://i.imgur.com/cYKFakb.jpg", url: "https://azud.com/en/" },
+  { name: "Novagric", logo: "https://i.imgur.com/cyocoKN.jpg", url: "https://novagric.com/" },
+  { name: "PDC2V", logo: "https://i.imgur.com/BMzFHHR.jpg", url: "https://pdc2v.ci/" },
+  { name: "Agence Emploi Jeunes", logo: "https://i.imgur.com/YTmTlBr.jpg", url: "https://www.agenceemploijeunes.ci/site/" },
+  { name: "GIZ", logo: "https://i.imgur.com/g3qxeY3.jpg", url: "https://www.giz.de/en/regions/africa/cote-divoire" },
+  { name: "OMRI", logo: "https://i.imgur.com/pcM8A7v.jpg", url: "https://www.omri.org/" },
+];
+---
+
+<Layout title={({'fr':'Agriculture de Précision en Afrique | Arbre Bio Africa','en':'Precision Agriculture in Africa | Arbre Bio Africa','es':'Agricultura de Precisión en África | Arbre Bio Africa','af':'Presisieboerdery in Afrika | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Precision Agriculture in Africa | Arbre Bio Africa'} description={T.heroSubtitle} image="https://i.imgur.com/Aab6e6c.jpg">
+
+  <!-- Hero Section -->
+  <section class="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero section">
+    <img src="https://i.imgur.com/Aab6e6c.jpg" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"/>
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto" role="banner">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">{T.heroTitle}</h1>
+      <p class="text-xl md:text-2xl mb-8 animate-slide-up">{T.heroSubtitle}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 200ms;">{T.getStarted}</a>
+        <a href={`${p}/solutions`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 400ms;">{T.exploreSolutions}</a>
+      </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-hidden="true">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-20 bg-gray-50" aria-labelledby="services-heading">
+    <div class="container mx-auto px-4">
+      <h2 id="services-heading" class="text-3xl md:text-4xl font-bold text-center mb-4">{T.ourServices}</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{T.servicesSubtitle}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
+        {[
+          { icon: "leaf", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
+          { icon: "water", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
+          { icon: "plant", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
+        ].map((service, index) => (
+          <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" style={`animation-delay: ${index * 100}ms`} role="listitem">
+            <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true"><EmojiIcon id={service.icon} size="2rem" /></div>
+            <h3 class="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
+            <p class="text-gray-600 mb-4">{service.desc}</p>
+            <a href={service.link} class="flex items-center text-primary font-semibold hover:text-primary-600 transition-colors" aria-label={`${T.learnMore} ${service.title}`}>
+              {T.learnMore}
+              <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-20 bg-primary text-white" aria-labelledby="stats-heading">
+    <div class="container mx-auto px-4">
+      <h2 id="stats-heading" class="sr-only">Our Impact Statistics</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+        <div role="group"><div class="text-4xl font-bold mb-2">10x</div><p class="text-gray-300">{T.yieldIncrease}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">60%</div><p class="text-gray-300">{T.waterSavings}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">500+</div><p class="text-gray-300">{T.projectsCompleted}</p></div>
+        <div role="group"><div class="text-4xl font-bold mb-2">5</div><p class="text-gray-300">{T.africanCountries}</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section -->
+  <section class="py-20 bg-gray-50 overflow-hidden" aria-labelledby="partners-heading">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 id="partners-heading" class="text-3xl md:text-4xl font-bold mb-4">{T.trustedPartners}</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">{T.partnersSubtitle}</p>
+      </div>
+      <div class="partners-carousel-wrapper">
+        <div class="partners-carousel">
+          {[...partners, ...partners].map((partner, i) => (
+            <a href={partner.url} target="_blank" rel="noopener noreferrer" class="partner-card" aria-label={`Visit ${partner.name} website`} aria-hidden={i >= partners.length ? "true" : undefined}>
+              <div class="partner-logo-container">
+                <img src={partner.logo} alt={`${partner.name} logo`} class="partner-logo" loading="lazy" width="200" height="120"/>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20" aria-labelledby="cta-heading">
+    <div class="container mx-auto px-4 text-center">
+      <h2 id="cta-heading" class="text-3xl md:text-4xl font-bold mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">{T.ctaSubtitle}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.freeConsultation}</a>
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SEO: Agriculture de précision section -->
+  <section class="py-20 bg-white" aria-labelledby="precision-ag-heading">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="text-center mb-12">
+        <h2 id="precision-ag-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {lang === 'fr' ? "L'Agriculture de Précision en Afrique : La Révolution Verte" : lang === 'es' ? "Agricultura de Precisión en África" : "Precision Agriculture in Africa"}
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          {lang === 'fr' ? "L'agriculture de précision transforme les exploitations agricoles africaines. Grâce aux technologies modernes — serres climatisées, irrigation goutte-à-goutte, substrats coco peat et engrais foliaires — les agriculteurs de Côte d'Ivoire et d'Afrique de l'Ouest doublent leurs rendements tout en réduisant leur consommation d'eau de 70%." : lang === 'es' ? "La agricultura de precisión transforma las explotaciones agrícolas africanas con tecnología moderna." : "Precision agriculture transforms African farms with modern technology — greenhouses, drip irrigation, coco peat substrates and foliar fertilizers."}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="bg-green-50 rounded-2xl p-8 border border-green-100">
+          <div class="text-4xl mb-4"><EmojiIcon id="leaf" size="2rem" /></div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            {lang === 'fr' ? "Serres & Tunnels Agricoles" : lang === 'es' ? "Invernaderos y Túneles" : "Greenhouses & Tunnels"}
+          </h3>
+          <p class="text-gray-600">
+            {lang === 'fr' ? "Nos serres tunnel et serres multi-chapelles permettent de produire toute l'année en Afrique, indépendamment des saisons des pluies. Protection contre les ravageurs, maîtrise du microclimat et rendements multipliés par 3 à 5 pour les tomates, poivrons, concombres et fraises." : lang === 'es' ? "Nuestros invernaderos túnel y multi-nave permiten producir todo el año en África." : "Our tunnel and multi-span greenhouses enable year-round production in Africa regardless of rainy seasons."}
+          </p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
+          <div class="text-4xl mb-4"><EmojiIcon id="water" size="2rem" /></div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            {lang === 'fr' ? "Irrigation Goutte-à-Goutte & Aspersion" : lang === 'es' ? "Riego por Goteo y Aspersión" : "Drip & Sprinkler Irrigation"}
+          </h3>
+          <p class="text-gray-600">
+            {lang === 'fr' ? "L'irrigation goutte-à-goutte est la technique la plus efficiente en Afrique tropicale. Elle économise jusqu'à 70% d'eau par rapport à l'irrigation gravitaire, réduit les maladies foliaires et permet la fertigation — apport simultané d'eau et d'engrais directement à la racine des plantes." : lang === 'es' ? "El riego por goteo ahorra hasta 70% de agua y permite la fertigación directa." : "Drip irrigation saves up to 70% water and enables direct root-zone fertigation."}
+          </p>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-8 border border-amber-100">
+          <div class="text-4xl mb-4"><EmojiIcon id="plant" size="2rem" /></div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            {lang === 'fr' ? "Substrats Coco Peat & Fibre de Coco" : lang === 'es' ? "Sustratos Coco Peat" : "Coco Peat & Coconut Fibre Substrates"}
+          </h3>
+          <p class="text-gray-600">
+            {lang === 'fr' ? "La tourbe de coco (coco peat) est le substrat hors-sol idéal pour l'Afrique : excellente rétention d'eau, bonne aération des racines, 100% naturel et biodégradable. Utilisé en hors-sol (hydroponie) ou en amélioration de sol, il améliore structuralement les sols tropicaux argileux ou sableux et booste les rendements de 40 à 80%." : lang === 'es' ? "La turba de coco es el sustrato ideal para África: excelente retención de agua, aireación de raíces." : "Coco peat is the ideal substrate for Africa: excellent water retention, root aeration, 100% natural."}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-purple-50 rounded-2xl p-8 border border-purple-100">
+          <div class="text-4xl mb-4"><EmojiIcon id="flask" size="2rem" /></div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            {lang === 'fr' ? "Fertilisants, Engrais & Phytosanitaires" : lang === 'es' ? "Fertilizantes y Fitosanitarios" : "Fertilizers & Crop Protection"}
+          </h3>
+          <p class="text-gray-600">
+            {lang === 'fr' ? "Une fertilisation précise est la clé d'une production agricole rentable. Nos programmes de fertilisation combinent engrais minéraux NPK, engrais foliaires, biostimulants et produits phytosanitaires homologués pour maximiser la qualité et la quantité des récoltes en toute sécurité alimentaire." : lang === 'es' ? "Una fertilización precisa con NPK, foliares y fitosanitarios homologados maximiza la rentabilidad." : "Precise fertilization with NPK, foliar sprays and approved crop protection products maximizes yield safely."}
+          </p>
+        </div>
+        <div class="bg-green-50 rounded-2xl p-8 border border-green-100">
+          <div class="text-4xl mb-4"><EmojiIcon id="chart" size="2rem" /></div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            {lang === 'fr' ? "Suivi Agronomique & Conseil Technique" : lang === 'es' ? "Seguimiento Agronómico y Asesoramiento" : "Agronomic Monitoring & Technical Advice"}
+          </h3>
+          <p class="text-gray-600">
+            {lang === 'fr' ? "Au-delà de la vente d'équipements, Arbre Bio Africa accompagne chaque agriculteur avec un suivi agronomique personnalisé : analyse de sol, plan de fertilisation, gestion des ravageurs et des maladies, optimisation des cycles culturaux. Notre objectif : votre rentabilité maximale." : lang === 'es' ? "Más allá de la venta de equipos, Arbre Bio acompaña a cada agricultor con seguimiento agronómico." : "Beyond equipment sales, Arbre Bio Africa supports each farmer with personalised agronomic follow-up."}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO: FAQ Section with FAQPage schema -->
+  <section class="py-20 bg-gray-50" aria-labelledby="faq-heading">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 id="faq-heading" class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+        {lang === 'fr' ? "Questions Fréquentes sur l'Agriculture de Précision en Afrique" : lang === 'es' ? "Preguntas Frecuentes" : "FAQ: Precision Agriculture in Africa"}
+      </h2>
+      <div class="space-y-6">
+        {[
+          {
+            q: lang === 'fr' ? "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?" : "What is precision agriculture and why is it suited for Africa?",
+            a: lang === 'fr' ? "L'agriculture de précision est une approche qui utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés, capteurs et analyse de données — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle est particulièrement adaptée car elle permet de s'affranchir des aléas climatiques (sécheresse, pluies torrentielles), d'économiser l'eau et de produire des cultures de qualité exportable toute l'année." : "Precision agriculture uses modern technologies to maximise yields while reducing inputs — ideal for Africa's variable climate."
+          },
+          {
+            q: lang === 'fr' ? "Quel est le coût d'une serre agricole en Côte d'Ivoire ?" : "What is the cost of a greenhouse in Côte d'Ivoire?",
+            a: lang === 'fr' ? "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type et la surface : une serre tunnel simple commence à partir de 3 500 €/100m², tandis qu'une serre multi-chapelle high-tech avec climate control peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget, avec financement et installation inclus. Contactez-nous pour un devis personnalisé." : "Greenhouse costs in Côte d'Ivoire vary by type and size. Contact us for a personalised quote."
+          },
+          {
+            q: lang === 'fr' ? "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?" : "How does drip irrigation improve yields in Africa?",
+            a: lang === 'fr' ? "L'irrigation goutte-à-goutte améliore les rendements agricoles en Afrique de 3 façons principales : 1) Apport d'eau précis à la rhizosphère (économie de 70% d'eau), 2) Fertigation (engrais et eau simultanément), 3) Réduction des maladies foliaires liées à l'humidité. En pratique, nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle." : "Drip irrigation improves yields through precise water delivery, fertigation, and reduced foliage disease."
+          },
+          {
+            q: lang === 'fr' ? "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?" : "What is the difference between coco peat, coir fibre and coco peat substrate?",
+            a: lang === 'fr' ? "Ces trois termes désignent des produits issus de la noix de coco : la fibre de coco (coir) est la partie fibreuse de l'enveloppe, utilisée en paillage et amélioration de sol. La tourbe de coco ou coco peat est la partie fine et spongieuse, idéale comme substrat hors-sol (hydroponie, culture en bac). En Afrique de l'Ouest, les deux sont utilisés pour améliorer la rétention d'eau des sols sableux et la structure des sols argileux tropicaux." : "Coco fibre is the coarse fibrous part; coco peat is the fine spongy part — both improve tropical soil structure."
+          },
+          {
+            q: lang === 'fr' ? "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?" : "Does Arbre Bio Africa deliver across West Africa?",
+            a: lang === 'fr' ? "Oui, Arbre Bio Africa livre ses équipements et intrants agricoles dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin et autres pays de la zone CEDEAO. Nous assurons l'installation, la formation et le suivi technique sur site. Contactez-nous au +225 05 00 55 25 25 ou par WhatsApp pour un devis gratuit." : "Yes, we deliver equipment and inputs across West Africa with installation, training and on-site support."
+          }
+        ].map((item) => (
+          <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">{item.q}</h3>
+            <p class="text-gray-600 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "L'agriculture de précision utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle permet de s'affranchir des aléas climatiques et de produire toute l'année."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quel est le coût d'une serre agricole en Côte d'Ivoire ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type : une serre tunnel simple commence à partir de 3 500 €/100m², une serre multi-chapelle high-tech peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget avec financement et installation inclus."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "L'irrigation goutte-à-goutte économise 70% d'eau, permet la fertigation et réduit les maladies foliaires. Nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La fibre de coco est la partie fibreuse utilisée en paillage. La tourbe de coco (coco peat) est la partie fine et spongieuse, idéale comme substrat hors-sol. Les deux améliorent la rétention d'eau des sols africains."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui, Arbre Bio Africa livre dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Nous assurons l'installation, la formation et le suivi technique sur site."
+        }
+      }
+    ]
+  })} />
+
+
+</Layout>
+
+<style>
+  .partners-carousel-wrapper { position: relative; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+  .partners-carousel { display: flex; gap: 2rem; animation: scroll 40s linear infinite; width: max-content; }
+  .partners-carousel:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .partner-card { flex-shrink: 0; width: 220px; height: 140px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.07); transition: all 0.4s cubic-bezier(0.4,0,0.2,1); cursor: pointer; }
+  .partner-card:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+  .partner-logo-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .partner-logo { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(100%) brightness(0.8); transition: all 0.4s ease; }
+  .partner-card:hover .partner-logo { filter: grayscale(0%) brightness(1); transform: scale(1.1); }
+  @media (max-width: 768px) { .partners-carousel { animation-duration: 30s; gap: 1.5rem; } .partner-card { width: 180px; height: 120px; padding: 1rem; } }
+  @media (prefers-reduced-motion: reduce) { .partners-carousel { animation: none; } }
+</style>

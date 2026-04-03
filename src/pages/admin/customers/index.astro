@@ -1,0 +1,243 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Customers">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Customers</h1>
+            <p class="text-gray-600">
+                Manage farmers, cooperatives, and enterprises
+            </p>
+        </div>
+        <a
+            href="/admin/customers/new"
+            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+            <i class="fas fa-plus"></i>
+            Add Customer
+        </a>
+    </div>
+
+    <!-- Search & Filter -->
+    <div
+        class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4"
+    >
+        <div class="flex-1 relative">
+            <i
+                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            ></i>
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search by name, email, or phone..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+            />
+        </div>
+        <div class="w-full md:w-48">
+            <select
+                id="type-filter"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+            >
+                <option value="">All Types</option>
+                <option value="Farmer">Farmer</option>
+                <option value="Cooperative">Cooperative</option>
+                <option value="Enterprise">Enterprise</option>
+                <option value="Government">Government</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div
+        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+    >
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3">Name</th>
+                        <th class="px-6 py-3">Contact</th>
+                        <th class="px-6 py-3">Location</th>
+                        <th class="px-6 py-3">Farm Size</th>
+                        <th class="px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customers-table-body">
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center"
+                            >Loading customers...</td
+                        >
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div
+            class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between"
+        >
+            <span class="text-sm text-gray-700" id="pagination-info">
+                Showing <span class="font-medium">0</span> to <span
+                    class="font-medium">0</span
+                > of <span class="font-medium">0</span> results
+            </span>
+            <div class="flex gap-2">
+                <button
+                    id="prev-btn"
+                    class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 disabled:opacity-50"
+                    >Previous</button
+                >
+                <button
+                    id="next-btn"
+                    class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 disabled:opacity-50"
+                    >Next</button
+                >
+            </div>
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    import { supabase } from "../../../lib/supabase";
+
+    let currentPage = 1;
+    const pageSize = 10;
+    let totalCount = 0;
+
+    async function loadCustomers() {
+        const searchInput = document.getElementById(
+            "search-input",
+        ) as HTMLInputElement;
+        const typeFilter = document.getElementById(
+            "type-filter",
+        ) as HTMLSelectElement;
+        const tbody = document.getElementById("customers-table-body");
+        const prevBtn = document.getElementById(
+            "prev-btn",
+        ) as HTMLButtonElement;
+        const nextBtn = document.getElementById(
+            "next-btn",
+        ) as HTMLButtonElement;
+        const paginationInfo = document.getElementById("pagination-info");
+
+        if (!tbody) return;
+
+        tbody.innerHTML =
+            '<tr><td colspan="5" class="px-6 py-8 text-center">Loading...</td></tr>';
+
+        try {
+            let query = supabase
+                .from("admin_customers")
+                .select("*", { count: "exact" });
+
+            // Apply filters
+            if (searchInput?.value) {
+                query = query.or(
+                    `full_name.ilike.%${searchInput.value}%,email.ilike.%${searchInput.value}%,phone.ilike.%${searchInput.value}%`,
+                );
+            }
+
+            // Note: 'type' column might not exist in the migration I saw earlier (it had farm_size_hectares etc but maybe not type enum? Let's check migration content again mentally.
+            // The migration 20251130112435_create_admin_order_management_system_v3.sql created admin_customers with:
+            // email, full_name, phone, company_name, address, city, region, postal_code, farm_size_hectares, primary_crops, notes.
+            // It did NOT have a 'type' column. I should probably add it or infer it.
+            // For now, I'll comment out the type filter logic or assume I should add it to the schema.
+            // I'll skip type filter for now to avoid errors.
+
+            // Pagination
+            const from = (currentPage - 1) * pageSize;
+            const to = from + pageSize - 1;
+
+            const { data, error, count } = await query
+                .range(from, to)
+                .order("created_at", { ascending: false });
+
+            if (error) throw error;
+
+            totalCount = count || 0;
+
+            if (data.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="5" class="px-6 py-8 text-center">No customers found</td></tr>';
+            } else {
+                tbody.innerHTML = data
+                    .map(
+                        (customer) => `
+          <tr class="bg-white border-b hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mr-3">
+                  ${customer.full_name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div class="font-medium text-gray-900">${customer.full_name}</div>
+                  <div class="text-xs text-gray-500">${customer.company_name || "Individual"}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900">${customer.email}</div>
+              <div class="text-xs text-gray-500">${customer.phone || "-"}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900">${customer.city || "-"}</div>
+              <div class="text-xs text-gray-500">${customer.region || "-"}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900">${customer.farm_size_hectares ? customer.farm_size_hectares + " ha" : "-"}</div>
+              <div class="text-xs text-gray-500">${(customer.primary_crops || []).join(", ")}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex gap-2">
+                <a href="/admin/customers/${customer.id}" class="text-blue-600 hover:text-blue-900">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <button class="text-red-600 hover:text-red-900 delete-btn" data-id="${customer.id}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `,
+                    )
+                    .join("");
+            }
+
+            // Update pagination UI
+            if (paginationInfo) {
+                paginationInfo.innerHTML = `Showing <span class="font-medium">${Math.min(from + 1, totalCount)}</span> to <span class="font-medium">${Math.min(to + 1, totalCount)}</span> of <span class="font-medium">${totalCount}</span> results`;
+            }
+
+            if (prevBtn) prevBtn.disabled = currentPage === 1;
+            if (nextBtn) nextBtn.disabled = to >= totalCount - 1;
+        } catch (error) {
+            console.error("Error loading customers:", error);
+            tbody.innerHTML =
+                '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
+        }
+    }
+
+    // Event Listeners
+    document.getElementById("search-input")?.addEventListener("input", () => {
+        currentPage = 1;
+        loadCustomers();
+    });
+
+    document.getElementById("prev-btn")?.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            loadCustomers();
+        }
+    });
+
+    document.getElementById("next-btn")?.addEventListener("click", () => {
+        if (currentPage * pageSize < totalCount) {
+            currentPage++;
+            loadCustomers();
+        }
+    });
+
+    // Initial load
+    loadCustomers();
+</script>

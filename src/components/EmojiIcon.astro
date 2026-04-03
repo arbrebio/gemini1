@@ -1,0 +1,39 @@
+---
+/**
+ * EmojiIcon — renders a custom 3D Arbre Bio icon by key.
+ * Falls back gracefully if the key is unknown.
+ *
+ * Usage:
+ *   <EmojiIcon id="plant" />
+ *   <EmojiIcon id="water" size="3rem" class="my-2" />
+ */
+import { emojiMap } from '../lib/emojiConfig';
+
+interface Props {
+  id: string;
+  size?: string;
+  class?: string;
+}
+
+const { id, size = '2rem', class: cls = '' } = Astro.props;
+const def = emojiMap[id];
+---
+
+{def ? (
+  <img
+    src={def.path}
+    alt={def.alt}
+    width={size}
+    height={size}
+    class:list={['inline-block select-none', cls]}
+    loading="lazy"
+    decoding="async"
+    style={`width:${size};height:${size}`}
+  />
+) : (
+  <span
+    role="img"
+    aria-label={id}
+    class:list={['inline-block text-2xl', cls]}
+  >{id}</span>
+)}

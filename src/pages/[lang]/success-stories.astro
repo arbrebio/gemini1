@@ -1,0 +1,221 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
+import type { Language } from "../../lib/i18n";
+import EmojiIcon from '../../components/EmojiIcon.astro';
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
+const p = `/${lang}`;
+
+const caseStudies = [
+  {
+    title: "Large-Scale Tomato Greenhouse",
+    client: "Marie Koné",
+    location: "Yamoussoukro, Côte d\'Ivoire",
+    description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
+    challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
+    solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
+    results: ["300% increase in annual yield", "Water usage reduced by 60%", "Year-round production achieved", "Product quality improvement leading to premium market prices"],
+    testimonial: "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+    clientImage: "https://imgur.com/YbVGmcu.jpg",
+    beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+    afterImage: "https://imgur.com/hjafzfj.jpg"
+  },
+  {
+    title: "Smart Irrigation for Cocoa Farm",
+    client: "Emmanuel Osei",
+    location: "Kumasi, Ghana",
+    description: "Modernization of 50-hectare cocoa plantation with smart irrigation",
+    challenge: "Drought periods severely impacted crop yields and quality",
+    solution: "Implementation of automated drip irrigation system with soil moisture monitoring",
+    results: ["180% increase in cocoa yield", "40% reduction in water consumption", "Improved bean quality and consistency", "Higher price per kg achieved through quality improvements"],
+    testimonial: "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we\'re seeing much better yields than ever before.",
+    clientImage: "https://imgur.com/qreTzRX.jpg",
+    beforeImage: "https://imgur.com/CEQXAs2.jpg",
+    afterImage: "https://imgur.com/6XtSwqS.jpg"
+  },
+  {
+    title: "Hydroponic Vegetable Farm",
+    client: "Sarah Mensah",
+    location: "Abidjan, Côte d\'Ivoire",
+    description: "Establishment of hydroponic vegetable farm for premium market supply",
+    challenge: "Limited arable land and soil quality issues preventing profitable farming",
+    solution: "Installation of complete hydroponic system with coco peat growing media",
+    results: ["Year-round production of premium vegetables", "Supplying major supermarkets and restaurants", "Zero soil-borne diseases", "60% lower water usage than conventional farming"],
+    testimonial: "Moving to hydroponics in greenhouses has revolutionized our business. We\'re now the preferred supplier for several high-end restaurants and supermarkets.",
+    clientImage: "https://imgur.com/bjqispj.jpg",
+    beforeImage: "https://imgur.com/KAh1QAU.jpg",
+    afterImage: "https://imgur.com/WgMc6pm.jpg"
+  },
+];
+---
+
+<Layout title={({'fr':'Témoignages & Résultats Agricoles | Arbre Bio Africa','en':'Agriculture Success Stories | Arbre Bio Africa','es':'Casos de Éxito en Agricultura | Arbre Bio Africa','af':'Suksesverhale in Landbou | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Agriculture Success Stories | Arbre Bio Africa'} description={T.ssHeroDesc}>
+
+  <section class="relative h-[50vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img src="https://imgur.com/YbVGmcu.jpg" alt="Success Stories" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-black bg-opacity-55"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{T.ssHeroTitle}</h1>
+      <p class="text-xl text-white max-w-2xl mx-auto">{T.ssHeroSubtitle}</p>
+    </div>
+  </section>
+
+  {caseStudies.map((study, index) => (
+    <section class={`py-20 ${index % 2 !== 0 ? "bg-gray-50" : "bg-white"}`}>
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-3xl font-bold mb-2">{study.title}</h2>
+          <p class="text-gray-500 mb-8">{study.client} — {study.location}</p>
+          <p class="text-gray-600 mb-8 text-lg">{study.description}</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div class="bg-red-50 p-6 rounded-lg">
+              <h3 class="font-bold text-red-700 mb-3">{T.challenge}</h3>
+              <p class="text-gray-700 text-sm">{study.challenge}</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-lg">
+              <h3 class="font-bold text-blue-700 mb-3">{T.solution}</h3>
+              <p class="text-gray-700 text-sm">{study.solution}</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-lg">
+              <h3 class="font-bold text-green-700 mb-3">{T.results}</h3>
+              <ul class="space-y-1">
+                {study.results.map(r => (
+                  <li class="text-sm text-gray-700 flex items-start gap-1">
+                    <span class="text-green-600 font-bold mt-0.5"><EmojiIcon id="shield" size="2rem" /></span>{r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <p class="text-sm font-semibold text-gray-500 mb-2">{T.beforeLabel}</p>
+              <img src={study.beforeImage} alt="Before" class="w-full h-48 object-cover rounded-lg shadow"/>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500 mb-2">{T.afterLabel}</p>
+              <img src={study.afterImage} alt="After" class="w-full h-48 object-cover rounded-lg shadow"/>
+            </div>
+          </div>
+          <blockquote class="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg">
+            <p class="text-gray-700 italic mb-4">"{study.testimonial}"</p>
+            <div class="flex items-center gap-3">
+              <img src={study.clientImage} alt={study.client} class="w-10 h-10 rounded-full object-cover"/>
+              <span class="font-semibold text-primary">{study.client}</span>
+            </div>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">{T.transformFarm}</h2>
+      <p class="text-xl text-white mb-8">{T.joinFarmers}</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">Résultats Mesurables de l'Agriculture de Précision en Afrique</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">L'agriculture de précision transforme les exploitations africaines. Nos clients en Côte d'Ivoire et en Afrique de l'Ouest obtiennent des résultats concrets grâce à nos serres, systèmes d'irrigation, substrats fibre de coco et programmes de fertilisation.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div class="bg-white rounded-xl p-8 shadow-md">
+          <h3 class="text-2xl font-bold mb-4 text-green-700"><EmojiIcon id="tomato" size="1.5rem" class="mr-2" /> Tomates sous Serre — Yamoussoukro</h3>
+          <p class="text-gray-600 mb-4">Un producteur de Yamoussoukro est passé de 8 tonnes/ha en plein champ à <strong>47 tonnes/ha</strong> sous serre tunnel avec irrigation goutte-à-goutte et substrat fibre de coco Arbre Bio. Le substrat tourbe de coco a permis une gestion optimale de l'eau et des engrais hydrosolubles.</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">+488%</div><div class="text-sm text-gray-600">Rendement</div></div>
+            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">-65%</div><div class="text-sm text-gray-600">Eau utilisée</div></div>
+            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">22 mois</div><div class="text-sm text-gray-600">ROI</div></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-md">
+          <h3 class="text-2xl font-bold mb-4 text-blue-700"><EmojiIcon id="pepper" size="1.5rem" class="mr-2" /> Poivrons Hydroponiques — Abidjan</h3>
+          <p class="text-gray-600 mb-4">Une ferme péri-urbaine d'Abidjan cultive des poivrons colorés en hors-sol avec substrat perlite-fibre de coco et fertilisation de précision. Production continue 12 mois/an, livrée directement aux supermarchés locaux.</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">52 t/ha</div><div class="text-sm text-gray-600">Rendement</div></div>
+            <div class="text-center bg-purple-50 p-3 rounded-lg"><div class="text-2xl font-bold text-purple-600">12 mois</div><div class="text-sm text-gray-600">Saison</div></div>
+            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">3x</div><div class="text-sm text-gray-600">Prix marché</div></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-md">
+          <h3 class="text-2xl font-bold mb-4 text-purple-700"><EmojiIcon id="cucumber" size="1.5rem" class="mr-2" /> Concombres Irrigués — Bouaké</h3>
+          <p class="text-gray-600 mb-4">Grâce à un système d'aspersion programmé et à un programme phytosanitaire intégré, ce producteur de Bouaké a réduit ses pertes post-récolte de 40 % et triplé son chiffre d'affaires en deux saisons.</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">-40%</div><div class="text-sm text-gray-600">Pertes</div></div>
+            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">3x</div><div class="text-sm text-gray-600">Chiffre d'affaires</div></div>
+            <div class="text-center bg-yellow-50 p-3 rounded-lg"><div class="text-2xl font-bold text-yellow-600">2 saisons</div><div class="text-sm text-gray-600">Durée</div></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-md">
+          <h3 class="text-2xl font-bold mb-4 text-orange-700"><EmojiIcon id="leaf" size="1.5rem" class="mr-2" /> Herbes Aromatiques — Dakar</h3>
+          <p class="text-gray-600 mb-4">Une startup agri-tech de Dakar cultive basilic, menthe et persil sous serre avec substrat tourbe de coco et éclairage LED. Cycles de production de 3 semaines, distribution dans les hôtels et restaurants haut de gamme du Sénégal.</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">18 cycles/an</div><div class="text-sm text-gray-600">Production</div></div>
+            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">5x</div><div class="text-sm text-gray-600">Valeur ajoutée</div></div>
+            <div class="text-center bg-red-50 p-3 rounded-lg"><div class="text-2xl font-bold text-red-600">0 pesticide</div><div class="text-sm text-gray-600">Chimique</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 class="text-3xl font-bold text-center mb-4">Questions Fréquentes sur les Résultats Agricoles</h2>
+      <p class="text-gray-600 text-center mb-12">Découvrez comment nos clients africains transforment leur agriculture grâce aux techniques de précision.</p>
+      <div class="space-y-4">
+        <details class="border border-gray-200 rounded-lg overflow-hidden">
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Les résultats varient selon la culture, mais en moyenne nos clients obtiennent : tomates 40 à 60 t/ha (vs 8 à 12 t/ha en plein champ), poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha, laitues 30 cycles/an. Ces performances sont rendues possibles grâce à la combinaison serre + irrigation de précision + substrat fibre de coco + fertilisation hydrosoluble adaptée.</div>
+        </details>
+        <details class="border border-gray-200 rounded-lg overflow-hidden">
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte par rapport à l'irrigation traditionnelle ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">L'irrigation goutte-à-goutte avec programmateur intelligent permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation par gravité ou aspersion classique. En Côte d'Ivoire, où l'eau représente 30 à 40 % des coûts d'exploitation maraîchère, cette économie est critique pour la rentabilité. Le substrat tourbe de coco amplifie encore cet effet grâce à sa capacité de rétention d'eau supérieure à la terre.</div>
+        </details>
+        <details class="border border-gray-200 rounded-lg overflow-hidden">
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quel est le retour sur investissement (ROI) typique pour une installation de serre en Afrique de l'Ouest ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Pour une installation complète (serre tunnel 2 000 m² + irrigation + substrats), le retour sur investissement est généralement atteint en 18 à 36 mois selon la culture et le circuit de distribution. Les cultures à haute valeur ajoutée comme les tomates cerise, poivrons, herbes aromatiques et fraises permettent les ROI les plus rapides (12 à 24 mois). Contactez-nous pour une étude de rentabilité personnalisée.</div>
+        </details>
+        <details class="border border-gray-200 rounded-lg overflow-hidden">
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, la fibre de coco et la tourbe de coco sont particulièrement bien adaptées aux conditions africaines. Contrairement à la tourbe classique, le coco peat résiste à la chaleur, conserve sa structure sur 3 à 5 ans, ne se compacte pas et maintient une porosité stable même sous des températures de 35-40°C. Sa capacité de rétention d'eau (650 % de son poids) et son pH neutre (5,5-6,5) en font le substrat idéal pour la culture maraîchère intensive en Afrique.</div>
+        </details>
+        <details class="border border-gray-200 rounded-lg overflow-hidden">
+          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa propose-t-il un suivi après installation pour garantir les résultats ?</summary>
+          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, chaque projet inclut un programme de suivi agronomique post-installation : visites terrain régulières, analyses de nutriments dans les plantes et substrats, ajustement des programmes de fertilisation et de protection phytosanitaire, formation continue des équipes. Notre objectif est que chaque client atteigne les rendements cibles dans les 2 premières saisons et les maintienne sur le long terme.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne : tomates 40 à 60 t/ha, poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha. Ces performances combinent serre, irrigation de précision, substrat fibre de coco et fertilisation hydrosoluble."}},
+      {"@type":"Question","name":"Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte ?","acceptedAnswer":{"@type":"Answer","text":"L'irrigation goutte-à-goutte permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation traditionnelle. Le substrat tourbe de coco amplifie cet effet grâce à sa capacité de rétention d'eau."}},
+      {"@type":"Question","name":"Quel est le retour sur investissement typique pour une serre en Afrique de l'Ouest ?","acceptedAnswer":{"@type":"Answer","text":"Pour une installation complète (serre 2 000 m² + irrigation + substrats), le ROI est atteint en 18 à 36 mois. Les cultures à haute valeur ajoutée permettent un ROI en 12 à 24 mois."}},
+      {"@type":"Question","name":"La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?","acceptedAnswer":{"@type":"Answer","text":"Oui, le coco peat résiste à la chaleur, conserve sa structure 3 à 5 ans, ne se compacte pas à 35-40°C et retient 650 % de son poids en eau. C'est le substrat idéal pour l'Afrique."}},
+      {"@type":"Question","name":"Arbre Bio Africa propose-t-il un suivi après installation ?","acceptedAnswer":{"@type":"Answer","text":"Oui, chaque projet inclut un suivi agronomique : visites terrain, analyses substrats, ajustement fertilisation et protection phytosanitaire, formation des équipes pour atteindre les rendements cibles."}}
+    ]
+  }
+  </script>
+
+</Layout>

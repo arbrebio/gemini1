@@ -1,0 +1,33 @@
+{
+  "name": "D-Net™ 0950",
+  "brand": "Netafim",
+  "shortDescription": "VERY LOW TRAJECTORY IMPACT SPRINKLER FOR UNIFORM UNDER-CANOPY IRRIGATION",
+  "description": "With its low water trajectory angle, D-Net™ 0950 is ideally suited for precise under canopy irrigation of banana or oil palm plantations up to 10 x 10 meters or field crops with windy conditions.",
+  "image": "https://imgur.com/vQFO4ob.jpg",
+  "category": "sprinklers",
+  "features": [
+    {
+      "title": "High water distribution uniformity & Higher yield",
+      "description": "Innovative 3D diffusion arm, ensures relatively high water distribution uniformity, resulting uniform crop yields."
+    },
+    {
+      "title": "Efficient Water Usage",
+      "description": "The lower trajectory angle of the water prevents evaporation to the air in areas with winds, and guarantees maximum water-use efficiency."
+    }
+  ],
+  "specifications": {
+    "general": {
+      "type": "1/2\" impact sprinkler",
+      "design": "Unique 3D arm",
+      "trajectory": "9.0 degrees water angle",
+      "coverage": "Up to 10X11 meters spacing"
+    },
+    "performance": {
+      "Flow rates": "355, 400, 510 L/H",
+      "Nominal flow rate": "2.5 bar",
+      "Pressure range": "2.0 - 3.0 bar",
+      "Trajectory angle": "9.0 Degrees"
+    }
+  },
+  "catalog": "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf"
+}

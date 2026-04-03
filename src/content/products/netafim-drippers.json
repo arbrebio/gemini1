@@ -1,0 +1,27 @@
+{
+  "name": "Netafim Drippers and Driplines",
+  "brand": "Netafim",
+  "shortDescription": "Drippers, driplines and other emitters types for any crop, topography, climate, soil, anywhere.",
+  "description": "Drip irrigation is transforming the lives of millions of farmers around the world enabling higher yields while saving on water, fertilizer and energy.",
+  "image": "https://imgur.com/vDgiJfa.jpg",
+  "category": "drippers",
+  "features": [
+    {
+      "title": "Universal Compatibility",
+      "description": "Suitable for any crop, topography, climate, and soil type"
+    },
+    {
+      "title": "Resource Efficiency",
+      "description": "Significant savings in water, fertilizer, and energy usage"
+    }
+  ],
+  "specifications": {
+    "general": {
+      "Flow rates": "0.4 - 3.8 L/h",
+      "Operating pressure": "0.5 - 4.0 bar",
+      "Filtration requirements": "130 micron",
+      "Wall thickness": "0.63 - 1.2 mm"
+    }
+  },
+  "catalog": "https://www.netafim.africa/globalassets/products/flexible--pe-pipes/flexnet-updates/net-pipes-catalog-45.pdf"
+}

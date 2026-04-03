@@ -1,0 +1,212 @@
+---
+import { config } from "../lib/config";
+
+interface Props {
+  menuItems: Array<{
+    name: string;
+    url: string;
+    submenu?: Array<{ name: string; url: string }>;
+  }>;
+}
+
+const { menuItems } = Astro.props;
+---
+
+<!-- Mobile Navigation Overlay -->
+<div
+  id="mobile-nav-overlay"
+  class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300"
+  aria-hidden="true"
+>
+</div>
+
+<!-- Mobile Navigation Menu -->
+<nav
+  id="mobile-nav-menu"
+  class="fixed top-0 right-0 h-full w-80 bg-primary transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto"
+  aria-label="Mobile navigation"
+>
+  <div class="p-6">
+    <!-- Close Button -->
+    <button
+      id="mobile-nav-close"
+      class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors p-2"
+      aria-label="Close navigation menu"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Logo -->
+    <div class="mb-8 mt-4">
+      <img
+        src={config.company.logo}
+        alt={config.site.name}
+        class="h-16 w-auto brightness-0 invert"
+        width="200"
+        height="60"
+      />
+    </div>
+
+    <!-- Navigation Items -->
+    <div class="space-y-2">
+      {
+        menuItems.map((item) => (
+          <div class="border-b border-white/20 pb-2">
+            <a
+              href={item.url}
+              class="block py-3 text-white hover:text-gray-300 transition-colors font-medium text-lg"
+            >
+              {item.name}
+            </a>
+
+            {item.submenu && (
+              <div class="ml-4 mt-2 space-y-2">
+                {item.submenu.map((subitem) => (
+                  <a
+                    href={subitem.url}
+                    class="block py-2 text-white/80 hover:text-white transition-colors text-base"
+                  >
+                    {subitem.name}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Social Media Links -->
+    <div class="mt-8 pt-6 border-t border-white/20">
+      <p class="text-white/80 text-sm mb-4">Follow us</p>
+      <div class="flex space-x-4">
+        <a
+          href={config.social.facebook}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-white/80 hover:text-white transition-colors"
+          aria-label="Facebook"
+        >
+          <i class="fa-brands fa-facebook-f text-xl"></i>
+        </a>
+        <a
+          href={config.social.twitter}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-white/80 hover:text-white transition-colors"
+          aria-label="Twitter"
+        >
+          <i class="fa-brands fa-twitter text-xl"></i>
+        </a>
+        <a
+          href={config.social.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-white/80 hover:text-white transition-colors"
+          aria-label="LinkedIn"
+        >
+          <i class="fa-brands fa-linkedin-in text-xl"></i>
+        </a>
+        <a
+          href={config.social.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-white/80 hover:text-white transition-colors"
+          aria-label="Instagram"
+        >
+          <i class="fa-brands fa-instagram text-xl"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="mt-8 pt-6 border-t border-white/20">
+      <p class="text-white/80 text-sm mb-2">Contact Us</p>
+      <a
+        href={`https://wa.me/${config.contact.whatsappNumber.replace("+", "")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center text-[#25D366] hover:text-[#128C7E] transition-colors"
+      >
+        <i class="fa-brands fa-whatsapp mr-2"></i>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function initMobileNavigation() {
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileNavOverlay = document.getElementById("mobile-nav-overlay");
+    const mobileNavMenu = document.getElementById("mobile-nav-menu");
+    const mobileNavClose = document.getElementById("mobile-nav-close");
+
+    function openMobileNav() {
+      if (mobileNavOverlay && mobileNavMenu) {
+        mobileNavOverlay.classList.remove("hidden");
+        mobileNavMenu.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+
+        // Focus management
+        const firstFocusable = mobileNavMenu.querySelector("a, button");
+        if (firstFocusable) {
+          (firstFocusable as HTMLElement).focus();
+        }
+      }
+    }
+
+    function closeMobileNav() {
+      if (mobileNavOverlay && mobileNavMenu) {
+        mobileNavOverlay.classList.add("hidden");
+        mobileNavMenu.classList.add("translate-x-full");
+        document.body.style.overflow = "";
+
+        // Return focus to menu button
+        if (mobileMenuButton) {
+          (mobileMenuButton as HTMLElement).focus();
+        }
+      }
+    }
+
+    // Event listeners
+    mobileMenuButton?.addEventListener("click", openMobileNav);
+    mobileNavClose?.addEventListener("click", closeMobileNav);
+    mobileNavOverlay?.addEventListener("click", closeMobileNav);
+
+    // Close on escape key
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        !mobileNavMenu?.classList.contains("translate-x-full")
+      ) {
+        closeMobileNav();
+      }
+    });
+
+    // Close when clicking on navigation links
+    mobileNavMenu?.addEventListener("click", (e) => {
+      if (e.target instanceof HTMLAnchorElement) {
+        closeMobileNav();
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMobileNavigation);
+  } else {
+    initMobileNavigation();
+  }
+</script>

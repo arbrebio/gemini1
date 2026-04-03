@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EmojiIcon from '../components/EmojiIcon.astro';
+---
+
+<Layout
+  title="About Us - Arbre Bio Africa | Leading Agricultural Innovation"
+  description="Learn about Arbre Bio Africa — our mission, team, and journey transforming agriculture across Africa through precision farming, greenhouse technology and sustainable solutions."
+>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://imgur.com/4gQ57MK.jpg"
+        alt="Arbre Bio Africa - Precision Agriculture Projects" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-55"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">About Us</h1>
+      <p class="text-xl text-white max-w-2xl">Leading the transformation of African agriculture through innovation and sustainable solutions</p>
+    </div>
+  </section>
+
+  <!-- Who We Are -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8">Who We Are</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          Arbre Bio Africa is a leader in agricultural innovation, providing precision irrigation, greenhouse solutions, and organic growing substrate across Africa. Our commitment to sustainable farming practices and cutting-edge technology has positioned us at the forefront of agricultural transformation in the region.
+        </p>
+        <div class="bg-primary/5 border-l-4 border-primary rounded-r-xl p-6">
+          <h3 class="text-xl font-bold mb-3">Our Mission</h3>
+          <p class="text-gray-700">Our goal is to transform African agriculture by making modern farming technologies accessible and sustainable for every farmer across the continent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Journey -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-12 text-center">Our Journey</h2>
+        <div class="space-y-6">
+          {[
+            { year: "2020", title: "Company Founded", desc: "Established in Abidjan, Côte d'Ivoire with a vision to revolutionize African agriculture" },
+            { year: "2021", title: "First Major Project", desc: "Completed our first large-scale greenhouse installation in Côte d'Ivoire, exceeding all yield targets" },
+            { year: "2022", title: "Strategic Partnerships", desc: "Formed partnerships with AZUD, Hortalan, World Bank, GIZ and the Ministry of Agriculture of Côte d'Ivoire" },
+            { year: "2023", title: "Regional Expansion", desc: "Expanded operations across 5 countries completing 500+ agricultural projects" },
+            { year: "2024", title: "Digital Farming Launch", desc: "Launched IoT-powered smart farming solutions and AI analytics for modern farm management" },
+            { year: "2025", title: "Hortalan Joint Venture", desc: "Establishing a landmark joint venture with Hortalan to open their first branch in Côte d'Ivoire" },
+          ].map(item => (
+            <div class="flex gap-4 items-start">
+              <div class="bg-primary text-white rounded-full w-16 h-12 flex items-center justify-center font-bold flex-shrink-0 text-sm">{item.year}</div>
+              <div class="bg-white rounded-lg shadow-sm p-4 flex-1 border border-gray-100">
+                <strong class="text-gray-800">{item.title}</strong>
+                <p class="text-gray-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Leadership -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Leadership</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+        <div class="text-center">
+          <img 
+            src="https://imgur.com/LAiwg8o.png" 
+            alt="Lethabo Ndhlovu"
+            class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"
+          />
+          <h3 class="text-xl font-bold mb-1">Lethabo Ndhlovu</h3>
+          <p class="text-primary font-semibold mb-3">Chief Executive Officer</p>
+          <p class="text-gray-600 text-sm leading-relaxed">With over 25 years of experience in agricultural engineering and specializing in intensive farming, Lethabo leads our mission to transform African agriculture.</p>
+        </div>
+        <div class="text-center">
+          <img 
+            src="https://imgur.com/LD5JZto.jpg" 
+            alt="Sydney Abouna"
+            class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"
+          />
+          <h3 class="text-xl font-bold mb-1">Sydney Abouna</h3>
+          <p class="text-primary font-semibold mb-3">Chief Operations Officer</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Sydney brings extensive operational expertise in managing large-scale agricultural projects across Africa.</p>
+        </div>
+        <div class="text-center">
+          <img 
+            src="https://imgur.com/NU06wJT.jpg" 
+            alt="Viviane BROU"
+            class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"
+          />
+          <h3 class="text-xl font-bold mb-1">Viviane BROU</h3>
+          <p class="text-primary font-semibold mb-3">Marketing Strategy Representative</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Hospitality-trained, now in digital marketing and product — focused on helping customers connect with products through clarity, empathy, and a passion for sustainability.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Values -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Values</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow">
+          <div class="text-4xl mb-4"><EmojiIcon id="plant" size="2rem" /></div>
+          <h3 class="text-xl font-bold mb-3">Sustainability</h3>
+          <p class="text-gray-600">Committed to environmentally responsible farming practices that preserve natural resources for future generations.</p>
+        </div>
+        <div class="text-center bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow">
+          <div class="text-4xl mb-4"><EmojiIcon id="bulb" size="2rem" /></div>
+          <h3 class="text-xl font-bold mb-3">Innovation</h3>
+          <p class="text-gray-600">Continuously advancing agricultural technology to bring the world's best farming solutions to African farmers.</p>
+        </div>
+        <div class="text-center bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow">
+          <div class="text-4xl mb-4"><EmojiIcon id="handshake" size="2rem" /></div>
+          <h3 class="text-xl font-bold mb-3">Partnership</h3>
+          <p class="text-gray-600">Building strong, lasting relationships with farmers, institutions and communities across the continent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Join Us in Transforming African Agriculture</h2>
+      <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">Let's work together to build a more sustainable and productive future for farming.</p>
+      <a href="/contact" class="bg-white text-primary px-8 py-4 rounded-full text-lg hover:bg-opacity-90 transition-colors duration-300 inline-block font-semibold">Contact Us</a>
+    </div>
+  </section>
+
+</Layout>

@@ -1,0 +1,38 @@
+[
+  {
+    "year": 2020,
+    "event": "Arbre Bio Founded",
+    "description": "Founded in Abidjan, Côte d'Ivoire by Sydney Abouna with a bold vision to revolutionize African agriculture through precision farming",
+    "icon": "plant"
+  },
+  {
+    "year": 2021,
+    "event": "First Major Greenhouse Project",
+    "description": "Successfully delivered our first large-scale greenhouse installation, setting the standard for modern agriculture in Côte d'Ivoire",
+    "icon": "greenhouse"
+  },
+  {
+    "year": 2022,
+    "event": "Strategic Partnerships",
+    "description": "Formed key partnerships with AZUD, Hortalan, World Bank, GIZ and the Ministry of Agriculture, establishing Arbre Bio as a trusted leader",
+    "icon": "handshake"
+  },
+  {
+    "year": 2023,
+    "event": "Pan-African Expansion",
+    "description": "Expanded operations across 5 African countries including Côte d'Ivoire, Ghana, Burkina Faso, Zimbabwe and Kenya, completing 500+ projects",
+    "icon": "rocket"
+  },
+  {
+    "year": 2024,
+    "event": "Digital Farming & IoT Launch",
+    "description": "Launched smart farming solutions integrating IoT monitoring, AI-powered analytics and remote farm management systems",
+    "icon": "laptop"
+  },
+  {
+    "year": 2025,
+    "event": "Hortalan Joint Venture",
+    "description": "Establishing a landmark joint venture with Hortalan to open their first branch in Côte d'Ivoire — a major milestone for West African agriculture",
+    "icon": "trophy"
+  }
+]

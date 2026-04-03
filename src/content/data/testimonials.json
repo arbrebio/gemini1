@@ -1,0 +1,44 @@
+[
+  {
+    "quote": "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
+    "author": "Marie Koné",
+    "role": "Vegetable Farmer",
+    "location": "Yamoussoukro, Côte d'Ivoire",
+    "image": "https://imgur.com/YbVGmcu.jpg"
+  },
+  {
+    "quote": "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",
+    "author": "Emmanuel Osei",
+    "role": "Cocoa Farmer",
+    "location": "Kumasi, Ghana",
+    "image": "https://imgur.com/qreTzRX.jpg"
+  },
+  {
+    "quote": "Moving to hydroponics in greenhouses has revolutionized our business. We're now the preferred supplier for several high-end restaurants and supermarkets.",
+    "author": "Sarah Mensah",
+    "role": "Hydroponic Farmer",
+    "location": "Abidjan, Côte d'Ivoire",
+    "image": "https://imgur.com/bjqispj.jpg"
+  },
+  {
+    "quote": "The expertise and support from Arbre Bio have been invaluable. Our farm's productivity has doubled since implementing their solutions.",
+    "author": "Jean Kouassi",
+    "role": "Farm Owner",
+    "location": "Bouaké, Côte d'Ivoire",
+    "image": "https://imgur.com/7P4E0Ac.jpg"
+  },
+  {
+    "quote": "Working with Arbre Bio has transformed our cooperative. Their technology and training have helped our members increase their incomes significantly.",
+    "author": "Aisha Diallo",
+    "role": "Agricultural Cooperative President",
+    "location": "Abidjan, Côte d'Ivoire",
+    "image": "https://imgur.com/MT6lgiD.jpg"
+  },
+  {
+    "quote": "The greenhouse solutions provided by Arbre Bio have exceeded our expectations. We're now producing premium quality vegetables year-round.",
+    "author": "Kwame Olei",
+    "role": "Commercial Farmer",
+    "location": "Accra, Ghana",
+    "image": "https://imgur.com/9Xk7pCh.jpg"
+  }
+]

@@ -1,0 +1,212 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../lib/langPaths";
+import { useT } from "../../lib/translations";
+import type { Language } from "../../lib/i18n";
+import EmojiIcon from '../../components/EmojiIcon.astro';
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const T = useT(lang as any);
+const p = `/${lang}`;
+
+const categories = [
+  {
+    id: "greenhouses",
+    title: T.protectedFarming,
+    subtitle: T.protectedFarmingSub,
+    icon: "leaf",
+    image: "https://imgur.com/IZGz47e.jpg",
+    description: T.protectedFarmingDesc,
+    benefits: [T.pfB1, T.pfB2, T.pfB3, T.pfB4],
+    solutions: [
+      { name: lang === 'fr' ? 'Serres Tropicales High-Tech' : lang === 'es' ? 'Invernaderos Tropicales High-Tech' : 'Hoë-Tegnologie Tropiese Kweekhuise', description: T.greenhouseServiceDesc, image: "https://imgur.com/w7OS5f6.jpg", link: `${p}/greenhouses/high-tech` },
+      { name: lang === 'fr' ? "Filets et Films Anti-Insectes" : lang === 'es' ? 'Redes y Películas Anti-Insectos' : 'Insekwerende Nette en Films', description: lang === 'fr' ? "Filets et films agricoles de qualité premium qui protègent les cultures." : lang === 'es' ? "Redes y películas agrícolas de calidad premium que protegen los cultivos." : "Premium kwaliteit landbou nette en films wat gewasse beskerm.", image: "https://imgur.com/lAI3XeF.jpg", link: `${p}/greenhouses/accessories` },
+      { name: lang === 'fr' ? 'Systèmes de Contrôle Climatique' : lang === 'es' ? 'Sistemas de Control Climático' : 'Klimaatbeheerstelsels', description: lang === 'fr' ? "Systèmes d'automatisation avancés pour un contrôle précis de la température, humidité et ventilation." : lang === 'es' ? "Sistemas de automatización avanzados para control preciso de temperatura, humedad y ventilación." : "Gevorderde outomatiseringstelsels vir presiese beheer van temperatuur, humiditeit en ventilasie.", image: "https://imgur.com/xn6Qik0.jpg", link: `${p}/greenhouses/high-tech` },
+    ]
+  },
+  {
+    id: "irrigation",
+    title: T.waterMgmt,
+    subtitle: T.waterMgmtSub,
+    icon: "water",
+    image: "https://imgur.com/oe3gOtV.jpg",
+    description: T.waterMgmtDesc,
+    benefits: [T.wmB1, T.wmB2, T.wmB3, T.wmB4],
+    solutions: [
+      { name: T.dripTitle, description: T.irrigationServiceDesc, image: "https://imgur.com/33OuKiU.jpg", link: `${p}/irrigation/drip-systems` },
+      { name: lang === 'fr' ? 'Filtration & Fertirrigation Intelligente' : lang === 'es' ? 'Filtración y Fertigación Inteligente' : 'Slim Filtrasie & Fertirrigation', description: lang === 'fr' ? "Systèmes intégrés de filtration d'eau et injection d'engrais." : lang === 'es' ? "Sistemas integrados de filtración de agua e inyección de fertilizantes." : "Geïntegreerde stelsels vir waterfiltrering en voedingstofinjeksie.", image: "https://imgur.com/AVECFTr.jpg", link: `${p}/irrigation/drip-systems` },
+      { name: T.digitalTitle, description: T.digitalDesc, image: "https://imgur.com/OJ0Dbgb.jpg", link: `${p}/irrigation/controllers` },
+    ]
+  },
+  {
+    id: "substrates",
+    title: T.substrateSolutions,
+    subtitle: T.substrateSolutionsSub,
+    icon: "plant",
+    image: "https://imgur.com/YnDCEmp.jpg",
+    description: T.substrateSolutionsDesc,
+    benefits: [T.ssB1, T.ssB2, T.ssB3, T.ssB4],
+    solutions: [
+      { name: lang === 'fr' ? 'Fibre de Coco & Coir' : lang === 'es' ? 'Fibra de Coco & Coir' : 'Koko-turfmos & Coir', description: lang === 'fr' ? "Solutions de culture premium pour l'hydroponique et les pépinières." : lang === 'es' ? "Soluciones de cultivo premium para hidroponía y viveros." : "Premium groei oplossings vir hidroponies en kwekery.", image: "https://imgur.com/WgMc6pm.jpg", link: `${p}/substrates/growing-solutions` },
+      { name: lang === 'fr' ? 'Amendements Organiques du Sol' : lang === 'es' ? 'Enmiendas Orgánicas del Suelo' : 'Organiese Grondverbeteringsmiddels', description: lang === 'fr' ? "Produits naturels d'enrichissement du sol pour une meilleure santé des cultures." : lang === 'es' ? "Productos naturales de enriquecimiento del suelo para mejor salud de cultivos." : "Natuurlike grondverryking produkte vir verbeterde gewasgesondheid.", image: "https://imgur.com/Yc1gQqw.jpg", link: `${p}/substrates/growing-solutions` },
+    ]
+  },
+];
+---
+
+<Layout title={({'fr':'Solutions Agriculture de Précision | Arbre Bio Africa','en':'Precision Agriculture Solutions | Arbre Bio Africa','es':'Soluciones Agricultura de Precisión | Arbre Bio Africa','af':'Presisie Landbou Oplossings | Arbre Bio Africa'} as Record<string,string>)[lang]||'Precision Agriculture Solutions | Arbre Bio Africa'} description={T.solutionsSubtitle}>
+
+  <section class="relative h-[50vh] flex items-center">
+    <div class="absolute inset-0 z-0">
+      <img src="https://imgur.com/2Pt8VXW.jpg" alt="Solutions" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{T.solutionsTitle}</h1>
+      <p class="text-xl text-white max-w-2xl">{T.solutionsSubtitle}</p>
+    </div>
+  </section>
+
+  {categories.map((category, categoryIndex) => (
+    <section class="py-20" id={category.id}>
+      <div class="container mx-auto px-4">
+        <div class={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${categoryIndex % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+          <div class={categoryIndex % 2 !== 0 ? 'lg:order-2' : ''}>
+            <div class="text-5xl mb-6"><EmojiIcon id={category.icon} size="2rem" /></div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">{category.title}</h2>
+            <p class="text-xl text-primary mb-6">{category.subtitle}</p>
+            <p class="text-gray-600 mb-8 leading-relaxed">{category.description}</p>
+            <ul class="space-y-4 mb-8">
+              {category.benefits.map(benefit => (
+                <li class="flex items-start gap-3">
+                  <svg class="w-6 h-6 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span class="text-gray-700">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="grid grid-cols-1 gap-4">
+              {category.solutions.map(solution => (
+                <a href={solution.link} class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors group">
+                  <img src={solution.image} alt={solution.name} class="w-16 h-16 object-cover rounded"/>
+                  <div>
+                    <h4 class="font-bold group-hover:text-primary transition-colors">{solution.name}</h4>
+                    <p class="text-sm text-gray-600">{solution.description}</p>
+                  </div>
+                  <svg class="w-5 h-5 text-primary ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              ))}
+            </div>
+          </div>
+          <div class={categoryIndex % 2 !== 0 ? 'lg:order-1' : ''}>
+            <img src={category.image} alt={category.title} class="w-full h-[500px] object-cover rounded-lg shadow-xl"/>
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaSubtitle}</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.freeConsultation}</a>
+        <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+          <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="py-20 bg-white" aria-labelledby="why-solutions-heading">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="text-center mb-12">
+        <h2 id="why-solutions-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {lang === 'fr' ? "Pourquoi Choisir les Solutions d'Agriculture de Précision Arbre Bio Africa ?" : lang === 'es' ? "¿Por Qué Elegir las Soluciones de Agricultura de Precisión Arbre Bio Africa?" : "Why Choose Arbre Bio Africa's Precision Agriculture Solutions?"}
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          {lang === 'fr' ? "En Afrique, les défis agricoles sont uniques : irrégularité des pluies, chaleur intense, sols souvent pauvres, marchés exigeants en qualité. Nos solutions d'agriculture de précision sont conçues spécifiquement pour ces réalités africaines — serres adaptées au climat tropical, systèmes d'irrigation intelligents, substrats et fertilisants optimisés." : lang === 'es' ? "En África, los desafíos agrícolas son únicos: lluvias irregulares, calor intenso, suelos pobres. Nuestras soluciones están diseñadas para estas realidades africanas." : "In Africa, agricultural challenges are unique: irregular rainfall, intense heat, often poor soils. Our solutions are specifically designed for these African realities."}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {[
+          { icon: "flask", title: lang === 'fr' ? "Adapté au Climat Africain" : "Adapted to African Climate", desc: lang === 'fr' ? "Nos serres et équipements sont testés et certifiés pour les zones tropicales et sahéliennes d'Afrique : résistance aux vents de 120 km/h, toiles anti-chaleur UV, ventilation naturelle optimisée pour les températures de 30-45°C." : "Our equipment is tested for tropical and Sahelian zones: wind resistance to 120 km/h, UV heat-resistant covers, optimised ventilation for 30-45°C." },
+          { icon: "trophy", title: lang === 'fr' ? "ROI Prouvé en 12-18 Mois" : "Proven ROI in 12-18 Months", desc: lang === 'fr' ? "Nos clients agriculteurs en Côte d'Ivoire et en Afrique de l'Ouest atteignent un retour sur investissement en 12 à 18 mois grâce à la combinaison serre + irrigation goutte-à-goutte + substrat coco + programme de fertilisation optimisé." : "Our agricultural clients in Côte d'Ivoire achieve ROI in 12-18 months through greenhouse + drip irrigation + coco substrate + optimised fertilisation." },
+          { icon: "chart", title: lang === 'fr' ? "Suivi Agronomique Inclus" : "Agronomic Monitoring Included", desc: lang === 'fr' ? "Chaque solution Arbre Bio Africa inclut un accompagnement agronomique : analyse de sol, plan de culture, calendrier de fertilisation, gestion des ravageurs (IPM) et visites techniques régulières. Nous ne vendons pas seulement des équipements — nous garantissons vos résultats." : "Every Arbre Bio Africa solution includes agronomic support: soil analysis, crop plan, fertilisation calendar, IPM pest management and regular technical visits." },
+          { icon: "wrench", title: lang === 'fr' ? "Installation & Formation" : "Installation & Training", desc: lang === 'fr' ? "Nos équipes installent et mettent en service toutes nos solutions : serres, systèmes d'irrigation, équipements de fertigation. Formation complète des équipes agricoles incluse, avec support technique WhatsApp 7j/7." : "Our teams install and commission all solutions: greenhouses, irrigation systems, fertigation equipment. Complete agricultural team training included with 7-day WhatsApp technical support." },
+          { icon: "earth", title: lang === 'fr' ? "Livraison dans Toute l'Afrique" : "Pan-Africa Delivery", desc: lang === 'fr' ? "Arbre Bio Africa livre et installe ses solutions dans toute l'Afrique de l'Ouest et Centrale : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Cameroun, Gabon. Import-export certifié, dédouanement facilité." : "We deliver and install across West and Central Africa: Côte d'Ivoire, Senegal, Ghana, Burkina Faso, Mali, Cameroon, Gabon. Certified import-export, facilitated customs clearance." },
+          { icon: "trophy", title: lang === 'fr' ? "Partenaire Hortalan" : "Hortalan Partner", desc: lang === 'fr' ? "Arbre Bio Africa est en cours d'établissement d'un partenariat stratégique avec Hortalan, référence européenne en solutions horticoles, pour apporter les meilleures technologies mondiales en agriculture protégée aux agriculteurs africains." : "Arbre Bio Africa is establishing a strategic partnership with Hortalan, European reference in horticultural solutions, to bring world-class protected agriculture technologies to African farmers." }
+        ].map((item) => (
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:border-green-300 transition-colors">
+            <div class="text-4xl mb-4"><EmojiIcon id={item.icon} size="2rem" /></div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+            <p class="text-gray-600">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-green-50 rounded-2xl p-10 border border-green-200">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+          {lang === 'fr' ? "Nos Solutions par Type de Culture" : lang === 'es' ? "Nuestras Soluciones por Tipo de Cultivo" : "Our Solutions by Crop Type"}
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { crop: lang === 'fr' ? "Tomates & Poivrons" : "Tomatoes & Peppers", solution: lang === 'fr' ? "Serre tunnel + goutte-à-goutte + coco peat + fertigation NPK" : "Tunnel greenhouse + drip + coco peat + NPK fertigation", yield: "+300%" },
+            { crop: lang === 'fr' ? "Concombres & Courgettes" : "Cucumbers & Zucchini", solution: lang === 'fr' ? "Serre multi-chapelle + filets insectes + irrigation + substrat" : "Multi-span greenhouse + insect nets + irrigation + substrate", yield: "+250%" },
+            { crop: lang === 'fr' ? "Laitues & Légumes-feuilles" : "Lettuce & Leafy Greens", solution: lang === 'fr' ? "Hydroponie NFT + coco peat + solution nutritive complète" : "NFT hydroponics + coco peat + complete nutrient solution", yield: "+400%" },
+            { crop: lang === 'fr' ? "Fraises" : "Strawberries", solution: lang === 'fr' ? "Substrat coco grow bags + irrigation goutte-à-goutte + serre" : "Coco grow bags + drip irrigation + greenhouse", yield: "+200%" },
+            { crop: lang === 'fr' ? "Roses & Fleurs Coupées" : "Roses & Cut Flowers", solution: lang === 'fr' ? "Serre climatisée + substrat coco + fertigation + post-récolte" : "Climate-controlled greenhouse + coco substrate + fertigation", yield: "Export" },
+            { crop: lang === 'fr' ? "Cultures Tropicales" : "Tropical Crops", solution: lang === 'fr' ? "Plein air + irrigation aspersion + fertilisation foliaire + IPM" : "Open field + sprinkler irrigation + foliar fertilisation + IPM", yield: "+80%" }
+          ].map((item) => (
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-bold text-gray-900">{item.crop}</h4>
+                <span class="bg-green-100 text-green-700 text-sm font-bold px-3 py-1 rounded-full">{item.yield}</span>
+              </div>
+              <p class="text-sm text-gray-600">{item.solution}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gray-50" aria-labelledby="faq-solutions">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 id="faq-solutions" class="text-3xl font-bold text-center text-gray-900 mb-12">
+        {lang === 'fr' ? "FAQ : Solutions Agriculture de Précision en Afrique" : lang === 'es' ? "FAQ: Soluciones de Agricultura de Precisión en África" : "FAQ: Precision Agriculture Solutions in Africa"}
+      </h2>
+      <div class="space-y-6">
+        {[
+          { q: lang === 'fr' ? "Quelles sont les meilleures solutions agricoles pour débuter en Afrique ?" : "What are the best agricultural solutions to start with in Africa?", a: lang === 'fr' ? "Pour débuter en agriculture de précision en Afrique, nous recommandons : 1) Une serre tunnel simple (100-500m²) pour contrôler le microclimat. 2) Un système d'irrigation goutte-à-goutte pour économiser l'eau et permettre la fertigation. 3) Du coco peat comme substrat hors-sol. Cette combinaison représente le meilleur rapport investissement/rendement avec un ROI moyen de 14 mois en Côte d'Ivoire." : "We recommend starting with: 1) A simple tunnel greenhouse (100-500m²). 2) Drip irrigation for water saving and fertigation. 3) Coco peat as soilless substrate. This combination has the best investment/yield ratio with average 14-month ROI." },
+          { q: lang === 'fr' ? "Quel budget prévoir pour une exploitation maraîchère sous serre en Afrique ?" : "What budget is needed for a greenhouse vegetable farm in Africa?", a: lang === 'fr' ? "Le budget pour une exploitation sous serre varie selon l'échelle : une unité pilote (500m²) est accessible entre 5 et 15 millions FCFA (8 000-25 000 €) équipements inclus. Une exploitation commerciale (1 ha) nécessite 50-150 millions FCFA selon le niveau de technologie. Arbre Bio Africa propose des solutions évolutives et peut faciliter l'accès aux financements agricoles." : "Budget varies by scale: a pilot unit (500m²) requires 5-15 million FCFA (8,000-25,000 €) including equipment. Commercial scale (1 ha) needs 50-150 million FCFA depending on technology level. We offer scalable solutions and can facilitate agricultural financing." },
+          { q: lang === 'fr' ? "Quelle est la différence entre irrigation goutte-à-goutte et aspersion ?" : "What is the difference between drip irrigation and sprinkler irrigation?", a: lang === 'fr' ? "L'irrigation goutte-à-goutte délivre l'eau directement à la rhizosphère, économise 70% d'eau vs gravitaire, permet la fertigation et réduit les maladies foliaires. Idéal sous serre et pour maraîchage intensif. L'aspersion simule la pluie et est adaptée aux grandes surfaces et aux cultures d'écotone (céréales, café, cacao). Arbre Bio Africa propose les deux systèmes selon le profil de l'exploitation." : "Drip irrigation delivers water directly to roots, saves 70% water, enables fertigation and reduces foliar disease. Sprinklers simulate rain and suit large fields and broad crops (cereals, coffee, cocoa). We offer both depending on farm profile." },
+          { q: lang === 'fr' ? "Arbre Bio Africa propose-t-il des formations en agriculture de précision ?" : "Does Arbre Bio Africa offer precision agriculture training?", a: lang === 'fr' ? "Oui, toutes nos solutions incluent une formation complète : installation et maintenance des serres, programmation des systèmes d'irrigation, gestion de la fertilisation et des substrats, diagnostic phytosanitaire et IPM. Nous proposons également des formations indépendantes pour les agri-entrepreneurs africains. Contactez-nous pour notre calendrier de formations." : "Yes, all our solutions include comprehensive training: greenhouse installation and maintenance, irrigation programming, fertilisation and substrate management, phytosanitary diagnosis and IPM. We also offer standalone training for agri-entrepreneurs." },
+          { q: lang === 'fr' ? "Comment Arbre Bio Africa garantit-il les rendements annoncés ?" : "How does Arbre Bio Africa guarantee the stated yields?", a: lang === 'fr' ? "Nos garanties de rendements sont basées sur : 1) Des données terrain de nos clients en Côte d'Ivoire et en Afrique de l'Ouest depuis 2020. 2) Des essais variétaux et des protocoles agronomiques validés. 3) Un suivi mensuel par nos agronomes. Les rendements +200-300% sont atteignables avec le respect du protocole complet (serre + irrigation + substrat + fertilisation + IPM). Nous publions nos résultats transparents dans nos success stories." : "Our yield guarantees are based on: 1) Field data from our clients since 2020. 2) Validated varietal trials and agronomic protocols. 3) Monthly agronomist monitoring. The +200-300% yields are achievable with the complete protocol (greenhouse + irrigation + substrate + fertilisation + IPM)." }
+        ].map((item) => (
+          <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">{item.q}</h3>
+            <p class="text-gray-600 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Quelles sont les meilleures solutions agricoles pour débuter en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous recommandons : 1) Une serre tunnel (100-500m²). 2) Un système d irrigation goutte-à-goutte. 3) Du coco peat. Cette combinaison a le meilleur rapport investissement/rendement avec un ROI moyen de 14 mois." } },
+      { "@type": "Question", "name": "Quel budget prévoir pour une exploitation maraîchère sous serre en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Une unité pilote (500m²) nécessite 5-15 millions FCFA. Une exploitation commerciale (1 ha) nécessite 50-150 millions FCFA selon le niveau de technologie." } },
+      { "@type": "Question", "name": "Quelle est la différence entre irrigation goutte-à-goutte et aspersion ?", "acceptedAnswer": { "@type": "Answer", "text": "Le goutte-à-goutte délivre l eau directement aux racines, économise 70% d eau et permet la fertigation. L aspersion simule la pluie et convient aux grandes surfaces." } },
+      { "@type": "Question", "name": "Arbre Bio Africa propose-t-il des formations en agriculture de précision ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, toutes nos solutions incluent formation complète : installation de serres, programmation irrigation, gestion fertilisation, diagnostic phytosanitaire et IPM." } },
+      { "@type": "Question", "name": "Comment Arbre Bio Africa garantit-il les rendements annoncés ?", "acceptedAnswer": { "@type": "Answer", "text": "Nos garanties sont basées sur des données terrain en Côte d Ivoire depuis 2020, des essais agronomiques validés et un suivi mensuel par nos agronomes." } }
+    ]
+  })} />
+
+
+</Layout>

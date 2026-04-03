@@ -1,0 +1,281 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Projects Management">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Projects</h1>
+            <p class="text-gray-600">
+                Track greenhouse installations, irrigation systems, and EPC
+                projects
+            </p>
+        </div>
+        <button
+            id="create-project-btn"
+            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+            <i class="fas fa-plus"></i>
+            New Project
+        </button>
+    </div>
+
+    <!-- Project Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Planning</p>
+            <p class="text-2xl font-bold text-gray-600" id="planning-count">
+                0
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">In Progress</p>
+            <p class="text-2xl font-bold text-blue-600" id="in-progress-count">
+                0
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Completed</p>
+            <p class="text-2xl font-bold text-green-600" id="completed-count">
+                0
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">On Hold</p>
+            <p class="text-2xl font-bold text-yellow-600" id="on-hold-count">
+                0
+            </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Cancelled</p>
+            <p class="text-2xl font-bold text-red-600" id="cancelled-count">
+                0
+            </p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div
+        class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4"
+    >
+        <div class="flex-1 relative">
+            <i
+                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            ></i>
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search projects..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+            />
+        </div>
+        <select
+            id="type-filter"
+            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+        >
+            <option value="">All Types</option>
+            <option value="greenhouse">Greenhouse</option>
+            <option value="irrigation">Irrigation</option>
+            <option value="substrate">Substrate</option>
+            <option value="other">Other</option>
+        </select>
+        <select
+            id="status-filter"
+            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+        >
+            <option value="">All Statuses</option>
+            <option value="planning">Planning</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="on_hold">On Hold</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <!-- Projects Grid -->
+    <div
+        id="projects-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+        <div class="col-span-full text-center py-8 text-gray-500">
+            Loading projects...
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    import { supabase } from "../../../lib/supabase";
+
+    async function loadProjectStats() {
+        try {
+            const statuses = [
+                "planning",
+                "in_progress",
+                "completed",
+                "on_hold",
+                "cancelled",
+            ];
+
+            for (const status of statuses) {
+                const { count } = await supabase
+                    .from("admin_projects")
+                    .select("*", { count: "exact", head: true })
+                    .eq("status", status);
+
+                const el = document.getElementById(
+                    `${status.replace("_", "-")}-count`,
+                );
+                if (el) el.textContent = count?.toString() || "0";
+            }
+        } catch (error) {
+            console.error("Error loading stats:", error);
+        }
+    }
+
+    async function loadProjects() {
+        const grid = document.getElementById("projects-grid");
+        const searchInput = document.getElementById(
+            "search-input",
+        ) as HTMLInputElement;
+        const typeFilter = document.getElementById(
+            "type-filter",
+        ) as HTMLSelectElement;
+        const statusFilter = document.getElementById(
+            "status-filter",
+        ) as HTMLSelectElement;
+
+        if (!grid) return;
+
+        grid.innerHTML =
+            '<div class="col-span-full text-center py-8 text-gray-500">Loading...</div>';
+
+        try {
+            let query = supabase.from("admin_projects").select(`
+          *,
+          admin_customers (full_name)
+        `);
+
+            if (searchInput?.value) {
+                query = query.ilike("name", `%${searchInput.value}%`);
+            }
+
+            if (typeFilter?.value) {
+                query = query.eq("type", typeFilter.value);
+            }
+
+            if (statusFilter?.value) {
+                query = query.eq("status", statusFilter.value);
+            }
+
+            const { data, error } = await query.order("created_at", {
+                ascending: false,
+            });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                grid.innerHTML =
+                    '<div class="col-span-full text-center py-8 text-gray-500">No projects found</div>';
+                return;
+            }
+
+            const statusColors: Record<string, string> = {
+                planning: "bg-gray-100 text-gray-800 border-gray-300",
+                in_progress: "bg-blue-100 text-blue-800 border-blue-300",
+                completed: "bg-green-100 text-green-800 border-green-300",
+                on_hold: "bg-yellow-100 text-yellow-800 border-yellow-300",
+                cancelled: "bg-red-100 text-red-800 border-red-300",
+            };
+
+            const typeIcons: Record<string, string> = {
+                greenhouse: "fa-seedling",
+                irrigation: "fa-tint",
+                substrate: "fa-layer-group",
+                other: "fa-tools",
+            };
+
+            grid.innerHTML = data
+                .map((project) => {
+                    const progress =
+                        project.status === "completed"
+                            ? 100
+                            : project.status === "in_progress"
+                              ? 50
+                              : project.status === "planning"
+                                ? 20
+                                : 0;
+
+                    return `
+          <div class="bg-white rounded-xl shadow-sm border-2 ${statusColors[project.status]?.split(" ")[2] || "border-gray-200"} p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="bg-primary/10 text-primary p-3 rounded-lg">
+                  <i class="fas ${typeIcons[project.type] || "fa-project-diagram"}"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900">${project.name}</h3>
+                  <p class="text-xs text-gray-500">${project.admin_customers?.full_name || "No customer"}</p>
+                </div>
+              </div>
+              <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusColors[project.status] || "bg-gray-100 text-gray-800"}">
+                ${project.status.replace("_", " ").toUpperCase()}
+              </span>
+            </div>
+
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">${project.description || "No description"}</p>
+
+            <div class="space-y-2 mb-4">
+              <div class="flex items-center justify-between text-xs text-gray-500">
+                <span>Progress</span>
+                <span class="font-medium">${progress}%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-primary h-2 rounded-full transition-all" style="width: ${progress}%"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-4">
+              <div>
+                <i class="fas fa-calendar-alt mr-1"></i>
+                ${project.start_date ? new Date(project.start_date).toLocaleDateString("fr-FR") : "Not set"}
+              </div>
+              <div>
+                <i class="fas fa-dollar-sign mr-1"></i>
+                ${new Intl.NumberFormat("fr-FR", { notation: "compact", currency: "XOF" }).format(project.budget || 0)} XOF
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-4 border-t border-gray-200">
+              <button class="flex-1 bg-primary/10 text-primary px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors view-btn" data-id="${project.id}">
+                <i class="fas fa-eye mr-1"></i> View
+              </button>
+              <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors edit-btn" data-id="${project.id}">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </div>
+        `;
+                })
+                .join("");
+        } catch (error) {
+            console.error("Error loading projects:", error);
+            grid.innerHTML =
+                '<div class="col-span-full text-center py-8 text-red-500">Error loading data</div>';
+        }
+    }
+
+    // Event Listeners
+    document
+        .getElementById("search-input")
+        ?.addEventListener("input", loadProjects);
+    document
+        .getElementById("type-filter")
+        ?.addEventListener("change", loadProjects);
+    document
+        .getElementById("status-filter")
+        ?.addEventListener("change", loadProjects);
+
+    // Initial load
+    loadProjectStats();
+    loadProjects();
+</script>
