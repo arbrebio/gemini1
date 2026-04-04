@@ -84,31 +84,29 @@ const breadcrumbData = {
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     
     <!-- Preconnect to external domains for performance -->
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://rsms.me" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    
-    <!-- DNS prefetch for additional performance -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="//www.google-analytics.com" />
-    
+
     <!-- Preload critical images -->
-    <link rel="preload" as="image" href="https://i.imgur.com/79cS79J.png" fetchpriority="high" crossorigin />
     {image && <link rel="preload" as="image" href={image} fetchpriority="high" crossorigin />}
-    
-    <!-- Preload critical CSS -->
+
+    <!-- Preload Inter font (non-blocking) -->
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    
-    <!-- Font Awesome -->
-    <link 
-      rel="stylesheet" 
+    <noscript><link rel="stylesheet" href="https://rsms.me/inter/inter.css" /></noscript>
+
+    <!-- Font Awesome (non-blocking) -->
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-      media="all"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </noscript>
     
     <!-- Sitemap reference -->
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -159,11 +157,6 @@ const breadcrumbData = {
     <StructuredData type="Organization" data={organizationSchema} />
     <StructuredData type="BreadcrumbList" data={breadcrumbData} />
     
-    <!-- Preload fonts with font-display optimization -->
-    <noscript>
-      <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    </noscript>
-    
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />
     
@@ -172,38 +165,6 @@ const breadcrumbData = {
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Arbre Bio Africa" />
     
-    <!-- Performance optimization -->
-    <script>
-      // Critical performance optimizations
-      // Optimize font loading
-      const fontLink = document.createElement('link');
-      fontLink.rel = 'stylesheet';
-      fontLink.href = 'https://rsms.me/inter/inter.css';
-      fontLink.media = 'all';
-      document.head.appendChild(fontLink);
-      
-      // Lazy load non-critical scripts
-      window.addEventListener('load', () => {
-        // Register service worker
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/sw.js');
-        }
-      });
-      
-      // Optimize images
-      if ('loading' in HTMLImageElement.prototype) {
-        // Native lazy loading supported
-        document.addEventListener('DOMContentLoaded', () => {
-          const images = document.querySelectorAll('img[loading="lazy"]');
-          images.forEach(img => {
-            const image = img as HTMLImageElement;
-            if (image.dataset.src) {
-              image.src = image.dataset.src;
-            }
-          });
-        });
-      }
-    </script>
   
   
     <meta property="og:description" content={description || "Solutions d'agriculture de précision en Côte d'Ivoire et en Afrique — Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
