@@ -1,9 +1,64 @@
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
-import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
 import { config } from '../../lib/config';
 
-// Validation schema for quote requests
+const ADMIN_EMAIL = config.contact.adminEmail;
+const SENDER_NAME = config.contact.senderName;
+const FROM_ADDRESS = `${SENDER_NAME} <farms@newsletter.arbrebio.com>`;
+
+const quoteT = {
+  en: {
+    subject: 'Thank you for your quote request - Arbre Bio Africa',
+    greeting: 'Dear',
+    body: (type: string) => `Thank you for your interest in our ${type} solutions. We have received your quote request and our team will review it carefully.`,
+    response: 'You can expect to hear from us within 24-48 business hours with a detailed proposal.',
+    assistance: 'For immediate assistance:',
+    call: 'Call:',
+    email: 'Email:',
+    signoff: 'Best regards,',
+    team: 'The Arbre Bio Africa Team',
+    types: { greenhouse: 'greenhouse', irrigation: 'irrigation', substrate: 'substrate', general: 'agricultural' },
+  },
+  fr: {
+    subject: 'Merci pour votre demande de devis - Arbre Bio Africa',
+    greeting: 'Cher/Chère',
+    body: (type: string) => `Merci pour votre intérêt pour nos solutions ${type}. Nous avons bien reçu votre demande de devis et notre équipe l'examinera attentivement.`,
+    response: 'Vous pouvez vous attendre à recevoir une proposition détaillée dans les 24 à 48 heures ouvrables.',
+    assistance: 'Pour une assistance immédiate :',
+    call: 'Appelez-nous :',
+    email: 'Email :',
+    signoff: 'Cordialement,',
+    team: "L'équipe Arbre Bio Africa",
+    types: { greenhouse: 'serres', irrigation: 'irrigation', substrate: 'substrat', general: 'agricoles' },
+  },
+  es: {
+    subject: 'Gracias por su solicitud de presupuesto - Arbre Bio Africa',
+    greeting: 'Estimado/a',
+    body: (type: string) => `Gracias por su interés en nuestras soluciones de ${type}. Hemos recibido su solicitud de presupuesto y nuestro equipo la revisará detenidamente.`,
+    response: 'Puede esperar recibir una propuesta detallada en un plazo de 24 a 48 horas hábiles.',
+    assistance: 'Para asistencia inmediata:',
+    call: 'Llámenos:',
+    email: 'Correo:',
+    signoff: 'Saludos cordiales,',
+    team: 'El equipo de Arbre Bio Africa',
+    types: { greenhouse: 'invernadero', irrigation: 'irrigación', substrate: 'sustrato', general: 'agrícolas' },
+  },
+  af: {
+    subject: 'Dankie vir u kwotasieversoek - Arbre Bio Africa',
+    greeting: 'Geagte',
+    body: (type: string) => `Dankie vir u belangstelling in ons ${type} oplossings. Ons het u kwotasieversoek ontvang en ons span sal dit noukeurig hersien.`,
+    response: "U kan verwag om binne 24 tot 48 besigheidsure 'n gedetailleerde voorstel te ontvang.",
+    assistance: 'Vir onmiddellike hulp:',
+    call: 'Skakel ons:',
+    email: 'E-pos:',
+    signoff: 'Met vriendelike groete,',
+    team: 'Die Arbre Bio Africa span',
+    types: { greenhouse: 'kweekhuis', irrigation: 'besproeiing', substrate: 'substraat', general: 'landbou' },
+  },
+} as const;
+
 const quoteSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
   lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
@@ -15,166 +70,137 @@ const quoteSchema = z.object({
   requirements: z.string().max(500, 'Requirements too long').optional(),
   productType: z.string().optional(),
   quantity: z.number().min(1, 'Quantity must be at least 1').optional(),
-  quoteType: z.enum(['greenhouse', 'irrigation', 'substrate', 'general']).default('general')
+  quoteType: z.enum(['greenhouse', 'irrigation', 'substrate', 'general']).default('general'),
+  lang: z.enum(['en', 'fr', 'es', 'af']).default('en'),
 });
+
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey) {
+    console.warn('Resend API key is not configured');
+    return;
+  }
+
+  const body: Record<string, unknown> = {
+    from: FROM_ADDRESS,
+    to: Array.isArray(to) ? to : [to],
+    subject,
+    html
+  };
+
+  if (replyTo) body.reply_to = replyTo;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error('Resend error:', res.status, text);
+  }
+}
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
-    // Validate input data
     const validationResult = quoteSchema.safeParse(data);
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
-      return new Response(JSON.stringify({ 
-        success: false,
-        message: firstError.message 
-      }), {
+      return new Response(JSON.stringify({ success: false, message: firstError.message }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    const validatedData = validationResult.data;
+    const v = validationResult.data;
+    const emailSubject = `New Quote Request: ${v.quoteType.charAt(0).toUpperCase() + v.quoteType.slice(1)}`;
 
-    // Check if SendGrid is properly configured
-    const sendgridKey = import.meta.env.SENDGRID_API_KEY;
-    if (!sendgridKey) {
-      console.error('SendGrid API key is not properly configured');
-      return new Response(JSON.stringify({ 
-        success: false,
-        message: 'Email service is not configured. Please contact support directly.' 
-      }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Initialize SendGrid
-    sgMail.setApiKey(sendgridKey);
-    
-    const adminEmail = config.contact.adminEmail;
-    const senderName = config.contact.senderName;
-
-    // Create email content based on quote type
-    const emailSubject = `New Quote Request: ${validatedData.quoteType.charAt(0).toUpperCase() + validatedData.quoteType.slice(1)}`;
-    
     let emailContent = `
       <h1 style="color: #194642;">New Quote Request</h1>
-      
       <h2 style="color: #666;">Contact Information</h2>
       <ul style="list-style: none; padding: 0;">
-        <li><strong>Name:</strong> ${validatedData.firstName} ${validatedData.lastName}</li>
-        <li><strong>Email:</strong> ${validatedData.email}</li>
-        <li><strong>Phone:</strong> ${validatedData.phone}</li>
-        <li><strong>Quote Type:</strong> ${validatedData.quoteType}</li>
+        <li><strong>Name:</strong> ${v.firstName} ${v.lastName}</li>
+        <li><strong>Email:</strong> ${v.email}</li>
+        <li><strong>Phone:</strong> ${v.phone}</li>
+        <li><strong>Quote Type:</strong> ${v.quoteType}</li>
       </ul>
     `;
 
-    // Add specific fields based on quote type
-    if (validatedData.quoteType === 'greenhouse') {
+    if (v.quoteType === 'greenhouse') {
       emailContent += `
         <h2 style="color: #666;">Project Details</h2>
         <ul style="list-style: none; padding: 0;">
-          ${validatedData.location ? `<li><strong>Location:</strong> ${validatedData.location}</li>` : ''}
-          ${validatedData.size ? `<li><strong>Size:</strong> ${validatedData.size} m²</li>` : ''}
-          ${validatedData.timeline ? `<li><strong>Timeline:</strong> ${validatedData.timeline}</li>` : ''}
+          ${v.location ? `<li><strong>Location:</strong> ${v.location}</li>` : ''}
+          ${v.size ? `<li><strong>Size:</strong> ${v.size} m²</li>` : ''}
+          ${v.timeline ? `<li><strong>Timeline:</strong> ${v.timeline}</li>` : ''}
         </ul>
       `;
     }
 
-    if (validatedData.quoteType === 'substrate') {
+    if (v.quoteType === 'substrate') {
       emailContent += `
         <h2 style="color: #666;">Product Details</h2>
         <ul style="list-style: none; padding: 0;">
-          ${validatedData.productType ? `<li><strong>Product Type:</strong> ${validatedData.productType}</li>` : ''}
-          ${validatedData.quantity ? `<li><strong>Quantity:</strong> ${validatedData.quantity} metric tons</li>` : ''}
+          ${v.productType ? `<li><strong>Product Type:</strong> ${v.productType}</li>` : ''}
+          ${v.quantity ? `<li><strong>Quantity:</strong> ${v.quantity} metric tons</li>` : ''}
         </ul>
       `;
     }
 
-    if (validatedData.requirements) {
+    if (v.requirements) {
       emailContent += `
         <h2 style="color: #666;">Additional Requirements</h2>
-        <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.requirements}</p>
-        `;
+        <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${v.requirements}</p>
+      `;
     }
 
     emailContent += `
       <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
       <p style="color: #666; font-size: 12px;">
-        This quote request was sent from ${senderName}<br>
+        Sent from ${SENDER_NAME} website<br>
         Timestamp: ${new Date().toLocaleString()}
       </p>
     `;
 
-    // Send email to admin
-    await sgMail.send({
-      to: adminEmail,
-      from: {
-        email: adminEmail,
-        name: senderName
-      },
-      replyTo: validatedData.email,
-      subject: emailSubject,
-      html: emailContent,
-      trackingSettings: {
-        clickTracking: { enable: false },
-        openTracking: { enable: true }
-      }
-    });
+    // Email to admin
+    await sendEmail(ADMIN_EMAIL, emailSubject, emailContent, v.email);
 
-    // Send auto-reply to customer
-    await sgMail.send({
-      to: validatedData.email,
-      from: {
-        email: adminEmail,
-        name: senderName
-      },
-      subject: 'Thank you for your quote request - Arbre Bio Africa',
-      html: `
-        <h1 style="color: #194642;">Thank You for Your Quote Request</h1>
-        
-        <p>Dear ${validatedData.firstName} ${validatedData.lastName},</p>
-        
-        <p>Thank you for your interest in our ${validatedData.quoteType} solutions. We have received your quote request and our team will review it carefully.</p>
-        
-        <p>You can expect to hear from us within 24-48 business hours with a detailed proposal.</p>
-        
-        <p>For immediate assistance, you can:</p>
+    // Auto-reply to client (in their language)
+    const t = quoteT[v.lang] ?? quoteT.en;
+    const translatedType = t.types[v.quoteType];
+    await sendEmail(
+      v.email,
+      t.subject,
+      `
+        <h1 style="color: #194642;">${t.subject}</h1>
+        <p>${t.greeting} ${v.firstName} ${v.lastName},</p>
+        <p>${t.body(translatedType)}</p>
+        <p>${t.response}</p>
+        <p>${t.assistance}</p>
         <ul>
-          <li>Call us at: ${config.contact.offices[0]?.phone || config.contact.whatsappNumber}</li>
+          <li>${t.call} ${config.contact.offices[0]?.phone || config.contact.whatsappNumber}</li>
           <li>WhatsApp: ${config.contact.whatsappNumber}</li>
-          <li>Email: ${adminEmail}</li>
+          <li>${t.email} ${ADMIN_EMAIL}</li>
         </ul>
-        
-        <p>Best regards,<br>The ${senderName} Team</p>
-      `,
-      trackingSettings: {
-        clickTracking: { enable: true },
-        openTracking: { enable: true }
-      }
-    });
+        <p>${t.signoff}<br>${t.team}</p>
+      `
+    );
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: 'Quote request sent successfully'
-    }), {
+    return new Response(JSON.stringify({ success: true, message: 'Quote request sent successfully' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
     console.error('Quote request error:', error);
-    
-    return new Response(
-      JSON.stringify({ 
-        success: false,
-        message: 'Failed to send quote request. Please try again later.' 
-      }), 
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+    return new Response(JSON.stringify({ success: false, message: 'Failed to send quote request. Please try again later.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };

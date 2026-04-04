@@ -292,6 +292,7 @@ const offices = config.contact.offices;
 
         try {
           const formData = new FormData(form);
+          const pathLang = window.location.pathname.split('/')[1];
           const data = {
             firstName: formData.get("firstName"),
             lastName: formData.get("lastName"),
@@ -299,6 +300,7 @@ const offices = config.contact.offices;
             phone: formData.get("phone"),
             interest: formData.get("interest"),
             message: formData.get("message"),
+            lang: ['fr','es','af'].includes(pathLang) ? pathLang : 'en',
           };
 
           const result = await handleFormSubmission("/api/contact", data, {

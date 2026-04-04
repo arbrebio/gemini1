@@ -37,7 +37,8 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
           },
           body: JSON.stringify({
             ...data,
-            quoteType: getQuoteTypeFromForm(quoteForm)
+            quoteType: getQuoteTypeFromForm(quoteForm),
+            lang: getLangFromPath()
           }),
         });
 
@@ -77,6 +78,12 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
       }
     });
   }
+}
+
+function getLangFromPath(): string {
+  const segments = window.location.pathname.split('/');
+  const supported = ['fr', 'es', 'af'];
+  return supported.includes(segments[1]) ? segments[1] : 'en';
 }
 
 function getQuoteTypeFromForm(form: HTMLElement): string {

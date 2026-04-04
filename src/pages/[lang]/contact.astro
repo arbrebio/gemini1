@@ -133,7 +133,8 @@ const p = `/${lang}`;
         if (submitButton) { submitButton.disabled = true; submitButton.setAttribute("aria-busy", "true"); }
         try {
           const formData = new FormData(form);
-          const data = { firstName: formData.get("firstName"), lastName: formData.get("lastName"), email: formData.get("email"), phone: formData.get("phone"), interest: formData.get("interest"), message: formData.get("message") };
+          const pathLang = window.location.pathname.split('/')[1];
+          const data = { firstName: formData.get("firstName"), lastName: formData.get("lastName"), email: formData.get("email"), phone: formData.get("phone"), interest: formData.get("interest"), message: formData.get("message"), lang: ['fr','es','af'].includes(pathLang) ? pathLang : 'en' };
           await handleFormSubmission("/api/contact", data, {
             successMessage: "Thank you for your message!",
             onSuccess: () => { successMessage?.classList.remove("hidden"); (form as HTMLFormElement).reset(); },

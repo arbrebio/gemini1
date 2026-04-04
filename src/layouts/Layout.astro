@@ -78,7 +78,11 @@ const breadcrumbData = {
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     
-    <link rel="icon" type="image/png" href="https://i.imgur.com/79cS79J.png" />
+    <!-- Favicon: SVG (dark/light mode aware) for modern browsers -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- PNG fallback for Safari and older browsers -->
+    <link rel="icon" href="https://i.imgur.com/79cS79J.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="https://i.imgur.com/79cS79J.png" sizes="16x16" type="image/png" />
     
     <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://i.imgur.com" crossorigin />
@@ -166,8 +170,8 @@ const breadcrumbData = {
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />
     
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="https://i.imgur.com/79cS79J.png" />
+    <!-- Apple Touch Icon (180x180 required for iOS home screen) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/79cS79J.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Arbre Bio Africa" />
     

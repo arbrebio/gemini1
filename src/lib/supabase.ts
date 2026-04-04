@@ -16,10 +16,15 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       const [resource, config] = args;
       return fetch(resource, {
         ...config,
-        signal: config?.signal || (typeof AbortController !== 'undefined' 
-          ? new AbortController().signal 
+        signal: config?.signal || (typeof AbortController !== 'undefined'
+          ? new AbortController().signal
           : undefined)
       });
     }
   }
 });
+
+// Server-only client using service role key — bypasses RLS.
+// Only import this in server-side API routes, never in client-side code.
+const serviceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
+export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);

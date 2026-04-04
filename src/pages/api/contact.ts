@@ -1,11 +1,60 @@
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
-import * as sgMail from '@sendgrid/mail';
 import { z } from 'zod';
 import { sanitizeInput, globalRateLimiter } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
-import { config } from '../../lib/config';
 
-// Enhanced validation schema
+const ADMIN_EMAIL = 'farms@arbrebio.com';
+const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
+
+const emailT = {
+  en: {
+    subject: 'Thank you for contacting Arbre Bio Africa',
+    greeting: 'Dear',
+    body: (interest: string) => `Thank you for reaching out to us. We have received your message regarding ${interest}.`,
+    response: 'Our team will review your inquiry and get back to you within 24-48 business hours.',
+    assistance: 'For immediate assistance:',
+    call: 'Call:',
+    signoff: 'Best regards,',
+    team: 'The Arbre Bio Africa Team',
+    footer: 'This is an automated response. Please do not reply to this email.',
+  },
+  fr: {
+    subject: 'Merci de nous avoir contacté - Arbre Bio Africa',
+    greeting: 'Cher/Chère',
+    body: (interest: string) => `Merci de nous avoir contacté. Nous avons bien reçu votre message concernant ${interest}.`,
+    response: 'Notre équipe examinera votre demande et vous répondra dans les 24 à 48 heures ouvrables.',
+    assistance: 'Pour une assistance immédiate :',
+    call: 'Appelez-nous :',
+    signoff: 'Cordialement,',
+    team: "L'équipe Arbre Bio Africa",
+    footer: 'Ceci est une réponse automatique. Veuillez ne pas répondre à cet email.',
+  },
+  es: {
+    subject: 'Gracias por contactar a Arbre Bio Africa',
+    greeting: 'Estimado/a',
+    body: (interest: string) => `Gracias por ponerse en contacto con nosotros. Hemos recibido su mensaje sobre ${interest}.`,
+    response: 'Nuestro equipo revisará su consulta y le responderá en un plazo de 24 a 48 horas hábiles.',
+    assistance: 'Para asistencia inmediata:',
+    call: 'Llámenos:',
+    signoff: 'Saludos cordiales,',
+    team: 'El equipo de Arbre Bio Africa',
+    footer: 'Esta es una respuesta automática. Por favor, no responda a este correo electrónico.',
+  },
+  af: {
+    subject: 'Dankie vir u kontak - Arbre Bio Africa',
+    greeting: 'Geagte',
+    body: (interest: string) => `Dankie dat u ons gekontak het. Ons het u boodskap oor ${interest} ontvang.`,
+    response: 'Ons span sal u navraag hersien en binne 24 tot 48 besigheidsure reageer.',
+    assistance: 'Vir onmiddellike hulp:',
+    call: 'Skakel ons:',
+    signoff: 'Met vriendelike groete,',
+    team: 'Die Arbre Bio Africa span',
+    footer: "Dit is 'n outomatiese antwoord. Reageer asseblief nie op hierdie e-pos nie.",
+  },
+} as const;
+
 const contactSchema = z.object({
   firstName: z.string()
     .min(1, 'First name is required')
@@ -27,41 +76,62 @@ const contactSchema = z.object({
     .max(100, 'Interest selection too long'),
   message: z.string()
     .min(10, 'Message must be at least 10 characters')
-    .max(1000, 'Message too long')
+    .max(1000, 'Message too long'),
+  lang: z.enum(['en', 'fr', 'es', 'af']).default('en'),
 });
+
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey) {
+    console.warn('Resend API key is not configured');
+    return;
+  }
+
+  const body: Record<string, unknown> = {
+    from: FROM_ADDRESS,
+    to: Array.isArray(to) ? to : [to],
+    subject,
+    html
+  };
+
+  if (replyTo) body.reply_to = replyTo;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error('Resend error:', res.status, text);
+  }
+}
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    // Rate limiting
     const clientIP = request.headers.get('x-forwarded-for') ||
       request.headers.get('x-real-ip') ||
       'unknown';
 
     if (!globalRateLimiter.isAllowed(clientIP)) {
-      return createErrorResponse(
-        'Too many requests. Please try again later.',
-        429,
-        'RATE_LIMIT_EXCEEDED'
-      );
+      return createErrorResponse('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');
     }
 
     const data = await request.json();
 
-    // Validate and sanitize input
     const validationResult = contactSchema.safeParse(data);
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0];
-      return createErrorResponse(
-        firstError.message,
-        400,
-        'VALIDATION_ERROR'
-      );
+      return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
     }
 
-    const { firstName, lastName, email, phone, interest, message } = validationResult.data;
+    const { firstName, lastName, email, phone, interest, message, lang } = validationResult.data;
 
-    // Additional sanitization
-    const sanitizedData = {
+    const d = {
       firstName: sanitizeInput(firstName, 50),
       lastName: sanitizeInput(lastName, 50),
       email: sanitizeInput(email, 100),
@@ -70,118 +140,68 @@ export const POST: APIRoute = async ({ request }) => {
       message: sanitizeInput(message, 1000)
     };
 
-    // Check if SendGrid is properly configured
-    const sendgridKey = import.meta.env.SENDGRID_API_KEY;
-    if (!sendgridKey) {
-      return createErrorResponse(
-        'Email service is not configured. Please contact support directly.',
-        503,
-        'SERVICE_UNAVAILABLE'
-      );
-    }
-
-    // Initialize SendGrid
-    sgMail.setApiKey(sendgridKey);
-
-    const adminEmail = config.contact.adminEmail;
-
-    // Send email
-    await sgMail.send({
-      to: adminEmail,
-      from: {
-        email: adminEmail,
-        name: 'Arbre Bio Contact Form'
-      },
-      replyTo: sanitizedData.email,
-      subject: `New Contact Form Submission: ${sanitizedData.interest}`,
-      html: `
+    // Email to admin
+    await sendEmail(
+      ADMIN_EMAIL,
+      `New Contact Form Submission: ${d.interest}`,
+      `
         <!DOCTYPE html>
         <html>
-          <head>
-            <meta charset="utf-8">
-            <title>New Contact Form Submission</title>
-          </head>
+          <head><meta charset="utf-8"></head>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <h1 style="color: #194642;">New Contact Form Submission</h1>
-            
             <h2 style="color: #666;">Contact Information</h2>
             <ul style="list-style: none; padding: 0;">
-              <li><strong>Name:</strong> ${sanitizedData.firstName} ${sanitizedData.lastName}</li>
-              <li><strong>Email:</strong> ${sanitizedData.email}</li>
-              <li><strong>Phone:</strong> ${sanitizedData.phone}</li>
-              <li><strong>Interest:</strong> ${sanitizedData.interest}</li>
+              <li><strong>Name:</strong> ${d.firstName} ${d.lastName}</li>
+              <li><strong>Email:</strong> ${d.email}</li>
+              <li><strong>Phone:</strong> ${d.phone}</li>
+              <li><strong>Interest:</strong> ${d.interest}</li>
             </ul>
-
             <h2 style="color: #666;">Message</h2>
-            <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${sanitizedData.message}</p>
-
+            <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${d.message}</p>
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-            
             <p style="color: #666; font-size: 12px;">
-              This email was sent from the contact form on arbrebio.com<br>
+              Sent from arbrebio.com contact form<br>
               Timestamp: ${new Date().toISOString()}<br>
               IP: ${clientIP}
             </p>
           </body>
         </html>
       `,
-      trackingSettings: {
-        clickTracking: { enable: false },
-        openTracking: { enable: true }
-      }
-    });
+      d.email
+    );
 
-    // Send auto-reply to the customer
-    await sgMail.send({
-      to: sanitizedData.email,
-      from: {
-        email: adminEmail,
-        name: 'Arbre Bio Africa'
-      },
-      subject: 'Thank you for contacting Arbre Bio Africa',
-      html: `
+    // Auto-reply to client (in their language)
+    const t = emailT[lang] ?? emailT.en;
+    await sendEmail(
+      d.email,
+      t.subject,
+      `
         <!DOCTYPE html>
         <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Thank you for contacting Arbre Bio Africa</title>
-          </head>
+          <head><meta charset="utf-8"></head>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <h1 style="color: #194642;">Thank You for Contacting Arbre Bio Africa</h1>
-            
-            <p>Dear ${sanitizedData.firstName} ${sanitizedData.lastName},</p>
-            
-            <p>Thank you for reaching out to us. This email confirms that we have received your message regarding ${sanitizedData.interest.toLowerCase()}.</p>
-            
-            <p>Our team will review your inquiry and get back to you within 24-48 business hours.</p>
-            
-            <p>For immediate assistance, you can:</p>
+            <h1 style="color: #194642;">${t.subject}</h1>
+            <p>${t.greeting} ${d.firstName} ${d.lastName},</p>
+            <p>${t.body(d.interest.toLowerCase())}</p>
+            <p>${t.response}</p>
+            <p>${t.assistance}</p>
             <ul>
-              <li>Call us at: +225 21 21 80 69 50</li>
-              <li>WhatsApp: +225 07 99 29 56 43</li>
+              <li>${t.call} +225 21 21 80 69 50</li>
+              <li>WhatsApp: +225 05 00 55 25 25</li>
             </ul>
-            
-            <p>Best regards,<br>The Arbre Bio Africa Team</p>
-            
+            <p>${t.signoff}<br>${t.team}</p>
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-            
             <p style="color: #666; font-size: 12px;">
               Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire<br>
-              This is an automated response. Please do not reply to this email.
+              ${t.footer}
             </p>
           </body>
         </html>
-      `,
-      trackingSettings: {
-        clickTracking: { enable: true },
-        openTracking: { enable: true }
-      }
-    });
-
-    return createSuccessResponse(
-      null,
-      'Message sent successfully'
+      `
     );
+
+    return createSuccessResponse(null, 'Message sent successfully');
   } catch (error) {
     return handleApiError(error);
   }

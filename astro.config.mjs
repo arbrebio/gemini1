@@ -68,11 +68,8 @@ export default defineConfig({
         mangle: { safari10: true }
       }
     },
-    ssr: {
-      noExternal: ['@sendgrid/mail']
-    },
+    ssr: {},
     optimizeDeps: {
-      exclude: ['@sendgrid/mail'],
       include: ['@supabase/supabase-js', 'zod']
     },
   },
