@@ -1,10 +1,8 @@
 ---
+export const prerender = false;
+
 import Layout from "../../../layouts/Layout.astro";
 import { useCareerT } from "../../../lib/careerTranslations";
-
-export async function getStaticPaths() {
-  return [{ params: { jobSlug: '_placeholder' } }];
-}
 
 const lang = 'en';
 const T = useCareerT(lang);

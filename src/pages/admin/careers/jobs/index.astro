@@ -254,7 +254,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
                 <div class="flex items-center gap-3">
                   <button onclick="editJob('${j.id}')" class="text-[#194642] hover:underline text-xs font-medium">Edit</button>
                   <button onclick="deleteJob('${j.id}','${(j.title_en||j.title_fr||'').replace(/'/g,"\\'")}') " class="text-red-500 hover:underline text-xs font-medium">Delete</button>
-                  <a href="/careers/${j.slug}" target="_blank" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>
+                  ${j.status === 'published' ? `<a href="/careers/${j.slug}" target="_blank" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>` : `<span class="text-gray-300 text-xs cursor-not-allowed" title="Only published jobs can be viewed publicly">View ↗</span>`}
                 </div>
               </td>
             </tr>
