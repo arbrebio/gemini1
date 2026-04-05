@@ -6,6 +6,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
 <AdminLayout title="Employees">
+  <!-- Config passed to client script via data attributes (PUBLIC vars only) -->
+  <div id="app-config" data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey} class="hidden"></div>
+
   <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
     <div>
       <h1 class="text-2xl font-bold text-gray-800">Employees</h1>
@@ -253,8 +256,13 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   </div>
 </AdminLayout>
 
-<script define:vars={{ supabaseUrl, supabaseAnonKey }}>
-  const statusColors = {
+<script>
+  // Read PUBLIC env values injected via data attributes
+  const _cfg = document.getElementById('app-config') as HTMLElement;
+  const supabaseUrl = _cfg.dataset.supabaseUrl!;
+  const supabaseAnonKey = _cfg.dataset.supabaseAnonKey!;
+
+  const statusColors: Record<string, string> = {
     active: 'bg-green-100 text-green-700',
     inactive: 'bg-gray-100 text-gray-600',
     terminated: 'bg-red-100 text-red-700',
@@ -750,24 +758,27 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
     // Show success card
     const emp = data.employee;
-    document.getElementById('sc-name').textContent = `${emp.first_name} ${emp.last_name}`;
-    document.getElementById('sc-title').textContent = emp.job_title || '';
-    document.getElementById('sc-worker-id').textContent = emp.worker_id;
-    document.getElementById('sc-email').textContent = emp.email;
-    document.getElementById('sc-dept').textContent = emp.department || '—';
-    document.getElementById('sc-start').textContent = emp.start_date ? new Date(emp.start_date).toLocaleDateString() : '—';
-    document.getElementById('sc-contract').textContent = emp.contract_type || 'CDI';
+    const g = (id: string) => document.getElementById(id)!;
+    g('sc-name').textContent = `${emp.first_name} ${emp.last_name}`;
+    g('sc-title').textContent = emp.job_title || '';
+    g('sc-worker-id').textContent = emp.worker_id;
+    g('sc-email').textContent = emp.email;
+    g('sc-dept').textContent = emp.department || '—';
+    g('sc-start').textContent = emp.start_date ? new Date(emp.start_date).toLocaleDateString() : '—';
+    g('sc-contract').textContent = emp.contract_type || 'CDI';
 
+    const scPhoto = g('sc-photo') as HTMLImageElement;
+    const scIcon = g('sc-photo-icon');
     if (emp.photo_url) {
-      document.getElementById('sc-photo').src = emp.photo_url;
-      document.getElementById('sc-photo').classList.remove('hidden');
-      document.getElementById('sc-photo-icon').classList.add('hidden');
+      scPhoto.src = emp.photo_url;
+      scPhoto.classList.remove('hidden');
+      scIcon.classList.add('hidden');
     } else {
-      document.getElementById('sc-photo').classList.add('hidden');
-      document.getElementById('sc-photo-icon').classList.remove('hidden');
+      scPhoto.classList.add('hidden');
+      scIcon.classList.remove('hidden');
     }
 
-    document.getElementById('success-modal').classList.remove('hidden');
+    g('success-modal').classList.remove('hidden');
     await loadEmployees();
   });
 
