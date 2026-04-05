@@ -180,6 +180,24 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           </div>
         </div>
 
+        <!-- Contract document upload -->
+        <div class="border-t border-dashed border-gray-200 pt-4">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Contract Document</p>
+          <div class="flex items-start gap-4">
+            <div id="ne-contract-preview" class="w-14 h-14 rounded-xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-file-contract text-gray-300 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <label class="flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-4 py-2 rounded-lg transition-colors border border-[#194642]/20 w-fit">
+                <i class="fas fa-upload text-xs"></i> Upload Contract
+                <input type="file" id="ne-contract-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden" />
+              </label>
+              <p class="text-xs text-gray-400 mt-1">PDF or Word — max 10 MB. Employee will be able to download it from their portal.</p>
+              <div id="ne-contract-status" class="hidden text-xs mt-1"></div>
+            </div>
+          </div>
+        </div>
+
         <div id="ne-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
 
         <div class="flex justify-end gap-3 pt-2">
@@ -270,62 +288,75 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     on_leave: 'bg-yellow-100 text-yellow-700',
   };
 
-  // ── Photo preview ────────────────────────────────────────────────
-  let uploadedPhotoUrl: string | null = null;
+  // ── Shared server-side upload helper ─────────────────────────────
+  async function uploadAsset(file, type, employeeId) {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('type', type);
+    if (employeeId) fd.append('employee_id', employeeId);
+    const res = await fetch('/api/admin/careers/upload-asset', { method: 'POST', body: fd });
+    return await res.json(); // { url } or { error }
+  }
 
-  document.getElementById('ne-photo-file').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      showPhotoStatus('File too large (max 5 MB)', 'error');
-      return;
-    }
-
-    // Show local preview immediately
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const preview = document.getElementById('photo-preview');
-      preview.innerHTML = `<img src="${ev.target.result}" class="w-full h-full object-cover" />`;
-    };
-    reader.readAsDataURL(file);
-
-    // Upload to Supabase Storage
-    showPhotoStatus('Uploading...', 'loading');
-    try {
-      const ext = file.name.split('.').pop();
-      const path = `employees/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const uploadRes = await fetch(
-        `${supabaseUrl}/storage/v1/object/employee-photos/${path}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${supabaseAnonKey}`,
-            'Content-Type': file.type,
-            'x-upsert': 'true',
-          },
-          body: file,
-        }
-      );
-      if (uploadRes.ok) {
-        uploadedPhotoUrl = `${supabaseUrl}/storage/v1/object/public/employee-photos/${path}`;
-        showPhotoStatus('Photo uploaded successfully', 'success');
-      } else {
-        // Storage bucket may not exist yet — keep local preview, skip URL
-        uploadedPhotoUrl = null;
-        showPhotoStatus('Photo selected (will be saved as URL later)', 'warn');
-      }
-    } catch {
-      uploadedPhotoUrl = null;
-      showPhotoStatus('Upload failed — photo preview only', 'warn');
-    }
-  });
-
-  function showPhotoStatus(msg, type) {
-    const el = document.getElementById('photo-upload-status');
+  function setStatus(elId, msg, type) {
+    const el = document.getElementById(elId);
+    if (!el) return;
     el.classList.remove('hidden');
     const colors = { success: 'text-green-600', error: 'text-red-600', warn: 'text-yellow-600', loading: 'text-gray-500' };
     el.className = `text-xs mt-1 ${colors[type] || 'text-gray-500'}`;
     el.textContent = msg;
+  }
+
+  // ── Photo upload (add form) ───────────────────────────────────────
+  let uploadedPhotoUrl: string | null = null;
+  let uploadedContractUrl: string | null = null;
+
+  document.getElementById('ne-photo-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setStatus('photo-upload-status', 'File too large (max 5 MB)', 'error'); return; }
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('photo-preview').innerHTML = `<img src="${ev.target.result}" class="w-full h-full object-cover" />`;
+    };
+    reader.readAsDataURL(file);
+
+    setStatus('photo-upload-status', 'Uploading...', 'loading');
+    const data = await uploadAsset(file, 'photo', null).catch(() => ({ error: 'Network error' }));
+    if (data.url) {
+      uploadedPhotoUrl = data.url;
+      setStatus('photo-upload-status', 'Photo uploaded ✓', 'success');
+    } else {
+      uploadedPhotoUrl = null;
+      setStatus('photo-upload-status', `Upload failed: ${data.error || 'unknown error'}`, 'error');
+    }
+  });
+
+  // ── Contract upload (add form) ────────────────────────────────────
+  document.getElementById('ne-contract-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { setStatus('ne-contract-status', 'File too large (max 10 MB)', 'error'); return; }
+
+    const icon = document.getElementById('ne-contract-preview');
+    icon.innerHTML = `<i class="fas fa-file-pdf text-[#194642] text-2xl"></i>`;
+
+    setStatus('ne-contract-status', 'Uploading contract...', 'loading');
+    const data = await uploadAsset(file, 'contract', null).catch(() => ({ error: 'Network error' }));
+    if (data.url) {
+      uploadedContractUrl = data.url;
+      icon.innerHTML = `<i class="fas fa-check-circle text-green-500 text-2xl"></i>`;
+      setStatus('ne-contract-status', `Contract uploaded ✓ (${file.name})`, 'success');
+    } else {
+      uploadedContractUrl = null;
+      setStatus('ne-contract-status', `Upload failed: ${data.error || 'unknown error'}`, 'error');
+    }
+  });
+
+  function showPhotoStatus(msg, type) {
+    setStatus('photo-upload-status', msg, type);
   }
 
   // ── ID Card scan ─────────────────────────────────────────────────
@@ -608,9 +639,19 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
             <input id="eedit-country-${id}" type="text" value="${e.country || "Côte d'Ivoire"}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
         </div>
+        <!-- Contract upload -->
         <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1">Contract URL</label>
-          <input id="eedit-contract-${id}" type="text" value="${e.contract_url || ''}" placeholder="https://..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          <label class="block text-xs font-medium text-gray-600 mb-1">Contract Document</label>
+          ${e.contract_url ? `<div class="flex items-center gap-2 mb-2 text-sm">
+            <i class="fas fa-file-contract text-[#194642]"></i>
+            <a href="${e.contract_url}" target="_blank" rel="noopener noreferrer" class="text-[#194642] hover:underline text-xs font-medium">View current contract ↗</a>
+          </div>` : ''}
+          <label class="flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-2 rounded-lg border border-[#194642]/20 w-fit">
+            <i class="fas fa-upload text-xs"></i> ${e.contract_url ? 'Replace Contract' : 'Upload Contract'}
+            <input type="file" id="eedit-contract-file-${id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden" />
+          </label>
+          <div id="eedit-contract-status-${id}" class="hidden text-xs mt-1 text-gray-500"></div>
+          <input type="hidden" id="eedit-contract-${id}" value="${e.contract_url || ''}" />
         </div>
         <div class="bg-gray-50 rounded-lg p-3 text-sm">
           <p class="font-medium text-gray-700">Worker ID: <span class="font-mono text-[#194642] font-bold">${e.worker_id}</span></p>
@@ -625,39 +666,36 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
         </div>
       </div>`;
 
-    // Photo upload in edit mode
+    // Photo upload in edit mode — server-side via upload-asset API
     document.getElementById(`edit-photo-file-${id}`).addEventListener('change', async (ev) => {
       const file = ev.target.files[0];
       if (!file) return;
-      const statusEl = document.getElementById(`edit-photo-status-${id}`);
-      statusEl.classList.remove('hidden');
-      statusEl.textContent = 'Uploading...';
-      try {
-        const ext = file.name.split('.').pop();
-        const path = `employees/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const uploadRes = await fetch(
-          `${supabaseUrl}/storage/v1/object/employee-photos/${path}`,
-          { method: 'POST', headers: { 'Authorization': `Bearer ${supabaseAnonKey}`, 'Content-Type': file.type, 'x-upsert': 'true' }, body: file }
-        );
-        if (uploadRes.ok) {
-          const url = `${supabaseUrl}/storage/v1/object/public/employee-photos/${path}`;
-          document.getElementById(`eedit-photo-${id}`).value = url;
-          statusEl.textContent = 'Photo uploaded ✓';
-          statusEl.className = 'text-xs mt-1 text-green-600';
-          // Update preview
-          const prevImg = document.getElementById('edit-photo-preview-img');
-          const prevIcon = document.getElementById('edit-photo-preview-icon');
-          if (prevImg) { prevImg.src = url; }
-          else if (prevIcon) {
-            prevIcon.outerHTML = `<img src="${url}" class="w-full h-full object-cover" id="edit-photo-preview-img" />`;
-          }
-        } else {
-          statusEl.textContent = 'Upload failed — enter URL manually below';
-          statusEl.className = 'text-xs mt-1 text-red-500';
-        }
-      } catch {
-        statusEl.textContent = 'Upload failed';
-        statusEl.className = 'text-xs mt-1 text-red-500';
+      setStatus(`edit-photo-status-${id}`, 'Uploading...', 'loading');
+      const data = await uploadAsset(file, 'photo', id).catch(() => ({ error: 'Network error' }));
+      if (data.url) {
+        document.getElementById(`eedit-photo-${id}`).value = data.url;
+        setStatus(`edit-photo-status-${id}`, 'Photo uploaded ✓', 'success');
+        const prevImg = document.getElementById('edit-photo-preview-img');
+        const prevIcon = document.getElementById('edit-photo-preview-icon');
+        if (prevImg) { prevImg.src = data.url; }
+        else if (prevIcon) { prevIcon.outerHTML = `<img src="${data.url}" class="w-full h-full object-cover" id="edit-photo-preview-img" />`; }
+      } else {
+        setStatus(`edit-photo-status-${id}`, `Upload failed: ${data.error || 'unknown'}`, 'error');
+      }
+    });
+
+    // Contract upload in edit mode
+    document.getElementById(`eedit-contract-file-${id}`).addEventListener('change', async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) { setStatus(`eedit-contract-status-${id}`, 'File too large (max 10 MB)', 'error'); return; }
+      setStatus(`eedit-contract-status-${id}`, 'Uploading contract...', 'loading');
+      const data = await uploadAsset(file, 'contract', id).catch(() => ({ error: 'Network error' }));
+      if (data.url) {
+        document.getElementById(`eedit-contract-${id}`).value = data.url;
+        setStatus(`eedit-contract-status-${id}`, `Contract uploaded ✓ (${file.name})`, 'success');
+      } else {
+        setStatus(`eedit-contract-status-${id}`, `Upload failed: ${data.error || 'unknown'}`, 'error');
       }
     });
   };
@@ -705,6 +743,10 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     document.getElementById('photo-upload-status').classList.add('hidden');
     document.getElementById('photo-preview').innerHTML = '<i class="fas fa-user text-gray-300 text-2xl"></i>';
     uploadedPhotoUrl = null;
+    // Reset contract
+    document.getElementById('ne-contract-status').classList.add('hidden');
+    document.getElementById('ne-contract-preview').innerHTML = '<i class="fas fa-file-contract text-gray-300 text-2xl"></i>';
+    uploadedContractUrl = null;
     // Reset ID card section
     document.getElementById('id-front-preview').innerHTML = '<i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i><span class="text-xs text-gray-400">No image</span>';
     document.getElementById('id-back-preview').innerHTML = '<i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i><span class="text-xs text-gray-400">No image</span>';
@@ -748,6 +790,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       start_date: gv('ne-start') || null,
       contract_type: (document.getElementById('ne-contract-type') as HTMLSelectElement).value,
       photo_url: uploadedPhotoUrl || null,
+      contract_url: uploadedContractUrl || null,
       id_card_front_url: (document.getElementById('ne-id-front-url') as HTMLInputElement).value || null,
       id_card_back_url: (document.getElementById('ne-id-back-url') as HTMLInputElement).value || null,
       id_number: (document.getElementById('ne-id-number') as HTMLInputElement).value || null,
