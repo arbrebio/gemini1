@@ -3,6 +3,9 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 
+const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
+const SITE_URL = 'https://arbrebio.com';
+
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
   const key = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -14,6 +17,96 @@ function generateWorkerId(): string {
   const year = new Date().getFullYear().toString().slice(-2);
   const random = Math.floor(Math.random() * 900000 + 100000).toString();
   return `ARB-${year}-${random}`;
+}
+
+async function sendWorkerIdEmail(employee: {
+  first_name: string;
+  last_name: string;
+  email: string;
+  worker_id: string;
+  job_title: string;
+  department?: string | null;
+  start_date?: string | null;
+  contract_type?: string | null;
+}): Promise<void> {
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey) return;
+
+  const startFormatted = employee.start_date
+    ? new Date(employee.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f4;font-family:Arial,sans-serif">
+  <div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#194642,#2a5e59);padding:32px 32px 24px;text-align:center">
+      <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700">Welcome to Arbre Bio Africa!</h1>
+      <p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px">Your employee record has been created</p>
+    </div>
+    <!-- Body -->
+    <div style="padding:32px">
+      <p style="color:#333;font-size:15px;margin:0 0 20px">Dear <strong>${employee.first_name} ${employee.last_name}</strong>,</p>
+      <p style="color:#555;font-size:14px;line-height:1.6;margin:0 0 24px">
+        We are delighted to officially welcome you to the Arbre Bio Africa team.
+        Your employee profile has been created and your unique <strong>Worker ID</strong> is ready.
+        Please keep this ID safe — you will need it to access company systems and services.
+      </p>
+
+      <!-- Worker ID card -->
+      <div style="background:#f0f9f0;border:2px solid #c6e8c6;border-radius:10px;padding:20px 24px;text-align:center;margin:0 0 24px">
+        <p style="color:#194642;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px">Your Worker ID</p>
+        <p style="color:#194642;font-size:28px;font-weight:700;font-family:monospace;letter-spacing:3px;margin:0">${employee.worker_id}</p>
+      </div>
+
+      <!-- Details table -->
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 24px">
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:10px 0;color:#888;width:40%">Position</td>
+          <td style="padding:10px 0;color:#333;font-weight:600">${employee.job_title || '—'}</td>
+        </tr>
+        ${employee.department ? `<tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:10px 0;color:#888">Department</td>
+          <td style="padding:10px 0;color:#333;font-weight:600">${employee.department}</td>
+        </tr>` : ''}
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:10px 0;color:#888">Start Date</td>
+          <td style="padding:10px 0;color:#333;font-weight:600">${startFormatted}</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;color:#888">Contract Type</td>
+          <td style="padding:10px 0;color:#333;font-weight:600">${employee.contract_type || 'CDI'}</td>
+        </tr>
+      </table>
+
+      <p style="color:#555;font-size:13px;line-height:1.6;margin:0 0 24px">
+        If you have any questions, please contact our HR team at
+        <a href="mailto:farms@arbrebio.com" style="color:#194642">farms@arbrebio.com</a>.
+      </p>
+
+      <p style="color:#333;font-size:14px;margin:0">
+        Best regards,<br>
+        <strong>The Arbre Bio Africa HR Team</strong>
+      </p>
+    </div>
+    <!-- Footer -->
+    <div style="background:#f8f8f8;padding:16px 32px;text-align:center;border-top:1px solid #eee">
+      <p style="color:#aaa;font-size:12px;margin:0">© ${new Date().getFullYear()} Arbre Bio Africa · <a href="${SITE_URL}" style="color:#194642;text-decoration:none">arbrebio.com</a></p>
+    </div>
+  </div>
+</body></html>`;
+
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: FROM_ADDRESS,
+      to: [employee.email],
+      subject: `Welcome to Arbre Bio Africa — Your Worker ID: ${employee.worker_id}`,
+      html,
+    }),
+  });
 }
 
 // GET — list employees
@@ -77,6 +170,8 @@ export const POST: APIRoute = async ({ request }) => {
         })
         .select().single();
       if (error) throw error;
+      // Send welcome email with Worker ID
+      await sendWorkerIdEmail(employee).catch(() => {/* non-fatal */});
       return new Response(JSON.stringify({ employee }), { status: 201, headers: { 'Content-Type': 'application/json' } });
     }
 
@@ -110,6 +205,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     await supabase.from('career_applications').update({ employee_id: employee.id, status: 'hired' }).eq('id', application_id);
     await supabase.from('career_application_timeline').insert({ application_id, status: 'hired', note: `Employee record created. Worker ID: ${workerId}` });
+
+    // Send welcome email with Worker ID
+    await sendWorkerIdEmail(employee).catch(() => {/* non-fatal */});
 
     return new Response(JSON.stringify({ employee }), { status: 201, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
