@@ -355,6 +355,13 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       return;
     }
 
+    // DB requires title_en, title_fr, description_en, description_fr (NOT NULL)
+    // Fall back each to the other so both are always present
+    if (!payload.title_en) payload.title_en = payload.title_fr;
+    if (!payload.title_fr) payload.title_fr = payload.title_en;
+    if (!payload.description_en) payload.description_en = payload.description_fr;
+    if (!payload.description_fr) payload.description_fr = payload.description_en;
+
     if (id) payload.id = id;
 
     const res = await fetch('/api/admin/careers/jobs', {
