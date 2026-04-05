@@ -64,6 +64,19 @@ export const GET: APIRoute = async ({ url }) => {
         .eq('id', id)
         .single();
       if (error) throw error;
+
+      // Generate signed URLs (valid 1 hour) for each document stored in private bucket
+      if (application?.career_documents?.length) {
+        application.career_documents = await Promise.all(
+          application.career_documents.map(async (doc: any) => {
+            const { data: signedData } = await supabase.storage
+              .from('career-documents')
+              .createSignedUrl(doc.file_url, 3600); // 1 hour
+            return { ...doc, signed_url: signedData?.signedUrl || null };
+          })
+        );
+      }
+
       return new Response(JSON.stringify({ application }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     }
 

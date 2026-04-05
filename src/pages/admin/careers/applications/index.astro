@@ -141,9 +141,40 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
         ${docs.length ? `
           <div>
             <p class="text-sm font-semibold text-gray-700 mb-2">Documents</p>
-            <div class="space-y-1">${docs.map((d: any) => `
-              <div class="flex items-center gap-2 text-sm"><i class="fas fa-file text-[#194642]"></i><span class="font-medium">${d.file_name}</span><span class="text-gray-400 text-xs capitalize">(${d.doc_type})</span></div>
-            `).join('')}</div>
+            <div class="space-y-2">${docs.map((d: any) => {
+              const isImage = d.mime_type && d.mime_type.startsWith('image/');
+              const icon = d.doc_type === 'cv' ? 'fa-file-alt'
+                : d.doc_type === 'id_card' ? 'fa-id-card'
+                : d.doc_type === 'diploma' ? 'fa-graduation-cap'
+                : isImage ? 'fa-file-image'
+                : 'fa-file-pdf';
+              const docLabel = d.doc_type === 'cv' ? 'CV / Resume'
+                : d.doc_type === 'id_card' ? 'ID Card'
+                : d.doc_type === 'diploma' ? 'Diploma'
+                : d.doc_type === 'certificate' ? 'Certificate'
+                : d.doc_type === 'cover_letter' ? 'Cover Letter'
+                : 'Other Document';
+              const url = d.signed_url || d.file_url || '';
+              return `<div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 gap-3">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i class="fas ${icon} text-[#194642] text-base flex-shrink-0"></i>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-800 truncate">${d.file_name}</p>
+                    <p class="text-xs text-gray-400 capitalize">${docLabel}</p>
+                  </div>
+                </div>
+                ${url ? `<div class="flex gap-2 flex-shrink-0">
+                  <a href="${url}" target="_blank" rel="noopener noreferrer"
+                    class="bg-[#194642] text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-1">
+                    <i class="fas fa-eye text-xs"></i> View
+                  </a>
+                  <a href="${url}" download="${d.file_name}"
+                    class="bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-1">
+                    <i class="fas fa-download text-xs"></i> Download
+                  </a>
+                </div>` : `<span class="text-xs text-red-400 flex-shrink-0">URL unavailable</span>`}
+              </div>`;
+            }).join('')}</div>
           </div>
         ` : ''}
 
