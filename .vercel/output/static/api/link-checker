@@ -1,0 +1,1 @@
+{"usage":"POST an array of URLs to check their status","example":{"method":"POST","body":{"urls":["https://example.com","https://another-site.com/page"]}},"limits":{"maxUrls":50,"timeout":"5 seconds per URL"}}

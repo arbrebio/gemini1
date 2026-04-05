@@ -1,0 +1,227 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { useCareerT } from "../../../lib/careerTranslations";
+
+export async function getStaticPaths() {
+  return [{ params: { jobSlug: '_placeholder' } }];
+}
+
+const lang = 'en';
+const T = useCareerT(lang);
+---
+
+<Layout title={`${T.applicationForm} | Arbre Bio Africa`} description={T.applicationFormDesc}>
+
+  <div class="bg-[#f0f9f0] border-b border-gray-200 py-3">
+    <div class="container mx-auto px-4">
+      <nav class="flex items-center gap-2 text-sm text-gray-600">
+        <a href="/" class="hover:text-[#194642]">Home</a>
+        <span>/</span>
+        <a href="/careers" class="hover:text-[#194642]">{T.careers}</a>
+        <span>/</span>
+        <span id="job-title-breadcrumb" class="text-[#194642] font-medium">{T.applicationForm}</span>
+      </nav>
+    </div>
+  </div>
+
+  <section class="py-12 bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+
+        <div class="mb-8">
+          <a href="#" id="back-link" class="inline-flex items-center gap-2 text-[#194642] hover:underline mb-4 text-sm font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            {T.backToJobs}
+          </a>
+          <h1 class="text-3xl font-bold text-[#194642]">{T.applicationForm}</h1>
+          <p class="text-gray-600 mt-2" id="applying-for"></p>
+          <p class="text-sm text-gray-500 mt-1">{T.applicationFormDesc}</p>
+        </div>
+
+        <div id="success-message" class="hidden bg-green-50 border border-green-200 rounded-xl p-8 text-center">
+          <div class="text-6xl mb-4">🎉</div>
+          <h2 class="text-2xl font-bold text-green-800 mb-3">{T.applicationSuccess}</h2>
+          <p class="text-green-700 mb-4">{T.applicationSuccessDesc}</p>
+          <div class="bg-white rounded-lg p-4 mb-6 border border-green-200">
+            <p class="text-sm text-gray-600 mb-1">{T.applicationRef}:</p>
+            <p id="portal-token-display" class="font-mono text-lg font-bold text-[#194642]"></p>
+          </div>
+          <p class="text-sm text-gray-600 mb-4">Save this token — you'll need it to track your application.</p>
+          <a href="/careers/portal" class="inline-block bg-[#194642] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors">
+            {T.trackApplication}
+          </a>
+        </div>
+
+        <form id="application-form" class="space-y-8" novalidate>
+          <input type="hidden" id="job-id-field" name="job_id" />
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-[#194642] text-white px-6 py-4">
+              <h2 class="font-bold text-lg flex items-center gap-2"><span>👤</span> {T.personalInfo}</h2>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.firstName} *</label>
+                <input type="text" name="first_name" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" placeholder={T.firstName} />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.middleName}</label>
+                <input type="text" name="middle_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" placeholder={T.middleName} />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.lastName} *</label>
+                <input type="text" name="last_name" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" placeholder={T.lastName} />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.birthDate} *</label>
+                <input type="date" name="birth_date" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.emailAddress} *</label>
+                <input type="email" name="email" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" placeholder="email@example.com" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.phoneNumber}</label>
+                <input type="tel" name="phone" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" placeholder="+225 00 00 00 00 00" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.nationality}</label>
+                <input type="text" name="nationality" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.city}</label>
+                <input type="text" name="city" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{T.address}</label>
+                <input type="text" name="address" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent" />
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-[#194642] text-white px-6 py-4">
+              <h2 class="font-bold text-lg flex items-center gap-2"><span>✉️</span> {T.coverLetter}</h2>
+            </div>
+            <div class="p-6">
+              <textarea name="cover_letter" rows="6" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-transparent resize-none" placeholder={T.coverLetterPlaceholder}></textarea>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-[#194642] text-white px-6 py-4">
+              <h2 class="font-bold text-lg flex items-center gap-2"><span>📎</span> {T.uploadDocuments}</h2>
+            </div>
+            <div class="p-6 space-y-5">
+              <p class="text-sm text-gray-500">{T.fileFormats} — {T.maxFileSize}</p>
+              {[
+                { label: T.uploadCV, name: 'cv', required: true },
+                { label: T.uploadIDCard, name: 'id_card', required: true },
+                { label: T.uploadDiploma, name: 'diploma', required: false },
+                { label: T.uploadOther, name: 'other', required: false },
+              ].map(doc => (
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">{doc.label}</label>
+                  <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-[#194642] transition-colors">
+                    <input type="file" name={doc.name} class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#194642] file:text-white hover:file:bg-[#2a5e59] file:cursor-pointer" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div id="form-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm"></div>
+
+          <div class="flex justify-end gap-4">
+            <a href="/careers" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">{T.backToJobs}</a>
+            <button type="submit" id="submit-btn" class="bg-[#194642] text-white font-bold px-10 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+              <span id="submit-text">{T.submitApplication}</span>
+              <span id="submit-spinner" class="hidden">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                {T.submitting}
+              </span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<script define:vars={{ T }}>
+  const pathParts = window.location.pathname.split('/');
+  const slug = pathParts[pathParts.length - 1];
+
+  async function loadJob() {
+    try {
+      const res = await fetch(`/api/careers/jobs?slug=${slug}`);
+      const data = await res.json();
+      if (data.job) {
+        const title = data.job.title_en;
+        document.getElementById('job-title-breadcrumb').textContent = title;
+        document.getElementById('applying-for').textContent = `Applying for: ${title}`;
+        document.getElementById('job-id-field').value = data.job.id;
+        document.getElementById('back-link').href = `/careers/${slug}`;
+      }
+    } catch (e) {}
+  }
+  loadJob();
+
+  const form = document.getElementById('application-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitText = document.getElementById('submit-text');
+  const submitSpinner = document.getElementById('submit-spinner');
+  const errorDiv = document.getElementById('form-error');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorDiv.classList.add('hidden');
+
+    const firstName = form.querySelector('[name=first_name]').value.trim();
+    const lastName = form.querySelector('[name=last_name]').value.trim();
+    const email = form.querySelector('[name=email]').value.trim();
+    const birthDate = form.querySelector('[name=birth_date]').value;
+    const cvFile = form.querySelector('[name=cv]').files[0];
+    const idFile = form.querySelector('[name=id_card]').files[0];
+
+    if (!firstName || !lastName || !email || !birthDate) {
+      errorDiv.textContent = 'Please fill all required fields.';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+    if (!cvFile) {
+      errorDiv.textContent = T.cvRequired;
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+    if (!idFile) {
+      errorDiv.textContent = T.idRequired;
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitText.classList.add('hidden');
+    submitSpinner.classList.remove('hidden');
+
+    try {
+      const formData = new FormData(form);
+      const res = await fetch('/api/careers/apply', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Submission failed');
+
+      form.classList.add('hidden');
+      document.getElementById('success-message').classList.remove('hidden');
+      document.getElementById('portal-token-display').textContent = data.portalToken;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      errorDiv.textContent = err.message || 'An error occurred. Please try again.';
+      errorDiv.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitText.classList.remove('hidden');
+      submitSpinner.classList.add('hidden');
+    }
+  });
+</script>

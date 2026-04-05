@@ -1,0 +1,235 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { useCareerT } from "../../lib/careerTranslations";
+
+const lang = 'en';
+const T = useCareerT(lang);
+---
+
+<Layout title="Careers at Arbre Bio Africa | Join Our Team" description={T.careerPageDesc}>
+
+  <!-- Hero -->
+  <section class="relative h-[50vh] min-h-[400px] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=1600&q=80"
+        alt="Arbre Bio Africa team"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-[#194642]/90 to-[#194642]/60"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl">
+        <span class="inline-block bg-[#4ade80]/20 text-[#4ade80] text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-[#4ade80]/30">
+          {T.careers}
+        </span>
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+          {T.careerPageSubtitle}
+        </h1>
+        <p class="text-xl text-white/80 max-w-2xl mb-8">{T.careerPageDesc}</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#open-positions" class="bg-[#4ade80] text-[#194642] font-bold px-8 py-3 rounded-lg hover:bg-[#22c55e] transition-colors">
+            {T.openPositions}
+          </a>
+          <a href="/careers/portal" class="bg-white/10 backdrop-blur border border-white/30 text-white font-semibold px-8 py-3 rounded-lg hover:bg-white/20 transition-colors">
+            {T.applicantPortal}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Join -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#194642] mb-4">{T.whyJoinTitle}</h2>
+        <p class="text-lg text-gray-600">{T.whyJoinDesc}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {[
+          { title: T.benefit1Title, desc: T.benefit1Desc, icon: '🌱' },
+          { title: T.benefit2Title, desc: T.benefit2Desc, icon: '📈' },
+          { title: T.benefit3Title, desc: T.benefit3Desc, icon: '🤝' },
+          { title: T.benefit4Title, desc: T.benefit4Desc, icon: '💰' },
+        ].map(b => (
+          <div class="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow border border-gray-100">
+            <div class="text-4xl mb-4">{b.icon}</div>
+            <h3 class="text-lg font-bold text-[#194642] mb-2">{b.title}</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">{b.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Hiring Process -->
+  <section class="py-20 bg-[#f0f9f0]">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#194642] mb-4">{T.processTitle}</h2>
+        <p class="text-lg text-gray-600">{T.processDesc}</p>
+      </div>
+      <div class="relative">
+        <div class="hidden lg:block absolute top-10 left-[10%] right-[10%] h-0.5 bg-[#194642]/20"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+          {[
+            { num: 1, title: T.step1Title, desc: T.step1Desc, icon: '📝' },
+            { num: 2, title: T.step2Title, desc: T.step2Desc, icon: '🔍' },
+            { num: 3, title: T.step3Title, desc: T.step3Desc, icon: '💬' },
+            { num: 4, title: T.step4Title, desc: T.step4Desc, icon: '📄' },
+            { num: 5, title: T.step5Title, desc: T.step5Desc, icon: '🎉' },
+          ].map(step => (
+            <div class="relative text-center">
+              <div class="mx-auto w-20 h-20 bg-[#194642] text-white rounded-full flex items-center justify-center text-3xl shadow-lg mb-4 relative z-10">
+                {step.icon}
+              </div>
+              <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#4ade80] rounded-full flex items-center justify-center text-[#194642] font-bold text-sm -mt-1 z-20 shadow-md">
+                {step.num}
+              </div>
+              <h3 class="font-bold text-[#194642] mb-2 mt-2">{step.title}</h3>
+              <p class="text-sm text-gray-600">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open Positions -->
+  <section id="open-positions" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-4">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#194642]">{T.openPositions}</h2>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <select id="filter-dept" class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="">{T.allDepartments}</option>
+          </select>
+          <select id="filter-type" class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="">{T.allTypes}</option>
+            <option value="full_time">{T.fullTime}</option>
+            <option value="part_time">{T.partTime}</option>
+            <option value="contract">{T.contract}</option>
+            <option value="internship">{T.internship}</option>
+            <option value="volunteer">{T.volunteer}</option>
+          </select>
+        </div>
+      </div>
+      <div id="jobs-container">
+        <div class="flex justify-center py-16">
+          <div class="animate-spin w-10 h-10 border-4 border-[#194642] border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+      <div id="no-jobs" class="hidden text-center py-16">
+        <div class="text-6xl mb-4">🌿</div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">{T.noOpenPositions}</h3>
+        <p class="text-gray-600 max-w-md mx-auto">{T.noOpenPositionsDesc}</p>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<script define:vars={{ lang, T }}>
+  const typeLabels = {
+    full_time: T.fullTime, part_time: T.partTime,
+    contract: T.contract, internship: T.internship, volunteer: T.volunteer
+  };
+  const typeColors = {
+    full_time: 'bg-blue-100 text-blue-700',
+    part_time: 'bg-purple-100 text-purple-700',
+    contract: 'bg-orange-100 text-orange-700',
+    internship: 'bg-pink-100 text-pink-700',
+    volunteer: 'bg-teal-100 text-teal-700',
+  };
+  let allJobs = [];
+
+  async function loadJobs() {
+    try {
+      const res = await fetch('/api/careers/jobs');
+      const data = await res.json();
+      allJobs = data.jobs || [];
+      renderJobs(allJobs);
+      populateFilters(allJobs);
+    } catch (e) {
+      document.getElementById('jobs-container').innerHTML = '';
+      document.getElementById('no-jobs').classList.remove('hidden');
+    }
+  }
+
+  function populateFilters(jobs) {
+    const deptSel = document.getElementById('filter-dept');
+    const departments = [...new Set(jobs.map(j => j.department).filter(Boolean))];
+    departments.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      deptSel.appendChild(opt);
+    });
+  }
+
+  function renderJobs(jobs) {
+    const container = document.getElementById('jobs-container');
+    const noJobs = document.getElementById('no-jobs');
+    if (!jobs.length) {
+      container.innerHTML = '';
+      noJobs.classList.remove('hidden');
+      return;
+    }
+    noJobs.classList.add('hidden');
+    container.innerHTML = `
+      <div class="grid gap-6">
+        ${jobs.map(job => {
+          const title = job[`title_${lang}`] || job.title_en;
+          const dept = job.department || '';
+          const typeLabel = typeLabels[job.job_type] || job.job_type;
+          const typeColor = typeColors[job.job_type] || 'bg-gray-100 text-gray-700';
+          const deadline = job.deadline ? new Date(job.deadline).toLocaleDateString() : '';
+          return `
+            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-[#194642]/30 bg-white group" data-dept="${dept}" data-type="${job.job_type}">
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                <div class="flex-1">
+                  <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="${typeColor} text-xs font-semibold px-3 py-1 rounded-full">${typeLabel}</span>
+                    ${dept ? `<span class="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">${dept}</span>` : ''}
+                  </div>
+                  <h3 class="text-xl font-bold text-[#194642] group-hover:text-[#2a5e59] transition-colors mb-2">${title}</h3>
+                  <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+                    <span>${job.location}</span>
+                    ${deadline ? `<span>${T.deadline}: ${deadline}</span>` : ''}
+                    <span>${job.positions} ${T.positions}</span>
+                  </div>
+                </div>
+                <div class="flex gap-3 md:flex-col lg:flex-row">
+                  <a href="/careers/${job.slug}" class="flex-1 md:flex-none text-center border border-[#194642] text-[#194642] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#194642]/5 transition-colors text-sm">
+                    ${T.viewDetails}
+                  </a>
+                  <a href="/careers/apply/${job.slug}" class="flex-1 md:flex-none text-center bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
+                    ${T.applyNow}
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  document.getElementById('filter-dept').addEventListener('change', applyFilters);
+  document.getElementById('filter-type').addEventListener('change', applyFilters);
+
+  function applyFilters() {
+    const dept = document.getElementById('filter-dept').value;
+    const type = document.getElementById('filter-type').value;
+    const filtered = allJobs.filter(j => {
+      const deptMatch = !dept || j.department === dept;
+      const typeMatch = !type || j.job_type === type;
+      return deptMatch && typeMatch;
+    });
+    renderJobs(filtered);
+  }
+
+  loadJobs();
+</script>

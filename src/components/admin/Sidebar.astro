@@ -6,6 +6,7 @@ const menuItems = [
     { name: "Orders", href: "/admin/orders", icon: "fa-shopping-cart" },
     { name: "Projects", href: "/admin/projects", icon: "fa-project-diagram" },
     { name: "Suppliers", href: "/admin/suppliers", icon: "fa-truck" },
+    { name: "Careers", href: "/admin/careers", icon: "fa-briefcase" },
     { name: "Settings", href: "/admin/settings", icon: "fa-cog" },
 ];
 
@@ -16,10 +17,10 @@ const currentPath = Astro.url.pathname;
     class="bg-[#194642] text-white w-64 min-h-screen flex flex-col transition-all duration-300"
     id="admin-sidebar"
 >
-    <div class="p-6 flex items-center justify-center border-b border-[#2a5e59]">
-        <a href="/admin" class="flex items-center gap-2">
-            <img src="/logo-white.svg" alt="Arbre Bio" class="h-8 w-auto" />
-            <span class="font-bold text-xl tracking-tight">Admin Panel</span>
+    <div class="p-5 flex items-center justify-center border-b border-[#2a5e59]">
+        <a href="/admin" class="flex flex-col items-center gap-2">
+            <img src="/logo.svg" alt="Arbre Bio Africa" class="h-12 w-auto rounded-lg bg-white/10 p-1" />
+            <span class="font-semibold text-sm tracking-wide text-white/80">Admin Panel</span>
         </a>
     </div>
 

@@ -1,0 +1,303 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getAllLangPaths } from "../../../lib/langPaths";
+import { useCareerT } from "../../../lib/careerTranslations";
+import type { Language } from "../../../lib/i18n";
+
+export async function getStaticPaths() { return getAllLangPaths(); }
+const { lang } = Astro.params as { lang: Language };
+const T = useCareerT(lang);
+
+const statusColors: Record<string, string> = {
+  submitted: 'bg-blue-100 text-blue-700 border-blue-200',
+  under_review: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+  interview_scheduled: 'bg-purple-100 text-purple-700 border-purple-200',
+  interview_done: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+  offer_sent: 'bg-orange-100 text-orange-700 border-orange-200',
+  hired: 'bg-green-100 text-green-700 border-green-200',
+  rejected: 'bg-red-100 text-red-700 border-red-200',
+  withdrawn: 'bg-gray-100 text-gray-700 border-gray-200',
+};
+---
+
+<Layout title={`${T.applicantPortal} | Arbre Bio Africa`} description={T.portalDesc}>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-[#194642] to-[#2a5e59] py-16 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <div class="inline-block bg-white/10 rounded-full p-4 mb-4">
+        <svg class="w-10 h-10 text-[#4ade80]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">{T.applicantPortal}</h1>
+      <p class="text-white/80 max-w-xl mx-auto text-lg">{T.portalDesc}</p>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4">
+      <div class="max-w-lg mx-auto">
+
+        <!-- Login Form -->
+        <div id="portal-login" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="bg-[#194642] text-white px-6 py-4">
+            <h2 class="font-bold text-lg">{T.applicantPortal}</h2>
+          </div>
+          <div class="p-6 space-y-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.enterEmail}</label>
+              <input type="email" id="portal-email"
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642]"
+                placeholder="email@example.com"
+              />
+              <p class="text-xs text-gray-500 mt-1">{T.portalEmailHint}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.enterToken}</label>
+              <input type="text" id="portal-token"
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] font-mono"
+                placeholder="e.g. abc123..."
+              />
+              <p class="text-xs text-gray-500 mt-1">{T.portalTokenHint}</p>
+            </div>
+            <div id="portal-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
+            <button id="portal-submit" class="w-full bg-[#194642] text-white font-bold py-3 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+              {T.accessPortal}
+            </button>
+          </div>
+        </div>
+
+        <!-- Portal Dashboard (hidden until login) -->
+        <div id="portal-dashboard" class="hidden space-y-6">
+
+          <!-- Application Status Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-[#194642] text-white px-6 py-4 flex items-center justify-between">
+              <h2 class="font-bold text-lg">{T.applicationStatus}</h2>
+              <span id="status-badge" class="text-xs font-bold px-3 py-1.5 rounded-full border"></span>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+                <div>
+                  <p class="text-gray-500">{T.applicantName}</p>
+                  <p id="app-name" class="font-semibold text-gray-800 mt-0.5"></p>
+                </div>
+                <div>
+                  <p class="text-gray-500">{T.appliedFor}</p>
+                  <p id="app-job" class="font-semibold text-gray-800 mt-0.5"></p>
+                </div>
+                <div>
+                  <p class="text-gray-500">{T.appliedDate}</p>
+                  <p id="app-date" class="font-semibold text-gray-800 mt-0.5"></p>
+                </div>
+                <div>
+                  <p class="text-gray-500">Reference</p>
+                  <p id="app-token" class="font-mono text-xs text-[#194642] mt-0.5 break-all"></p>
+                </div>
+              </div>
+
+              <!-- Progress bar -->
+              <div class="mb-2">
+                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                  <span>{T.statusSubmitted}</span>
+                  <span>{T.statusHired}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div id="progress-bar" class="bg-[#194642] h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employee Card (shown if hired) -->
+          <div id="employee-card" class="hidden bg-gradient-to-br from-[#194642] to-[#2a5e59] text-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6">
+              <div class="flex items-center gap-4 mb-6">
+                <div id="emp-photo-container" class="w-16 h-16 bg-white/20 rounded-full overflow-hidden flex items-center justify-center">
+                  <svg class="w-8 h-8 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
+                <div>
+                  <p class="text-white/70 text-sm">{T.congratulations}</p>
+                  <h3 id="emp-name" class="text-xl font-bold"></h3>
+                  <p id="emp-title" class="text-[#4ade80] text-sm"></p>
+                </div>
+              </div>
+              <div class="bg-white/10 rounded-lg p-4 mb-4">
+                <p class="text-white/70 text-xs mb-1">{T.yourWorkerID}</p>
+                <p id="emp-worker-id" class="font-mono text-2xl font-bold tracking-wider"></p>
+              </div>
+              <p class="text-white/80 text-sm mb-5">{T.workerIDAssigned}</p>
+              <div class="flex flex-wrap gap-3">
+                <a id="contract-link" href="#" class="hidden bg-[#4ade80] text-[#194642] font-bold px-5 py-2 rounded-lg text-sm hover:bg-[#22c55e] transition-colors">
+                  📄 {T.downloadContract}
+                </a>
+                <a id="certificate-link" href="#" class="hidden bg-white/20 text-white font-bold px-5 py-2 rounded-lg text-sm hover:bg-white/30 transition-colors">
+                  🏅 {T.downloadCertificate}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h3 class="font-bold text-[#194642]">{T.timeline}</h3>
+            </div>
+            <div id="timeline-list" class="p-6 space-y-4"></div>
+          </div>
+
+          <!-- Documents -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h3 class="font-bold text-[#194642]">{T.yourDocuments}</h3>
+            </div>
+            <div id="docs-list" class="p-6"></div>
+          </div>
+
+          <!-- Logout -->
+          <button id="portal-logout" class="w-full text-center text-gray-500 hover:text-gray-800 text-sm py-2">
+            ← {T.backToJobs}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<script define:vars={{ lang, T }}>
+  const progressMap = {
+    submitted: 10, under_review: 30, interview_scheduled: 50,
+    interview_done: 65, offer_sent: 80, hired: 100, rejected: 0, withdrawn: 0
+  };
+  const statusLabels = {
+    submitted: T.statusSubmitted, under_review: T.statusUnderReview,
+    interview_scheduled: T.statusInterviewScheduled, interview_done: T.statusInterviewDone,
+    offer_sent: T.statusOfferSent, hired: T.statusHired,
+    rejected: T.statusRejected, withdrawn: T.statusWithdrawn
+  };
+  const statusBadgeColors = {
+    submitted: 'bg-blue-100 text-blue-700 border-blue-200',
+    under_review: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    interview_scheduled: 'bg-purple-100 text-purple-700 border-purple-200',
+    interview_done: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    offer_sent: 'bg-orange-100 text-orange-700 border-orange-200',
+    hired: 'bg-green-100 text-green-700 border-green-200',
+    rejected: 'bg-red-100 text-red-700 border-red-200',
+    withdrawn: 'bg-gray-100 text-gray-700 border-gray-200',
+  };
+
+  document.getElementById('portal-submit').addEventListener('click', async () => {
+    const email = document.getElementById('portal-email').value.trim();
+    const token = document.getElementById('portal-token').value.trim();
+    const errorDiv = document.getElementById('portal-error');
+    errorDiv.classList.add('hidden');
+
+    if (!email || !token) {
+      errorDiv.textContent = 'Please enter your email and reference token.';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/careers/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, token }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        errorDiv.textContent = data.error || 'Invalid email or token.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      showDashboard(data);
+    } catch (e) {
+      errorDiv.textContent = 'An error occurred. Please try again.';
+      errorDiv.classList.remove('hidden');
+    }
+  });
+
+  function showDashboard(data) {
+    document.getElementById('portal-login').classList.add('hidden');
+    document.getElementById('portal-dashboard').classList.remove('hidden');
+
+    const app = data.application;
+    const job = data.job;
+    const employee = data.employee;
+    const timeline = data.timeline || [];
+    const docs = data.documents || [];
+
+    document.getElementById('app-name').textContent = `${app.first_name} ${app.last_name}`;
+    document.getElementById('app-job').textContent = job ? (job[`title_${lang}`] || job.title_en) : '';
+    document.getElementById('app-date').textContent = new Date(app.submitted_at).toLocaleDateString();
+    document.getElementById('app-token').textContent = app.portal_token;
+
+    const badge = document.getElementById('status-badge');
+    badge.textContent = statusLabels[app.status] || app.status;
+    badge.className = `text-xs font-bold px-3 py-1.5 rounded-full border ${statusBadgeColors[app.status] || ''}`;
+
+    document.getElementById('progress-bar').style.width = `${progressMap[app.status] || 0}%`;
+
+    // Employee card
+    if (employee) {
+      document.getElementById('employee-card').classList.remove('hidden');
+      document.getElementById('emp-name').textContent = `${employee.first_name} ${employee.last_name}`;
+      document.getElementById('emp-title').textContent = employee.job_title || '';
+      document.getElementById('emp-worker-id').textContent = employee.worker_id;
+
+      if (employee.photo_url) {
+        document.getElementById('emp-photo-container').innerHTML = `<img src="${employee.photo_url}" class="w-full h-full object-cover" />`;
+      }
+      if (employee.contract_url) {
+        const cl = document.getElementById('contract-link');
+        cl.href = employee.contract_url; cl.classList.remove('hidden');
+      }
+    }
+
+    // Timeline
+    const timelineEl = document.getElementById('timeline-list');
+    if (timeline.length) {
+      timelineEl.innerHTML = timeline.map(t => `
+        <div class="flex items-start gap-3">
+          <div class="w-3 h-3 rounded-full bg-[#194642] mt-1.5 flex-shrink-0 ring-2 ring-[#194642]/20"></div>
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">${statusLabels[t.status] || t.status}</p>
+            ${t.note ? `<p class="text-gray-600 text-sm mt-0.5">${t.note}</p>` : ''}
+            <p class="text-xs text-gray-400 mt-1">${new Date(t.created_at).toLocaleString()}</p>
+          </div>
+        </div>
+      `).join('<div class="ml-1.5 w-0.5 h-4 bg-gray-200"></div>');
+    } else {
+      timelineEl.innerHTML = `<p class="text-gray-500 text-sm">${statusLabels[app.status] || app.status}</p>`;
+    }
+
+    // Documents
+    const docsEl = document.getElementById('docs-list');
+    if (docs.length) {
+      docsEl.innerHTML = `<div class="space-y-2">${docs.map(d => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-[#194642]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="text-sm font-medium text-gray-800">${d.file_name}</span>
+          </div>
+          <span class="text-xs text-gray-500 capitalize">${d.doc_type}</span>
+        </div>
+      `).join('')}</div>`;
+    } else {
+      docsEl.innerHTML = '<p class="text-gray-500 text-sm">No documents submitted.</p>';
+    }
+  }
+
+  document.getElementById('portal-logout').addEventListener('click', () => {
+    document.getElementById('portal-dashboard').classList.add('hidden');
+    document.getElementById('portal-login').classList.remove('hidden');
+    document.getElementById('portal-email').value = '';
+    document.getElementById('portal-token').value = '';
+  });
+</script>

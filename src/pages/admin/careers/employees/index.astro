@@ -1,0 +1,288 @@
+---
+import AdminLayout from "../../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Employees">
+  <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Employees</h1>
+      <p class="text-gray-500 text-sm mt-1">Manage employee records and digital ID cards</p>
+    </div>
+    <button id="btn-add-employee" class="bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-2 text-sm">
+      <i class="fas fa-plus"></i> Add Employee
+    </button>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div id="add-emp-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+        <h2 class="font-bold text-lg text-gray-800">Add Employee</h2>
+        <button id="add-emp-close" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="add-emp-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">First Name *</label>
+            <input id="ne-fname" type="text" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Last Name *</label>
+            <input id="ne-lname" type="text" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Email *</label>
+          <input id="ne-email" type="email" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Phone</label>
+            <input id="ne-phone" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Start Date</label>
+            <input id="ne-start" type="date" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Job Title *</label>
+            <input id="ne-title" type="text" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Department</label>
+            <input id="ne-dept" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Nationality</label>
+          <input id="ne-nationality" type="text" placeholder="e.g. Ivoirian" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Notes</label>
+          <textarea id="ne-notes" rows="3" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+        </div>
+        <div id="ne-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
+        <div class="flex justify-end gap-3">
+          <button type="button" id="ne-cancel" class="px-5 py-2.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium">Cancel</button>
+          <button type="submit" class="bg-[#194642] text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-[#2a5e59] text-sm">
+            <i class="fas fa-id-card mr-1.5"></i> Create Employee
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="employees-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="col-span-full flex justify-center py-16">
+      <div class="animate-spin w-8 h-8 border-4 border-[#194642] border-t-transparent rounded-full"></div>
+    </div>
+  </div>
+
+  <!-- Employee Detail Modal -->
+  <div id="emp-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-start justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl my-8">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h2 class="font-bold text-lg text-gray-800">Employee Record</h2>
+        <button id="emp-modal-close" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="emp-modal-content" class="p-6">Loading...</div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const statusColors: Record<string, string> = {
+    active: 'bg-green-100 text-green-700',
+    inactive: 'bg-gray-100 text-gray-600',
+    terminated: 'bg-red-100 text-red-700',
+  };
+
+  async function loadEmployees() {
+    const res = await fetch('/api/admin/careers/employees');
+    const data = await res.json();
+    const employees = data.employees || [];
+    renderEmployees(employees);
+  }
+
+  function renderEmployees(employees: any[]) {
+    const grid = document.getElementById('employees-grid')!;
+    if (!employees.length) {
+      grid.innerHTML = `
+        <div class="col-span-full bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-16 text-center">
+          <div class="text-5xl mb-4">👥</div>
+          <h3 class="text-lg font-bold text-gray-700 mb-1">No employees yet</h3>
+          <p class="text-gray-500 text-sm">Convert hired applicants into employees from the Applications page.</p>
+          <a href="/admin/careers/applications" class="mt-4 inline-block text-[#194642] underline text-sm">Go to Applications</a>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = employees.map(e => `
+      <div class="bg-gradient-to-br from-[#194642] to-[#2a5e59] text-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-5">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 bg-white/20 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0">
+              ${e.photo_url
+                ? `<img src="${e.photo_url}" class="w-full h-full object-cover" />`
+                : `<i class="fas fa-user text-white/60 text-xl"></i>`
+              }
+            </div>
+            <div class="min-w-0">
+              <h3 class="font-bold text-lg leading-tight truncate">${e.first_name} ${e.last_name}</h3>
+              <p class="text-[#4ade80] text-sm truncate">${e.job_title || '—'}</p>
+              ${e.department ? `<p class="text-white/60 text-xs">${e.department}</p>` : ''}
+            </div>
+          </div>
+          <div class="bg-white/10 rounded-lg p-3 mb-3">
+            <p class="text-white/60 text-xs mb-0.5">Worker ID</p>
+            <p class="font-mono text-xl font-bold tracking-wider">${e.worker_id}</p>
+          </div>
+          <div class="flex items-center justify-between text-xs text-white/60 mb-3">
+            <span>Since ${e.start_date ? new Date(e.start_date).toLocaleDateString() : '—'}</span>
+            <span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[e.status] || 'bg-white/20 text-white'}">${e.status}</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editEmployee('${e.id}')" class="flex-1 bg-white/20 hover:bg-white/30 text-white font-medium px-3 py-1.5 rounded-lg text-sm transition-colors">
+              Edit
+            </button>
+            <button onclick="deleteEmployee('${e.id}','${(e.first_name+' '+e.last_name).replace(/'/g,"\\'")}') " class="bg-red-500/30 hover:bg-red-500/50 text-white font-medium px-3 py-1.5 rounded-lg text-sm transition-colors">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  (window as any).editEmployee = async (id: string) => {
+    const modal = document.getElementById('emp-modal')!;
+    const content = document.getElementById('emp-modal-content')!;
+    modal.classList.remove('hidden');
+    content.innerHTML = '<div class="flex justify-center py-12"><div class="animate-spin w-8 h-8 border-4 border-[#194642] border-t-transparent rounded-full"></div></div>';
+
+    const res = await fetch(`/api/admin/careers/employees?id=${id}`);
+    const data = await res.json();
+    const e = data.employee;
+    if (!e) { content.innerHTML = '<p class="text-red-500">Failed to load.</p>'; return; }
+
+    content.innerHTML = `
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Job Title</label>
+            <input id="eedit-title-${id}" type="text" value="${e.job_title || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Department</label>
+            <input id="eedit-dept-${id}" type="text" value="${e.department || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label>
+            <input id="eedit-start-${id}" type="date" value="${e.start_date || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+            <select id="eedit-status-${id}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+              <option value="active" ${e.status === 'active' ? 'selected' : ''}>Active</option>
+              <option value="inactive" ${e.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+              <option value="terminated" ${e.status === 'terminated' ? 'selected' : ''}>Terminated</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Photo URL</label>
+          <input id="eedit-photo-${id}" type="text" value="${e.photo_url || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Contract URL</label>
+          <input id="eedit-contract-${id}" type="text" value="${e.contract_url || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Notes</label>
+          <textarea id="eedit-notes-${id}" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none">${e.notes || ''}</textarea>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 text-sm">
+          <p class="font-medium text-gray-700">Worker ID: <span class="font-mono text-[#194642]">${e.worker_id}</span></p>
+          <p class="text-gray-500 mt-1">Email: ${e.email}</p>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button onclick="document.getElementById('emp-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Cancel</button>
+          <button onclick="saveEmployee('${id}')" class="bg-[#194642] text-white font-semibold px-5 py-2 rounded-lg hover:bg-[#2a5e59] text-sm">Save</button>
+        </div>
+      </div>
+    `;
+  };
+
+  (window as any).saveEmployee = async (id: string) => {
+    const updates = {
+      id,
+      job_title: (document.getElementById(`eedit-title-${id}`) as HTMLInputElement).value.trim(),
+      department: (document.getElementById(`eedit-dept-${id}`) as HTMLInputElement).value.trim(),
+      start_date: (document.getElementById(`eedit-start-${id}`) as HTMLInputElement).value || null,
+      status: (document.getElementById(`eedit-status-${id}`) as HTMLSelectElement).value,
+      photo_url: (document.getElementById(`eedit-photo-${id}`) as HTMLInputElement).value.trim() || null,
+      contract_url: (document.getElementById(`eedit-contract-${id}`) as HTMLInputElement).value.trim() || null,
+      notes: (document.getElementById(`eedit-notes-${id}`) as HTMLTextAreaElement).value.trim() || null,
+    };
+
+    const res = await fetch('/api/admin/careers/employees', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Save failed'); return; }
+    document.getElementById('emp-modal')!.classList.add('hidden');
+    await loadEmployees();
+  };
+
+  (window as any).deleteEmployee = async (id: string, name: string) => {
+    if (!confirm(`Remove employee record for ${name}?`)) return;
+    await fetch('/api/admin/careers/employees', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    await loadEmployees();
+  };
+
+  document.getElementById('emp-modal-close')!.addEventListener('click', () => {
+    document.getElementById('emp-modal')!.classList.add('hidden');
+  });
+
+  // ── Add Employee (direct) ──────────────────────────────────────
+  document.getElementById('btn-add-employee')!.addEventListener('click', () => {
+    (document.getElementById('add-emp-form') as HTMLFormElement).reset();
+    document.getElementById('ne-error')!.classList.add('hidden');
+    document.getElementById('add-emp-modal')!.classList.remove('hidden');
+  });
+  document.getElementById('add-emp-close')!.addEventListener('click', () => {
+    document.getElementById('add-emp-modal')!.classList.add('hidden');
+  });
+  document.getElementById('ne-cancel')!.addEventListener('click', () => {
+    document.getElementById('add-emp-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('add-emp-form')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errDiv = document.getElementById('ne-error')!;
+    errDiv.classList.add('hidden');
+    const payload = {
+      first_name: (document.getElementById('ne-fname') as HTMLInputElement).value.trim(),
+      last_name: (document.getElementById('ne-lname') as HTMLInputElement).value.trim(),
+      email: (document.getElementById('ne-email') as HTMLInputElement).value.trim(),
+      phone: (document.getElementById('ne-phone') as HTMLInputElement).value.trim() || null,
+      job_title: (document.getElementById('ne-title') as HTMLInputElement).value.trim(),
+      department: (document.getElementById('ne-dept') as HTMLInputElement).value.trim() || null,
+      start_date: (document.getElementById('ne-start') as HTMLInputElement).value || null,
+      nationality: (document.getElementById('ne-nationality') as HTMLInputElement).value.trim() || null,
+      notes: (document.getElementById('ne-notes') as HTMLTextAreaElement).value.trim() || null,
+    };
+    const res = await fetch('/api/admin/careers/employees', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) { errDiv.textContent = data.error || 'Failed to create employee'; errDiv.classList.remove('hidden'); return; }
+    document.getElementById('add-emp-modal')!.classList.add('hidden');
+    await loadEmployees();
+  });
+
+  loadEmployees();
+</script>

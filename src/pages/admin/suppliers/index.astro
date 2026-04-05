@@ -1,177 +1,964 @@
 ---
+export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const CATEGORIES: Record<string, string> = {
+  fertilizer:              'Fertilizer',
+  biostimulant:            'Biostimulant',
+  greenhouse_accessories:  'Greenhouse Accessories',
+  greenhouse_tropicale:    'Greenhouse Tropicale',
+  irrigation_system:       'Irrigation System',
+  growing_media:           'Growing Media (Substrat)',
+  agriculture_advising:    'Agriculture Advising',
+  project_management:      'Project Management',
+  other:                   'Other',
+};
 ---
 
-<AdminLayout title="Suppliers Management">
-    <div class="flex justify-between items-center mb-6">
+<AdminLayout title="Suppliers">
+
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Suppliers</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Manage your supplier network &amp; procurement</p>
+    </div>
+    <button id="btn-new-supplier"
+      class="bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-2 text-sm">
+      <i class="fas fa-plus"></i> Add Supplier
+    </button>
+  </div>
+
+  <!-- Stats Row -->
+  <div id="stats-row" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-center">
+    <div class="relative flex-1 min-w-48">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input id="search-input" type="text" placeholder="Search by name, country, contact…"
+        class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+    </div>
+    <select id="filter-category"
+      class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+      <option value="">All Categories</option>
+      {Object.entries(CATEGORIES).map(([k,v]) => <option value={k}>{v}</option>)}
+    </select>
+    <select id="filter-status"
+      class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+      <option value="">All Statuses</option>
+      <option value="active">Active</option>
+      <option value="pending">Pending</option>
+      <option value="suspended">Suspended</option>
+      <option value="blacklisted">Blacklisted</option>
+    </select>
+  </div>
+
+  <!-- Supplier Table -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="suppliers-table">
+      <div class="flex justify-center py-16">
+        <div class="animate-spin w-8 h-8 border-4 border-[#194642] border-t-transparent rounded-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[100] hidden px-5 py-3 rounded-xl shadow-lg text-sm font-semibold text-white transition-all"></div>
+
+  <!-- ═══════════════ ADD / EDIT SUPPLIER MODAL ═══════════════ -->
+  <div id="supplier-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+        <h2 id="supplier-modal-title" class="font-bold text-lg text-gray-800">New Supplier</h2>
+        <button id="supplier-modal-close" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+      </div>
+      <form id="supplier-form" class="p-6 space-y-4">
+        <input type="hidden" id="sf-id" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Company Name *</label>
+            <input id="sf-name" type="text" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Trade Name</label>
+            <input id="sf-trade" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Category *</label>
+            <select id="sf-category" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+              <option value="">Select category</option>
+              {Object.entries(CATEGORIES).map(([k,v]) => <option value={k}>{v}</option>)}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Status</label>
+            <select id="sf-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="suspended">Suspended</option>
+              <option value="blacklisted">Blacklisted</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Contact Name</label>
+            <input id="sf-contact-name" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Contact Email</label>
+            <input id="sf-contact-email" type="email" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Contact Phone</label>
+            <input id="sf-phone" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Website</label>
+            <input id="sf-website" type="url" placeholder="https://" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Country</label>
+            <input id="sf-country" type="text" value="Côte d'Ivoire" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">City</label>
+            <input id="sf-city" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Payment Terms</label>
+            <input id="sf-payment" type="text" placeholder="e.g. Net 30, 50% upfront" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Currency</label>
+            <select id="sf-currency" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+              <option value="XOF">XOF (CFA)</option>
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+              <option value="ZAR">ZAR</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Tax ID</label>
+            <input id="sf-tax" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Rating (1–5)</label>
+            <select id="sf-rating" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+              <option value="">No rating</option>
+              <option value="1">1 star</option>
+              <option value="2">2 stars</option>
+              <option value="3">3 stars</option>
+              <option value="4">4 stars</option>
+              <option value="5">5 stars</option>
+            </select>
+          </div>
+        </div>
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Suppliers</h1>
-            <p class="text-gray-600">
-                Manage your supplier network and procurement
-            </p>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Address</label>
+          <input id="sf-address" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
         </div>
-        <button
-            id="add-supplier-btn"
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-            <i class="fas fa-plus"></i>
-            Add Supplier
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Notes</label>
+          <textarea id="sf-notes" rows="3" placeholder="Internal notes about this supplier…"
+            class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+        </div>
+        <div id="sf-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" id="supplier-modal-cancel"
+            class="px-5 py-2.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 font-medium text-sm">Cancel</button>
+          <button type="submit"
+            class="bg-[#194642] text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
+            <i class="fas fa-save mr-1.5"></i> Save Supplier
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DETAIL DRAWER ═══════════════ -->
+  <div id="detail-drawer" class="fixed inset-0 z-50 hidden">
+    <div id="detail-backdrop" class="absolute inset-0 bg-black/40"></div>
+    <div class="absolute right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl flex flex-col overflow-hidden">
+      <!-- Drawer header -->
+      <div id="drawer-header" class="bg-[#194642] text-white px-6 py-5 flex-shrink-0">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 id="drawer-name" class="text-xl font-bold"></h2>
+            <p id="drawer-category" class="text-white/70 text-sm mt-0.5"></p>
+          </div>
+          <button id="drawer-close" class="text-white/60 hover:text-white text-xl ml-4"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="flex items-center gap-3 mt-3 flex-wrap">
+          <span id="drawer-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-white/20"></span>
+          <span id="drawer-rating" class="text-yellow-300 text-sm"></span>
+          <span id="drawer-country" class="text-white/60 text-sm"></span>
+        </div>
+      </div>
+
+      <!-- Drawer tabs -->
+      <div class="flex border-b border-gray-100 bg-white flex-shrink-0">
+        <button data-tab="info"
+          class="drawer-tab flex-1 py-3 text-xs font-semibold uppercase tracking-wide transition-colors text-[#194642] border-b-2 border-[#194642]">
+          Info
         </button>
-    </div>
+        <button data-tab="orders"
+          class="drawer-tab flex-1 py-3 text-xs font-semibold uppercase tracking-wide transition-colors text-gray-400 hover:text-gray-600">
+          Orders
+        </button>
+        <button data-tab="deliveries"
+          class="drawer-tab flex-1 py-3 text-xs font-semibold uppercase tracking-wide transition-colors text-gray-400 hover:text-gray-600">
+          Deliveries
+        </button>
+        <button data-tab="notes"
+          class="drawer-tab flex-1 py-3 text-xs font-semibold uppercase tracking-wide transition-colors text-gray-400 hover:text-gray-600">
+          Notes
+        </button>
+      </div>
 
-    <!-- Search -->
-    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
-        <div class="relative">
-            <i
-                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            ></i>
-            <input
-                type="text"
-                id="search-input"
-                placeholder="Search suppliers by name, country, or contact..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-            />
-        </div>
-    </div>
-
-    <!-- Suppliers Grid -->
-    <div
-        id="suppliers-grid"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-        <div class="col-span-full text-center py-8 text-gray-500">
-            Loading suppliers...
-        </div>
-    </div>
-</AdminLayout>
-
-<script>
-    import { supabase } from "../../../lib/supabase";
-
-    async function loadSuppliers() {
-        const grid = document.getElementById("suppliers-grid");
-        const searchInput = document.getElementById(
-            "search-input",
-        ) as HTMLInputElement;
-
-        if (!grid) return;
-
-        grid.innerHTML =
-            '<div class="col-span-full text-center py-8 text-gray-500">Loading...</div>';
-
-        try {
-            let query = supabase.from("admin_suppliers").select("*");
-
-            if (searchInput?.value) {
-                query = query.or(
-                    `name.ilike.%${searchInput.value}%,country.ilike.%${searchInput.value}%,contact_person.ilike.%${searchInput.value}%`,
-                );
-            }
-
-            const { data, error } = await query.order("name");
-
-            if (error) throw error;
-
-            if (!data || data.length === 0) {
-                grid.innerHTML =
-                    '<div class="col-span-full text-center py-8 text-gray-500">No suppliers found</div>';
-                return;
-            }
-
-            grid.innerHTML = data
-                .map(
-                    (supplier) => `
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <div class="bg-primary/10 text-primary p-3 rounded-lg">
-                <i class="fas fa-truck text-xl"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-gray-900">${supplier.name}</h3>
-                <p class="text-xs text-gray-500 flex items-center gap-1">
-                  <i class="fas fa-map-marker-alt"></i>
-                  ${supplier.country || "Unknown"}
-                </p>
-              </div>
+      <!-- Drawer content -->
+      <div class="flex-1 overflow-y-auto">
+        <!-- INFO TAB -->
+        <div id="tab-info" class="drawer-panel p-6 space-y-5">
+          <div class="grid grid-cols-2 gap-4 text-sm" id="info-grid"></div>
+          <!-- Status change -->
+          <div class="border-t border-gray-100 pt-4">
+            <p class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Change Status</p>
+            <div class="flex gap-2 flex-wrap">
+              <button data-status="active"
+                class="status-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-green-500 text-green-600 hover:bg-green-50 transition-colors">
+                Activate
+              </button>
+              <button data-status="pending"
+                class="status-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-yellow-500 text-yellow-600 hover:bg-yellow-50 transition-colors">
+                Pending
+              </button>
+              <button data-status="suspended"
+                class="status-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-orange-500 text-orange-600 hover:bg-orange-50 transition-colors">
+                Suspend
+              </button>
+              <button data-status="blacklisted"
+                class="status-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-red-500 text-red-600 hover:bg-red-50 transition-colors">
+                Blacklist
+              </button>
             </div>
           </div>
-
-          <div class="space-y-2 text-sm text-gray-600 mb-4">
-            ${
-                supplier.contact_person
-                    ? `
-              <div class="flex items-center gap-2">
-                <i class="fas fa-user w-4 text-gray-400"></i>
-                <span>${supplier.contact_person}</span>
-              </div>
-            `
-                    : ""
-            }
-            ${
-                supplier.email
-                    ? `
-              <div class="flex items-center gap-2">
-                <i class="fas fa-envelope w-4 text-gray-400"></i>
-                <span class="truncate">${supplier.email}</span>
-              </div>
-            `
-                    : ""
-            }
-            ${
-                supplier.phone
-                    ? `
-              <div class="flex items-center gap-2">
-                <i class="fas fa-phone w-4 text-gray-400"></i>
-                <span>${supplier.phone}</span>
-              </div>
-            `
-                    : ""
-            }
-            ${
-                supplier.payment_terms
-                    ? `
-              <div class="flex items-center gap-2">
-                <i class="fas fa-credit-card w-4 text-gray-400"></i>
-                <span>${supplier.payment_terms}</span>
-              </div>
-            `
-                    : ""
-            }
-          </div>
-
-          ${
-              supplier.notes
-                  ? `
-            <p class="text-xs text-gray-500 mb-4 line-clamp-2 italic">${supplier.notes}</p>
-          `
-                  : ""
-          }
-
-          <div class="flex gap-2 pt-4 border-t border-gray-200">
-            <button class="flex-1 bg-primary/10 text-primary px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors edit-btn" data-id="${supplier.id}">
-              <i class="fas fa-edit mr-1"></i> Edit
+          <div class="flex gap-2 pt-2">
+            <button id="btn-edit-supplier"
+              class="bg-[#194642] text-white font-semibold px-4 py-2 rounded-lg text-sm hover:bg-[#2a5e59] transition-colors">
+              <i class="fas fa-edit mr-1.5"></i> Edit
             </button>
-            <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors delete-btn" data-id="${supplier.id}">
-              <i class="fas fa-trash"></i>
+            <button id="btn-delete-supplier"
+              class="bg-red-50 text-red-600 font-semibold px-4 py-2 rounded-lg text-sm hover:bg-red-100 transition-colors">
+              <i class="fas fa-trash mr-1.5"></i> Delete
             </button>
           </div>
         </div>
-      `,
-                )
-                .join("");
-        } catch (error) {
-            console.error("Error loading suppliers:", error);
-            grid.innerHTML =
-                '<div class="col-span-full text-center py-8 text-red-500">Error loading data</div>';
-        }
+
+        <!-- ORDERS TAB -->
+        <div id="tab-orders" class="drawer-panel hidden p-6">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-bold text-gray-800 text-sm">Purchase Orders</p>
+            <button id="btn-new-order"
+              class="bg-[#194642] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[#2a5e59]">
+              <i class="fas fa-plus mr-1"></i> New Order
+            </button>
+          </div>
+          <div id="orders-list" class="space-y-3"></div>
+
+          <!-- New order form -->
+          <div id="new-order-form" class="hidden mt-4 bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-3">
+            <p class="text-sm font-bold text-gray-700">Create Purchase Order</p>
+            <div id="order-items-list" class="space-y-2"></div>
+            <button type="button" id="btn-add-item"
+              class="text-[#194642] text-xs font-semibold hover:underline">
+              <i class="fas fa-plus mr-1"></i> Add Item
+            </button>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Expected Delivery</label>
+                <input id="order-expected" type="date"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Currency</label>
+                <select id="order-currency"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+                  <option value="XOF">XOF</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+            <textarea id="order-notes" rows="2" placeholder="Notes…"
+              class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+            <div class="flex gap-2">
+              <button id="btn-save-order"
+                class="bg-[#194642] text-white text-xs font-semibold px-4 py-2 rounded-lg">Save Order</button>
+              <button id="btn-cancel-order" type="button"
+                class="text-gray-500 text-xs font-semibold px-4 py-2 rounded-lg border border-gray-200">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DELIVERIES TAB -->
+        <div id="tab-deliveries" class="drawer-panel hidden p-6">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-bold text-gray-800 text-sm">Delivery Records</p>
+            <button id="btn-record-delivery"
+              class="bg-[#194642] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[#2a5e59]">
+              <i class="fas fa-truck mr-1"></i> Record Delivery
+            </button>
+          </div>
+          <div id="deliveries-list" class="space-y-3"></div>
+
+          <!-- Record delivery form -->
+          <div id="delivery-form" class="hidden mt-4 bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-3">
+            <p class="text-sm font-bold text-gray-700">Record Delivery</p>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Purchase Order *</label>
+              <select id="delivery-order-id"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]"></select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Tracking Number</label>
+                <input id="delivery-tracking" type="text"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Carrier</label>
+                <input id="delivery-carrier" type="text" placeholder="DHL, FedEx…"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <input id="delivery-quality" type="checkbox" checked class="rounded" />
+              <label class="text-xs text-gray-600">Quality acceptable</label>
+            </div>
+            <textarea id="delivery-quality-notes" rows="2" placeholder="Quality notes…"
+              class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+            <div class="flex gap-2">
+              <button id="btn-save-delivery"
+                class="bg-[#194642] text-white text-xs font-semibold px-4 py-2 rounded-lg">Save</button>
+              <button id="btn-cancel-delivery" type="button"
+                class="text-gray-500 text-xs font-semibold px-4 py-2 rounded-lg border border-gray-200">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTES TAB -->
+        <div id="tab-notes" class="drawer-panel hidden p-6">
+          <div class="mb-4">
+            <textarea id="new-note-input" rows="3" placeholder="Add a note about this supplier…"
+              class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+            <button id="btn-save-note"
+              class="mt-2 bg-[#194642] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#2a5e59]">
+              <i class="fas fa-plus mr-1"></i> Add Note
+            </button>
+          </div>
+          <div id="notes-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</AdminLayout>
+
+<script type="module">
+  const CATEGORIES = {
+    fertilizer:             'Fertilizer',
+    biostimulant:           'Biostimulant',
+    greenhouse_accessories: 'Greenhouse Accessories',
+    greenhouse_tropicale:   'Greenhouse Tropicale',
+    irrigation_system:      'Irrigation System',
+    growing_media:          'Growing Media (Substrat)',
+    agriculture_advising:   'Agriculture Advising',
+    project_management:     'Project Management',
+    other:                  'Other',
+  };
+
+  const statusColors = {
+    active:      'bg-green-100 text-green-700',
+    pending:     'bg-yellow-100 text-yellow-700',
+    suspended:   'bg-orange-100 text-orange-700',
+    blacklisted: 'bg-red-100 text-red-700',
+  };
+
+  const orderStatusColors = {
+    draft:                'bg-gray-100 text-gray-600',
+    sent:                 'bg-blue-100 text-blue-600',
+    confirmed:            'bg-indigo-100 text-indigo-600',
+    in_transit:           'bg-purple-100 text-purple-600',
+    partially_delivered:  'bg-orange-100 text-orange-600',
+    delivered:            'bg-green-100 text-green-700',
+    cancelled:            'bg-red-100 text-red-600',
+    disputed:             'bg-rose-100 text-rose-700',
+  };
+
+  let allSuppliers = [];
+  let currentSupplierId = null;
+  let orderItems = [];
+
+  // ── Toast ──────────────────────────────────────────────────────
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `fixed bottom-6 right-6 z-[100] px-5 py-3 rounded-xl shadow-lg text-sm font-semibold text-white transition-all ${isError ? 'bg-red-600' : 'bg-[#194642]'}`;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+
+  // ── Fetch helpers ──────────────────────────────────────────────
+  async function api(method, body) {
+    const res = await fetch('/api/admin/suppliers', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return res.json();
+  }
+
+  // ── Load & render suppliers ────────────────────────────────────
+  async function loadSuppliers() {
+    const category = document.getElementById('filter-category').value;
+    const status = document.getElementById('filter-status').value;
+    let url = '/api/admin/suppliers';
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (status) params.set('status', status);
+    if (params.toString()) url += '?' + params.toString();
+    try {
+      const data = await fetch(url).then(r => r.json());
+      allSuppliers = data.suppliers || [];
+    } catch (e) {
+      allSuppliers = [];
+    }
+    renderStats();
+    filterAndRender();
+  }
+
+  function renderStats() {
+    const row = document.getElementById('stats-row');
+    const total = allSuppliers.length;
+    const active = allSuppliers.filter(s => s.status === 'active').length;
+    const suspended = allSuppliers.filter(s => s.status === 'suspended').length;
+    const pending = allSuppliers.filter(s => s.status === 'pending').length;
+    row.innerHTML = [
+      { label: 'Total Suppliers', val: total, color: 'text-[#194642]' },
+      { label: 'Active', val: active, color: 'text-green-600' },
+      { label: 'Pending', val: pending, color: 'text-yellow-600' },
+      { label: 'Suspended', val: suspended, color: 'text-orange-600' },
+    ].map(s => `
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">${s.label}</p>
+        <p class="text-3xl font-bold ${s.color}">${s.val}</p>
+      </div>
+    `).join('');
+  }
+
+  function filterAndRender() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allSuppliers.filter(s =>
+      !q ||
+      (s.company_name || '').toLowerCase().includes(q) ||
+      (s.contact_name || '').toLowerCase().includes(q) ||
+      (s.country || '').toLowerCase().includes(q) ||
+      (s.contact_email || '').toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  }
+
+  function renderTable(suppliers) {
+    const container = document.getElementById('suppliers-table');
+    if (!suppliers.length) {
+      container.innerHTML = '<div class="px-6 py-16 text-center text-gray-400 text-sm">No suppliers found.</div>';
+      return;
+    }
+    container.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+            <tr>
+              <th class="px-6 py-3 text-left">Supplier</th>
+              <th class="px-6 py-3 text-left">Category</th>
+              <th class="px-6 py-3 text-left">Contact</th>
+              <th class="px-6 py-3 text-left">Country</th>
+              <th class="px-6 py-3 text-left">Rating</th>
+              <th class="px-6 py-3 text-left">Status</th>
+              <th class="px-6 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            ${suppliers.map(s => {
+              const safeName = (s.company_name || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+              return `
+                <tr class="hover:bg-gray-50 transition-colors cursor-pointer" data-supplier-id="${s.id}">
+                  <td class="px-6 py-4">
+                    <p class="font-semibold text-gray-800">${s.company_name || ''}</p>
+                    ${s.trade_name ? `<p class="text-xs text-gray-400">${s.trade_name}</p>` : ''}
+                  </td>
+                  <td class="px-6 py-4 text-gray-600 text-xs">${CATEGORIES[s.category] || s.category || '—'}</td>
+                  <td class="px-6 py-4">
+                    <p class="text-gray-700">${s.contact_name || '—'}</p>
+                    ${s.contact_email ? `<p class="text-xs text-gray-400">${s.contact_email}</p>` : ''}
+                  </td>
+                  <td class="px-6 py-4 text-gray-600">${s.country || '—'}</td>
+                  <td class="px-6 py-4 text-yellow-500">${s.rating ? '★'.repeat(Number(s.rating)) : '—'}</td>
+                  <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[s.status] || 'bg-gray-100 text-gray-600'}">
+                      ${s.status || '—'}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <button class="btn-view-supplier text-[#194642] hover:underline text-xs font-medium mr-3" data-id="${s.id}">View</button>
+                    <button class="btn-quick-edit text-gray-500 hover:underline text-xs font-medium mr-3" data-id="${s.id}">Edit</button>
+                    <button class="btn-quick-delete text-red-500 hover:underline text-xs font-medium" data-id="${s.id}" data-name="${safeName}">Delete</button>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Attach row-level event listeners
+    container.querySelectorAll('.btn-view-supplier').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); openDrawer(btn.dataset.id); });
+    });
+    container.querySelectorAll('.btn-quick-edit').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); quickEdit(btn.dataset.id); });
+    });
+    container.querySelectorAll('.btn-quick-delete').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); deleteSupplier(btn.dataset.id, btn.dataset.name); });
+    });
+  }
+
+  // ── Add / Edit modal ───────────────────────────────────────────
+  function openSupplierModal(supplier) {
+    document.getElementById('supplier-modal-title').textContent = supplier ? 'Edit Supplier' : 'New Supplier';
+    document.getElementById('sf-id').value = supplier?.id || '';
+    document.getElementById('sf-name').value = supplier?.company_name || '';
+    document.getElementById('sf-trade').value = supplier?.trade_name || '';
+    document.getElementById('sf-category').value = supplier?.category || '';
+    document.getElementById('sf-status').value = supplier?.status || 'active';
+    document.getElementById('sf-contact-name').value = supplier?.contact_name || '';
+    document.getElementById('sf-contact-email').value = supplier?.contact_email || '';
+    document.getElementById('sf-phone').value = supplier?.contact_phone || '';
+    document.getElementById('sf-website').value = supplier?.website || '';
+    document.getElementById('sf-country').value = supplier?.country || "Côte d'Ivoire";
+    document.getElementById('sf-city').value = supplier?.city || '';
+    document.getElementById('sf-address').value = supplier?.address || '';
+    document.getElementById('sf-payment').value = supplier?.payment_terms || '';
+    document.getElementById('sf-currency').value = supplier?.currency || 'XOF';
+    document.getElementById('sf-tax').value = supplier?.tax_id || '';
+    document.getElementById('sf-rating').value = supplier?.rating || '';
+    document.getElementById('sf-notes').value = supplier?.notes || '';
+    document.getElementById('sf-error').classList.add('hidden');
+    document.getElementById('supplier-modal').classList.remove('hidden');
+  }
+
+  async function quickEdit(id) {
+    try {
+      const data = await fetch(`/api/admin/suppliers?id=${id}`).then(r => r.json());
+      openSupplierModal(data.supplier);
+    } catch (e) {
+      showToast('Failed to load supplier', true);
+    }
+  }
+
+  async function deleteSupplier(id, name) {
+    if (!confirm(`Delete supplier "${name}"? This cannot be undone.`)) return;
+    const data = await api('DELETE', { id });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Supplier deleted');
+    await loadSuppliers();
+  }
+
+  document.getElementById('btn-new-supplier').addEventListener('click', () => openSupplierModal(null));
+  document.getElementById('supplier-modal-close').addEventListener('click', () => document.getElementById('supplier-modal').classList.add('hidden'));
+  document.getElementById('supplier-modal-cancel').addEventListener('click', () => document.getElementById('supplier-modal').classList.add('hidden'));
+
+  document.getElementById('supplier-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('sf-id').value;
+    const errDiv = document.getElementById('sf-error');
+    errDiv.classList.add('hidden');
+
+    const payload = {
+      company_name:  document.getElementById('sf-name').value.trim(),
+      trade_name:    document.getElementById('sf-trade').value.trim() || null,
+      category:      document.getElementById('sf-category').value,
+      status:        document.getElementById('sf-status').value,
+      contact_name:  document.getElementById('sf-contact-name').value.trim() || null,
+      contact_email: document.getElementById('sf-contact-email').value.trim() || null,
+      contact_phone: document.getElementById('sf-phone').value.trim() || null,
+      website:       document.getElementById('sf-website').value.trim() || null,
+      country:       document.getElementById('sf-country').value.trim(),
+      city:          document.getElementById('sf-city').value.trim() || null,
+      address:       document.getElementById('sf-address').value.trim() || null,
+      payment_terms: document.getElementById('sf-payment').value.trim() || null,
+      currency:      document.getElementById('sf-currency').value,
+      tax_id:        document.getElementById('sf-tax').value.trim() || null,
+      rating:        document.getElementById('sf-rating').value ? parseInt(document.getElementById('sf-rating').value) : null,
+      notes:         document.getElementById('sf-notes').value.trim() || null,
+    };
+
+    if (id) payload.id = id;
+    const data = await api(id ? 'PUT' : 'POST', payload);
+    if (data.error) {
+      errDiv.textContent = data.error;
+      errDiv.classList.remove('hidden');
+      return;
+    }
+    document.getElementById('supplier-modal').classList.add('hidden');
+    showToast(id ? 'Supplier updated' : 'Supplier added');
+    await loadSuppliers();
+    if (id && currentSupplierId === id) openDrawer(id);
+  });
+
+  // ── Detail Drawer ──────────────────────────────────────────────
+  async function openDrawer(id) {
+    currentSupplierId = id;
+    document.getElementById('detail-drawer').classList.remove('hidden');
+
+    // Show loading state in info grid
+    document.getElementById('info-grid').innerHTML = '<div class="col-span-2 text-gray-400 text-sm">Loading…</div>';
+
+    try {
+      const data = await fetch(`/api/admin/suppliers?id=${id}`).then(r => r.json());
+      const s = data.supplier;
+      if (!s) { showToast('Supplier not found', true); return; }
+
+      document.getElementById('drawer-name').textContent = s.company_name || '';
+      document.getElementById('drawer-category').textContent = CATEGORIES[s.category] || s.category || '';
+      document.getElementById('drawer-status-badge').textContent = s.status || '';
+      document.getElementById('drawer-rating').textContent = s.rating ? '★'.repeat(Number(s.rating)) : '';
+      document.getElementById('drawer-country').textContent = [s.city, s.country].filter(Boolean).join(', ');
+
+      // Info grid
+      const grid = document.getElementById('info-grid');
+      grid.innerHTML = [
+        ['Contact Name', s.contact_name || '—'],
+        ['Email', s.contact_email ? `<a href="mailto:${s.contact_email}" class="text-[#194642] underline">${s.contact_email}</a>` : '—'],
+        ['Phone', s.contact_phone || '—'],
+        ['Website', s.website ? `<a href="${s.website}" target="_blank" class="text-[#194642] underline truncate block">${s.website}</a>` : '—'],
+        ['Payment Terms', s.payment_terms || '—'],
+        ['Currency', s.currency || '—'],
+        ['Tax ID', s.tax_id || '—'],
+        ['Address', s.address || '—'],
+        ['Added', s.created_at ? new Date(s.created_at).toLocaleDateString() : '—'],
+        ['Rating', s.rating ? '★'.repeat(Number(s.rating)) : '—'],
+      ].map(([k, v]) => `
+        <div>
+          <p class="text-xs text-gray-400 font-medium">${k}</p>
+          <p class="font-semibold text-gray-800 text-sm mt-0.5">${v}</p>
+        </div>
+      `).join('');
+
+      if (s.notes) {
+        grid.insertAdjacentHTML('afterend', `
+          <div class="col-span-2 bg-yellow-50 border border-yellow-100 rounded-lg p-3 text-sm text-yellow-800">
+            <p class="font-semibold mb-1 text-xs uppercase tracking-wide">Notes</p>
+            <p>${s.notes}</p>
+          </div>
+        `);
+      }
+    } catch (e) {
+      showToast('Failed to load supplier details', true);
     }
 
-    // Event Listeners
-    document
-        .getElementById("search-input")
-        ?.addEventListener("input", loadSuppliers);
+    activateTab('info');
+    loadOrders();
+    loadNotes();
+    loadDeliveries();
+  }
 
-    // Initial load
-    loadSuppliers();
+  document.getElementById('drawer-close').addEventListener('click', () => {
+    document.getElementById('detail-drawer').classList.add('hidden');
+    currentSupplierId = null;
+  });
+  document.getElementById('detail-backdrop').addEventListener('click', () => {
+    document.getElementById('detail-drawer').classList.add('hidden');
+    currentSupplierId = null;
+  });
+
+  // Tab switching
+  document.querySelectorAll('.drawer-tab').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+
+  function activateTab(name) {
+    document.querySelectorAll('.drawer-tab').forEach(b => {
+      const active = b.dataset.tab === name;
+      b.classList.toggle('text-[#194642]', active);
+      b.classList.toggle('border-b-2', active);
+      b.classList.toggle('border-[#194642]', active);
+      b.classList.toggle('text-gray-400', !active);
+      b.classList.toggle('hover:text-gray-600', !active);
+    });
+    document.querySelectorAll('.drawer-panel').forEach(p => p.classList.add('hidden'));
+    const panel = document.getElementById(`tab-${name}`);
+    if (panel) panel.classList.remove('hidden');
+  }
+
+  // Status change buttons
+  document.querySelectorAll('.status-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!currentSupplierId) return;
+      const status = btn.dataset.status;
+      const reason = prompt(`Reason for changing status to "${status}" (optional):`);
+      if (reason === null) return; // user cancelled
+      const data = await api('PUT', { id: currentSupplierId, _action: 'update_status', status, reason: reason || null });
+      if (data.error) { showToast(data.error, true); return; }
+      showToast(`Status changed to ${status}`);
+      await loadSuppliers();
+      openDrawer(currentSupplierId);
+    });
+  });
+
+  document.getElementById('btn-edit-supplier').addEventListener('click', async () => {
+    if (!currentSupplierId) return;
+    const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}`).then(r => r.json());
+    openSupplierModal(data.supplier);
+  });
+
+  document.getElementById('btn-delete-supplier').addEventListener('click', async () => {
+    if (!currentSupplierId) return;
+    const s = allSuppliers.find(x => x.id === currentSupplierId);
+    if (!confirm(`Delete "${s?.company_name}"? This cannot be undone.`)) return;
+    const data = await api('DELETE', { id: currentSupplierId });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Supplier deleted');
+    document.getElementById('detail-drawer').classList.add('hidden');
+    currentSupplierId = null;
+    await loadSuppliers();
+  });
+
+  // ── Orders ─────────────────────────────────────────────────────
+  async function loadOrders() {
+    if (!currentSupplierId) return;
+    const list = document.getElementById('orders-list');
+    list.innerHTML = '<p class="text-gray-400 text-xs text-center py-4">Loading…</p>';
+    try {
+      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=orders`).then(r => r.json());
+      const orders = data.orders || [];
+      if (!orders.length) {
+        list.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No orders yet.</p>';
+        return;
+      }
+      list.innerHTML = orders.map(o => `
+        <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-mono font-bold text-gray-800 text-sm">${o.order_number || o.id}</p>
+            <span class="px-2 py-0.5 rounded-full text-xs font-medium ${orderStatusColors[o.status] || 'bg-gray-100 text-gray-600'}">${(o.status || '').replace(/_/g,' ')}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs text-gray-500">
+            <span>Amount: <strong class="text-gray-700">${o.total_amount ? Number(o.total_amount).toLocaleString() + ' ' + (o.currency || '') : '—'}</strong></span>
+            <span>Expected: <strong class="text-gray-700">${o.expected_at ? new Date(o.expected_at).toLocaleDateString() : '—'}</strong></span>
+          </div>
+          ${o.notes ? `<p class="text-xs text-gray-400 mt-1 italic">${o.notes}</p>` : ''}
+          <div class="flex flex-wrap gap-1 mt-2">
+            ${['sent','confirmed','in_transit','delivered','cancelled'].map(st => `
+              <button class="btn-order-status text-xs px-2 py-0.5 rounded border transition-colors ${o.status === st ? 'bg-[#194642] text-white border-[#194642]' : 'border-gray-300 text-gray-500 hover:border-[#194642] hover:text-[#194642]'}"
+                data-order-id="${o.id}" data-status="${st}">${st.replace(/_/g,' ')}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.btn-order-status').forEach(btn => {
+        btn.addEventListener('click', () => updateOrderStatus(btn.dataset.orderId, btn.dataset.status));
+      });
+    } catch (e) {
+      list.innerHTML = '<p class="text-red-400 text-sm text-center py-4">Failed to load orders.</p>';
+    }
+  }
+
+  async function updateOrderStatus(orderId, status) {
+    await api('PUT', { id: orderId, _action: 'update_order', status });
+    showToast(`Order status updated to ${status}`);
+    loadOrders();
+  }
+
+  // New order
+  document.getElementById('btn-new-order').addEventListener('click', () => {
+    orderItems = [];
+    document.getElementById('order-items-list').innerHTML = '';
+    document.getElementById('new-order-form').classList.remove('hidden');
+    addOrderItem();
+  });
+  document.getElementById('btn-cancel-order').addEventListener('click', () => {
+    document.getElementById('new-order-form').classList.add('hidden');
+  });
+  document.getElementById('btn-add-item').addEventListener('click', addOrderItem);
+
+  function addOrderItem() {
+    const idx = orderItems.length;
+    orderItems.push({ product: '', qty: 1, unit_price: 0, unit: '' });
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-4 gap-2 items-center';
+    const inputClass = 'w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-[#194642]';
+    row.innerHTML = `
+      <input type="text" placeholder="Product" data-idx="${idx}" data-field="product"
+        class="col-span-2 ${inputClass}" />
+      <input type="number" placeholder="Qty" min="0" data-idx="${idx}" data-field="qty"
+        class="${inputClass}" />
+      <input type="number" placeholder="Price" min="0" data-idx="${idx}" data-field="unit_price"
+        class="${inputClass}" />
+    `;
+    row.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        if (orderItems[inp.dataset.idx]) {
+          orderItems[inp.dataset.idx][inp.dataset.field] = inp.value;
+        }
+      });
+    });
+    document.getElementById('order-items-list').appendChild(row);
+  }
+
+  document.getElementById('btn-save-order').addEventListener('click', async () => {
+    if (!currentSupplierId) return;
+    const items = orderItems.filter(i => i.product);
+    const total = items.reduce((s, i) => s + (parseFloat(i.qty) || 0) * (parseFloat(i.unit_price) || 0), 0);
+    const data = await api('POST', {
+      _action: 'create_order',
+      supplier_id: currentSupplierId,
+      items,
+      total_amount: total || null,
+      currency: document.getElementById('order-currency').value,
+      notes: document.getElementById('order-notes').value.trim() || null,
+      expected_at: document.getElementById('order-expected').value || null,
+    });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Order created');
+    document.getElementById('new-order-form').classList.add('hidden');
+    loadOrders();
+  });
+
+  // ── Deliveries ─────────────────────────────────────────────────
+  async function loadDeliveries() {
+    if (!currentSupplierId) return;
+    const list = document.getElementById('deliveries-list');
+    list.innerHTML = '<p class="text-gray-400 text-xs text-center py-4">Loading…</p>';
+    try {
+      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=deliveries`).then(r => r.json());
+      const deliveries = data.deliveries || [];
+      if (!deliveries.length) {
+        list.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No deliveries recorded.</p>';
+        return;
+      }
+      list.innerHTML = deliveries.map(d => `
+        <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+          <div class="flex items-center justify-between mb-1">
+            <p class="font-semibold text-gray-700 text-sm">
+              <i class="fas fa-truck text-[#194642] mr-2"></i>
+              ${d.tracking_number ? '#' + d.tracking_number : 'No tracking'}
+            </p>
+            <span class="text-xs px-2 py-0.5 rounded-full font-medium ${d.is_complete ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-600'}">
+              ${d.is_complete ? 'Complete' : 'Partial'}
+            </span>
+          </div>
+          <p class="text-xs text-gray-500">Order: ${d.supplier_orders?.order_number || d.order_id || '—'}</p>
+          ${d.carrier ? `<p class="text-xs text-gray-500">Carrier: ${d.carrier}</p>` : ''}
+          <p class="text-xs text-gray-400">${d.received_at ? 'Received: ' + new Date(d.received_at).toLocaleDateString() : ''}</p>
+          ${d.quality_ok === false ? `<p class="text-xs text-red-500 mt-1"><i class="fas fa-exclamation-triangle mr-1"></i>${d.quality_notes || 'Quality issue'}</p>` : ''}
+        </div>
+      `).join('');
+    } catch (e) {
+      list.innerHTML = '<p class="text-red-400 text-sm text-center py-4">Failed to load deliveries.</p>';
+    }
+  }
+
+  document.getElementById('btn-record-delivery').addEventListener('click', async () => {
+    try {
+      const ordersData = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=orders`).then(r => r.json());
+      const sel = document.getElementById('delivery-order-id');
+      const available = (ordersData.orders || []).filter(o => !['delivered','cancelled'].includes(o.status));
+      sel.innerHTML = available.length
+        ? available.map(o => `<option value="${o.id}">${o.order_number || o.id}</option>`).join('')
+        : '<option value="">No active orders</option>';
+    } catch (e) {
+      document.getElementById('delivery-order-id').innerHTML = '<option value="">Failed to load orders</option>';
+    }
+    document.getElementById('delivery-form').classList.remove('hidden');
+  });
+
+  document.getElementById('btn-cancel-delivery').addEventListener('click', () => {
+    document.getElementById('delivery-form').classList.add('hidden');
+  });
+
+  document.getElementById('btn-save-delivery').addEventListener('click', async () => {
+    const data = await api('POST', {
+      _action: 'record_delivery',
+      supplier_id: currentSupplierId,
+      order_id: document.getElementById('delivery-order-id').value,
+      tracking_number: document.getElementById('delivery-tracking').value.trim() || null,
+      carrier: document.getElementById('delivery-carrier').value.trim() || null,
+      quality_ok: document.getElementById('delivery-quality').checked,
+      quality_notes: document.getElementById('delivery-quality-notes').value.trim() || null,
+      items_received: [],
+    });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Delivery recorded');
+    document.getElementById('delivery-form').classList.add('hidden');
+    loadDeliveries();
+    loadOrders();
+  });
+
+  // ── Notes ──────────────────────────────────────────────────────
+  async function loadNotes() {
+    if (!currentSupplierId) return;
+    const list = document.getElementById('notes-list');
+    list.innerHTML = '<p class="text-gray-400 text-xs text-center py-2">Loading…</p>';
+    try {
+      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=notes`).then(r => r.json());
+      const notes = data.notes || [];
+      if (!notes.length) {
+        list.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">No notes yet.</p>';
+        return;
+      }
+      list.innerHTML = notes.map(n => `
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <p class="text-sm text-gray-700 whitespace-pre-wrap">${n.content || ''}</p>
+          <div class="flex items-center justify-between mt-2">
+            <span class="text-xs text-gray-400">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</span>
+            <button class="btn-delete-note text-red-400 hover:text-red-600 text-xs" data-note-id="${n.id}">Delete</button>
+          </div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.btn-delete-note').forEach(btn => {
+        btn.addEventListener('click', () => deleteNote(btn.dataset.noteId));
+      });
+    } catch (e) {
+      list.innerHTML = '<p class="text-red-400 text-sm text-center py-4">Failed to load notes.</p>';
+    }
+  }
+
+  document.getElementById('btn-save-note').addEventListener('click', async () => {
+    const content = document.getElementById('new-note-input').value.trim();
+    if (!content || !currentSupplierId) return;
+    const data = await api('POST', { _action: 'add_note', supplier_id: currentSupplierId, content });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Note added');
+    document.getElementById('new-note-input').value = '';
+    loadNotes();
+  });
+
+  async function deleteNote(id) {
+    const data = await api('DELETE', { id, _target: 'note' });
+    if (data.error) { showToast(data.error, true); return; }
+    showToast('Note deleted');
+    loadNotes();
+  }
+
+  // ── Filters & search ───────────────────────────────────────────
+  document.getElementById('search-input').addEventListener('input', filterAndRender);
+  document.getElementById('filter-category').addEventListener('change', loadSuppliers);
+  document.getElementById('filter-status').addEventListener('change', loadSuppliers);
+
+  // ── Init ────────────────────────────────────────────────────────
+  loadSuppliers();
 </script>

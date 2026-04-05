@@ -1,327 +1,1063 @@
 ---
 import AdminLayout from "../../../layouts/AdminLayout.astro";
+export const prerender = false;
 ---
 
 <AdminLayout title="Inventory Management">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Inventory</h1>
-            <p class="text-gray-600">
-                Manage products, stock levels, and categories
-            </p>
-        </div>
-        <button
-            id="add-product-btn"
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-            <i class="fas fa-plus"></i>
-            Add Product
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Inventory</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Manage products, stock levels, and categories</p>
+    </div>
+    <button
+      id="btn-add-product"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity hover:opacity-90"
+      style="background-color:#194642;"
+    >
+      <i class="fas fa-plus text-xs"></i>
+      Add Product
+    </button>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Total Products</p>
+      <p id="stat-total" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">In Stock</p>
+      <p id="stat-in" class="text-2xl font-bold text-green-700">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Low Stock</p>
+      <p id="stat-low" class="text-2xl font-bold text-orange-600">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Out of Stock</p>
+      <p id="stat-out" class="text-2xl font-bold text-red-600">—</p>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-3">
+    <div class="relative flex-1">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search by name or SKU…"
+        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      />
+    </div>
+    <div class="w-full md:w-52">
+      <select
+        id="category-filter"
+        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      >
+        <option value="">All Categories</option>
+      </select>
+    </div>
+    <div class="w-full md:w-44">
+      <select
+        id="stock-filter"
+        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      >
+        <option value="">All Stock Levels</option>
+        <option value="in">In Stock</option>
+        <option value="low">Low Stock</option>
+        <option value="out">Out of Stock</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex border-b border-gray-200 mb-0">
+    <button
+      id="tab-products"
+      class="px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors border-[#194642] text-[#194642]"
+    >
+      <i class="fas fa-box mr-1.5"></i>Products
+    </button>
+    <button
+      id="tab-categories"
+      class="px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors border-transparent text-gray-500 hover:text-gray-700"
+    >
+      <i class="fas fa-tags mr-1.5"></i>Categories
+    </button>
+  </div>
+
+  <!-- Products Panel -->
+  <div id="panel-products" class="bg-white rounded-b-lg rounded-tr-lg border border-t-0 border-gray-100 shadow-sm overflow-hidden">
+    <!-- Loading -->
+    <div id="products-loading" class="flex items-center justify-center py-20">
+      <i class="fas fa-circle-notch fa-spin text-2xl" style="color:#194642;"></i>
+    </div>
+    <!-- Empty state -->
+    <div id="products-empty" class="hidden flex flex-col items-center justify-center py-20 text-center">
+      <i class="fas fa-box-open text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500 font-medium">No products found</p>
+      <p class="text-gray-400 text-sm mt-1">Try adjusting your filters or add a new product.</p>
+    </div>
+    <!-- Table -->
+    <div id="products-table-wrap" class="hidden overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr>
+            <th class="px-5 py-3">Product</th>
+            <th class="px-5 py-3">SKU</th>
+            <th class="px-5 py-3">Category</th>
+            <th class="px-5 py-3">Price (XOF)</th>
+            <th class="px-5 py-3">Stock</th>
+            <th class="px-5 py-3">Unit</th>
+            <th class="px-5 py-3 text-center">Active</th>
+            <th class="px-5 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="products-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Categories Panel -->
+  <div id="panel-categories" class="hidden bg-white rounded-b-lg rounded-tr-lg border border-t-0 border-gray-100 shadow-sm overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
+      <p class="text-sm font-medium text-gray-600">Product Categories</p>
+      <button
+        id="btn-add-category"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-opacity hover:opacity-90"
+        style="background-color:#194642;"
+      >
+        <i class="fas fa-plus text-xs"></i>Add Category
+      </button>
+    </div>
+    <!-- Loading -->
+    <div id="categories-loading" class="flex items-center justify-center py-16">
+      <i class="fas fa-circle-notch fa-spin text-2xl" style="color:#194642;"></i>
+    </div>
+    <!-- Empty -->
+    <div id="categories-empty" class="hidden flex flex-col items-center justify-center py-16 text-center">
+      <i class="fas fa-tags text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500 font-medium">No categories yet</p>
+    </div>
+    <!-- Table -->
+    <div id="categories-table-wrap" class="hidden overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr>
+            <th class="px-5 py-3">Name</th>
+            <th class="px-5 py-3">Products</th>
+            <th class="px-5 py-3">Description</th>
+            <th class="px-5 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="categories-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ===================== ADD / EDIT PRODUCT MODAL ===================== -->
+  <div
+    id="modal-product"
+    class="fixed inset-0 z-40 flex items-center justify-center p-4 hidden"
+    style="background:rgba(0,0,0,0.5);"
+  >
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h2 id="modal-product-title" class="text-lg font-semibold text-gray-800">Add Product</h2>
+        <button id="modal-product-close" class="text-gray-400 hover:text-gray-600 text-xl leading-none">
+          <i class="fas fa-times"></i>
         </button>
+      </div>
+      <form id="form-product" class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input type="hidden" id="fp-id" />
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Product Name <span class="text-red-500">*</span></label>
+          <input
+            id="fp-name"
+            type="text"
+            required
+            placeholder="e.g. Engrais NPK 20-10-10"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">SKU</label>
+          <input
+            id="fp-sku"
+            type="text"
+            placeholder="e.g. FRT-001"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Category</label>
+          <div class="flex gap-2">
+            <select
+              id="fp-category"
+              class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+            >
+              <option value="">— Select category —</option>
+            </select>
+            <button
+              type="button"
+              id="fp-add-category-inline"
+              class="px-2.5 py-2 rounded-lg text-white text-xs transition-opacity hover:opacity-90"
+              style="background-color:#194642;"
+              title="Add new category"
+            >
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            id="fp-description"
+            rows="2"
+            placeholder="Optional product description…"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642] resize-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Unit of Measure</label>
+          <select
+            id="fp-uom"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          >
+            <option value="kg">kg</option>
+            <option value="L">L</option>
+            <option value="unit">unit</option>
+            <option value="m²">m²</option>
+            <option value="m³">m³</option>
+            <option value="box">box</option>
+            <option value="bag">bag</option>
+            <option value="pallet">pallet</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Unit Price (XOF)</label>
+          <input
+            id="fp-unit-price"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Cost Price (XOF)</label>
+          <input
+            id="fp-cost-price"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Stock Quantity</label>
+          <input
+            id="fp-stock"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Reorder Level (Min)</label>
+          <input
+            id="fp-reorder"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Max Stock Level</label>
+          <input
+            id="fp-max-stock"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="0"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-medium text-gray-700">Active</label>
+          <button
+            type="button"
+            id="fp-active-toggle"
+            class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
+            style="background-color:#194642;"
+            aria-pressed="true"
+          >
+            <span
+              id="fp-active-knob"
+              class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform translate-x-4"
+            ></span>
+          </button>
+          <span id="fp-active-label" class="text-xs text-gray-500">Yes</span>
+          <input type="hidden" id="fp-active" value="true" />
+        </div>
+
+        <div class="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100">
+          <button
+            type="button"
+            id="modal-product-cancel"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="fp-submit"
+            class="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+            style="background-color:#194642;"
+          >
+            <i id="fp-submit-icon" class="fas fa-save"></i>
+            <span id="fp-submit-label">Save Product</span>
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Total Products</p>
-                    <p
-                        class="text-2xl font-bold text-gray-900"
-                        id="total-products"
-                    >
-                        0
-                    </p>
-                </div>
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-lg">
-                    <i class="fas fa-box"></i>
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Low Stock Items</p>
-                    <p
-                        class="text-2xl font-bold text-red-600"
-                        id="low-stock-count"
-                    >
-                        0
-                    </p>
-                </div>
-                <div class="bg-red-100 text-red-600 p-3 rounded-lg">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-            </div>
+  <!-- ===================== STOCK ADJUSTMENT MODAL ===================== -->
+  <div
+    id="modal-adjust"
+    class="fixed inset-0 z-40 flex items-center justify-center p-4 hidden"
+    style="background:rgba(0,0,0,0.5);"
+  >
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-800">Adjust Stock</h2>
+        <button id="modal-adjust-close" class="text-gray-400 hover:text-gray-600 text-xl leading-none">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="form-adjust" class="px-6 py-5 flex flex-col gap-4">
+        <input type="hidden" id="adj-product-id" />
+        <div class="bg-gray-50 rounded-lg px-4 py-3">
+          <p class="text-xs text-gray-500 mb-0.5">Product</p>
+          <p id="adj-product-name" class="text-sm font-semibold text-gray-800">—</p>
+          <p class="text-xs text-gray-500 mt-1">Current stock: <span id="adj-current-stock" class="font-medium text-gray-700">—</span></p>
         </div>
-
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Total Value</p>
-                    <p
-                        class="text-2xl font-bold text-green-600"
-                        id="total-value"
-                    >
-                        0 XOF
-                    </p>
-                </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-lg">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-            </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">
+            Adjustment <span class="text-gray-400 font-normal">(positive = add, negative = remove)</span>
+          </label>
+          <input
+            id="adj-amount"
+            type="number"
+            step="1"
+            required
+            placeholder="e.g. 50 or -10"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
         </div>
-
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">Categories</p>
-                    <p
-                        class="text-2xl font-bold text-purple-600"
-                        id="total-categories"
-                    >
-                        0
-                    </p>
-                </div>
-                <div class="bg-purple-100 text-purple-600 p-3 rounded-lg">
-                    <i class="fas fa-tags"></i>
-                </div>
-            </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Reason</label>
+          <input
+            id="adj-reason"
+            type="text"
+            placeholder="e.g. Restock from supplier, damaged goods…"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
         </div>
+        <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+          <button
+            type="button"
+            id="modal-adjust-cancel"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="adj-submit"
+            class="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+            style="background-color:#194642;"
+          >
+            <i class="fas fa-check"></i>Apply
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Filters -->
-    <div
-        class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4"
-    >
-        <div class="flex-1 relative">
-            <i
-                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            ></i>
-            <input
-                type="text"
-                id="search-input"
-                placeholder="Search products by name or SKU..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-            />
-        </div>
-        <select
-            id="category-filter"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-        >
-            <option value="">All Categories</option>
-        </select>
-        <select
-            id="stock-filter"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-        >
-            <option value="">All Stock Levels</option>
-            <option value="low">Low Stock</option>
-            <option value="out">Out of Stock</option>
-            <option value="in">In Stock</option>
-        </select>
-    </div>
 
-    <!-- Products Table -->
-    <div
-        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-    >
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3">Product</th>
-                        <th class="px-6 py-3">SKU</th>
-                        <th class="px-6 py-3">Category</th>
-                        <th class="px-6 py-3">Price</th>
-                        <th class="px-6 py-3">Stock</th>
-                        <th class="px-6 py-3">Status</th>
-                        <th class="px-6 py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="products-table-body">
-                    <tr>
-                        <td colspan="7" class="px-6 py-8 text-center"
-                            >Loading products...</td
-                        >
-                    </tr>
-                </tbody>
-            </table>
+  <!-- ===================== ADD / EDIT CATEGORY MODAL ===================== -->
+  <div
+    id="modal-category"
+    class="fixed inset-0 z-40 flex items-center justify-center p-4 hidden"
+    style="background:rgba(0,0,0,0.5);"
+  >
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h2 id="modal-category-title" class="text-lg font-semibold text-gray-800">Add Category</h2>
+        <button id="modal-category-close" class="text-gray-400 hover:text-gray-600 text-xl leading-none">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="form-category" class="px-6 py-5 flex flex-col gap-4">
+        <input type="hidden" id="fc-id" />
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Category Name <span class="text-red-500">*</span></label>
+          <input
+            id="fc-name"
+            type="text"
+            required
+            placeholder="e.g. Fertilisants"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+          />
         </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            id="fc-description"
+            rows="2"
+            placeholder="Optional description…"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642] resize-none"
+          ></textarea>
+        </div>
+        <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+          <button
+            type="button"
+            id="modal-category-cancel"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="fc-submit"
+            class="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+            style="background-color:#194642;"
+          >
+            <i class="fas fa-save"></i>
+            <span id="fc-submit-label">Save Category</span>
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </AdminLayout>
 
 <script>
-    import { supabase } from "../../../lib/supabase";
+  // ─── Utility ───────────────────────────────────────────────────────────────
 
-    async function loadStats() {
-        try {
-            const { count: totalProducts } = await supabase
-                .from("admin_products")
-                .select("*", { count: "exact", head: true });
+  function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const colors: Record<string, string> = {
+      success: 'bg-green-600',
+      error: 'bg-red-600',
+      info: 'bg-[#194642]',
+    };
+    const icons: Record<string, string> = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      info: 'fa-info-circle',
+    };
+    const el = document.createElement('div');
+    el.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg ${colors[type]}`;
+    el.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
 
-            const { count: lowStock } = await supabase
-                .from("admin_products")
-                .select("*", { count: "exact", head: true })
-                .lt("stock_quantity", 10);
+  function fmt(n: number) {
+    return new Intl.NumberFormat('fr-FR').format(n);
+  }
 
-            const { count: categories } = await supabase
-                .from("admin_product_categories")
-                .select("*", { count: "exact", head: true });
+  async function apiFetch(url: string, opts?: RequestInit) {
+    const res = await fetch(url, opts);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || res.statusText);
+    }
+    return res.json();
+  }
 
-            document.getElementById("total-products")!.textContent =
-                totalProducts?.toString() || "0";
-            document.getElementById("low-stock-count")!.textContent =
-                lowStock?.toString() || "0";
-            document.getElementById("total-categories")!.textContent =
-                categories?.toString() || "0";
-        } catch (error) {
-            console.error("Error loading stats:", error);
+  // ─── State ─────────────────────────────────────────────────────────────────
+
+  let allProducts: any[] = [];
+  let allCategories: any[] = [];
+  let categoryCounts: Record<string, number> = {};
+
+  // ─── Stats ─────────────────────────────────────────────────────────────────
+
+  function updateStats(products: any[]) {
+    const inStock  = products.filter(p => p.stock_quantity > (p.reorder_level ?? 0)).length;
+    const low      = products.filter(p => p.stock_quantity > 0 && p.stock_quantity <= (p.reorder_level ?? 0)).length;
+    const out      = products.filter(p => p.stock_quantity === 0).length;
+    document.getElementById('stat-total')!.textContent = String(products.length);
+    document.getElementById('stat-in')!.textContent    = String(inStock);
+    document.getElementById('stat-low')!.textContent   = String(low);
+    document.getElementById('stat-out')!.textContent   = String(out);
+  }
+
+  // ─── Load Products ─────────────────────────────────────────────────────────
+
+  async function loadProducts() {
+    const search   = (document.getElementById('search-input') as HTMLInputElement).value.trim();
+    const category = (document.getElementById('category-filter') as HTMLSelectElement).value;
+    const stock    = (document.getElementById('stock-filter') as HTMLSelectElement).value;
+
+    const params = new URLSearchParams();
+    if (search)   params.set('search', search);
+    if (category) params.set('category_id', category);
+    if (stock)    params.set('stock_filter', stock);
+
+    document.getElementById('products-loading')!.classList.remove('hidden');
+    document.getElementById('products-table-wrap')!.classList.add('hidden');
+    document.getElementById('products-empty')!.classList.add('hidden');
+
+    try {
+      const data = await apiFetch(`/api/admin/products?${params.toString()}`);
+      allProducts = data.products ?? [];
+
+      // compute category counts from full list (for categories tab)
+      categoryCounts = {};
+      allProducts.forEach((p: any) => {
+        if (p.category_id) {
+          categoryCounts[p.category_id] = (categoryCounts[p.category_id] ?? 0) + 1;
         }
+      });
+
+      updateStats(allProducts);
+      renderProductsTable(allProducts);
+    } catch (e: any) {
+      showToast(e.message, 'error');
+      document.getElementById('products-loading')!.classList.add('hidden');
+    }
+  }
+
+  function stockBadge(p: any) {
+    if (p.stock_quantity === 0) {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">${p.stock_quantity}</span>`;
+    }
+    if (p.stock_quantity <= (p.reorder_level ?? 0)) {
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">${p.stock_quantity}</span>`;
+    }
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">${p.stock_quantity}</span>`;
+  }
+
+  function renderProductsTable(products: any[]) {
+    document.getElementById('products-loading')!.classList.add('hidden');
+
+    if (products.length === 0) {
+      document.getElementById('products-empty')!.classList.remove('hidden');
+      return;
     }
 
-    async function loadCategories() {
-        try {
-            const { data: categories } = await supabase
-                .from("admin_product_categories")
-                .select("*")
-                .order("name");
+    const tbody = document.getElementById('products-tbody')!;
+    tbody.innerHTML = products.map((p: any) => {
+      const catName = p.admin_product_categories?.name ?? '—';
+      const activeColor = p.is_active ? '#194642' : '#d1d5db';
+      const activeKnob  = p.is_active ? 'translate-x-4' : 'translate-x-0.5';
+      const activeLabel = p.is_active ? 'Yes' : 'No';
 
-            const select = document.getElementById(
-                "category-filter",
-            ) as HTMLSelectElement;
-            if (select && categories) {
-                categories.forEach((cat) => {
-                    const option = document.createElement("option");
-                    option.value = cat.id;
-                    option.textContent = cat.name;
-                    select.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error("Error loading categories:", error);
-        }
+      return `
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+          <td class="px-5 py-3">
+            <div class="font-medium text-gray-800 text-sm">${p.name}</div>
+            ${p.description ? `<div class="text-xs text-gray-400 truncate max-w-xs">${p.description}</div>` : ''}
+          </td>
+          <td class="px-5 py-3 text-sm text-gray-600 font-mono">${p.sku || '—'}</td>
+          <td class="px-5 py-3">
+            ${catName !== '—'
+              ? `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-[#194642]/10 text-[#194642]">${catName}</span>`
+              : '<span class="text-gray-400 text-xs">—</span>'}
+          </td>
+          <td class="px-5 py-3 text-sm text-gray-700 font-medium">${fmt(p.unit_price ?? 0)}</td>
+          <td class="px-5 py-3">${stockBadge(p)}</td>
+          <td class="px-5 py-3 text-xs text-gray-500">${p.unit_of_measure || '—'}</td>
+          <td class="px-5 py-3 text-center">
+            <button
+              class="btn-toggle-active relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
+              style="background-color:${activeColor};"
+              data-id="${p.id}"
+              data-active="${p.is_active ? 'true' : 'false'}"
+              title="Toggle active"
+            >
+              <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${activeKnob}"></span>
+            </button>
+            <div class="text-xs text-gray-400 mt-0.5">${activeLabel}</div>
+          </td>
+          <td class="px-5 py-3">
+            <div class="flex items-center justify-end gap-2">
+              <button
+                class="btn-adjust-stock text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-[#194642] hover:text-[#194642] transition-colors"
+                data-id="${p.id}"
+                data-name="${p.name.replace(/"/g,'&quot;')}"
+                data-stock="${p.stock_quantity}"
+                title="Adjust stock"
+              ><i class="fas fa-warehouse"></i></button>
+              <button
+                class="btn-edit-product text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-[#194642] hover:text-[#194642] transition-colors"
+                data-id="${p.id}"
+                title="Edit product"
+              ><i class="fas fa-edit"></i></button>
+              <button
+                class="btn-delete-product text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-red-500 hover:border-red-400 hover:bg-red-50 transition-colors"
+                data-id="${p.id}"
+                data-name="${p.name.replace(/"/g,'&quot;')}"
+                title="Delete product"
+              ><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('products-table-wrap')!.classList.remove('hidden');
+  }
+
+  // ─── Load Categories ────────────────────────────────────────────────────────
+
+  async function loadCategories() {
+    document.getElementById('categories-loading')!.classList.remove('hidden');
+    document.getElementById('categories-table-wrap')!.classList.add('hidden');
+    document.getElementById('categories-empty')!.classList.add('hidden');
+
+    try {
+      const data = await apiFetch('/api/admin/products?action=categories');
+      allCategories = data.categories ?? [];
+      populateCategorySelects();
+      renderCategoriesTable(allCategories);
+    } catch (e: any) {
+      showToast(e.message, 'error');
+      document.getElementById('categories-loading')!.classList.add('hidden');
+    }
+  }
+
+  function populateCategorySelects() {
+    const filter = document.getElementById('category-filter') as HTMLSelectElement;
+    const fpCat  = document.getElementById('fp-category') as HTMLSelectElement;
+
+    // Save current values
+    const fv = filter.value;
+    const pv = fpCat.value;
+
+    filter.innerHTML = '<option value="">All Categories</option>';
+    fpCat.innerHTML  = '<option value="">— Select category —</option>';
+
+    allCategories.forEach((c: any) => {
+      const o1 = new Option(c.name, c.id);
+      const o2 = new Option(c.name, c.id);
+      filter.appendChild(o1);
+      fpCat.appendChild(o2);
+    });
+
+    filter.value = fv;
+    fpCat.value  = pv;
+  }
+
+  function renderCategoriesTable(cats: any[]) {
+    document.getElementById('categories-loading')!.classList.add('hidden');
+
+    if (cats.length === 0) {
+      document.getElementById('categories-empty')!.classList.remove('hidden');
+      return;
     }
 
-    async function loadProducts() {
-        const tbody = document.getElementById("products-table-body");
-        const searchInput = document.getElementById(
-            "search-input",
-        ) as HTMLInputElement;
-        const categoryFilter = document.getElementById(
-            "category-filter",
-        ) as HTMLSelectElement;
-        const stockFilter = document.getElementById(
-            "stock-filter",
-        ) as HTMLSelectElement;
+    const tbody = document.getElementById('categories-tbody')!;
+    tbody.innerHTML = cats.map((c: any) => {
+      const count = categoryCounts[c.id] ?? 0;
+      return `
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+          <td class="px-5 py-3 text-sm font-medium text-gray-800">${c.name}</td>
+          <td class="px-5 py-3">
+            <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">${count}</span>
+          </td>
+          <td class="px-5 py-3 text-sm text-gray-500">${c.description || '—'}</td>
+          <td class="px-5 py-3">
+            <div class="flex items-center justify-end gap-2">
+              <button
+                class="btn-edit-category text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-[#194642] hover:text-[#194642] transition-colors"
+                data-id="${c.id}"
+                data-name="${c.name.replace(/"/g,'&quot;')}"
+                data-description="${(c.description || '').replace(/"/g,'&quot;')}"
+                title="Edit category"
+              ><i class="fas fa-edit"></i></button>
+              <button
+                class="btn-delete-category text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-red-500 hover:border-red-400 hover:bg-red-50 transition-colors"
+                data-id="${c.id}"
+                data-name="${c.name.replace(/"/g,'&quot;')}"
+                title="Delete category"
+              ><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
 
-        if (!tbody) return;
+    document.getElementById('categories-table-wrap')!.classList.remove('hidden');
+  }
 
-        tbody.innerHTML =
-            '<tr><td colspan="7" class="px-6 py-8 text-center">Loading...</td></tr>';
+  // ─── Tabs ───────────────────────────────────────────────────────────────────
 
-        try {
-            let query = supabase.from("admin_products").select(`
-          *,
-          admin_product_categories (name)
-        `);
+  function switchTab(tab: 'products' | 'categories') {
+    const tabProducts   = document.getElementById('tab-products')!;
+    const tabCategories = document.getElementById('tab-categories')!;
+    const panelProducts   = document.getElementById('panel-products')!;
+    const panelCategories = document.getElementById('panel-categories')!;
 
-            if (searchInput?.value) {
-                query = query.or(
-                    `name.ilike.%${searchInput.value}%,sku.ilike.%${searchInput.value}%`,
-                );
-            }
+    const activeTab   = 'border-[#194642] text-[#194642]';
+    const inactiveTab = 'border-transparent text-gray-500 hover:text-gray-700';
 
-            if (categoryFilter?.value) {
-                query = query.eq("category_id", categoryFilter.value);
-            }
+    if (tab === 'products') {
+      tabProducts.className   = `px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab}`;
+      tabCategories.className = `px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${inactiveTab}`;
+      panelProducts.classList.remove('hidden');
+      panelCategories.classList.add('hidden');
+    } else {
+      tabCategories.className = `px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab}`;
+      tabProducts.className   = `px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${inactiveTab}`;
+      panelCategories.classList.remove('hidden');
+      panelProducts.classList.add('hidden');
+      // re-render categories with latest counts
+      renderCategoriesTable(allCategories);
+    }
+  }
 
-            if (stockFilter?.value === "low") {
-                query = query.lt("stock_quantity", 10);
-            } else if (stockFilter?.value === "out") {
-                query = query.eq("stock_quantity", 0);
-            } else if (stockFilter?.value === "in") {
-                query = query.gt("stock_quantity", 0);
-            }
+  document.getElementById('tab-products')!.addEventListener('click', () => switchTab('products'));
+  document.getElementById('tab-categories')!.addEventListener('click', () => switchTab('categories'));
 
-            const { data, error } = await query.order("name");
+  // ─── Product Modal helpers ──────────────────────────────────────────────────
 
-            if (error) throw error;
+  function openProductModal(product?: any) {
+    const modal  = document.getElementById('modal-product')!;
+    const title  = document.getElementById('modal-product-title')!;
+    const label  = document.getElementById('fp-submit-label')!;
 
-            if (!data || data.length === 0) {
-                tbody.innerHTML =
-                    '<tr><td colspan="7" class="px-6 py-8 text-center">No products found</td></tr>';
-                return;
-            }
+    // Reset form
+    (document.getElementById('fp-id') as HTMLInputElement).value          = product?.id ?? '';
+    (document.getElementById('fp-name') as HTMLInputElement).value        = product?.name ?? '';
+    (document.getElementById('fp-sku') as HTMLInputElement).value         = product?.sku ?? '';
+    (document.getElementById('fp-description') as HTMLTextAreaElement).value = product?.description ?? '';
+    (document.getElementById('fp-unit-price') as HTMLInputElement).value  = product?.unit_price ?? '';
+    (document.getElementById('fp-cost-price') as HTMLInputElement).value  = product?.cost_price ?? '';
+    (document.getElementById('fp-stock') as HTMLInputElement).value       = product?.stock_quantity ?? '';
+    (document.getElementById('fp-reorder') as HTMLInputElement).value     = product?.reorder_level ?? '';
+    (document.getElementById('fp-max-stock') as HTMLInputElement).value   = product?.max_stock_level ?? '';
+    (document.getElementById('fp-uom') as HTMLSelectElement).value        = product?.unit_of_measure ?? 'kg';
+    (document.getElementById('fp-category') as HTMLSelectElement).value   = product?.category_id ?? '';
 
-            tbody.innerHTML = data
-                .map((product) => {
-                    const stockStatus =
-                        product.stock_quantity === 0
-                            ? "out"
-                            : product.stock_quantity < product.reorder_level
-                              ? "low"
-                              : "good";
-                    const statusColors = {
-                        out: "bg-red-100 text-red-800",
-                        low: "bg-yellow-100 text-yellow-800",
-                        good: "bg-green-100 text-green-800",
-                    };
+    const isActive = product?.is_active !== false;
+    setActiveToggle(isActive);
 
-                    return `
-          <tr class="bg-white border-b hover:bg-gray-50">
-            <td class="px-6 py-4">
-              <div class="font-medium text-gray-900">${product.name}</div>
-              <div class="text-xs text-gray-500">${product.description || "-"}</div>
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-900">${product.sku || "-"}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">${product.admin_product_categories?.name || "-"}</td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-900">
-              ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(product.unit_price)}
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-sm font-medium text-gray-900">${product.stock_quantity} ${product.unit_of_measure}</div>
-              <div class="text-xs text-gray-500">Min: ${product.reorder_level}</div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusColors[stockStatus]}">
-                ${stockStatus === "out" ? "Out of Stock" : stockStatus === "low" ? "Low Stock" : "In Stock"}
-              </span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex gap-2">
-                <button class="text-blue-600 hover:text-blue-900 edit-btn" data-id="${product.id}">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="text-red-600 hover:text-red-900 delete-btn" data-id="${product.id}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-                })
-                .join("");
-        } catch (error) {
-            console.error("Error loading products:", error);
-            tbody.innerHTML =
-                '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
-        }
+    title.textContent = product ? 'Edit Product' : 'Add Product';
+    label.textContent = product ? 'Update Product' : 'Save Product';
+    modal.classList.remove('hidden');
+  }
+
+  function setActiveToggle(active: boolean) {
+    const btn   = document.getElementById('fp-active-toggle')!;
+    const knob  = document.getElementById('fp-active-knob')!;
+    const lbl   = document.getElementById('fp-active-label')!;
+    const input = document.getElementById('fp-active') as HTMLInputElement;
+    btn.style.backgroundColor = active ? '#194642' : '#d1d5db';
+    knob.className = `inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${active ? 'translate-x-4' : 'translate-x-0.5'}`;
+    lbl.textContent = active ? 'Yes' : 'No';
+    input.value = String(active);
+  }
+
+  document.getElementById('fp-active-toggle')!.addEventListener('click', () => {
+    const input = document.getElementById('fp-active') as HTMLInputElement;
+    setActiveToggle(input.value !== 'true');
+  });
+
+  function closeProductModal() {
+    document.getElementById('modal-product')!.classList.add('hidden');
+  }
+  document.getElementById('modal-product-close')!.addEventListener('click', closeProductModal);
+  document.getElementById('modal-product-cancel')!.addEventListener('click', closeProductModal);
+  document.getElementById('modal-product')!.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeProductModal();
+  });
+
+  // ─── Product Form Submit ────────────────────────────────────────────────────
+
+  document.getElementById('form-product')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = (document.getElementById('fp-id') as HTMLInputElement).value;
+    const payload: any = {
+      name:            (document.getElementById('fp-name') as HTMLInputElement).value.trim(),
+      sku:             (document.getElementById('fp-sku') as HTMLInputElement).value.trim() || null,
+      description:     (document.getElementById('fp-description') as HTMLTextAreaElement).value.trim() || null,
+      category_id:     (document.getElementById('fp-category') as HTMLSelectElement).value || null,
+      unit_of_measure: (document.getElementById('fp-uom') as HTMLSelectElement).value,
+      unit_price:      Number((document.getElementById('fp-unit-price') as HTMLInputElement).value) || 0,
+      cost_price:      Number((document.getElementById('fp-cost-price') as HTMLInputElement).value) || 0,
+      stock_quantity:  Number((document.getElementById('fp-stock') as HTMLInputElement).value) || 0,
+      reorder_level:   Number((document.getElementById('fp-reorder') as HTMLInputElement).value) || 0,
+      max_stock_level: Number((document.getElementById('fp-max-stock') as HTMLInputElement).value) || 0,
+      is_active:       (document.getElementById('fp-active') as HTMLInputElement).value === 'true',
+    };
+
+    const btn = document.getElementById('fp-submit') as HTMLButtonElement;
+    const icon = document.getElementById('fp-submit-icon')!;
+    btn.disabled = true;
+    icon.className = 'fas fa-circle-notch fa-spin';
+
+    try {
+      if (id) {
+        await apiFetch('/api/admin/products', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...payload }),
+        });
+        showToast('Product updated.', 'success');
+      } else {
+        await apiFetch('/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        showToast('Product added.', 'success');
+      }
+      closeProductModal();
+      loadProducts();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      icon.className = 'fas fa-save';
+    }
+  });
+
+  // ─── Add Product button ─────────────────────────────────────────────────────
+  document.getElementById('btn-add-product')!.addEventListener('click', () => openProductModal());
+
+  // ─── Edit / Delete / Toggle / Adjust Stock (delegated) ─────────────────────
+  document.getElementById('products-tbody')!.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('button');
+    if (!btn) return;
+
+    if (btn.classList.contains('btn-edit-product')) {
+      const id = btn.dataset.id!;
+      try {
+        const data = await apiFetch(`/api/admin/products?id=${id}`);
+        openProductModal(data.product);
+      } catch (err: any) {
+        showToast(err.message, 'error');
+      }
     }
 
-    // Event Listeners
-    document
-        .getElementById("search-input")
-        ?.addEventListener("input", loadProducts);
-    document
-        .getElementById("category-filter")
-        ?.addEventListener("change", loadProducts);
-    document
-        .getElementById("stock-filter")
-        ?.addEventListener("change", loadProducts);
+    if (btn.classList.contains('btn-delete-product')) {
+      const id   = btn.dataset.id!;
+      const name = btn.dataset.name!;
+      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+      try {
+        await apiFetch('/api/admin/products', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        showToast('Product deleted.', 'success');
+        loadProducts();
+      } catch (err: any) {
+        showToast(err.message, 'error');
+      }
+    }
 
-    // Initial load
-    loadStats();
-    loadCategories();
+    if (btn.classList.contains('btn-toggle-active')) {
+      const id     = btn.dataset.id!;
+      const active = btn.dataset.active === 'true';
+      try {
+        await apiFetch('/api/admin/products', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, is_active: !active }),
+        });
+        showToast(`Product ${!active ? 'activated' : 'deactivated'}.`, 'success');
+        loadProducts();
+      } catch (err: any) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    if (btn.classList.contains('btn-adjust-stock')) {
+      openAdjustModal(btn.dataset.id!, btn.dataset.name!, Number(btn.dataset.stock!));
+    }
+  });
+
+  // ─── Stock Adjustment Modal ─────────────────────────────────────────────────
+
+  function openAdjustModal(id: string, name: string, currentStock: number) {
+    (document.getElementById('adj-product-id') as HTMLInputElement).value = id;
+    document.getElementById('adj-product-name')!.textContent              = name;
+    document.getElementById('adj-current-stock')!.textContent             = String(currentStock);
+    (document.getElementById('adj-amount') as HTMLInputElement).value     = '';
+    (document.getElementById('adj-reason') as HTMLInputElement).value     = '';
+    document.getElementById('modal-adjust')!.classList.remove('hidden');
+  }
+
+  function closeAdjustModal() {
+    document.getElementById('modal-adjust')!.classList.add('hidden');
+  }
+  document.getElementById('modal-adjust-close')!.addEventListener('click', closeAdjustModal);
+  document.getElementById('modal-adjust-cancel')!.addEventListener('click', closeAdjustModal);
+  document.getElementById('modal-adjust')!.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeAdjustModal();
+  });
+
+  document.getElementById('form-adjust')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const product_id = (document.getElementById('adj-product-id') as HTMLInputElement).value;
+    const adjustment = Number((document.getElementById('adj-amount') as HTMLInputElement).value);
+    const reason     = (document.getElementById('adj-reason') as HTMLInputElement).value.trim();
+
+    const btn = document.getElementById('adj-submit') as HTMLButtonElement;
+    btn.disabled = true;
+
+    try {
+      await apiFetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _action: 'adjust_stock', product_id, adjustment, reason }),
+      });
+      showToast('Stock adjusted.', 'success');
+      closeAdjustModal();
+      loadProducts();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ─── Category Modal ─────────────────────────────────────────────────────────
+
+  function openCategoryModal(cat?: any) {
+    const title = document.getElementById('modal-category-title')!;
+    const label = document.getElementById('fc-submit-label')!;
+    (document.getElementById('fc-id') as HTMLInputElement).value          = cat?.id ?? '';
+    (document.getElementById('fc-name') as HTMLInputElement).value        = cat?.name ?? '';
+    (document.getElementById('fc-description') as HTMLTextAreaElement).value = cat?.description ?? '';
+    title.textContent = cat ? 'Edit Category' : 'Add Category';
+    label.textContent = cat ? 'Update Category' : 'Save Category';
+    document.getElementById('modal-category')!.classList.remove('hidden');
+  }
+
+  function closeCategoryModal() {
+    document.getElementById('modal-category')!.classList.add('hidden');
+  }
+  document.getElementById('modal-category-close')!.addEventListener('click', closeCategoryModal);
+  document.getElementById('modal-category-cancel')!.addEventListener('click', closeCategoryModal);
+  document.getElementById('modal-category')!.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeCategoryModal();
+  });
+  document.getElementById('btn-add-category')!.addEventListener('click', () => openCategoryModal());
+
+  // "Add category" button inside product modal
+  document.getElementById('fp-add-category-inline')!.addEventListener('click', () => openCategoryModal());
+
+  document.getElementById('form-category')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id          = (document.getElementById('fc-id') as HTMLInputElement).value;
+    const name        = (document.getElementById('fc-name') as HTMLInputElement).value.trim();
+    const description = (document.getElementById('fc-description') as HTMLTextAreaElement).value.trim() || null;
+
+    const btn = document.getElementById('fc-submit') as HTMLButtonElement;
+    btn.disabled = true;
+
+    try {
+      if (id) {
+        await apiFetch('/api/admin/products', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, _target: 'category', name, description }),
+        });
+        showToast('Category updated.', 'success');
+      } else {
+        await apiFetch('/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ _action: 'create_category', name, description }),
+        });
+        showToast('Category added.', 'success');
+      }
+      closeCategoryModal();
+      await loadCategories();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ─── Categories table delegated events ─────────────────────────────────────
+  document.getElementById('categories-tbody')!.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('button');
+    if (!btn) return;
+
+    if (btn.classList.contains('btn-edit-category')) {
+      openCategoryModal({
+        id:          btn.dataset.id,
+        name:        btn.dataset.name,
+        description: btn.dataset.description,
+      });
+    }
+
+    if (btn.classList.contains('btn-delete-category')) {
+      const id   = btn.dataset.id!;
+      const name = btn.dataset.name!;
+      if (!confirm(`Delete category "${name}"? Products in this category will be uncategorised.`)) return;
+      try {
+        await apiFetch('/api/admin/products', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, _target: 'category' }),
+        });
+        showToast('Category deleted.', 'success');
+        await loadCategories();
+        loadProducts();
+      } catch (err: any) {
+        showToast(err.message, 'error');
+      }
+    }
+  });
+
+  // ─── Filter listeners ───────────────────────────────────────────────────────
+  let searchTimer: ReturnType<typeof setTimeout>;
+  document.getElementById('search-input')!.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadProducts, 300);
+  });
+  document.getElementById('category-filter')!.addEventListener('change', loadProducts);
+  document.getElementById('stock-filter')!.addEventListener('change', loadProducts);
+
+  // ─── Initial load ────────────────────────────────────────────────────────────
+  (async () => {
+    await loadCategories();
     loadProducts();
+  })();
 </script>

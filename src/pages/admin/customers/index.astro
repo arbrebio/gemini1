@@ -1,243 +1,673 @@
 ---
+export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout title="Customers">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Customers</h1>
-            <p class="text-gray-600">
-                Manage farmers, cooperatives, and enterprises
-            </p>
-        </div>
-        <a
-            href="/admin/customers/new"
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-            <i class="fas fa-plus"></i>
-            Add Customer
-        </a>
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Customers</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Manage farmers, cooperatives, and enterprises</p>
+    </div>
+    <button
+      id="btn-add-customer"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity hover:opacity-90"
+      style="background-color:#194642;"
+    >
+      <i class="fas fa-plus text-xs"></i>
+      Add Customer
+    </button>
+  </div>
+
+  <!-- Stats bar -->
+  <div id="stats-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Total</p>
+      <p id="stat-total" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Farmers</p>
+      <p id="stat-farmer" class="text-2xl font-bold text-green-700">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Cooperatives</p>
+      <p id="stat-cooperative" class="text-2xl font-bold text-blue-700">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Enterprises</p>
+      <p id="stat-enterprise" class="text-2xl font-bold text-purple-700">—</p>
+    </div>
+  </div>
+
+  <!-- Search & filter -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-3">
+    <div class="relative flex-1">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search by name, email, company, or phone…"
+        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      />
+    </div>
+    <div class="w-full md:w-44">
+      <select
+        id="type-filter"
+        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      >
+        <option value="">All Types</option>
+        <option value="Farmer">Farmer</option>
+        <option value="Cooperative">Cooperative</option>
+        <option value="Enterprise">Enterprise</option>
+        <option value="Government">Government</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Table card -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+    <!-- Loading overlay -->
+    <div id="table-loading" class="flex items-center justify-center py-20">
+      <i class="fas fa-circle-notch fa-spin text-2xl" style="color:#194642;"></i>
     </div>
 
-    <!-- Search & Filter -->
-    <div
-        class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4"
-    >
-        <div class="flex-1 relative">
-            <i
-                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            ></i>
+    <!-- Empty state -->
+    <div id="table-empty" class="hidden flex-col items-center justify-center py-20 text-center">
+      <i class="fas fa-users text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500 font-medium">No customers found</p>
+      <p class="text-gray-400 text-sm mt-1">Try adjusting your search or filter</p>
+    </div>
+
+    <!-- Table -->
+    <div id="table-wrapper" class="hidden overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-100 text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name / Company</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined</th>
+            <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="customers-tbody" class="divide-y divide-gray-50 bg-white"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination-bar" class="hidden items-center justify-between px-4 py-3 border-t border-gray-100">
+      <p id="pagination-info" class="text-sm text-gray-500"></p>
+      <div class="flex items-center gap-2">
+        <button id="btn-prev" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+          <i class="fas fa-chevron-left text-xs mr-1"></i>Prev
+        </button>
+        <button id="btn-next" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+          Next<i class="fas fa-chevron-right text-xs ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="customer-modal" class="fixed inset-0 z-40 hidden">
+    <!-- Backdrop -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <!-- Panel -->
+    <div class="absolute inset-0 flex items-start justify-center overflow-y-auto py-8 px-4">
+      <div class="relative bg-white w-full max-w-2xl rounded-xl shadow-2xl">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 id="modal-title" class="text-lg font-semibold text-gray-800">Add Customer</h2>
+          <button id="modal-close" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <i class="fas fa-times text-lg"></i>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <form id="customer-form" class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="hidden" id="form-id" />
+
+          <!-- Full Name -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
             <input
-                type="text"
-                id="search-input"
-                placeholder="Search by name, email, or phone..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+              id="form-full-name"
+              type="text"
+              required
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="e.g. Kofi Mensah"
             />
-        </div>
-        <div class="w-full md:w-48">
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+            <input
+              id="form-email"
+              type="email"
+              required
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="email@example.com"
+            />
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input
+              id="form-phone"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="+225 07 00 00 00 00"
+            />
+          </div>
+
+          <!-- Company Name -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+            <input
+              id="form-company"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Optional"
+            />
+          </div>
+
+          <!-- Customer Type -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
             <select
-                id="type-filter"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+              id="form-type"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
             >
-                <option value="">All Types</option>
-                <option value="Farmer">Farmer</option>
-                <option value="Cooperative">Cooperative</option>
-                <option value="Enterprise">Enterprise</option>
-                <option value="Government">Government</option>
+              <option value="Farmer">Farmer</option>
+              <option value="Cooperative">Cooperative</option>
+              <option value="Enterprise">Enterprise</option>
+              <option value="Government">Government</option>
             </select>
-        </div>
-    </div>
+          </div>
 
-    <!-- Customers Table -->
-    <div
-        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-    >
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3">Name</th>
-                        <th class="px-6 py-3">Contact</th>
-                        <th class="px-6 py-3">Location</th>
-                        <th class="px-6 py-3">Farm Size</th>
-                        <th class="px-6 py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="customers-table-body">
-                    <tr>
-                        <td colspan="5" class="px-6 py-8 text-center"
-                            >Loading customers...</td
-                        >
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+          <!-- Address -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <input
+              id="form-address"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Street address"
+            />
+          </div>
 
-        <!-- Pagination -->
-        <div
-            class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between"
-        >
-            <span class="text-sm text-gray-700" id="pagination-info">
-                Showing <span class="font-medium">0</span> to <span
-                    class="font-medium">0</span
-                > of <span class="font-medium">0</span> results
-            </span>
-            <div class="flex gap-2">
-                <button
-                    id="prev-btn"
-                    class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 disabled:opacity-50"
-                    >Previous</button
-                >
-                <button
-                    id="next-btn"
-                    class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 disabled:opacity-50"
-                    >Next</button
-                >
-            </div>
+          <!-- City -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <input
+              id="form-city"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Abidjan"
+            />
+          </div>
+
+          <!-- Region -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+            <input
+              id="form-region"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Lagunes"
+            />
+          </div>
+
+          <!-- Country -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <input
+              id="form-country"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Côte d'Ivoire"
+            />
+          </div>
+
+          <!-- Farm Size -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Farm Size (hectares)</label>
+            <input
+              id="form-farm-size"
+              type="number"
+              min="0"
+              step="0.01"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="0.00"
+            />
+          </div>
+
+          <!-- Primary Crops -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Primary Crops</label>
+            <input
+              id="form-crops"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              placeholder="Cocoa, Cashew, Coffee…"
+            />
+          </div>
+
+          <!-- Notes -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <textarea
+              id="form-notes"
+              rows="3"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642] resize-none"
+              placeholder="Any additional notes…"
+            ></textarea>
+          </div>
+        </form>
+        <!-- Modal footer -->
+        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
+          <button
+            id="modal-cancel"
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            id="modal-submit"
+            type="submit"
+            form="customer-form"
+            class="px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90 disabled:opacity-60"
+            style="background-color:#194642;"
+          >
+            <span id="modal-submit-text">Save Customer</span>
+            <i id="modal-submit-spinner" class="fas fa-circle-notch fa-spin ml-2 hidden"></i>
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </AdminLayout>
 
 <script>
-    import { supabase } from "../../../lib/supabase";
+  // ─── Helpers ────────────────────────────────────────────────────────────────
 
-    let currentPage = 1;
-    const pageSize = 10;
-    let totalCount = 0;
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const container = document.getElementById('toast-container')!;
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? '#194642' : '#dc2626';
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg';
+    toast.style.backgroundColor = bg;
+    toast.style.minWidth = '260px';
+    toast.innerHTML = `
+      <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+      <span>${message}</span>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.4s';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
 
-    async function loadCustomers() {
-        const searchInput = document.getElementById(
-            "search-input",
-        ) as HTMLInputElement;
-        const typeFilter = document.getElementById(
-            "type-filter",
-        ) as HTMLSelectElement;
-        const tbody = document.getElementById("customers-table-body");
-        const prevBtn = document.getElementById(
-            "prev-btn",
-        ) as HTMLButtonElement;
-        const nextBtn = document.getElementById(
-            "next-btn",
-        ) as HTMLButtonElement;
-        const paginationInfo = document.getElementById("pagination-info");
+  function typeBadge(type: string): string {
+    const cfg: Record<string, { bg: string; text: string }> = {
+      Farmer:      { bg: 'bg-green-100',  text: 'text-green-800'  },
+      Cooperative: { bg: 'bg-blue-100',   text: 'text-blue-800'   },
+      Enterprise:  { bg: 'bg-purple-100', text: 'text-purple-800' },
+      Government:  { bg: 'bg-orange-100', text: 'text-orange-800' },
+    };
+    const c = cfg[type] ?? { bg: 'bg-gray-100', text: 'text-gray-700' };
+    return `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${c.bg} ${c.text}">${type ?? '—'}</span>`;
+  }
 
-        if (!tbody) return;
+  function formatDate(dateStr: string | null | undefined): string {
+    if (!dateStr) return '—';
+    try {
+      return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch { return '—'; }
+  }
 
-        tbody.innerHTML =
-            '<tr><td colspan="5" class="px-6 py-8 text-center">Loading...</td></tr>';
+  function esc(str: string | null | undefined): string {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
-        try {
-            let query = supabase
-                .from("admin_customers")
-                .select("*", { count: "exact" });
+  // ─── State ──────────────────────────────────────────────────────────────────
 
-            // Apply filters
-            if (searchInput?.value) {
-                query = query.or(
-                    `full_name.ilike.%${searchInput.value}%,email.ilike.%${searchInput.value}%,phone.ilike.%${searchInput.value}%`,
-                );
-            }
+  type Customer = Record<string, any>;
 
-            // Note: 'type' column might not exist in the migration I saw earlier (it had farm_size_hectares etc but maybe not type enum? Let's check migration content again mentally.
-            // The migration 20251130112435_create_admin_order_management_system_v3.sql created admin_customers with:
-            // email, full_name, phone, company_name, address, city, region, postal_code, farm_size_hectares, primary_crops, notes.
-            // It did NOT have a 'type' column. I should probably add it or infer it.
-            // For now, I'll comment out the type filter logic or assume I should add it to the schema.
-            // I'll skip type filter for now to avoid errors.
+  let customers: Customer[] = [];
+  let total = 0;
+  let currentPage = 1;
+  const pageLimit = 15;
+  let searchValue = '';
+  let typeValue = '';
+  let confirmDeleteId: string | null = null;
+  let isSubmitting = false;
 
-            // Pagination
-            const from = (currentPage - 1) * pageSize;
-            const to = from + pageSize - 1;
+  // ─── DOM refs ────────────────────────────────────────────────────────────────
 
-            const { data, error, count } = await query
-                .range(from, to)
-                .order("created_at", { ascending: false });
+  const tbody          = document.getElementById('customers-tbody') as HTMLTableSectionElement;
+  const tableLoading   = document.getElementById('table-loading')!;
+  const tableEmpty     = document.getElementById('table-empty')!;
+  const tableWrapper   = document.getElementById('table-wrapper')!;
+  const paginationBar  = document.getElementById('pagination-bar')!;
+  const paginationInfo = document.getElementById('pagination-info')!;
+  const btnPrev        = document.getElementById('btn-prev') as HTMLButtonElement;
+  const btnNext        = document.getElementById('btn-next') as HTMLButtonElement;
+  const searchInput    = document.getElementById('search-input') as HTMLInputElement;
+  const typeFilter     = document.getElementById('type-filter') as HTMLSelectElement;
+  const modal          = document.getElementById('customer-modal')!;
+  const modalTitle     = document.getElementById('modal-title')!;
+  const modalSubmitText = document.getElementById('modal-submit-text')!;
+  const modalSubmitSpinner = document.getElementById('modal-submit-spinner')!;
+  const modalSubmitBtn = document.getElementById('modal-submit') as HTMLButtonElement;
+  const formEl         = document.getElementById('customer-form') as HTMLFormElement;
 
-            if (error) throw error;
+  // ─── Fetch helpers ───────────────────────────────────────────────────────────
 
-            totalCount = count || 0;
+  async function fetchCustomers() {
+    setTableState('loading');
+    const params = new URLSearchParams({
+      page: String(currentPage),
+      limit: String(pageLimit),
+    });
+    if (searchValue) params.set('search', searchValue);
+    if (typeValue)   params.set('customer_type', typeValue);
 
-            if (data.length === 0) {
-                tbody.innerHTML =
-                    '<tr><td colspan="5" class="px-6 py-8 text-center">No customers found</td></tr>';
-            } else {
-                tbody.innerHTML = data
-                    .map(
-                        (customer) => `
-          <tr class="bg-white border-b hover:bg-gray-50">
-            <td class="px-6 py-4">
-              <div class="flex items-center">
-                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mr-3">
-                  ${customer.full_name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div class="font-medium text-gray-900">${customer.full_name}</div>
-                  <div class="text-xs text-gray-500">${customer.company_name || "Individual"}</div>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-gray-900">${customer.email}</div>
-              <div class="text-xs text-gray-500">${customer.phone || "-"}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-gray-900">${customer.city || "-"}</div>
-              <div class="text-xs text-gray-500">${customer.region || "-"}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-gray-900">${customer.farm_size_hectares ? customer.farm_size_hectares + " ha" : "-"}</div>
-              <div class="text-xs text-gray-500">${(customer.primary_crops || []).join(", ")}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex gap-2">
-                <a href="/admin/customers/${customer.id}" class="text-blue-600 hover:text-blue-900">
-                  <i class="fas fa-edit"></i>
-                </a>
-                <button class="text-red-600 hover:text-red-900 delete-btn" data-id="${customer.id}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `,
-                    )
-                    .join("");
-            }
-
-            // Update pagination UI
-            if (paginationInfo) {
-                paginationInfo.innerHTML = `Showing <span class="font-medium">${Math.min(from + 1, totalCount)}</span> to <span class="font-medium">${Math.min(to + 1, totalCount)}</span> of <span class="font-medium">${totalCount}</span> results`;
-            }
-
-            if (prevBtn) prevBtn.disabled = currentPage === 1;
-            if (nextBtn) nextBtn.disabled = to >= totalCount - 1;
-        } catch (error) {
-            console.error("Error loading customers:", error);
-            tbody.innerHTML =
-                '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
-        }
+    try {
+      const res = await fetch(`/api/admin/customers?${params.toString()}`);
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      customers = data.customers ?? [];
+      total = data.total ?? customers.length;
+      renderTable();
+      renderStats();
+    } catch (e: any) {
+      setTableState('empty');
+      showToast(e.message ?? 'Failed to load customers', 'error');
     }
+  }
 
-    // Event Listeners
-    document.getElementById("search-input")?.addEventListener("input", () => {
-        currentPage = 1;
-        loadCustomers();
-    });
+  async function fetchStats() {
+    // fetch counts per type
+    try {
+      const types = ['Farmer', 'Cooperative', 'Enterprise'];
+      const results = await Promise.all(
+        types.map(t =>
+          fetch(`/api/admin/customers?customer_type=${t}&limit=1`).then(r => r.ok ? r.json() : { total: 0 })
+        )
+      );
+      const statTotal = document.getElementById('stat-total')!;
+      const statFarmer = document.getElementById('stat-farmer')!;
+      const statCoop = document.getElementById('stat-cooperative')!;
+      const statEnt = document.getElementById('stat-enterprise')!;
+      statFarmer.textContent   = String(results[0].total ?? 0);
+      statCoop.textContent     = String(results[1].total ?? 0);
+      statEnt.textContent      = String(results[2].total ?? 0);
+      // total from main response
+      statTotal.textContent    = String(total);
+    } catch { /* silent */ }
+  }
 
-    document.getElementById("prev-btn")?.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            loadCustomers();
-        }
-    });
+  // ─── Render ──────────────────────────────────────────────────────────────────
 
-    document.getElementById("next-btn")?.addEventListener("click", () => {
-        if (currentPage * pageSize < totalCount) {
-            currentPage++;
-            loadCustomers();
-        }
-    });
+  function setTableState(state: 'loading' | 'empty' | 'data') {
+    tableLoading.classList.toggle('hidden', state !== 'loading');
+    tableEmpty.classList.toggle('hidden', state !== 'empty');
+    tableEmpty.classList.toggle('flex', state === 'empty');
+    tableWrapper.classList.toggle('hidden', state !== 'data');
+    paginationBar.classList.toggle('hidden', state !== 'data');
+    if (state !== 'data') paginationBar.classList.remove('flex');
+    if (state === 'data') paginationBar.classList.add('flex');
+  }
 
-    // Initial load
-    loadCustomers();
+  function renderTable() {
+    if (!customers.length) {
+      setTableState('empty');
+      return;
+    }
+    setTableState('data');
+
+    tbody.innerHTML = customers.map(c => {
+      const location = [c.city, c.country].filter(Boolean).join(', ') || '—';
+      const rowId = `row-${c.id}`;
+      return `
+        <tr id="${rowId}" class="hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-3">
+            <p class="font-medium text-gray-800">${esc(c.full_name)}</p>
+            ${c.company_name ? `<p class="text-xs text-gray-500 mt-0.5">${esc(c.company_name)}</p>` : ''}
+          </td>
+          <td class="px-4 py-3">${typeBadge(c.customer_type)}</td>
+          <td class="px-4 py-3 text-gray-600 text-sm whitespace-nowrap">${esc(location)}</td>
+          <td class="px-4 py-3 text-gray-600 text-sm">${c.email ? `<a href="mailto:${esc(c.email)}" class="hover:underline">${esc(c.email)}</a>` : '—'}</td>
+          <td class="px-4 py-3 text-gray-600 text-sm whitespace-nowrap">${esc(c.phone) || '—'}</td>
+          <td class="px-4 py-3 text-gray-500 text-sm whitespace-nowrap">${formatDate(c.created_at)}</td>
+          <td class="px-4 py-3 text-right">
+            <div id="actions-${c.id}" class="flex items-center justify-end gap-2">
+              <button
+                data-edit="${c.id}"
+                class="p-1.5 text-gray-400 hover:text-[#194642] transition-colors rounded"
+                title="Edit"
+              ><i class="fas fa-pencil-alt text-xs"></i></button>
+              <button
+                data-delete-init="${c.id}"
+                class="p-1.5 text-gray-400 hover:text-red-600 transition-colors rounded"
+                title="Delete"
+              ><i class="fas fa-trash text-xs"></i></button>
+            </div>
+            <div id="confirm-${c.id}" class="hidden items-center justify-end gap-2">
+              <span class="text-xs text-gray-600 mr-1">Delete?</span>
+              <button data-delete-confirm="${c.id}" class="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors">Yes</button>
+              <button data-delete-cancel="${c.id}" class="px-2 py-1 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 transition-colors">No</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Pagination info
+    const start = (currentPage - 1) * pageLimit + 1;
+    const end   = Math.min(currentPage * pageLimit, total);
+    paginationInfo.textContent = `${start}–${end} of ${total}`;
+    btnPrev.disabled = currentPage <= 1;
+    btnNext.disabled = end >= total;
+  }
+
+  function renderStats() {
+    document.getElementById('stat-total')!.textContent = String(total);
+    fetchStats();
+  }
+
+  // ─── Table event delegation ──────────────────────────────────────────────────
+
+  tbody.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const el = target.closest('[data-edit],[data-delete-init],[data-delete-confirm],[data-delete-cancel]') as HTMLElement | null;
+    if (!el) return;
+
+    if (el.dataset.edit) {
+      const customer = customers.find(c => String(c.id) === el.dataset.edit);
+      if (customer) openEditModal(customer);
+      return;
+    }
+    if (el.dataset.deleteInit) {
+      const id = el.dataset.deleteInit;
+      // cancel any open confirm first
+      if (confirmDeleteId && confirmDeleteId !== id) cancelConfirm(confirmDeleteId);
+      confirmDeleteId = id;
+      document.getElementById(`actions-${id}`)!.classList.add('hidden');
+      const confirmEl = document.getElementById(`confirm-${id}`)!;
+      confirmEl.classList.remove('hidden');
+      confirmEl.classList.add('flex');
+      return;
+    }
+    if (el.dataset.deleteConfirm) {
+      deleteCustomer(el.dataset.deleteConfirm);
+      return;
+    }
+    if (el.dataset.deleteCancel) {
+      cancelConfirm(el.dataset.deleteCancel);
+      return;
+    }
+  });
+
+  function cancelConfirm(id: string) {
+    confirmDeleteId = null;
+    const actEl = document.getElementById(`actions-${id}`);
+    const confEl = document.getElementById(`confirm-${id}`);
+    if (actEl) actEl.classList.remove('hidden');
+    if (confEl) { confEl.classList.add('hidden'); confEl.classList.remove('flex'); }
+  }
+
+  // ─── CRUD ────────────────────────────────────────────────────────────────────
+
+  async function deleteCustomer(id: string) {
+    try {
+      const res = await fetch('/api/admin/customers', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? 'Delete failed');
+      }
+      showToast('Customer deleted successfully');
+      confirmDeleteId = null;
+      fetchCustomers();
+    } catch (e: any) {
+      showToast(e.message, 'error');
+    }
+  }
+
+  async function submitCustomer(e: SubmitEvent) {
+    e.preventDefault();
+    if (isSubmitting) return;
+    isSubmitting = true;
+    modalSubmitBtn.disabled = true;
+    modalSubmitSpinner.classList.remove('hidden');
+
+    const id = (document.getElementById('form-id') as HTMLInputElement).value.trim();
+    const payload: Record<string, any> = {
+      full_name:           (document.getElementById('form-full-name') as HTMLInputElement).value.trim(),
+      email:               (document.getElementById('form-email') as HTMLInputElement).value.trim(),
+      phone:               (document.getElementById('form-phone') as HTMLInputElement).value.trim() || null,
+      company_name:        (document.getElementById('form-company') as HTMLInputElement).value.trim() || null,
+      customer_type:       (document.getElementById('form-type') as HTMLSelectElement).value,
+      address:             (document.getElementById('form-address') as HTMLInputElement).value.trim() || null,
+      city:                (document.getElementById('form-city') as HTMLInputElement).value.trim() || null,
+      region:              (document.getElementById('form-region') as HTMLInputElement).value.trim() || null,
+      country:             (document.getElementById('form-country') as HTMLInputElement).value.trim() || null,
+      farm_size_hectares:  parseFloat((document.getElementById('form-farm-size') as HTMLInputElement).value) || null,
+      primary_crops:       (document.getElementById('form-crops') as HTMLInputElement).value.trim() || null,
+      notes:               (document.getElementById('form-notes') as HTMLTextAreaElement).value.trim() || null,
+    };
+    if (id) payload.id = id;
+
+    try {
+      const res = await fetch('/api/admin/customers', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? 'Save failed');
+      }
+      showToast(id ? 'Customer updated successfully' : 'Customer added successfully');
+      closeModal();
+      fetchCustomers();
+    } catch (e: any) {
+      showToast(e.message, 'error');
+    } finally {
+      isSubmitting = false;
+      modalSubmitBtn.disabled = false;
+      modalSubmitSpinner.classList.add('hidden');
+    }
+  }
+
+  // ─── Modal ───────────────────────────────────────────────────────────────────
+
+  function openAddModal() {
+    formEl.reset();
+    (document.getElementById('form-id') as HTMLInputElement).value = '';
+    (document.getElementById('form-country') as HTMLInputElement).value = "Côte d'Ivoire";
+    modalTitle.textContent = 'Add Customer';
+    modalSubmitText.textContent = 'Save Customer';
+    modal.classList.remove('hidden');
+  }
+
+  function openEditModal(c: Customer) {
+    formEl.reset();
+    (document.getElementById('form-id') as HTMLInputElement).value        = c.id ?? '';
+    (document.getElementById('form-full-name') as HTMLInputElement).value = c.full_name ?? '';
+    (document.getElementById('form-email') as HTMLInputElement).value     = c.email ?? '';
+    (document.getElementById('form-phone') as HTMLInputElement).value     = c.phone ?? '';
+    (document.getElementById('form-company') as HTMLInputElement).value   = c.company_name ?? '';
+    (document.getElementById('form-type') as HTMLSelectElement).value     = c.customer_type ?? 'Farmer';
+    (document.getElementById('form-address') as HTMLInputElement).value   = c.address ?? '';
+    (document.getElementById('form-city') as HTMLInputElement).value      = c.city ?? '';
+    (document.getElementById('form-region') as HTMLInputElement).value    = c.region ?? '';
+    (document.getElementById('form-country') as HTMLInputElement).value   = c.country ?? "Côte d'Ivoire";
+    (document.getElementById('form-farm-size') as HTMLInputElement).value = c.farm_size_hectares != null ? String(c.farm_size_hectares) : '';
+    (document.getElementById('form-crops') as HTMLInputElement).value     = c.primary_crops ?? '';
+    (document.getElementById('form-notes') as HTMLTextAreaElement).value  = c.notes ?? '';
+    modalTitle.textContent = 'Edit Customer';
+    modalSubmitText.textContent = 'Update Customer';
+    modal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+  }
+
+  // ─── Event listeners ─────────────────────────────────────────────────────────
+
+  document.getElementById('btn-add-customer')!.addEventListener('click', openAddModal);
+  document.getElementById('modal-close')!.addEventListener('click', closeModal);
+  document.getElementById('modal-cancel')!.addEventListener('click', closeModal);
+  document.getElementById('modal-backdrop')!.addEventListener('click', closeModal);
+  formEl.addEventListener('submit', submitCustomer);
+
+  // Search debounce
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      searchValue = searchInput.value.trim();
+      currentPage = 1;
+      fetchCustomers();
+    }, 350);
+  });
+
+  typeFilter.addEventListener('change', () => {
+    typeValue = typeFilter.value;
+    currentPage = 1;
+    fetchCustomers();
+  });
+
+  btnPrev.addEventListener('click', () => {
+    if (currentPage > 1) { currentPage--; fetchCustomers(); }
+  });
+  btnNext.addEventListener('click', () => {
+    if ((currentPage * pageLimit) < total) { currentPage++; fetchCustomers(); }
+  });
+
+  // Keyboard close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  fetchCustomers();
 </script>

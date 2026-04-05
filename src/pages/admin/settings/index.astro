@@ -1,0 +1,916 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Settings">
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Configure Arbre Bio Africa admin panel</p>
+    </div>
+    <div id="save-status" class="hidden items-center gap-2 text-sm text-gray-500">
+      <i class="fas fa-circle-notch fa-spin" style="color:#194642;"></i>
+      <span>Saving…</span>
+    </div>
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="border-b border-gray-100">
+      <nav class="flex overflow-x-auto" id="tab-nav">
+        <button
+          data-tab="company"
+          class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
+        >
+          <i class="fas fa-building text-xs"></i>
+          Company Profile
+        </button>
+        <button
+          data-tab="financial"
+          class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
+        >
+          <i class="fas fa-coins text-xs"></i>
+          Financial
+        </button>
+        <button
+          data-tab="notifications"
+          class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
+        >
+          <i class="fas fa-bell text-xs"></i>
+          Notifications
+        </button>
+        <button
+          data-tab="system"
+          class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
+        >
+          <i class="fas fa-cog text-xs"></i>
+          System
+        </button>
+      </nav>
+    </div>
+
+    <!-- Loading state -->
+    <div id="settings-loading" class="flex items-center justify-center py-20">
+      <i class="fas fa-circle-notch fa-spin text-2xl" style="color:#194642;"></i>
+    </div>
+
+    <!-- ─── TAB 1: Company Profile ─────────────────────────────────────────── -->
+    <div id="tab-company" class="tab-panel hidden p-6">
+      <h2 class="text-base font-semibold text-gray-800 mb-5">Company Profile</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <!-- Company Name -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+          <input
+            id="s-company_name"
+            type="text"
+            placeholder="Arbre Bio Africa"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+            style="--tw-ring-color:#194642;"
+          />
+        </div>
+
+        <!-- Tagline -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tagline</label>
+          <input
+            id="s-company_tagline"
+            type="text"
+            placeholder="Agricultural solutions for West Africa"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            id="s-company_description"
+            rows="3"
+            placeholder="Brief description of the company…"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input
+            id="s-company_email"
+            type="email"
+            placeholder="contact@arbrebioafrica.com"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input
+            id="s-company_phone"
+            type="text"
+            placeholder="+225 07 00 00 00 00"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- WhatsApp -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+          <input
+            id="s-company_whatsapp"
+            type="text"
+            placeholder="+225 07 00 00 00 00"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Website -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+          <input
+            id="s-company_website"
+            type="url"
+            placeholder="https://www.arbrebioafrica.com"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Address -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+          <input
+            id="s-company_address"
+            type="text"
+            placeholder="Street address"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- City -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+          <input
+            id="s-company_city"
+            type="text"
+            placeholder="Abidjan"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Country -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+          <input
+            id="s-company_country"
+            type="text"
+            placeholder="Côte d'Ivoire"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Logo URL -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
+          <input
+            id="s-company_logo_url"
+            type="url"
+            placeholder="https://…/logo.png"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Social Links heading -->
+        <div class="sm:col-span-2 pt-2">
+          <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <i class="fas fa-share-alt text-gray-400"></i>
+            Social Links
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- Facebook -->
+            <div class="flex items-center gap-3 border border-gray-200 rounded-lg px-3 py-2">
+              <i class="fab fa-facebook text-blue-600 w-5 text-center"></i>
+              <input
+                id="s-social_facebook"
+                type="url"
+                placeholder="https://facebook.com/…"
+                class="flex-1 text-sm focus:outline-none bg-transparent"
+              />
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="flex items-center gap-3 border border-gray-200 rounded-lg px-3 py-2">
+              <i class="fab fa-linkedin text-blue-700 w-5 text-center"></i>
+              <input
+                id="s-social_linkedin"
+                type="url"
+                placeholder="https://linkedin.com/…"
+                class="flex-1 text-sm focus:outline-none bg-transparent"
+              />
+            </div>
+
+            <!-- Instagram -->
+            <div class="flex items-center gap-3 border border-gray-200 rounded-lg px-3 py-2">
+              <i class="fab fa-instagram text-pink-500 w-5 text-center"></i>
+              <input
+                id="s-social_instagram"
+                type="url"
+                placeholder="https://instagram.com/…"
+                class="flex-1 text-sm focus:outline-none bg-transparent"
+              />
+            </div>
+
+            <!-- Twitter/X -->
+            <div class="flex items-center gap-3 border border-gray-200 rounded-lg px-3 py-2">
+              <i class="fab fa-x-twitter text-gray-800 w-5 text-center"></i>
+              <input
+                id="s-social_twitter"
+                type="url"
+                placeholder="https://x.com/…"
+                class="flex-1 text-sm focus:outline-none bg-transparent"
+              />
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Save button -->
+      <div class="flex justify-end mt-6 pt-5 border-t border-gray-100">
+        <button
+          data-save="company"
+          class="save-btn inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+          style="background-color:#194642;"
+        >
+          <i class="fas fa-save text-xs"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── TAB 2: Financial Settings ──────────────────────────────────────── -->
+    <div id="tab-financial" class="tab-panel hidden p-6">
+      <h2 class="text-base font-semibold text-gray-800 mb-5">Financial Settings</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <!-- Default Currency -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Default Currency</label>
+          <select
+            id="s-currency"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          >
+            <option value="XOF">XOF — Franc CFA (BCEAO)</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="USD">USD — US Dollar</option>
+            <option value="GBP">GBP — British Pound</option>
+          </select>
+        </div>
+
+        <!-- Tax Rate -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tax Rate (%)</label>
+          <input
+            id="s-tax_rate"
+            type="number"
+            min="0"
+            max="100"
+            step="0.1"
+            placeholder="18"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Invoice Prefix -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Invoice Prefix</label>
+          <input
+            id="s-invoice_prefix"
+            type="text"
+            placeholder="INV-"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Order Number Prefix -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Order Number Prefix</label>
+          <input
+            id="s-order_prefix"
+            type="text"
+            placeholder="ORD-"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Payment Terms -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Payment Terms</label>
+          <input
+            id="s-payment_terms"
+            type="text"
+            placeholder="e.g. Net 30 days"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Bank Details -->
+        <div class="sm:col-span-2 pt-2">
+          <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <i class="fas fa-university text-gray-400"></i>
+            Bank Details
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+              <input
+                id="s-bank_name"
+                type="text"
+                placeholder="e.g. Ecobank Côte d'Ivoire"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
+              <input
+                id="s-bank_account_name"
+                type="text"
+                placeholder="Arbre Bio Africa SARL"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+              <input
+                id="s-bank_account_number"
+                type="text"
+                placeholder="0000000000"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">IBAN / SWIFT</label>
+              <input
+                id="s-bank_iban_swift"
+                type="text"
+                placeholder="CI00 0000 0000 0000 0000 000"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              />
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Save button -->
+      <div class="flex justify-end mt-6 pt-5 border-t border-gray-100">
+        <button
+          data-save="financial"
+          class="save-btn inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+          style="background-color:#194642;"
+        >
+          <i class="fas fa-save text-xs"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── TAB 3: Notifications ───────────────────────────────────────────── -->
+    <div id="tab-notifications" class="tab-panel hidden p-6">
+      <h2 class="text-base font-semibold text-gray-800 mb-5">Notification Preferences</h2>
+
+      <!-- Admin Email -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Admin Email for Notifications</label>
+        <input
+          id="s-admin_notification_email"
+          type="email"
+          placeholder="admin@arbrebioafrica.com"
+          class="w-full max-w-md px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+        />
+        <p class="text-xs text-gray-400 mt-1">All system notifications will be sent to this address.</p>
+      </div>
+
+      <!-- Low Stock Threshold -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Low Stock Threshold</label>
+        <input
+          id="s-low_stock_threshold"
+          type="number"
+          min="0"
+          placeholder="10"
+          class="w-full max-w-xs px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+        />
+        <p class="text-xs text-gray-400 mt-1">Alert when product stock falls below this quantity.</p>
+      </div>
+
+      <!-- Email notification toggles -->
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3">Email Notifications</h3>
+        <div class="space-y-3">
+
+          <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div class="pt-0.5">
+              <div class="relative">
+                <input type="checkbox" id="s-notify_new_order" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-[#194642] rounded-full transition-colors"></div>
+                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">New Order</p>
+              <p class="text-xs text-gray-400 mt-0.5">Notify when a new order is placed</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div class="pt-0.5">
+              <div class="relative">
+                <input type="checkbox" id="s-notify_new_customer" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-[#194642] rounded-full transition-colors"></div>
+                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">New Customer</p>
+              <p class="text-xs text-gray-400 mt-0.5">Notify when a new customer registers</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div class="pt-0.5">
+              <div class="relative">
+                <input type="checkbox" id="s-notify_low_stock" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-[#194642] rounded-full transition-colors"></div>
+                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Low Stock Alert</p>
+              <p class="text-xs text-gray-400 mt-0.5">Notify when a product falls below the low stock threshold</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div class="pt-0.5">
+              <div class="relative">
+                <input type="checkbox" id="s-notify_order_status" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-[#194642] rounded-full transition-colors"></div>
+                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Order Status Change</p>
+              <p class="text-xs text-gray-400 mt-0.5">Notify when an order status is updated</p>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Save button -->
+      <div class="flex justify-end mt-6 pt-5 border-t border-gray-100">
+        <button
+          data-save="notifications"
+          class="save-btn inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+          style="background-color:#194642;"
+        >
+          <i class="fas fa-save text-xs"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── TAB 4: System ──────────────────────────────────────────────────── -->
+    <div id="tab-system" class="tab-panel hidden p-6">
+      <h2 class="text-base font-semibold text-gray-800 mb-5">System Configuration</h2>
+
+      <div class="space-y-6">
+
+        <!-- Maintenance Mode -->
+        <div id="maintenance-card" class="rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-orange-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-orange-800">Maintenance Mode</p>
+                <p class="text-xs text-orange-600 mt-1">
+                  When enabled, the public-facing website will display a maintenance page. The admin panel remains accessible.
+                  <strong class="text-orange-700">Only enable this during planned downtime.</strong>
+                </p>
+              </div>
+            </div>
+            <div class="flex-shrink-0 pt-0.5">
+              <div class="relative">
+                <input type="checkbox" id="s-maintenance_mode" class="sr-only peer" />
+                <div class="w-12 h-6 bg-gray-200 peer-checked:bg-orange-500 rounded-full transition-colors"></div>
+                <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Panel Title -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Admin Panel Title</label>
+          <input
+            id="s-admin_panel_title"
+            type="text"
+            placeholder="Arbre Bio Africa — Admin"
+            class="w-full max-w-md px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Date Format -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
+          <select
+            id="s-date_format"
+            class="w-full max-w-xs px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          >
+            <option value="DD/MM/YYYY">DD/MM/YYYY (e.g. 05/04/2026)</option>
+            <option value="MM/DD/YYYY">MM/DD/YYYY (e.g. 04/05/2026)</option>
+            <option value="YYYY-MM-DD">YYYY-MM-DD (e.g. 2026-04-05)</option>
+          </select>
+        </div>
+
+        <!-- Timezone -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+          <select
+            id="s-timezone"
+            class="w-full max-w-sm px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          >
+            <optgroup label="West Africa">
+              <option value="Africa/Abidjan">Africa/Abidjan (GMT+0)</option>
+              <option value="Africa/Accra">Africa/Accra (GMT+0)</option>
+              <option value="Africa/Dakar">Africa/Dakar (GMT+0)</option>
+              <option value="Africa/Bamako">Africa/Bamako (GMT+0)</option>
+              <option value="Africa/Ouagadougou">Africa/Ouagadougou (GMT+0)</option>
+              <option value="Africa/Conakry">Africa/Conakry (GMT+0)</option>
+              <option value="Africa/Lagos">Africa/Lagos (GMT+1)</option>
+              <option value="Africa/Douala">Africa/Douala (GMT+1)</option>
+            </optgroup>
+            <optgroup label="East Africa">
+              <option value="Africa/Nairobi">Africa/Nairobi (GMT+3)</option>
+              <option value="Africa/Addis_Ababa">Africa/Addis_Ababa (GMT+3)</option>
+              <option value="Africa/Dar_es_Salaam">Africa/Dar_es_Salaam (GMT+3)</option>
+            </optgroup>
+            <optgroup label="North Africa">
+              <option value="Africa/Cairo">Africa/Cairo (GMT+2)</option>
+              <option value="Africa/Tunis">Africa/Tunis (GMT+1)</option>
+              <option value="Africa/Casablanca">Africa/Casablanca (GMT+1)</option>
+            </optgroup>
+            <optgroup label="Southern Africa">
+              <option value="Africa/Johannesburg">Africa/Johannesburg (GMT+2)</option>
+              <option value="Africa/Harare">Africa/Harare (GMT+2)</option>
+            </optgroup>
+            <optgroup label="Europe">
+              <option value="Europe/Paris">Europe/Paris (GMT+1/+2)</option>
+              <option value="Europe/London">Europe/London (GMT+0/+1)</option>
+              <option value="Europe/Brussels">Europe/Brussels (GMT+1/+2)</option>
+              <option value="Europe/Madrid">Europe/Madrid (GMT+1/+2)</option>
+              <option value="UTC">UTC</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Export Data -->
+        <div>
+          <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <i class="fas fa-download text-gray-400"></i>
+            Export Data
+          </h3>
+          <p class="text-xs text-gray-400 mb-4">Download all records as CSV files for backup or analysis.</p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              id="btn-export-customers"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <i class="fas fa-users text-xs text-gray-400"></i>
+              Export Customers (CSV)
+              <i id="spin-customers" class="fas fa-circle-notch fa-spin text-xs hidden" style="color:#194642;"></i>
+            </button>
+            <button
+              id="btn-export-orders"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <i class="fas fa-shopping-cart text-xs text-gray-400"></i>
+              Export Orders (CSV)
+              <i id="spin-orders" class="fas fa-circle-notch fa-spin text-xs hidden" style="color:#194642;"></i>
+            </button>
+            <button
+              id="btn-export-products"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <i class="fas fa-boxes text-xs text-gray-400"></i>
+              Export Products (CSV)
+              <i id="spin-products" class="fas fa-circle-notch fa-spin text-xs hidden" style="color:#194642;"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Save button -->
+      <div class="flex justify-end mt-6 pt-5 border-t border-gray-100">
+        <button
+          data-save="system"
+          class="save-btn inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90"
+          style="background-color:#194642;"
+        >
+          <i class="fas fa-save text-xs"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+  </div>
+</AdminLayout>
+
+<script>
+  // ─── Toast ───────────────────────────────────────────────────────────────────
+
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const container = document.getElementById('toast-container')!;
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? '#194642' : '#dc2626';
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg';
+    toast.style.cssText = `background-color:${bg}; min-width:260px;`;
+    toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.4s';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
+  // ─── Tab system ──────────────────────────────────────────────────────────────
+
+  const BRAND = '#194642';
+  const BRAND_LIGHT = '#e8f0ef';
+
+  function activateTab(tabId: string) {
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      const b = btn as HTMLButtonElement;
+      const isActive = b.dataset.tab === tabId;
+      if (isActive) {
+        b.style.borderColor = BRAND;
+        b.style.color = BRAND;
+        b.style.backgroundColor = BRAND_LIGHT;
+      } else {
+        b.style.borderColor = 'transparent';
+        b.style.color = '#6b7280';
+        b.style.backgroundColor = '';
+      }
+    });
+    document.querySelectorAll('.tab-panel').forEach((p) => {
+      (p as HTMLElement).classList.add('hidden');
+    });
+    const panel = document.getElementById(`tab-${tabId}`);
+    if (panel) panel.classList.remove('hidden');
+  }
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tabId = (btn as HTMLButtonElement).dataset.tab;
+      if (tabId) activateTab(tabId);
+    });
+  });
+
+  // ─── Settings state ──────────────────────────────────────────────────────────
+
+  let settings: Record<string, string> = {};
+
+  // Map of settings keys to their DOM element IDs (prefixed with "s-")
+  const SETTING_KEYS = [
+    // Company
+    'company_name', 'company_tagline', 'company_description',
+    'company_email', 'company_phone', 'company_whatsapp',
+    'company_address', 'company_city', 'company_country',
+    'company_website', 'company_logo_url',
+    'social_facebook', 'social_linkedin', 'social_instagram', 'social_twitter',
+    // Financial
+    'currency', 'tax_rate', 'invoice_prefix', 'order_prefix',
+    'payment_terms',
+    'bank_name', 'bank_account_name', 'bank_account_number', 'bank_iban_swift',
+    // Notifications
+    'admin_notification_email', 'low_stock_threshold',
+    'notify_new_order', 'notify_new_customer', 'notify_low_stock', 'notify_order_status',
+    // System
+    'maintenance_mode', 'admin_panel_title', 'date_format', 'timezone',
+  ];
+
+  const CHECKBOX_KEYS = new Set([
+    'notify_new_order', 'notify_new_customer', 'notify_low_stock', 'notify_order_status',
+    'maintenance_mode',
+  ]);
+
+  // ─── Load settings ───────────────────────────────────────────────────────────
+
+  async function loadSettings() {
+    try {
+      const res = await fetch('/api/admin/settings');
+      if (!res.ok) throw new Error('Failed to load settings');
+      const data = await res.json();
+      settings = data.settings ?? {};
+      populateForm();
+    } catch (e: any) {
+      showToast(e.message ?? 'Could not load settings', 'error');
+    } finally {
+      document.getElementById('settings-loading')!.classList.add('hidden');
+      activateTab('company');
+    }
+  }
+
+  function populateForm() {
+    for (const key of SETTING_KEYS) {
+      const el = document.getElementById(`s-${key}`);
+      if (!el) continue;
+      const value = settings[key] ?? '';
+      if (CHECKBOX_KEYS.has(key)) {
+        (el as HTMLInputElement).checked = value === 'true';
+      } else if (el.tagName === 'SELECT') {
+        (el as HTMLSelectElement).value = value;
+      } else {
+        (el as HTMLInputElement).value = value;
+      }
+    }
+  }
+
+  // ─── Save settings ───────────────────────────────────────────────────────────
+
+  function collectTab(tabId: string): Record<string, string> {
+    const tabKeys: Record<string, string[]> = {
+      company: [
+        'company_name', 'company_tagline', 'company_description',
+        'company_email', 'company_phone', 'company_whatsapp',
+        'company_address', 'company_city', 'company_country',
+        'company_website', 'company_logo_url',
+        'social_facebook', 'social_linkedin', 'social_instagram', 'social_twitter',
+      ],
+      financial: [
+        'currency', 'tax_rate', 'invoice_prefix', 'order_prefix',
+        'payment_terms',
+        'bank_name', 'bank_account_name', 'bank_account_number', 'bank_iban_swift',
+      ],
+      notifications: [
+        'admin_notification_email', 'low_stock_threshold',
+        'notify_new_order', 'notify_new_customer', 'notify_low_stock', 'notify_order_status',
+      ],
+      system: [
+        'maintenance_mode', 'admin_panel_title', 'date_format', 'timezone',
+      ],
+    };
+
+    const result: Record<string, string> = {};
+    for (const key of (tabKeys[tabId] ?? [])) {
+      const el = document.getElementById(`s-${key}`);
+      if (!el) continue;
+      if (CHECKBOX_KEYS.has(key)) {
+        result[key] = (el as HTMLInputElement).checked ? 'true' : 'false';
+      } else if (el.tagName === 'SELECT') {
+        result[key] = (el as HTMLSelectElement).value;
+      } else {
+        result[key] = (el as HTMLInputElement).value.trim();
+      }
+    }
+    return result;
+  }
+
+  async function saveTab(tabId: string, btn: HTMLButtonElement) {
+    const payload = collectTab(tabId);
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> Saving…';
+
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? 'Save failed');
+      }
+      const data = await res.json();
+      settings = data.settings ?? settings;
+      showToast('Settings saved successfully');
+    } catch (e: any) {
+      showToast(e.message ?? 'Failed to save settings', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }
+  }
+
+  document.querySelectorAll('.save-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const b = btn as HTMLButtonElement;
+      const tabId = b.dataset.save;
+      if (tabId) saveTab(tabId, b);
+    });
+  });
+
+  // ─── Export helpers ──────────────────────────────────────────────────────────
+
+  function downloadCSV(filename: string, rows: string[][]) {
+    const csv = rows.map(row =>
+      row.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')
+    ).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function exportEntity(
+    entity: 'customers' | 'orders' | 'products',
+    btnId: string,
+    spinId: string
+  ) {
+    const btn = document.getElementById(btnId) as HTMLButtonElement;
+    const spin = document.getElementById(spinId)!;
+    btn.disabled = true;
+    spin.classList.remove('hidden');
+
+    try {
+      let url = '';
+      if (entity === 'customers') url = '/api/admin/customers?limit=10000';
+      else if (entity === 'orders')   url = '/api/admin/orders?limit=10000';
+      else if (entity === 'products') url = '/api/admin/products?limit=10000';
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch ${entity}`);
+      const data = await res.json();
+
+      const items: any[] = data[entity] ?? data.data ?? [];
+
+      if (!items.length) {
+        showToast(`No ${entity} found to export`, 'error');
+        return;
+      }
+
+      const headers = Object.keys(items[0]);
+      const rows = [headers, ...items.map(item => headers.map(h => item[h] ?? ''))];
+      const today = new Date().toISOString().slice(0, 10);
+      downloadCSV(`arbre-bio-${entity}-${today}.csv`, rows);
+      showToast(`${entity.charAt(0).toUpperCase() + entity.slice(1)} exported successfully`);
+    } catch (e: any) {
+      showToast(e.message ?? `Export failed`, 'error');
+    } finally {
+      btn.disabled = false;
+      spin.classList.add('hidden');
+    }
+  }
+
+  document.getElementById('btn-export-customers')!.addEventListener('click', () => {
+    exportEntity('customers', 'btn-export-customers', 'spin-customers');
+  });
+  document.getElementById('btn-export-orders')!.addEventListener('click', () => {
+    exportEntity('orders', 'btn-export-orders', 'spin-orders');
+  });
+  document.getElementById('btn-export-products')!.addEventListener('click', () => {
+    exportEntity('products', 'btn-export-products', 'spin-products');
+  });
+
+  // ─── Maintenance mode visual feedback ────────────────────────────────────────
+
+  const maintenanceToggle = document.getElementById('s-maintenance_mode') as HTMLInputElement;
+  const maintenanceCard = document.getElementById('maintenance-card')!;
+
+  maintenanceToggle.addEventListener('change', () => {
+    if (maintenanceToggle.checked) {
+      maintenanceCard.style.borderColor = '#f97316';
+      maintenanceCard.style.backgroundColor = '#fff7ed';
+    } else {
+      maintenanceCard.style.borderColor = '#fcd34d';
+      maintenanceCard.style.backgroundColor = '#fffbeb';
+    }
+  });
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  loadSettings();
+</script>

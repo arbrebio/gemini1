@@ -1,0 +1,376 @@
+---
+import AdminLayout from "../../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Job Postings">
+  <div class="mb-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/admin/careers" class="text-gray-400 hover:text-[#194642] transition-colors" title="Back">
+        <i class="fas fa-arrow-left text-lg"></i>
+      </a>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Job Postings</h1>
+        <p class="text-gray-500 text-sm mt-0.5">Manage open positions</p>
+      </div>
+    </div>
+    <button id="btn-new" class="bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-2">
+      <i class="fas fa-plus"></i> New Job
+    </button>
+  </div>
+
+  <!-- Job list -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="jobs-table">
+      <div class="flex justify-center py-16 text-gray-400">
+        <div class="animate-spin w-8 h-8 border-4 border-[#194642] border-t-transparent rounded-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="job-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+        <h2 id="modal-title" class="font-bold text-lg text-gray-800">New Job Posting</h2>
+        <button id="modal-close" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="job-form" class="p-6 space-y-5">
+        <input type="hidden" id="form-id" />
+
+        <!-- Job Meta -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Location *</label>
+            <input id="f-location" type="text" required value="Côte d'Ivoire"
+              class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Type *</label>
+            <select id="f-type" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm">
+              <option value="full_time">Full Time</option>
+              <option value="part_time">Part Time</option>
+              <option value="contract">Contract</option>
+              <option value="internship">Internship</option>
+              <option value="volunteer">Volunteer</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Status</label>
+            <select id="f-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="closed">Closed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Department</label>
+            <input id="f-dept" type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Positions</label>
+            <input id="f-positions" type="number" min="1" value="1"
+              class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Deadline</label>
+            <input id="f-deadline" type="date" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Salary Range</label>
+          <input id="f-salary" type="text" placeholder="e.g. 300,000 – 500,000 XOF"
+            class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-dashed border-gray-200 pt-4">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-sm font-bold text-gray-700">Job Content</p>
+            <!-- Language Selector -->
+            <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+              {['en','fr','es','af'].map(l => (
+                <button type="button" data-lang={l}
+                  class={`lang-tab px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${l === 'en' ? 'bg-[#194642] text-white shadow' : 'text-gray-500 hover:text-gray-700'}`}>
+                  {l === 'en' ? '🇬🇧 EN' : l === 'fr' ? '🇫🇷 FR' : l === 'es' ? '🇪🇸 ES' : '🇿🇦 AF'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Per-language panels -->
+          {['en','fr','es','af'].map(l => (
+            <div id={`lang-panel-${l}`} class={`lang-panel space-y-4 ${l !== 'en' ? 'hidden' : ''}`}>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                  Job Title ({l.toUpperCase()}) {l === 'en' || l === 'fr' ? '*' : ''}
+                </label>
+                <input id={`f-title-${l}`} type="text" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Description</label>
+                  <label class="flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border border-[#194642]/20">
+                    <i class="fas fa-upload text-xs"></i> Upload HTML / PDF
+                    <input type="file" id={`f-desc-file-${l}`} accept=".html,.htm,.pdf" class="hidden" />
+                  </label>
+                </div>
+                <div id={`f-desc-file-info-${l}`} class="hidden text-xs text-green-600 mb-2 flex items-center gap-1">
+                  <i class="fas fa-check-circle"></i> <span></span>
+                </div>
+                <textarea id={`f-desc-${l}`} rows="5"
+                  placeholder="Paste HTML content here, or upload a file above…"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] font-mono text-xs resize-none"></textarea>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Requirements</label>
+                  <label class="flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border border-[#194642]/20">
+                    <i class="fas fa-upload text-xs"></i> Upload HTML / PDF
+                    <input type="file" id={`f-req-file-${l}`} accept=".html,.htm,.pdf" class="hidden" />
+                  </label>
+                </div>
+                <div id={`f-req-file-info-${l}`} class="hidden text-xs text-green-600 mb-2 flex items-center gap-1">
+                  <i class="fas fa-check-circle"></i> <span></span>
+                </div>
+                <textarea id={`f-req-${l}`} rows="4"
+                  placeholder="Paste HTML content here, or upload a file above…"
+                  class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] font-mono text-xs resize-none"></textarea>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div id="form-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" id="modal-cancel" class="px-5 py-2.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 font-medium text-sm">Cancel</button>
+          <button type="submit" class="bg-[#194642] text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
+            <i class="fas fa-save mr-1.5"></i> Save Job
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const statusColors: Record<string, string> = {
+    draft: 'bg-gray-100 text-gray-600',
+    published: 'bg-green-100 text-green-700',
+    closed: 'bg-orange-100 text-orange-700',
+    archived: 'bg-red-100 text-red-700',
+  };
+
+  const langs = ['en', 'fr', 'es', 'af'];
+  let jobs: any[] = [];
+
+  // ── Language tabs ──────────────────────────────────────────────
+  document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = (btn as HTMLElement).dataset.lang!;
+      document.querySelectorAll('.lang-tab').forEach(b => {
+        b.classList.remove('bg-[#194642]', 'text-white', 'shadow');
+        b.classList.add('text-gray-500');
+      });
+      btn.classList.add('bg-[#194642]', 'text-white', 'shadow');
+      btn.classList.remove('text-gray-500');
+      document.querySelectorAll('.lang-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`lang-panel-${lang}`)!.classList.remove('hidden');
+    });
+  });
+
+  // ── File upload (HTML → textarea, PDF → filename shown) ────────
+  langs.forEach(lang => {
+    ['desc', 'req'].forEach(field => {
+      const fileInput = document.getElementById(`f-${field}-file-${lang}`) as HTMLInputElement;
+      const infoEl = document.getElementById(`f-${field}-file-info-${lang}`)!;
+      const textarea = document.getElementById(`f-${field}-${lang}`) as HTMLTextAreaElement;
+
+      fileInput?.addEventListener('change', () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        const span = infoEl.querySelector('span')!;
+        span.textContent = file.name;
+        infoEl.classList.remove('hidden');
+
+        if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+          const reader = new FileReader();
+          reader.onload = e => { textarea.value = e.target?.result as string || ''; };
+          reader.readAsText(file);
+        } else if (file.name.endsWith('.pdf')) {
+          // PDF: store as placeholder so admin knows it was uploaded
+          textarea.value = `<!-- PDF uploaded: ${file.name} -->`;
+          // PDF files are uploaded separately via a hidden field handled in submit
+        }
+      });
+    });
+  });
+
+  // ── Load jobs ──────────────────────────────────────────────────
+  async function loadJobs() {
+    const res = await fetch('/api/admin/careers/jobs');
+    const data = await res.json();
+    jobs = data.jobs || [];
+    renderJobs();
+  }
+
+  function renderJobs() {
+    const container = document.getElementById('jobs-table')!;
+    if (!jobs.length) {
+      container.innerHTML = '<div class="px-6 py-16 text-center text-gray-400 text-sm">No jobs yet. Create your first posting.</div>';
+      return;
+    }
+    container.innerHTML = `
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+          <tr>
+            <th class="px-6 py-3 text-left">Job Title</th>
+            <th class="px-6 py-3 text-left">Type</th>
+            <th class="px-6 py-3 text-left">Location</th>
+            <th class="px-6 py-3 text-left">Status</th>
+            <th class="px-6 py-3 text-left">Positions</th>
+            <th class="px-6 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          ${jobs.map(j => `
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <p class="font-medium text-gray-800">${j.title_en || j.title_fr || '—'}</p>
+                <p class="text-xs text-gray-400">${[j.title_fr, j.title_es, j.title_af].filter(Boolean).join(' · ')}</p>
+              </td>
+              <td class="px-6 py-4 text-gray-600 capitalize">${j.job_type.replace(/_/g,' ')}</td>
+              <td class="px-6 py-4 text-gray-600">${j.location}</td>
+              <td class="px-6 py-4">
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[j.status] || 'bg-gray-100 text-gray-600'}">${j.status}</span>
+              </td>
+              <td class="px-6 py-4 text-gray-600">${j.positions}</td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <button onclick="editJob('${j.id}')" class="text-[#194642] hover:underline text-xs font-medium">Edit</button>
+                  <button onclick="deleteJob('${j.id}','${(j.title_en||j.title_fr||'').replace(/'/g,"\\'")}') " class="text-red-500 hover:underline text-xs font-medium">Delete</button>
+                  <a href="/careers/${j.slug}" target="_blank" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ── Open / close modal ─────────────────────────────────────────
+  function resetLangTabs() {
+    document.querySelectorAll('.lang-tab').forEach((b, i) => {
+      b.classList.toggle('bg-[#194642]', i === 0);
+      b.classList.toggle('text-white', i === 0);
+      b.classList.toggle('shadow', i === 0);
+      b.classList.toggle('text-gray-500', i !== 0);
+    });
+    document.querySelectorAll('.lang-panel').forEach((p, i) => {
+      p.classList.toggle('hidden', i !== 0);
+    });
+  }
+
+  function openModal(job?: any) {
+    document.getElementById('modal-title')!.textContent = job ? 'Edit Job' : 'New Job Posting';
+    (document.getElementById('form-id') as HTMLInputElement).value = job?.id || '';
+    (document.getElementById('f-location') as HTMLInputElement).value = job?.location || "Côte d'Ivoire";
+    (document.getElementById('f-type') as HTMLSelectElement).value = job?.job_type || 'full_time';
+    (document.getElementById('f-status') as HTMLSelectElement).value = job?.status || 'draft';
+    (document.getElementById('f-dept') as HTMLInputElement).value = job?.department || '';
+    (document.getElementById('f-positions') as HTMLInputElement).value = String(job?.positions ?? 1);
+    (document.getElementById('f-deadline') as HTMLInputElement).value = job?.deadline || '';
+    (document.getElementById('f-salary') as HTMLInputElement).value = job?.salary_range || '';
+    langs.forEach(l => {
+      (document.getElementById(`f-title-${l}`) as HTMLInputElement).value = job?.[`title_${l}`] || '';
+      (document.getElementById(`f-desc-${l}`) as HTMLTextAreaElement).value = job?.[`description_${l}`] || '';
+      (document.getElementById(`f-req-${l}`) as HTMLTextAreaElement).value = job?.[`requirements_${l}`] || '';
+      document.getElementById(`f-desc-file-info-${l}`)!.classList.add('hidden');
+      document.getElementById(`f-req-file-info-${l}`)!.classList.add('hidden');
+    });
+    document.getElementById('form-error')!.classList.add('hidden');
+    resetLangTabs();
+    document.getElementById('job-modal')!.classList.remove('hidden');
+  }
+
+  function closeModal() { document.getElementById('job-modal')!.classList.add('hidden'); }
+
+  (window as any).editJob = async (id: string) => {
+    const res = await fetch(`/api/admin/careers/jobs?id=${id}`);
+    const data = await res.json();
+    openModal(data.job);
+  };
+
+  (window as any).deleteJob = async (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    await fetch('/api/admin/careers/jobs', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    await loadJobs();
+  };
+
+  document.getElementById('btn-new')!.addEventListener('click', () => openModal());
+  document.getElementById('modal-close')!.addEventListener('click', closeModal);
+  document.getElementById('modal-cancel')!.addEventListener('click', closeModal);
+
+  // ── Submit ─────────────────────────────────────────────────────
+  document.getElementById('job-form')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = (document.getElementById('form-id') as HTMLInputElement).value;
+    const errDiv = document.getElementById('form-error')!;
+    errDiv.classList.add('hidden');
+
+    const payload: any = {
+      location: (document.getElementById('f-location') as HTMLInputElement).value.trim(),
+      job_type: (document.getElementById('f-type') as HTMLSelectElement).value,
+      status: (document.getElementById('f-status') as HTMLSelectElement).value,
+      department: (document.getElementById('f-dept') as HTMLInputElement).value.trim() || null,
+      positions: parseInt((document.getElementById('f-positions') as HTMLInputElement).value) || 1,
+      deadline: (document.getElementById('f-deadline') as HTMLInputElement).value || null,
+      salary_range: (document.getElementById('f-salary') as HTMLInputElement).value.trim() || null,
+    };
+
+    langs.forEach(l => {
+      const title = (document.getElementById(`f-title-${l}`) as HTMLInputElement).value.trim();
+      const desc = (document.getElementById(`f-desc-${l}`) as HTMLTextAreaElement).value.trim();
+      const req = (document.getElementById(`f-req-${l}`) as HTMLTextAreaElement).value.trim();
+      if (title) payload[`title_${l}`] = title;
+      if (desc) payload[`description_${l}`] = desc;
+      if (req) payload[`requirements_${l}`] = req;
+    });
+
+    // Require at least EN or FR title + description
+    if (!payload.title_en && !payload.title_fr) {
+      errDiv.textContent = 'Please fill in the job title in at least English or French.';
+      errDiv.classList.remove('hidden');
+      return;
+    }
+    if (!payload.description_en && !payload.description_fr) {
+      errDiv.textContent = 'Please provide a description in at least English or French.';
+      errDiv.classList.remove('hidden');
+      return;
+    }
+
+    if (id) payload.id = id;
+
+    const res = await fetch('/api/admin/careers/jobs', {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      errDiv.textContent = data.error || 'Save failed.';
+      errDiv.classList.remove('hidden');
+      return;
+    }
+    closeModal();
+    await loadJobs();
+  });
+
+  loadJobs();
+</script>

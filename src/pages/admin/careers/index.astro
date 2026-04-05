@@ -1,0 +1,138 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Careers">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Careers Management</h1>
+      <p class="text-gray-500 text-sm mt-1">Manage job postings, applications, and employees</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Active Jobs</p>
+      <p id="stat-jobs" class="text-3xl font-bold text-[#194642]">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Total Applications</p>
+      <p id="stat-apps" class="text-3xl font-bold text-blue-600">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Pending Review</p>
+      <p id="stat-pending" class="text-3xl font-bold text-yellow-500">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Employees</p>
+      <p id="stat-employees" class="text-3xl font-bold text-green-600">—</p>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <a href="/admin/careers/jobs" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+      <div class="flex items-center gap-4">
+        <div class="bg-[#194642]/10 rounded-xl p-3">
+          <i class="fas fa-briefcase text-[#194642] text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800 group-hover:text-[#194642] transition-colors">Job Postings</h3>
+          <p class="text-sm text-gray-500">Create and manage job listings</p>
+        </div>
+      </div>
+    </a>
+    <a href="/admin/careers/applications" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+      <div class="flex items-center gap-4">
+        <div class="bg-blue-50 rounded-xl p-3">
+          <i class="fas fa-file-alt text-blue-600 text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">Applications</h3>
+          <p class="text-sm text-gray-500">Review and process applicants</p>
+        </div>
+      </div>
+    </a>
+    <a href="/admin/careers/employees" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+      <div class="flex items-center gap-4">
+        <div class="bg-green-50 rounded-xl p-3">
+          <i class="fas fa-id-card text-green-600 text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800 group-hover:text-green-600 transition-colors">Employees</h3>
+          <p class="text-sm text-gray-500">Manage employee records & IDs</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Recent Applications -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-bold text-gray-800">Recent Applications</h2>
+      <a href="/admin/careers/applications" class="text-sm text-[#194642] hover:underline">View all</a>
+    </div>
+    <div id="recent-apps" class="divide-y divide-gray-50">
+      <div class="px-6 py-8 text-center text-gray-400 text-sm">Loading...</div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const statusColors: Record<string, string> = {
+    submitted: 'bg-blue-100 text-blue-700',
+    under_review: 'bg-yellow-100 text-yellow-700',
+    interview_scheduled: 'bg-purple-100 text-purple-700',
+    interview_done: 'bg-indigo-100 text-indigo-700',
+    offer_sent: 'bg-orange-100 text-orange-700',
+    hired: 'bg-green-100 text-green-700',
+    rejected: 'bg-red-100 text-red-700',
+    withdrawn: 'bg-gray-100 text-gray-700',
+  };
+
+  async function loadDashboard() {
+    try {
+      const [jobsRes, appsRes, empsRes] = await Promise.all([
+        fetch('/api/admin/careers/jobs'),
+        fetch('/api/admin/careers/applications'),
+        fetch('/api/admin/careers/employees'),
+      ]);
+      const [jobsData, appsData, empsData] = await Promise.all([
+        jobsRes.json(), appsRes.json(), empsRes.json()
+      ]);
+
+      const jobs = jobsData.jobs || [];
+      const apps = appsData.applications || [];
+      const emps = empsData.employees || [];
+
+      document.getElementById('stat-jobs')!.textContent = String(jobs.filter((j: any) => j.status === 'published').length);
+      document.getElementById('stat-apps')!.textContent = String(apps.length);
+      document.getElementById('stat-pending')!.textContent = String(apps.filter((a: any) => a.status === 'submitted').length);
+      document.getElementById('stat-employees')!.textContent = String(emps.length);
+
+      const recent = apps.slice(0, 8);
+      const container = document.getElementById('recent-apps')!;
+      if (!recent.length) {
+        container.innerHTML = '<div class="px-6 py-8 text-center text-gray-400 text-sm">No applications yet.</div>';
+        return;
+      }
+      container.innerHTML = recent.map((a: any) => `
+        <a href="/admin/careers/applications?id=${a.id}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+          <div>
+            <p class="font-medium text-gray-800">${a.first_name} ${a.last_name}</p>
+            <p class="text-sm text-gray-500">${a.career_jobs?.title_en || 'Unknown job'} · ${a.email}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs px-2.5 py-1 rounded-full font-medium ${statusColors[a.status] || 'bg-gray-100 text-gray-600'}">${a.status.replace(/_/g,' ')}</span>
+            <span class="text-xs text-gray-400">${new Date(a.submitted_at).toLocaleDateString()}</span>
+          </div>
+        </a>
+      `).join('');
+    } catch (e) {
+      console.error('Dashboard load error:', e);
+    }
+  }
+
+  loadDashboard();
+</script>
