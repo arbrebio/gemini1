@@ -1,15 +1,9 @@
 ---
+export const prerender = false;
+
 import Layout from "../../../../layouts/Layout.astro";
-import { getAllLangPaths } from "../../../../lib/langPaths";
 import { useCareerT } from "../../../../lib/careerTranslations";
 import type { Language } from "../../../../lib/i18n";
-
-export async function getStaticPaths() {
-  const langPaths = getAllLangPaths();
-  return langPaths.flatMap(p => [
-    { params: { ...p.params, jobSlug: '_placeholder' } }
-  ]);
-}
 
 const { lang, jobSlug } = Astro.params as { lang: Language; jobSlug: string };
 const T = useCareerT(lang);

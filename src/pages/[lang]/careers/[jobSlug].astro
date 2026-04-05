@@ -1,19 +1,9 @@
 ---
+export const prerender = false;
+
 import Layout from "../../../layouts/Layout.astro";
-import { getAllLangPaths } from "../../../lib/langPaths";
 import { useCareerT } from "../../../lib/careerTranslations";
 import type { Language } from "../../../lib/i18n";
-
-// We can't pre-render dynamic job pages at build time without knowing slugs,
-// so this page fetches job data client-side using the slug from the URL.
-export async function getStaticPaths() {
-  // Return placeholder — actual data loaded client-side
-  const langPaths = getAllLangPaths();
-  // We need at least one slug to generate the page shell
-  return langPaths.flatMap(p => [
-    { params: { ...p.params, jobSlug: '_placeholder' } }
-  ]);
-}
 
 const { lang, jobSlug } = Astro.params as { lang: Language; jobSlug: string };
 const T = useCareerT(lang);
