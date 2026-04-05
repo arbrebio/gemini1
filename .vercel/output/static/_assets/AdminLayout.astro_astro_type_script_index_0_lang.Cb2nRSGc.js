@@ -1,1 +1,0 @@
-import{s}from"./supabase.CSCANfRW.js";import"./supabase.CRsWM5pW.js";import"./vendor.CtTI4i1a.js";(async()=>{const{data:{session:a}}=await s.auth.getSession();a||(window.location.href="/admin/login")})();

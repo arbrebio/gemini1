@@ -1,1 +1,0 @@
-import{s as t}from"./supabase.CSCANfRW.js";import"./supabase.CRsWM5pW.js";import"./vendor.CtTI4i1a.js";const n=document.getElementById("logout-btn");n&&n.addEventListener("click",async()=>{await t.auth.signOut(),window.location.href="/admin/login"});
