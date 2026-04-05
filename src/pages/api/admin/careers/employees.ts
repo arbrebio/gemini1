@@ -28,6 +28,7 @@ async function sendWorkerIdEmail(employee: {
   department?: string | null;
   start_date?: string | null;
   contract_type?: string | null;
+  contract_url?: string | null;
 }): Promise<void> {
   const resendKey = import.meta.env.RESEND_API_KEY;
   if (!resendKey) return;
@@ -35,6 +36,33 @@ async function sendWorkerIdEmail(employee: {
   const startFormatted = employee.start_date
     ? new Date(employee.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : '—';
+
+  const contractSection = employee.contract_url ? `
+      <!-- Contract download -->
+      <div style="background:#fff8e1;border:2px solid #f9c74f;border-radius:10px;padding:20px 24px;margin:0 0 24px">
+        <p style="color:#7c5a00;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px">
+          📄 Your Employment Contract
+        </p>
+        <p style="color:#555;font-size:13px;line-height:1.5;margin:0 0 14px">
+          Your signed employment contract is attached to your employee profile.
+          Please download and keep a copy for your records.
+        </p>
+        <a href="${employee.contract_url}"
+           style="display:inline-block;background:#194642;color:#ffffff;font-weight:700;font-size:14px;padding:12px 24px;border-radius:8px;text-decoration:none">
+          ⬇ Download My Contract
+        </a>
+      </div>` : '';
+
+  const portalNote = `
+      <!-- Portal access -->
+      <div style="background:#f0f9f0;border:1px solid #c6e8c6;border-radius:10px;padding:16px 20px;margin:0 0 24px">
+        <p style="color:#194642;font-size:13px;font-weight:700;margin:0 0 6px">📋 Access Your Applicant Portal</p>
+        <p style="color:#555;font-size:13px;margin:0 0 10px">
+          You can view your application status, Worker ID, and download your contract at any time through the portal.
+        </p>
+        <a href="${SITE_URL}/en/careers/portal"
+           style="color:#194642;font-size:13px;font-weight:600;text-decoration:underline">${SITE_URL}/en/careers/portal</a>
+      </div>`;
 
   const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -60,6 +88,8 @@ async function sendWorkerIdEmail(employee: {
         <p style="color:#194642;font-size:28px;font-weight:700;font-family:monospace;letter-spacing:3px;margin:0">${employee.worker_id}</p>
       </div>
 
+      ${contractSection}
+
       <!-- Details table -->
       <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 24px">
         <tr style="border-bottom:1px solid #f0f0f0">
@@ -79,6 +109,8 @@ async function sendWorkerIdEmail(employee: {
           <td style="padding:10px 0;color:#333;font-weight:600">${employee.contract_type || 'CDI'}</td>
         </tr>
       </table>
+
+      ${portalNote}
 
       <p style="color:#555;font-size:13px;line-height:1.6;margin:0 0 24px">
         If you have any questions, please contact our HR team at
