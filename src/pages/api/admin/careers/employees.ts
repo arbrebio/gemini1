@@ -50,19 +50,24 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Direct creation (no application_id)
     if (!application_id) {
-      if (!first_name || !last_name || !email) {
-        return new Response(JSON.stringify({ error: 'first_name, last_name and email are required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      if (!first_name || !last_name || !email || !birth_date) {
+        return new Response(JSON.stringify({ error: 'first_name, last_name, email and birth_date are required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
       }
       const { data: employee, error } = await supabase
         .from('career_employees')
         .insert({
           first_name, middle_name: middle_name || null, last_name, email,
-          phone: phone || null, birth_date: birth_date || null, nationality: nationality || null,
+          phone: phone || null, birth_date,
+          nationality: nationality || null,
+          address: (body.address) || null,
+          city: (body.city) || null,
+          country: (body.country) || 'Côte d\'Ivoire',
           job_title: job_title || '', department: department || '',
           start_date: start_date || new Date().toISOString().split('T')[0],
-          worker_id: workerId, portal_token: null,
+          contract_type: (body.contract_type) || 'CDI',
+          worker_id: workerId,
           contract_url: contract_url || null, photo_url: photo_url || null,
-          notes: notes || null, status: 'active',
+          status: 'active',
         })
         .select().single();
       if (error) throw error;
@@ -79,20 +84,19 @@ export const POST: APIRoute = async ({ request }) => {
       .insert({
         application_id,
         first_name: application.first_name,
-        middle_name: application.middle_name,
+        middle_name: application.middle_name || null,
         last_name: application.last_name,
         email: application.email,
-        phone: application.phone,
+        phone: application.phone || null,
         birth_date: application.birth_date,
-        nationality: application.nationality,
+        nationality: application.nationality || null,
         job_title: job_title || '',
         department: department || '',
         start_date: start_date || new Date().toISOString().split('T')[0],
+        contract_type: (body.contract_type) || 'CDI',
         worker_id: workerId,
-        portal_token: application.portal_token,
         contract_url: contract_url || null,
         photo_url: photo_url || null,
-        notes: notes || null,
         status: 'active',
       })
       .select().single();
