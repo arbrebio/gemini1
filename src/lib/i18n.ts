@@ -110,7 +110,8 @@ const translations: Record<Language, Record<string, any>> = {
       dripSystems: 'Drip Systems',
       sprinklers: 'Sprinklers',
       controllers: 'Controllers',
-      growingSolutions: 'Growing Solutions'
+      growingSolutions: 'Growing Solutions',
+      careers: 'Careers'
     },
     hero: {
       title: 'Transforming African Agriculture Through Precision Farming Solutions',
@@ -774,7 +775,8 @@ const translations: Record<Language, Record<string, any>> = {
       dripSystems: 'Systèmes Goutte-à-Goutte',
       sprinklers: 'Arroseurs',
       controllers: 'Contrôleurs',
-      growingSolutions: 'Solutions de Culture'
+      growingSolutions: 'Solutions de Culture',
+      careers: 'Carrières'
     },
     hero: {
       title: 'Transformer l\'Agriculture Africaine Grâce aux Solutions d\'Agriculture de Précision',
@@ -1277,7 +1279,8 @@ const translations: Record<Language, Record<string, any>> = {
       dripSystems: 'Sistemas de Goteo',
       sprinklers: 'Aspersores',
       controllers: 'Controladores',
-      growingSolutions: 'Soluciones de Cultivo'
+      growingSolutions: 'Soluciones de Cultivo',
+      careers: 'Carreras'
     },
     hero: {
       title: 'Transformando la Agricultura Africana a Través de Soluciones de Agricultura de Precisión',
@@ -1620,7 +1623,8 @@ const translations: Record<Language, Record<string, any>> = {
       dripSystems: 'Drup Stelsels',
       sprinklers: 'Sproeiers',
       controllers: 'Beheerders',
-      growingSolutions: 'Groei Oplossings'
+      growingSolutions: 'Groei Oplossings',
+      careers: 'Loopbane'
     },
     hero: {
       title: 'Transformeer Afrika se Landbou Deur Presisie Boerdery Oplossings',
