@@ -12,6 +12,7 @@
     "check": "astro check"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.82.0",
     "@astrojs/mdx": "^4.3.0",
     "@astrojs/sitemap": "^3.4.1",
     "@astrojs/tailwind": "^6.0.2",

@@ -42,6 +42,53 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           </div>
         </div>
 
+        <!-- ID Card upload + auto-scan -->
+        <div class="border-t border-dashed border-gray-200 pt-4">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">ID Card Scan <span class="text-[#194642] font-bold">(Auto-fill)</span></p>
+            <span class="text-xs text-gray-400 italic">Upload front to auto-detect personal info</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Front -->
+            <div>
+              <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Front Side</p>
+              <div id="id-front-preview" class="relative w-full h-32 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center overflow-hidden transition-all">
+                <i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i>
+                <span class="text-xs text-gray-400">No image</span>
+              </div>
+              <label class="mt-2 flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-[#194642]/20 w-fit">
+                <i class="fas fa-camera text-xs"></i> Upload Front
+                <input type="file" id="ne-id-front" accept="image/*" class="hidden" />
+              </label>
+              <div id="id-front-status" class="hidden text-xs mt-1.5 flex items-center gap-1.5"></div>
+            </div>
+            <!-- Back -->
+            <div>
+              <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Back Side</p>
+              <div id="id-back-preview" class="relative w-full h-32 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center overflow-hidden transition-all">
+                <i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i>
+                <span class="text-xs text-gray-400">No image</span>
+              </div>
+              <label class="mt-2 flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-2 rounded-lg transition-colors border border-[#194642]/20 w-fit">
+                <i class="fas fa-camera text-xs"></i> Upload Back
+                <input type="file" id="ne-id-back" accept="image/*" class="hidden" />
+              </label>
+              <div id="id-back-status" class="hidden text-xs mt-1.5 flex items-center gap-1.5"></div>
+            </div>
+          </div>
+          <!-- Scanned fields summary -->
+          <div id="id-scan-summary" class="hidden mt-3 bg-[#f0f9f0] border border-[#194642]/20 rounded-xl p-3">
+            <p class="text-xs font-bold text-[#194642] mb-2 flex items-center gap-1.5"><i class="fas fa-magic"></i> Fields auto-filled from ID card:</p>
+            <div id="id-scan-fields" class="flex flex-wrap gap-1.5 text-xs"></div>
+            <p class="text-xs text-gray-500 mt-2 italic">You can edit any field below. All data is editable.</p>
+          </div>
+          <!-- Hidden fields storing ID URLs -->
+          <input type="hidden" id="ne-id-front-url" />
+          <input type="hidden" id="ne-id-back-url" />
+          <input type="hidden" id="ne-id-number" />
+          <input type="hidden" id="ne-id-expiry" />
+        </div>
+
         <!-- Personal info -->
         <div class="border-t border-dashed border-gray-200 pt-4">
           <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Personal Information</p>
@@ -67,6 +114,14 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
             <div>
               <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Nationality</label>
               <input id="ne-nationality" type="text" placeholder="e.g. Ivoirian" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Gender</label>
+              <select id="ne-gender" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+                <option value="">— Select —</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
             </div>
             <div>
               <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Email *</label>
@@ -263,6 +318,139 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     el.className = `text-xs mt-1 ${colors[type] || 'text-gray-500'}`;
     el.textContent = msg;
   }
+
+  // ── ID Card scan ─────────────────────────────────────────────────
+  const AUTO_FILL_MAP: Record<string, string> = {
+    first_name: 'ne-fname',
+    middle_name: 'ne-mname',
+    last_name: 'ne-lname',
+    birth_date: 'ne-birthdate',
+    nationality: 'ne-nationality',
+    address: 'ne-address',
+    city: 'ne-city',
+    country: 'ne-country',
+  };
+
+  function setIdStatus(side: 'front' | 'back', msg: string, type: 'loading' | 'success' | 'error' | 'warn') {
+    const el = document.getElementById(`id-${side}-status`)!;
+    el.classList.remove('hidden');
+    const icons = { loading: 'fa-spinner fa-spin text-gray-500', success: 'fa-check-circle text-green-600', error: 'fa-times-circle text-red-500', warn: 'fa-exclamation-circle text-yellow-500' };
+    el.innerHTML = `<i class="fas ${icons[type]}"></i> <span class="${type === 'success' ? 'text-green-600' : type === 'error' ? 'text-red-500' : 'text-gray-600'}">${msg}</span>`;
+  }
+
+  async function handleIdUpload(side: 'front' | 'back', file: File) {
+    // Show image preview
+    const previewEl = document.getElementById(`id-${side}-preview`)!;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      previewEl.innerHTML = `<img src="${ev.target?.result}" class="w-full h-full object-cover" />`;
+    };
+    reader.readAsDataURL(file);
+
+    setIdStatus(side, 'Scanning ID card with AI...', 'loading');
+
+    const fd = new FormData();
+    fd.append('image', file);
+    fd.append('side', side);
+
+    try {
+      const res = await fetch('/api/admin/careers/scan-id', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setIdStatus(side, data.error || 'Scan failed — fill fields manually', 'error');
+        return;
+      }
+
+      // Store the image URL
+      if (data.image_url) {
+        (document.getElementById(side === 'front' ? 'ne-id-front-url' : 'ne-id-back-url') as HTMLInputElement).value = data.image_url;
+      }
+
+      const fields = data.fields || {};
+      const filled: string[] = [];
+
+      if (side === 'front') {
+        // Auto-fill text inputs
+        for (const [field, inputId] of Object.entries(AUTO_FILL_MAP)) {
+          if (fields[field]) {
+            const el = document.getElementById(inputId) as HTMLInputElement;
+            if (el && !el.value) {
+              el.value = fields[field];
+              el.classList.add('ring-2', 'ring-[#4ade80]', 'border-[#4ade80]');
+              setTimeout(() => el.classList.remove('ring-2', 'ring-[#4ade80]', 'border-[#4ade80]'), 3000);
+              filled.push(field.replace(/_/g, ' '));
+            }
+          }
+        }
+
+        // Gender select
+        if (fields.gender) {
+          const genderEl = document.getElementById('ne-gender') as HTMLSelectElement;
+          if (genderEl && !genderEl.value) {
+            genderEl.value = fields.gender;
+            filled.push('gender');
+          }
+        }
+
+        // ID number + expiry
+        if (fields.id_number) {
+          (document.getElementById('ne-id-number') as HTMLInputElement).value = fields.id_number;
+          filled.push('ID number');
+        }
+        if (fields.id_card_expiry) {
+          (document.getElementById('ne-id-expiry') as HTMLInputElement).value = fields.id_card_expiry;
+          filled.push('ID expiry');
+        }
+      } else {
+        // Back side: fill address/city if still empty, update ID number/expiry if found
+        if (fields.address && !(document.getElementById('ne-address') as HTMLInputElement).value) {
+          (document.getElementById('ne-address') as HTMLInputElement).value = fields.address;
+          filled.push('address');
+        }
+        if (fields.city && !(document.getElementById('ne-city') as HTMLInputElement).value) {
+          (document.getElementById('ne-city') as HTMLInputElement).value = fields.city;
+          filled.push('city');
+        }
+        if (fields.id_number && !(document.getElementById('ne-id-number') as HTMLInputElement).value) {
+          (document.getElementById('ne-id-number') as HTMLInputElement).value = fields.id_number;
+          filled.push('ID number');
+        }
+        if (fields.id_card_expiry && !(document.getElementById('ne-id-expiry') as HTMLInputElement).value) {
+          (document.getElementById('ne-id-expiry') as HTMLInputElement).value = fields.id_card_expiry;
+          filled.push('ID expiry');
+        }
+      }
+
+      if (filled.length > 0) {
+        setIdStatus(side, `Filled: ${filled.join(', ')}`, 'success');
+        // Show summary panel
+        const summaryEl = document.getElementById('id-scan-summary')!;
+        const fieldsEl = document.getElementById('id-scan-fields')!;
+        summaryEl.classList.remove('hidden');
+        filled.forEach(f => {
+          const badge = document.createElement('span');
+          badge.className = 'bg-[#194642] text-white px-2 py-0.5 rounded-full capitalize';
+          badge.textContent = f;
+          fieldsEl.appendChild(badge);
+        });
+      } else {
+        setIdStatus(side, 'Scanned — no new fields detected', 'warn');
+      }
+
+    } catch {
+      setIdStatus(side, 'Scan error — fill fields manually', 'error');
+    }
+  }
+
+  document.getElementById('ne-id-front')!.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) handleIdUpload('front', file);
+  });
+  document.getElementById('ne-id-back')!.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) handleIdUpload('back', file);
+  });
 
   // ── Load & render employees ───────────────────────────────────────
   async function loadEmployees() {
@@ -495,6 +683,13 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     document.getElementById('photo-upload-status').classList.add('hidden');
     document.getElementById('photo-preview').innerHTML = '<i class="fas fa-user text-gray-300 text-2xl"></i>';
     uploadedPhotoUrl = null;
+    // Reset ID card section
+    document.getElementById('id-front-preview').innerHTML = '<i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i><span class="text-xs text-gray-400">No image</span>';
+    document.getElementById('id-back-preview').innerHTML = '<i class="fas fa-id-card text-gray-300 text-3xl mb-1"></i><span class="text-xs text-gray-400">No image</span>';
+    document.getElementById('id-front-status').classList.add('hidden');
+    document.getElementById('id-back-status').classList.add('hidden');
+    document.getElementById('id-scan-summary').classList.add('hidden');
+    document.getElementById('id-scan-fields').innerHTML = '';
     document.getElementById('add-emp-modal').classList.remove('hidden');
   }
 
@@ -521,14 +716,19 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       email: document.getElementById('ne-email').value.trim(),
       phone: document.getElementById('ne-phone').value.trim() || null,
       nationality: document.getElementById('ne-nationality').value.trim() || null,
+      gender: (document.getElementById('ne-gender') as HTMLSelectElement).value || null,
       address: document.getElementById('ne-address').value.trim() || null,
       city: document.getElementById('ne-city').value.trim() || null,
       country: document.getElementById('ne-country').value.trim() || "Côte d'Ivoire",
       job_title: document.getElementById('ne-title').value.trim(),
       department: document.getElementById('ne-dept').value.trim() || null,
       start_date: document.getElementById('ne-start').value || null,
-      contract_type: document.getElementById('ne-contract-type').value,
+      contract_type: (document.getElementById('ne-contract-type') as HTMLSelectElement).value,
       photo_url: uploadedPhotoUrl || null,
+      id_card_front_url: (document.getElementById('ne-id-front-url') as HTMLInputElement).value || null,
+      id_card_back_url: (document.getElementById('ne-id-back-url') as HTMLInputElement).value || null,
+      id_number: (document.getElementById('ne-id-number') as HTMLInputElement).value || null,
+      id_card_expiry: (document.getElementById('ne-id-expiry') as HTMLInputElement).value || null,
     };
 
     const res = await fetch('/api/admin/careers/employees', {

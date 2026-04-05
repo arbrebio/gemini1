@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const supabase = getSupabase();
     const body = await request.json();
-    const { application_id, job_title, department, start_date, contract_url, photo_url, notes,
+    const { application_id, job_title, department, start_date, contract_url, photo_url,
             first_name, last_name, middle_name, email, phone, birth_date, nationality } = body;
 
     const workerId = generateWorkerId();
@@ -66,7 +66,13 @@ export const POST: APIRoute = async ({ request }) => {
           start_date: start_date || new Date().toISOString().split('T')[0],
           contract_type: (body.contract_type) || 'CDI',
           worker_id: workerId,
-          contract_url: contract_url || null, photo_url: photo_url || null,
+          contract_url: contract_url || null,
+          photo_url: photo_url || null,
+          id_card_front_url: (body.id_card_front_url) || null,
+          id_card_back_url: (body.id_card_back_url) || null,
+          id_number: (body.id_number) || null,
+          id_card_expiry: (body.id_card_expiry) || null,
+          gender: (body.gender) || null,
           status: 'active',
         })
         .select().single();
