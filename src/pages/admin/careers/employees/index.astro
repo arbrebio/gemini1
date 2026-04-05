@@ -463,9 +463,22 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
   // ── Load & render employees ───────────────────────────────────────
   async function loadEmployees() {
-    const res = await fetch('/api/admin/careers/employees');
-    const data = await res.json();
-    renderEmployees(data.employees || []);
+    const grid = document.getElementById('employees-grid');
+    try {
+      const res = await fetch('/api/admin/careers/employees');
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        grid.innerHTML = `<div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-6 text-center text-red-700 text-sm">
+          <i class="fas fa-exclamation-triangle mr-2"></i>Failed to load employees: ${data.error || res.statusText}
+        </div>`;
+        return;
+      }
+      renderEmployees(data.employees || []);
+    } catch (err) {
+      grid.innerHTML = `<div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-6 text-center text-red-700 text-sm">
+        <i class="fas fa-exclamation-triangle mr-2"></i>Network error loading employees.
+      </div>`;
+    }
   }
 
   function renderEmployees(employees) {

@@ -30,7 +30,7 @@ export const GET: APIRoute = async ({ url }) => {
     }
 
     const { data: employees, error } = await supabase
-      .from('career_employees').select('*').order('created_at', { ascending: false });
+      .from('career_employees').select('*').order('hired_at', { ascending: false });
     if (error) throw error;
     return new Response(JSON.stringify({ employees: employees || [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
