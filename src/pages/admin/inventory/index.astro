@@ -491,6 +491,24 @@ export const prerender = false;
     setTimeout(() => el.remove(), 4000);
   }
 
+  function showConfirm(message: string): Promise<boolean> {
+    return new Promise(resolve => {
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-[300] bg-black/50 flex items-center justify-center p-4';
+      overlay.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+          <p class="text-gray-800 text-sm mb-5">${message}</p>
+          <div class="flex gap-3 justify-end">
+            <button id="_conf-cancel" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+            <button id="_conf-ok" class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors" style="background-color:#dc2626;">Delete</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#_conf-cancel')!.addEventListener('click', () => { overlay.remove(); resolve(false); });
+      overlay.querySelector('#_conf-ok')!.addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+  }
+
   function fmt(n: number) {
     return new Intl.NumberFormat('fr-FR').format(n);
   }
@@ -873,7 +891,7 @@ export const prerender = false;
     if (btn.classList.contains('btn-delete-product')) {
       const id   = btn.dataset.id!;
       const name = btn.dataset.name!;
-      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+      if (!await showConfirm(`Delete "${name}"? This cannot be undone.`)) return;
       try {
         await apiFetch('/api/admin/products', {
           method: 'DELETE',
@@ -1030,7 +1048,7 @@ export const prerender = false;
     if (btn.classList.contains('btn-delete-category')) {
       const id   = btn.dataset.id!;
       const name = btn.dataset.name!;
-      if (!confirm(`Delete category "${name}"? Products in this category will be uncategorised.`)) return;
+      if (!await showConfirm(`Delete category "${name}"? Products in this category will be uncategorised.`)) return;
       try {
         await apiFetch('/api/admin/products', {
           method: 'DELETE',

@@ -276,6 +276,44 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 <script>
   // @ts-nocheck
+
+  // ── Utilities ──────────────────────────────────────────────────
+  function showToast(message, type = 'success') {
+    let container = document.getElementById('_toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = '_toast-container';
+      container.className = 'fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none';
+      document.body.appendChild(container);
+    }
+    const bg = type === 'error' ? '#dc2626' : '#194642';
+    const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+    const toast = document.createElement('div');
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg';
+    toast.style.cssText = `background-color:${bg}; min-width:260px;`;
+    toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.4s'; setTimeout(() => toast.remove(), 400); }, 3500);
+  }
+
+  function showConfirm(message) {
+    return new Promise(resolve => {
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-[300] bg-black/50 flex items-center justify-center p-4';
+      overlay.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+          <p class="text-gray-800 text-sm mb-5">${message}</p>
+          <div class="flex gap-3 justify-end">
+            <button id="_conf-cancel" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+            <button id="_conf-ok" class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors" style="background-color:#dc2626;">Delete</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#_conf-cancel').addEventListener('click', () => { overlay.remove(); resolve(false); });
+      overlay.querySelector('#_conf-ok').addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+  }
+
   // Read PUBLIC env values injected via data attributes
   const _cfg = document.getElementById('app-config');
   const supabaseUrl = _cfg.dataset.supabaseUrl!;
@@ -727,8 +765,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   };
 
   window.deleteEmployee = async (id, name) => {
-    if (!confirm(`Remove employee record for ${name}? This cannot be undone.`)) return;
+    if (!await showConfirm(`Remove employee record for ${name}? This cannot be undone.`)) return;
     await fetch('/api/admin/careers/employees', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    showToast('Employee record removed');
     await loadEmployees();
   };
 

@@ -44,6 +44,43 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  // ── Utilities ──────────────────────────────────────────────────
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    let container = document.getElementById('_toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = '_toast-container';
+      container.className = 'fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none';
+      document.body.appendChild(container);
+    }
+    const bg = type === 'error' ? '#dc2626' : '#194642';
+    const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+    const toast = document.createElement('div');
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg';
+    toast.style.cssText = `background-color:${bg}; min-width:260px;`;
+    toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.4s'; setTimeout(() => toast.remove(), 400); }, 4000);
+  }
+
+  function showConfirm(message: string): Promise<boolean> {
+    return new Promise(resolve => {
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-[300] bg-black/50 flex items-center justify-center p-4';
+      overlay.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+          <p class="text-gray-800 text-sm mb-5">${message}</p>
+          <div class="flex gap-3 justify-end">
+            <button id="_conf-cancel" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+            <button id="_conf-ok" class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors" style="background-color:#dc2626;">Delete</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#_conf-cancel')!.addEventListener('click', () => { overlay.remove(); resolve(false); });
+      overlay.querySelector('#_conf-ok')!.addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+  }
+
   const statusColors: Record<string, string> = {
     submitted: 'bg-blue-100 text-blue-700',
     under_review: 'bg-yellow-100 text-yellow-700',
@@ -252,8 +289,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       body: JSON.stringify({ id, status, note: note || null, notify_applicant: notify }),
     });
     const data = await res.json();
-    if (!res.ok) { alert(data.error || 'Update failed'); return; }
-    alert('Status updated successfully!');
+    if (!res.ok) { showToast(data.error || 'Update failed', 'error'); return; }
+    showToast('Status updated successfully');
     document.getElementById('app-modal')!.classList.add('hidden');
     await loadApps((document.getElementById('filter-status') as HTMLSelectElement).value);
   };
@@ -266,7 +303,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const contractStatusEl = document.getElementById(`emp-contract-status-${appId}`)!;
     const btn = document.querySelector(`button[onclick="createEmployee('${appId}')"]`) as HTMLButtonElement;
 
-    if (!jobTitle) { alert('Please enter a job title.'); return; }
+    if (!jobTitle) { showToast('Please enter a job title.', 'error'); return; }
 
     // Disable button to prevent double-submit
     btn.disabled = true;
@@ -311,19 +348,18 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-id-card mr-2"></i>Generate Worker ID & Employee Card';
 
-    if (!res.ok) { alert(data.error || 'Failed to create employee'); return; }
+    if (!res.ok) { showToast(data.error || 'Failed to create employee', 'error'); return; }
 
-    const msg = contractUrl
-      ? `Employee created!\nWorker ID: ${data.employee.worker_id}\n\nWelcome email with Worker ID and contract download link has been sent to ${data.employee.email}.`
-      : `Employee created!\nWorker ID: ${data.employee.worker_id}\n\nWelcome email with Worker ID has been sent to ${data.employee.email}.`;
-    alert(msg);
+    const successMsg = `Employee created! Worker ID: ${data.employee.worker_id}. Welcome email sent to ${data.employee.email}.`;
+    showToast(successMsg);
     document.getElementById('app-modal')!.classList.add('hidden');
-    window.location.href = '/admin/careers/employees';
+    setTimeout(() => { window.location.href = '/admin/careers/employees'; }, 2000);
   };
 
   (window as any).deleteApp = async (id: string, name: string) => {
-    if (!confirm(`Delete application from ${name}?`)) return;
+    if (!await showConfirm(`Delete application from ${name}?`)) return;
     await fetch('/api/admin/careers/applications', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    showToast('Application deleted');
     await loadApps((document.getElementById('filter-status') as HTMLSelectElement).value);
   };
 

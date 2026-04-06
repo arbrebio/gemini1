@@ -366,6 +366,25 @@ const CATEGORIES: Record<string, string> = {
 </AdminLayout>
 
 <script type="module">
+  // ── Confirm dialog ──────────────────────────────────────────────
+  function showConfirm(message) {
+    return new Promise(resolve => {
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-[300] bg-black/50 flex items-center justify-center p-4';
+      overlay.innerHTML = `
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
+          <p class="text-gray-800 text-sm mb-5">${message}</p>
+          <div class="flex gap-3 justify-end">
+            <button id="_conf-cancel" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+            <button id="_conf-ok" class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors" style="background-color:#dc2626;">Delete</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#_conf-cancel').addEventListener('click', () => { overlay.remove(); resolve(false); });
+      overlay.querySelector('#_conf-ok').addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+  }
+
   const CATEGORIES = {
     fertilizer:             'Fertilizer',
     biostimulant:           'Biostimulant',
@@ -569,7 +588,7 @@ const CATEGORIES: Record<string, string> = {
   }
 
   async function deleteSupplier(id, name) {
-    if (!confirm(`Delete supplier "${name}"? This cannot be undone.`)) return;
+    if (!await showConfirm(`Delete supplier "${name}"? This cannot be undone.`)) return;
     const data = await api('DELETE', { id });
     if (data.error) { showToast(data.error, true); return; }
     showToast('Supplier deleted');
@@ -727,7 +746,7 @@ const CATEGORIES: Record<string, string> = {
   document.getElementById('btn-delete-supplier').addEventListener('click', async () => {
     if (!currentSupplierId) return;
     const s = allSuppliers.find(x => x.id === currentSupplierId);
-    if (!confirm(`Delete "${s?.company_name}"? This cannot be undone.`)) return;
+    if (!await showConfirm(`Delete "${s?.company_name}"? This cannot be undone.`)) return;
     const data = await api('DELETE', { id: currentSupplierId });
     if (data.error) { showToast(data.error, true); return; }
     showToast('Supplier deleted');

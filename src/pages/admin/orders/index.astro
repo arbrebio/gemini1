@@ -850,7 +850,11 @@ export const prerender = false;
   document.getElementById('delete-backdrop')!.addEventListener('click', closeDeleteDialog);
   document.getElementById('delete-confirm-btn')!.addEventListener('click', deleteOrder);
 
-  document.getElementById('search-input')!.addEventListener('input', loadOrders);
+  let _searchTimer: ReturnType<typeof setTimeout>;
+  document.getElementById('search-input')!.addEventListener('input', () => {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(loadOrders, 300);
+  });
   document.getElementById('status-filter')!.addEventListener('change', loadOrders);
 
   // ─── Init ─────────────────────────────────────────────────────────────────
