@@ -10,6 +10,112 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 
+const featureDescs: Record<string, string[]> = {
+  fr: [
+    "Rétention d'eau 8× supérieure au sol traditionnel. Réduit la fréquence d'irrigation et les coûts en eau.",
+    "Structure fibreuse assurant une excellente aération des racines, prévenant l'asphyxie racinaire.",
+    "pH naturellement stable entre 5,8-6,5, idéal pour la plupart des cultures maraîchères et fruitières.",
+    "Produit naturellement à partir de noix de coco. Certifié OMRI pour l'agriculture biologique.",
+  ],
+  es: [
+    "Retención de agua 8× mejor que el suelo tradicional. Reduce la frecuencia de riego y los costos de agua.",
+    "Estructura fibrosa que garantiza excelente circulación de aire en raíces, previniendo la asfixia radicular.",
+    "pH naturalmente estable entre 5,8-6,5, ideal para la mayoría de cultivos hortícolas y frutícolas.",
+    "Producido naturalmente del coco. Certificado OMRI para agricultura orgánica.",
+  ],
+  af: [
+    "8× beter waterretensie as tradisionele grond. Verminder besproeiingsfrekwensie en waterkoste.",
+    "Veselstruktuur verseker uitstekende lugsirkulasie vir wortels, voorkom wortelversmoring.",
+    "Natuurlik stabiele pH tussen 5,8-6,5, ideaal vir die meeste groente- en vrugtekultivars.",
+    "Natuurlik geproduseer uit klapper. OMRI-gesertifiseer vir organiese landbou.",
+  ],
+};
+
+const guideContent: Record<string, {
+  heading: string; intro: string;
+  substrates: { title: string; desc: string; color: string; icon: string }[];
+  appsHeading: string;
+  apps: { icon: string; name: string; detail: string }[];
+  faqHeading: string;
+  faq: { q: string; a: string }[];
+}> = {
+  fr: {
+    heading: "Coco Peat, Fibre de Coco & Tourbe de Coco : Guide Complet",
+    intro: "Les substrats à base de coco sont la solution hors-sol la plus adaptée aux conditions climatiques africaines. Économiques, durables et performants, ils transforment la productivité des cultures maraîchères, fruitières et florales en Côte d'Ivoire et en Afrique de l'Ouest.",
+    substrates: [
+      { icon: "coconut", color: "amber", title: "Coco Peat (Tourbe de Coco)", desc: "Substrat hors-sol n°1 en hydroponie : rétention d'eau 8-9× son poids, pH 5,5-6,8, 100% naturel. Idéal tomates, poivrons, concombres, fraises sous serre." },
+      { icon: "leaf", color: "green", title: "Fibre de Coco (Coir Fibre)", desc: "Améliore la structure des sols tropicaux africains — augmente la porosité des sols argileux, améliore le drainage et constitue un excellent paillis. Durée de vie 3-5 ans." },
+      { icon: "stone", color: "blue", title: "Perlite & Vermiculite", desc: "Compléments minéraux du coco peat : la perlite améliore l'aération, la vermiculite retient les nutriments. Mix optimal : 70% coco + 30% perlite pour cultures hydroponiques." },
+    ],
+    appsHeading: "Applications des Substrats Coco en Agriculture Africaine",
+    apps: [
+      { icon: "tomato", name: "Maraîchage sous serre", detail: "Tomates, poivrons, concombres, aubergines" },
+      { icon: "strawberry", name: "Cultures fruitières", detail: "Fraises, melons, pastèques" },
+      { icon: "flower", name: "Floriculture", detail: "Roses, orchidées, chrysanthèmes" },
+      { icon: "plant", name: "Pépinières", detail: "Repiquage et production de plants" },
+    ],
+    faqHeading: "FAQ : Substrats Coco pour l'Agriculture Africaine",
+    faq: [
+      { q: "Pourquoi utiliser le coco peat plutôt que la terre en Afrique ?", a: "Le coco peat offre : aucune mauvaise herbe ni pathogène, rétention d'eau 8× supérieure aux sols sableux du Sahel, pH stable et contrôlable, et des rendements 2 à 3× supérieurs à la culture en pleine terre pour les cultures maraîchères." },
+      { q: "Comment préparer le coco peat pour une utilisation en culture ?", a: "1) Tremper 1 kg de brique dans 5L d'eau (gonfle à 8-9L). 2) Rincer si EC > 1,5 mS/cm. 3) Ajuster le pH à 5,5-6,5. 4) Mélanger optionnellement avec 20-30% de perlite. Arbre Bio Africa fournit le substrat prêt à l'emploi." },
+      { q: "Combien coûte le coco peat en Côte d'Ivoire ?", a: "Arbre Bio Africa propose des briques déshydratées (650g) à partir de 1 500 FCFA, des sacs vrac (50kg) à partir de 25 000 FCFA, et des grow bags prêts à l'emploi. Contactez-nous au +225 05 00 55 25 25 pour un devis personnalisé et des tarifs dégressifs sur volume." },
+      { q: "Quelle est la durée de vie du coco peat comme substrat ?", a: "Un substrat coco peat bien géré dure 2 à 3 cycles culturaux (12-18 mois) : rinçage entre chaque culture, désinfection, contrôle de l'EC et du pH. En fin de cycle, le coco peat usagé est un excellent amendement organique pour les sols tropicaux." },
+      { q: "Arbre Bio Africa livre-t-il les substrats dans toute l'Afrique ?", a: "Oui, Arbre Bio Africa livre coco peat, fibre de coco, perlite et vermiculite dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Formation et suivi technique agronomique inclus." },
+    ],
+  },
+  es: {
+    heading: "Coco Peat, Fibra de Coco & Turba de Coco: Guía Completa",
+    intro: "Los sustratos de coco son la solución hidropónica más adecuada para las condiciones africanas — económicos, sostenibles y eficaces. Transforman la productividad de los cultivos hortícolas, frutícolas y florales en Côte d'Ivoire y África Occidental.",
+    substrates: [
+      { icon: "coconut", color: "amber", title: "Coco Peat (Turba de Coco)", desc: "Sustrato hidropónico n°1: retención de agua 8-9× su peso, pH 5,5-6,8, 100% natural. Ideal para tomates, pimientos, pepinos y fresas en invernadero." },
+      { icon: "leaf", color: "green", title: "Fibra de Coco (Coir)", desc: "Mejora la estructura del suelo tropical africano — aumenta la porosidad de suelos arcillosos, mejora el drenaje y es un excelente mantillo. Vida útil 3-5 años." },
+      { icon: "stone", color: "blue", title: "Perlita y Vermiculita", desc: "Complementos minerales del coco peat: la perlita mejora la aireación, la vermiculita retiene nutrientes. Mix óptimo: 70% coco + 30% perlita para cultivos hidropónicos." },
+    ],
+    appsHeading: "Aplicaciones de Sustratos Coco en Agricultura Africana",
+    apps: [
+      { icon: "tomato", name: "Horticultura en invernadero", detail: "Tomates, pimientos, pepinos, berenjenas" },
+      { icon: "strawberry", name: "Cultivos frutícolas", detail: "Fresas, melones, sandías" },
+      { icon: "flower", name: "Floricultura", detail: "Rosas, orquídeas, crisantemos" },
+      { icon: "plant", name: "Viveros", detail: "Trasplante y producción de plántulas" },
+    ],
+    faqHeading: "FAQ: Sustratos Coco para Agricultura Africana",
+    faq: [
+      { q: "¿Por qué usar coco peat en lugar de tierra en África?", a: "El coco peat ofrece: ausencia de malezas y patógenos, retención de agua 8× superior a los suelos arenosos del Sahel, pH estable y controlable, y rendimientos 2-3× superiores al cultivo en suelo para hortalizas." },
+      { q: "¿Cómo preparar el coco peat para el cultivo?", a: "1) Remojar 1 kg de ladrillo en 5L de agua (se expande a 8-9L). 2) Enjuagar si EC > 1,5 mS/cm. 3) Ajustar pH a 5,5-6,5. 4) Mezclar opcionalmente con 20-30% de perlita. Arbre Bio Africa suministra el sustrato listo para usar." },
+      { q: "¿Cuánto cuesta el coco peat en Côte d'Ivoire?", a: "Arbre Bio Africa ofrece ladrillos deshidratados (650g) desde 1.500 FCFA, sacos a granel (50kg) desde 25.000 FCFA, y grow bags listos para usar. Contáctenos al +225 05 00 55 25 25 para una cotización personalizada y tarifas por volumen." },
+      { q: "¿Cuánto dura el coco peat como sustrato?", a: "Un sustrato coco peat bien gestionado dura 2-3 ciclos de cultivo (12-18 meses): enjuague entre cultivos, desinfección, control de EC y pH. Al final del ciclo, el coco peat usado es un excelente enmienda orgánica para suelos tropicales." },
+      { q: "¿Arbre Bio Africa entrega sustratos en toda África?", a: "Sí, entregamos coco peat, fibra de coco, perlita y vermiculita en toda África Occidental: Côte d'Ivoire, Senegal, Ghana, Burkina Faso, Mali, Togo, Benín. Capacitación y seguimiento técnico agronómico incluidos." },
+    ],
+  },
+  af: {
+    heading: "Kokosvesturf, Kokosvesels & Kokosveen: Volledige Gids",
+    intro: "Koko-gebaseerde substrate is die mees geskikte grondlose groeimedia vir Afrika se klimaattoestande — bekostigbaar, volhoubaar en hoëprestasie. Hulle transformeer die produktiwiteit van groente-, vrugte- en blomkultivars in Ivoorkus en Wes-Afrika.",
+    substrates: [
+      { icon: "coconut", color: "amber", title: "Kokosveen (Coco Peat)", desc: "Die nommer 1 grondlose substraat in hidroponies: waterretensie 8-9× sy gewig, pH 5,5-6,8, 100% natuurlik. Ideaal vir tamaties, rissies, komkommers en aarbeie in kweekhuise." },
+      { icon: "leaf", color: "green", title: "Kokosvesels (Coir)", desc: "Verbeter Afrikatropiese grondstruktuur — verhoog kleigrond se porositeit, verbeter dreinering en is 'n uitstekende mulch. Lewensduur 3-5 jaar." },
+      { icon: "stone", color: "blue", title: "Perliet en Vermiculiet", desc: "Minerale aanvullings vir kokosveen: perliet verbeter belugting, vermiculiet hou voedingstowwe vas. Optimale mengsel: 70% koko + 30% perliet vir hidroponies." },
+    ],
+    appsHeading: "Koko-Substraat Toepassings in Afrika-Landbou",
+    apps: [
+      { icon: "tomato", name: "Kwekhuisgroenteboerdery", detail: "Tamaties, rissies, komkommers, eiervrug" },
+      { icon: "strawberry", name: "Vrugtekultivars", detail: "Aarbeie, melons, waatlemoen" },
+      { icon: "flower", name: "Blommekwekery", detail: "Rose, orgidees, chrysante" },
+      { icon: "plant", name: "Kwekery", detail: "Verstek en saailingproduksie" },
+    ],
+    faqHeading: "Gereelde Vrae: Koko-Substrate vir Afrika-Landbou",
+    faq: [
+      { q: "Waarom kokosveen eerder as grond gebruik in Afrika?", a: "Kokosveen bied: geen onkruid of patogene nie, waterretensie 8× beter as sanderige Sahelgrond, stabiele beheerbare pH, en 2-3× hoër opbrengste as grondverbouing vir groentekultivars." },
+      { q: "Hoe berei jy kokosveen voor vir kultivering?", a: "1) Week 1 kg baksteen in 5L water (swel tot 8-9L). 2) Spoel as EC > 1,5 mS/cm. 3) Stel pH in op 5,5-6,5. 4) Meng opsioneel met 20-30% perliet. Arbre Bio Africa verskaf gebruiksklare substraat." },
+      { q: "Hoeveel kos kokosveen in Ivoorkus?", a: "Arbre Bio Africa bied gedehidreerde bakstene (650g) vanaf 1 500 FCFA, sakke in grootmaat (50kg) vanaf 25 000 FCFA, en gebruiksklare grow bags. Kontak ons by +225 05 00 55 25 25 vir 'n persoonlike kwotasie en volumetariewe." },
+      { q: "Hoe lank duur kokosveen as substraat?", a: "Goed bestuurde kokosveen duur 2-3 groeiseisoene (12-18 maande): spoel tussen kultivars, steriliseer, monitor EC en pH. Gebruikte kokosveen is 'n uitstekende organiese grondverbeteraar vir tropiese grond." },
+      { q: "Lewer Arbre Bio Africa substrate regoor Afrika?", a: "Ja, ons lewer kokosveen, kokosvesels, perliet en vermiculiet regoor Wes-Afrika: Ivoorkus, Senegal, Ghana, Burkina Faso, Mali, Togo, Benin. Opleiding en agronomies tegniese opvolg ingesluit." },
+    ],
+  },
+};
+
+const guide = guideContent[lang] ?? guideContent.fr;
+const fDesc = featureDescs[lang] ?? featureDescs.fr;
+
 const benefits = [
   { icon: 'medal', title: T.qualityAssured, desc: T.qualityAssuredDesc },
   { icon: 'plant', title: T.sustainable, desc: T.sustainableDesc },
@@ -85,10 +191,10 @@ const benefits = [
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
-          { icon: 'water', title: T.superiorWater, desc: '8x better water retention than traditional soil. Reduces irrigation frequency and water costs.' },
-          { icon: 'wind', title: T.optimalAeration, desc: 'Fibrous structure enables excellent air circulation for roots, preventing root asphyxia.' },
-          { icon: 'flask', title: T.phBalanced, desc: 'Naturally stable pH between 5.8-6.5, ideal for most vegetable and fruit crops.' },
-          { icon: 'leaf', title: T.organic100, desc: 'Produced naturally from coconut. OMRI certified for organic agriculture.' },
+          { icon: 'water', title: T.superiorWater, desc: fDesc[0] },
+          { icon: 'wind', title: T.optimalAeration, desc: fDesc[1] },
+          { icon: 'flask', title: T.phBalanced, desc: fDesc[2] },
+          { icon: 'leaf', title: T.organic100, desc: fDesc[3] },
         ].map(feature => (
           <div class="text-center p-6 bg-gray-50 rounded-xl">
             <div class="text-4xl mb-4"><EmojiIcon id={feature.icon} size="2rem" /></div>
@@ -113,23 +219,18 @@ const benefits = [
     </div>
   </section>
 
-
   <section class="py-20 bg-white" aria-labelledby="substrats-guide-heading">
     <div class="container mx-auto px-4 max-w-6xl">
       <div class="text-center mb-12">
         <h2 id="substrats-guide-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          {lang === 'fr' ? "Coco Peat, Fibre de Coco & Tourbe de Coco : Guide Complet" : lang === 'es' ? "Coco Peat, Fibra de Coco & Turba de Coco: Guía Completa" : "Coco Peat, Coir Fibre & Coconut Substrate: Complete Guide"}
+          {guide.heading}
         </h2>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          {lang === 'fr' ? "Les substrats à base de coco sont la solution hors-sol la plus adaptée aux conditions climatiques africaines. Économiques, durables et performants, ils transforment la productivité des cultures maraîchères, fruitières et florales en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Los sustratos de coco son la solución hidropónica más adecuada para las condiciones africanas — económicos, sostenibles y eficaces." : "Coco-based substrates are the most suitable soilless growing media for African conditions — affordable, sustainable and high-performing."}
+          {guide.intro}
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        {[
-          { icon: "coconut", title: lang === 'fr' ? "Coco Peat (Tourbe de Coco)" : lang === 'es' ? "Coco Peat (Turba)" : "Coco Peat", desc: lang === 'fr' ? "Substrat hors-sol n°1 en hydroponie : rétention d'eau 8-9× son poids, pH 5,5-6,8, 100% naturel. Idéal tomates, poivrons, concombres, fraises sous serre." : lang === 'es' ? "Sustrato hidropónico n°1: retención de agua 8-9× su peso, pH 5,5-6,8, 100% natural." : "Top soilless substrate: water retention 8-9× its weight, pH 5.5-6.8, 100% natural. Ideal for tomatoes, peppers, cucumbers, strawberries.", color: "amber" },
-          { icon: "leaf", title: lang === 'fr' ? "Fibre de Coco (Coir Fibre)" : lang === 'es' ? "Fibra de Coco (Coir)" : "Coconut Coir Fibre", desc: lang === 'fr' ? "Améliore la structure des sols tropicaux africains — augmente la porosité des sols argileux, améliore le drainage et constitue un excellent paillis. Durée de vie 3-5 ans." : lang === 'es' ? "Mejora la estructura del suelo tropical, aumenta la porosidad y el drenaje. Vida útil 3-5 años." : "Improves tropical soil structure — increases clay soil porosity, drainage and is an excellent mulch. Lifespan 3-5 years.", color: "green" },
-          { icon: "stone", title: lang === 'fr' ? "Perlite & Vermiculite" : lang === 'es' ? "Perlita y Vermiculita" : "Perlite & Vermiculite", desc: lang === 'fr' ? "Compléments minéraux du coco peat : la perlite améliore l'aération, la vermiculite retient les nutriments. Mix optimal : 70% coco + 30% perlite pour cultures hydroponiques." : lang === 'es' ? "Complementos minerales: perlita mejora la aireación, vermiculita retiene nutrientes. Mix óptimo: 70% coco + 30% perlita." : "Mineral complements: perlite improves aeration, vermiculite retains nutrients. Optimal mix: 70% coco + 30% perlite.", color: "blue" }
-        ].map((item) => (
+        {guide.substrates.map((item) => (
           <div class={`bg-${item.color}-50 rounded-2xl p-8 border border-${item.color}-200`}>
             <div class="text-4xl mb-4"><EmojiIcon id={item.icon} size="2rem" /></div>
             <h3 class="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
@@ -139,15 +240,10 @@ const benefits = [
       </div>
       <div class="bg-gray-50 rounded-2xl p-10">
         <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
-          {lang === 'fr' ? "Applications des Substrats Coco en Agriculture Africaine" : lang === 'es' ? "Aplicaciones de Sustratos Coco en Agricultura Africana" : "Coco Substrate Applications in African Agriculture"}
+          {guide.appsHeading}
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: "tomato", name: lang === 'fr' ? "Maraîchage sous serre" : "Greenhouse vegs", detail: lang === 'fr' ? "Tomates, poivrons, concombres, aubergines" : "Tomatoes, peppers, cucumbers" },
-            { icon: "strawberry", name: lang === 'fr' ? "Cultures fruitières" : "Fruit crops", detail: lang === 'fr' ? "Fraises, melons, pastèques" : "Strawberries, melons" },
-            { icon: "flower", name: lang === 'fr' ? "Floriculture" : "Floriculture", detail: lang === 'fr' ? "Roses, orchidées, chrysanthèmes" : "Roses, orchids" },
-            { icon: "plant", name: lang === 'fr' ? "Pépinières" : "Nurseries", detail: lang === 'fr' ? "Repiquage et production de plants" : "Transplanting & seedling production" }
-          ].map((app) => (
+          {guide.apps.map((app) => (
             <div class="bg-white rounded-xl p-5 text-center shadow-sm">
               <div class="text-3xl mb-2"><EmojiIcon id={app.icon} size="2rem" /></div>
               <div class="font-bold text-gray-900 text-sm mb-1">{app.name}</div>
@@ -162,16 +258,10 @@ const benefits = [
   <section class="py-20 bg-gray-50" aria-labelledby="faq-substrats">
     <div class="container mx-auto px-4 max-w-4xl">
       <h2 id="faq-substrats" class="text-3xl font-bold text-center text-gray-900 mb-12">
-        {lang === 'fr' ? "FAQ : Substrats Coco pour l'Agriculture Africaine" : lang === 'es' ? "FAQ: Sustratos Coco para Agricultura Africana" : "FAQ: Coco Substrates for African Agriculture"}
+        {guide.faqHeading}
       </h2>
       <div class="space-y-6">
-        {[
-          { q: lang === 'fr' ? "Pourquoi utiliser le coco peat plutôt que la terre en Afrique ?" : "Why use coco peat instead of soil in Africa?", a: lang === 'fr' ? "Le coco peat offre : aucune mauvaise herbe ni pathogène, rétention d'eau 8× supérieure aux sols sableux du Sahel, pH stable et contrôlable, et des rendements 2 à 3× supérieurs à la culture en pleine terre pour les cultures maraîchères." : "Coco peat offers: no weeds or pathogens, 8× higher water retention than sandy soils, stable controllable pH, and 2-3× higher yields for vegetable crops." },
-          { q: lang === 'fr' ? "Comment préparer le coco peat pour une utilisation en culture ?" : "How to prepare coco peat for growing?", a: lang === 'fr' ? "1) Tremper 1 kg de brique dans 5L d'eau (gonfle à 8-9L). 2) Rincer si EC > 1,5 mS/cm. 3) Ajuster le pH à 5,5-6,5. 4) Mélanger optionnellement avec 20-30% de perlite. Arbre Bio Africa fournit le substrat prêt à l'emploi." : "1) Soak 1kg brick in 5L water (expands to 8-9L). 2) Rinse if EC>1.5 mS/cm. 3) Adjust pH to 5.5-6.5. 4) Optionally mix with 20-30% perlite. We supply ready-to-use substrate." },
-          { q: lang === 'fr' ? "Combien coûte le coco peat en Côte d'Ivoire ?" : "How much does coco peat cost in Côte d'Ivoire?", a: lang === 'fr' ? "Arbre Bio Africa propose des briques déshydratées (650g) à partir de 1 500 FCFA, des sacs vrac (50kg) à partir de 25 000 FCFA, et des grow bags prêts à l'emploi. Contactez-nous au +225 05 00 55 25 25 pour un devis personnalisé et des tarifs dégressifs sur volume." : "We offer dehydrated bricks (650g) from 1,500 FCFA, bulk bags (50kg) from 25,000 FCFA, and ready-to-use grow bags. Contact us for volume pricing." },
-          { q: lang === 'fr' ? "Quelle est la durée de vie du coco peat comme substrat ?" : "What is the lifespan of coco peat as a substrate?", a: lang === 'fr' ? "Un substrat coco peat bien géré dure 2 à 3 cycles culturaux (12-18 mois) : rinçage entre chaque culture, désinfection, contrôle de l'EC et du pH. En fin de cycle, le coco peat usagé est un excellent amendement organique pour les sols tropicaux." : "Well-managed coco peat lasts 2-3 growing cycles (12-18 months) with rinsing, sterilisation, and EC/pH monitoring. Spent substrate makes excellent organic soil amendment." },
-          { q: lang === 'fr' ? "Arbre Bio Africa livre-t-il les substrats dans toute l'Afrique ?" : "Does Arbre Bio Africa deliver substrates across Africa?", a: lang === 'fr' ? "Oui, Arbre Bio Africa livre coco peat, fibre de coco, perlite et vermiculite dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Formation et suivi technique agronomique inclus." : "Yes, we deliver coco peat, coir fibre, perlite and vermiculite across West Africa (Côte d'Ivoire, Senegal, Ghana, Burkina Faso, Mali, Togo, Benin) with agronomic training and follow-up." }
-        ].map((item) => (
+        {guide.faq.map((item) => (
           <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <h3 class="text-lg font-bold text-gray-900 mb-3">{item.q}</h3>
             <p class="text-gray-600 leading-relaxed">{item.a}</p>
@@ -184,14 +274,11 @@ const benefits = [
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      { "@type": "Question", "name": "Pourquoi utiliser le coco peat plutôt que la terre en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Le coco peat offre aucune mauvaise herbe, rétention d eau 8× supérieure aux sols sableux, pH stable, et des rendements 2 à 3× supérieurs en culture maraîchère." } },
-      { "@type": "Question", "name": "Comment préparer le coco peat pour une utilisation en culture ?", "acceptedAnswer": { "@type": "Answer", "text": "Tremper 1 kg dans 5L d eau, rincer si EC supérieur à 1,5, ajuster pH à 5,5-6,5, mélanger optionnellement avec 20-30% de perlite." } },
-      { "@type": "Question", "name": "Combien coûte le coco peat en Côte d Ivoire ?", "acceptedAnswer": { "@type": "Answer", "text": "Arbre Bio Africa propose des briques à partir de 1 500 FCFA, des sacs 50kg à partir de 25 000 FCFA. Contactez le +225 05 00 55 25 25 pour un devis personnalisé." } },
-      { "@type": "Question", "name": "Quelle est la durée de vie du coco peat ?", "acceptedAnswer": { "@type": "Answer", "text": "Un substrat coco peat bien géré dure 2 à 3 cycles culturaux (12-18 mois) avec rinçage, désinfection et contrôle EC/pH." } },
-      { "@type": "Question", "name": "Arbre Bio Africa livre-t-il les substrats dans toute l Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, livraison en Côte d Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo et Bénin, avec formation et suivi agronomique inclus." } }
-    ]
+    "mainEntity": guide.faq.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": { "@type": "Answer", "text": item.a }
+    }))
   })} />
-
 
 </Layout>

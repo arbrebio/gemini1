@@ -10,29 +10,176 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 
-const technologies = [
-  { title: T.dripTitle, description: T.dripDesc, specs: [['Flow Rate', '1-8 L/hour'], ['Spacing Options', '20-100 cm'], ['Operating Pressure', '1-4 bar'], ['Filtration', '120 mesh']], benefits: ['Up to 70% water savings vs traditional irrigation', 'Uniform water distribution across all crops', 'Reduced fertilizer leaching', 'Minimal soil erosion and weed growth'], image: 'https://imgur.com/6XtSwqS.jpg', caseStudy: { title: 'Tomato Farm in Ghana', result: '65% increase in yield, 40% reduction in water usage' } },
-  { title: T.sprinklerTitle, description: T.sprinklerDesc, specs: [['Coverage Radius', '5-25 meters'], ['Flow Rate', '500-2000 L/hour'], ['Pressure Range', '2-5 bar'], ['Rotation', '360° coverage']], benefits: ['Even water distribution pattern', 'Adjustable spray patterns for different crops', 'Durable construction for long service life', 'Low maintenance requirements'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Maize Farm in Kenya', result: '45% increase in crop uniformity, 30% water savings' } },
-  { title: T.fertigationTitle, description: T.fertigationDesc, specs: [['Injection Rate', '0.2-40 L/hour'], ['Mixing Ratio', '1:50 - 1:1000'], ['Tank Capacity', '50-1000 L'], ['Control', 'EC/pH automated']], benefits: ['Precise nutrient delivery to crop root zone', 'Automated pH and EC control', 'Real-time monitoring and adjustment', 'Reduced fertilizer waste'], image: 'https://imgur.com/NnkgMDq.jpg', caseStudy: { title: "Vegetable Farm in Côte d'Ivoire", result: '50% reduction in fertilizer use, 40% yield increase' } },
-  { title: T.digitalTitle, description: T.digitalDesc, specs: [['Sensor Range', 'Up to 5 km'], ['Data Update', 'Every 15 min'], ['Battery Life', '5 years'], ['Accuracy', '±2% VWC']], benefits: ['Real-time monitoring and alerts', 'Data-driven irrigation decisions', 'Remote system control via mobile app', 'Predictive maintenance alerts'], image: 'https://imgur.com/3VCs7hJ.jpg', caseStudy: { title: 'Tech-enabled Farm in Nigeria', result: '35% water savings through smart scheduling' } },
-  { title: T.waterTreatmentTitle, description: T.waterTreatmentDesc, specs: [['Flow Capacity', '10-200 m³/hour'], ['Filtration Level', '20-200 micron'], ['Pressure Loss', '<0.3 bar'], ['Backwash', 'Automated']], benefits: ['Prevents emitter clogging', 'Removes harmful contaminants', 'Extends system lifespan', 'Automated self-cleaning'], image: 'https://imgur.com/fwHJKYs.jpg', caseStudy: { title: 'Large Scale Farm in Tanzania', result: '90% reduction in system maintenance needs' } },
-];
+const content: Record<string, {
+  metaTitle: string; metaDesc: string;
+  heroLabel: string; heroH1: string; heroSubtitle: string;
+  statLabels: string[];
+  whyH2: string; whyP1: string; whyP2: string; whyP3: string;
+  benefits: { icon: string; title: string; desc: string }[];
+  productsH2: string; productsSub: string;
+  dripSpecs: string[]; sprinklerSpecs: string[]; fertigationSpecs: string[];
+  digitalSpecs: string[]; waterSpecs: string[];
+  customTitle: string; customDesc: string; customBtn: string;
+  processH2: string;
+  steps: { title: string; desc: string }[];
+  faqH2: string;
+  faq: { q: string; a: string }[];
+  ctaH2: string; ctaSub: string; ctaSecondary: string;
+}> = {
+  fr: {
+    metaTitle: "Systèmes d'Irrigation Agricole en Afrique | Goutte-à-Goutte, Aspersion & Fertigation | Arbre Bio",
+    metaDesc: "Arbre Bio Africa installe les meilleurs systèmes d'irrigation : goutte-à-goutte, aspersion, fertigation et contrôleurs intelligents. Économisez jusqu'à 70% d'eau et doublez vos rendements en Côte d'Ivoire et en Afrique de l'Ouest.",
+    heroLabel: "Systèmes d'Irrigation",
+    heroH1: "L'Irrigation Intelligente pour une Agriculture Rentable en Afrique",
+    heroSubtitle: "Économisez jusqu'à 70% d'eau, doublez vos rendements et automatisez votre ferme grâce aux systèmes d'irrigation de précision Arbre Bio Africa — installés et maintenus par nos experts en Côte d'Ivoire et en Afrique de l'Ouest.",
+    statLabels: ["Économie d'eau", "Rendement moyen", "Projets installés", "Satisfaction client"],
+    whyH2: "Pourquoi l'Irrigation de Précision est Essentielle en Afrique ?",
+    whyP1: "L'Afrique de l'Ouest fait face à des défis hydriques croissants : sécheresses prolongées, irrégularité des pluies, et pression sur les ressources en eau souterraines. Dans ce contexte, l'irrigation de précision n'est plus un luxe — c'est une nécessité économique pour tout agriculteur qui souhaite produire de façon rentable et durable.",
+    whyP2: "Un système d'irrigation conventionnel par aspersion ou par surface perd entre 40% et 60% de l'eau apportée par évaporation et ruissellement. Un système goutte-à-goutte de précision, correctement installé et piloté, délivre l'eau directement à la zone racinaire avec une efficience supérieure à 90%. La différence de rendement — et de facture d'eau — est considérable.",
+    whyP3: "Arbre Bio Africa conçoit, installe et entretient des systèmes d'irrigation sur mesure pour toutes les tailles d'exploitation, des petits jardins maraîchers aux grandes fermes commerciales sous serre. Nos ingénieurs calculent précisément vos besoins en eau, dimensionnent votre réseau et programment vos contrôleurs pour une gestion totalement automatisée.",
+    benefits: [
+      { icon: "water", title: "Efficience Hydrique Maximale", desc: "Jusqu'à 90% d'efficience vs 50-60% pour l'aspersion traditionnelle. Chaque litre d'eau est utilisé là où il est nécessaire." },
+      { icon: "plant", title: "Croissance Accélérée des Cultures", desc: "L'humidité constante à la zone racinaire favorise une croissance régulière et réduit le stress hydrique qui affecte la qualité des fruits et légumes." },
+      { icon: "pill", title: "Fertigation Intégrée", desc: "Distribuez engrais et nutriments directement via votre réseau d'irrigation. Réduisez les coûts d'engrais de 30% tout en améliorant l'assimilation." },
+      { icon: "phone", title: "Pilotage Automatisé & Connecté", desc: "Contrôleurs intelligents avec programmation horaire, capteurs d'humidité, et gestion à distance depuis votre smartphone." },
+      { icon: "trophy", title: "ROI Rapide", desc: "Nos clients récupèrent leur investissement en 1 à 2 saisons grâce aux économies d'eau, d'engrais et à l'augmentation des rendements." },
+    ],
+    productsH2: "Nos Systèmes d'Irrigation",
+    productsSub: "De l'irrigation goutte-à-goutte à l'aspersion automatisée, découvrez nos solutions complètes pour chaque type de culture et d'exploitation agricole en Afrique.",
+    dripSpecs: ["Goutteurs compensants pression", "Tuyaux anti-colmatage", "Filtres à sable et à disques", "Vannes de secteur automatisées"],
+    sprinklerSpecs: ["Asperseurs rotatifs et fixes", "Micro-aspersion sous serre", "Canons d'arrosage grandes surfaces", "Rampes d'arrosage mobiles"],
+    fertigationSpecs: ["Injecteurs Venturi", "Pompes doseuses électroniques", "Sondes EC/pH en ligne", "Cuves de mélange inox"],
+    digitalSpecs: ["Contrôleurs Wi-Fi & 4G", "Capteurs d'humidité du sol", "Application mobile iOS/Android", "Alertes et rapports en temps réel"],
+    waterSpecs: ["Filtration multi-étages", "Traitement UV anti-algues", "Déminéralisation et osmose inverse", "Analyse et correction du pH"],
+    customTitle: "Conception Sur Mesure",
+    customDesc: "Chaque exploitation est unique. Nos ingénieurs réalisent une étude hydraulique complète de votre terrain avant toute installation.",
+    customBtn: "Demander une étude gratuite",
+    processH2: "Notre Processus d'Installation",
+    steps: [
+      { title: "Audit & Analyse du Terrain", desc: "Visite de votre exploitation, analyse de la qualité de l'eau, cartographie du terrain, évaluation des besoins en eau de vos cultures et dimensionnement du réseau." },
+      { title: "Conception du Système", desc: "Élaboration du schéma hydraulique, sélection des équipements adaptés (goutteurs, filtres, contrôleurs), établissement du devis détaillé et du planning d'installation." },
+      { title: "Installation & Mise en Service", desc: "Pose des réseaux par notre équipe technique certifiée, raccordements hydrauliques et électriques, programmation des contrôleurs et tests de fonctionnement complets." },
+      { title: "Formation & Suivi", desc: "Formation complète de votre équipe à l'utilisation et à l'entretien du système, avec documentation technique en français. Contrat de maintenance disponible." },
+    ],
+    faqH2: "Questions Fréquentes sur l'Irrigation",
+    faq: [
+      { q: "Quel système d'irrigation est le plus adapté aux cultures maraîchères en Afrique de l'Ouest ?", a: "Pour les cultures maraîchères (tomates, poivrons, oignons, laitues), le goutte-à-goutte est le système le plus rentable en Afrique de l'Ouest. Il offre la meilleure efficience hydrique, est compatible avec la fertigation, et permet de maintenir une humidité constante à la zone racinaire malgré les chaleurs. Pour les grandes cultures céréalières ou fourragères, l'aspersion par rampe ou canon d'arrosage est préférable." },
+      { q: "Combien coûte l'installation d'un système d'irrigation goutte-à-goutte en Côte d'Ivoire ?", a: "Le coût d'un système d'irrigation goutte-à-goutte dépend de la superficie, du type de culture, du dénivelé et des équipements choisis. Pour un hectare de maraîchage sous serre, les coûts d'installation oscillent généralement entre 1,5 et 4 millions FCFA selon la complexité. Arbre Bio Africa propose une étude gratuite et un devis détaillé sans engagement pour votre projet." },
+      { q: "Est-il possible de coupler l'irrigation goutte-à-goutte avec un système de fertigation ?", a: "Absolument. La fertigation — injection d'engrais et nutriments directement dans le réseau d'irrigation — est l'une des pratiques les plus efficaces de l'agriculture de précision. Elle permet de réduire les pertes d'engrais par lessivage de 30 à 50%, d'améliorer l'assimilation des nutriments par les plantes, et de réduire les coûts d'application. Tous nos systèmes goutte-à-goutte sont conçus pour être compatibles avec la fertigation." },
+      { q: "Arbre Bio Africa assure-t-il la maintenance des systèmes d'irrigation installés ?", a: "Oui. Nous proposons des contrats de maintenance préventive et curative pour tous les systèmes que nous installons. Ces contrats incluent des visites d'inspection régulières, le nettoyage des filtres et goutteurs, la vérification des pressions et débits, et l'intervention rapide en cas de panne. Nous disposons d'une équipe technique basée en Côte d'Ivoire pour des interventions rapides sur site." },
+      { q: "Quelle économie d'eau peut-on réaliser avec un système goutte-à-goutte par rapport à l'irrigation traditionnelle ?", a: "En comparaison avec l'irrigation de surface ou l'arrosage manuel, un système goutte-à-goutte bien conçu permet d'économiser entre 40% et 70% de l'eau consommée. Avec un système couplé à des capteurs d'humidité et un contrôleur intelligent, l'économie peut dépasser 70%. Sur une exploitation de maraîchage commerciale, cela représente des économies significatives sur les coûts de pompage et d'énergie." },
+    ],
+    ctaH2: "Obtenez une Étude d'Irrigation Gratuite",
+    ctaSub: "Nos ingénieurs analysent votre exploitation et vous proposent le système d'irrigation optimal avec une simulation de retour sur investissement.",
+    ctaSecondary: "Voir nos systèmes goutte-à-goutte",
+  },
+  es: {
+    metaTitle: "Sistemas de Riego Agrícola en África | Arbre Bio",
+    metaDesc: "Los mejores sistemas de riego: goteo, aspersión y fertigación. Ahorre hasta 70% de agua en África.",
+    heroLabel: "Sistemas de Riego",
+    heroH1: "Riego Inteligente para Agricultura Rentable en África",
+    heroSubtitle: "Ahorre hasta 70% de agua y duplique sus rendimientos con sistemas de riego de precisión de Arbre Bio Africa — instalados y mantenidos por nuestros expertos en Côte d'Ivoire y África Occidental.",
+    statLabels: ["Ahorro de agua", "Rendimiento", "Proyectos instalados", "Satisfacción cliente"],
+    whyH2: "¿Por qué el riego de precisión es esencial en África?",
+    whyP1: "África Occidental enfrenta desafíos hídricos crecientes: sequías prolongadas, lluvia irregular y presión sobre las aguas subterráneas. En este contexto, el riego de precisión ya no es un lujo — es una necesidad económica para cualquier agricultor que desee producir de forma rentable y sostenible.",
+    whyP2: "Un sistema convencional de riego por aspersión o superficie pierde entre 40% y 60% del agua por evaporación y escorrentía. Un sistema de goteo de precisión bien instalado entrega el agua directamente a la zona radicular con una eficiencia superior al 90%. La diferencia en rendimiento — y en factura de agua — es considerable.",
+    whyP3: "Arbre Bio Africa diseña, instala y mantiene sistemas de riego a medida para todos los tamaños de explotación, desde pequeños huertos hasta grandes fincas comerciales bajo invernadero. Nuestros ingenieros calculan con precisión sus necesidades de agua y dimensionan su red para una gestión totalmente automatizada.",
+    benefits: [
+      { icon: "water", title: "Máxima Eficiencia Hídrica", desc: "Hasta 90% de eficiencia frente al 50-60% del riego tradicional. Cada litro de agua se usa exactamente donde se necesita." },
+      { icon: "plant", title: "Crecimiento Acelerado de Cultivos", desc: "La humedad constante en la zona radicular favorece un crecimiento regular y reduce el estrés hídrico que afecta la calidad de frutas y verduras." },
+      { icon: "pill", title: "Fertigación Integrada", desc: "Distribuya abonos y nutrientes directamente a través de su red de riego. Reduzca los costos de fertilizantes en un 30% mejorando su asimilación." },
+      { icon: "phone", title: "Control Automatizado y Conectado", desc: "Controladores inteligentes con programación horaria, sensores de humedad y gestión remota desde su smartphone." },
+      { icon: "trophy", title: "ROI Rápido", desc: "Nuestros clientes recuperan su inversión en 1-2 temporadas gracias al ahorro de agua, fertilizantes y al aumento de rendimientos." },
+    ],
+    productsH2: "Nuestros Sistemas de Riego",
+    productsSub: "Desde el goteo hasta la aspersión automatizada, soluciones completas para cada tipo de cultivo y explotación agrícola en África.",
+    dripSpecs: ["Goteros autocompensantes", "Tuberías antiobstrucción", "Filtros de arena y disco", "Válvulas de sector automatizadas"],
+    sprinklerSpecs: ["Aspersores rotativos y fijos", "Micro-aspersión para invernaderos", "Cañones de riego para grandes superficies", "Alas de riego móviles"],
+    fertigationSpecs: ["Inyectores Venturi", "Bombas dosificadoras electrónicas", "Sondas EC/pH en línea", "Tanques de mezcla de acero inoxidable"],
+    digitalSpecs: ["Controladores Wi-Fi y 4G", "Sensores de humedad del suelo", "App móvil iOS/Android", "Alertas e informes en tiempo real"],
+    waterSpecs: ["Filtración multietapa", "Tratamiento UV antialgal", "Desmineralización y osmosis inversa", "Análisis y corrección de pH"],
+    customTitle: "Diseño a Medida",
+    customDesc: "Cada explotación es única. Nuestros ingenieros realizan un estudio hidráulico completo de su terreno antes de cualquier instalación.",
+    customBtn: "Solicitar estudio gratuito",
+    processH2: "Nuestro Proceso de Instalación",
+    steps: [
+      { title: "Auditoría y Análisis del Terreno", desc: "Visita a su explotación, análisis de calidad del agua, cartografía del terreno, evaluación de necesidades hídricas y dimensionamiento de la red." },
+      { title: "Diseño del Sistema", desc: "Elaboración del esquema hidráulico, selección de equipos adecuados (goteros, filtros, controladores), presupuesto detallado y planificación de instalación." },
+      { title: "Instalación y Puesta en Marcha", desc: "Instalación por nuestro equipo técnico certificado, conexiones hidráulicas y eléctricas, programación de controladores y pruebas completas de funcionamiento." },
+      { title: "Formación y Seguimiento", desc: "Formación completa de su equipo en el uso y mantenimiento del sistema, con documentación técnica en español. Contrato de mantenimiento disponible." },
+    ],
+    faqH2: "Preguntas Frecuentes sobre Riego",
+    faq: [
+      { q: "¿Qué sistema de riego es más adecuado para cultivos hortícolas en África Occidental?", a: "Para cultivos hortícolas (tomates, pimientos, cebollas, lechugas), el goteo es el sistema más rentable en África Occidental. Ofrece la mejor eficiencia hídrica, es compatible con la fertigación y mantiene una humedad constante en la zona radicular pese al calor. Para grandes cultivos de cereales, la aspersión por rampa o cañón es preferible." },
+      { q: "¿Cuánto cuesta instalar un sistema de riego por goteo en Côte d'Ivoire?", a: "El costo depende de la superficie, tipo de cultivo, desnivel y equipos elegidos. Para una hectárea de horticultura bajo invernadero, los costos oscilan generalmente entre 1,5 y 4 millones FCFA según la complejidad. Arbre Bio Africa ofrece un estudio gratuito y presupuesto detallado sin compromiso." },
+      { q: "¿Es posible combinar el riego por goteo con un sistema de fertigación?", a: "Por supuesto. La fertigación — inyección de abonos y nutrientes directamente en la red de riego — es una de las prácticas más eficaces de la agricultura de precisión. Reduce las pérdidas de fertilizantes por lixiviación en un 30-50%, mejora la asimilación de nutrientes y reduce los costos de aplicación. Todos nuestros sistemas de goteo son compatibles con la fertigación." },
+      { q: "¿Arbre Bio Africa se encarga del mantenimiento de los sistemas instalados?", a: "Sí. Ofrecemos contratos de mantenimiento preventivo y correctivo para todos los sistemas que instalamos. Incluyen visitas de inspección regulares, limpieza de filtros y goteros, verificación de presiones y caudales, e intervención rápida en caso de avería." },
+      { q: "¿Cuánto agua se puede ahorrar con goteo frente al riego tradicional?", a: "En comparación con el riego superficial o manual, un sistema de goteo bien diseñado ahorra entre 40% y 70% del agua. Con sensores de humedad y controlador inteligente, el ahorro puede superar el 70%, representando economías significativas en bombeo y energía." },
+    ],
+    ctaH2: "Obtenga un Estudio de Riego Gratuito",
+    ctaSub: "Nuestros ingenieros analizan su explotación y proponen el sistema de riego óptimo con simulación de retorno de inversión.",
+    ctaSecondary: "Ver sistemas de goteo",
+  },
+  af: {
+    metaTitle: "Landbou Besproeiingstelsels in Afrika | Arbre Bio Africa",
+    metaDesc: "Die beste besproeiingstelsels: drup, sproeiers en fertigation. Spaar tot 70% water in Afrika.",
+    heroLabel: "Besproeiingstelsels",
+    heroH1: "Slim Besproeiing vir Winsgewende Boerdery in Afrika",
+    heroSubtitle: "Spaar tot 70% water, verdubbel jou opbrengste en outomatiseer jou plaas met Arbre Bio Africa se presisiebesproeiingstelsels — geïnstalleer en onderhou deur ons kundiges in Ivoorkus en Wes-Afrika.",
+    statLabels: ["Waterbespaaring", "Gemiddelde opbrengs", "Projekte geïnstalleer", "Kliënttevredenheid"],
+    whyH2: "Waarom Presisiebesproeiing Noodsaaklik is in Afrika",
+    whyP1: "Wes-Afrika staar toenemende waterprobieme in die gesig: langdurige droogtes, onreëlmatige reënval en druk op grondwaterbronne. In hierdie konteks is presisiebesproeiing nie meer 'n luuksheid nie — dit is 'n ekonomiese noodsaaklikheid vir elke boer wat winsgewend en volhoubaar wil produseer.",
+    whyP2: "Konvensionele oppervlak- of sproeierbesproeiingstelsels verloor tussen 40% en 60% van die water deur verdamping en afloop. 'n Goed geïnstalleerde presisiedrupstelsel lewer water direk na die wortelgebied met meer as 90% doeltreffendheid. Die verskil in opbrengs — en waterrekening — is aansienlik.",
+    whyP3: "Arbre Bio Africa ontwerp, installeer en onderhou besproeiingstelsels op maat vir alle groottes plase, van klein marktuine tot groot kommersiële kwekhuisplase. Ons ingenieurs bereken presies jou waterbehoeftes en programmeer jou beheerders vir totale outomatiese bestuur.",
+    benefits: [
+      { icon: "water", title: "Maksimale Waterdoeltreffendheid", desc: "Tot 90% doeltreffendheid teenoor 50-60% vir tradisionele sproeierbesproeiing. Elke liter water word gebruik waar dit nodig is." },
+      { icon: "plant", title: "Versnelde Gewasgroei", desc: "Konstante vog in die wortelgebied bevorder gereelde groei en verminder waterstres wat die kwaliteit van vrugte en groente beïnvloed." },
+      { icon: "pill", title: "Geïntegreerde Fertigation", desc: "Versprei kunsmis en voedingstowwe direk deur jou besproeiingsnetwerk. Verminder kunsmiskoste met 30% terwyl assimilasie verbeter." },
+      { icon: "phone", title: "Outomatiese en Gekoppelde Beheer", desc: "Slim beheerders met tydskedule programmering, vogsenors en afstandbestuur vanaf jou slimfoon." },
+      { icon: "trophy", title: "Vinnige Opbrengs op Belegging", desc: "Ons kliënte herwin hul belegging in 1-2 seisoene deur water- en kunsmisbesparings en verhoogde opbrengste." },
+    ],
+    productsH2: "Ons Besproeiingstelsels",
+    productsSub: "Van drupbesproeiing tot outomatiese sproeiers — volledige oplossings vir elke gewastipe en plaas in Afrika.",
+    dripSpecs: ["Drukkompenserende druppels", "Verstoppingsbestande buise", "Sand- en skyffilters", "Outomatiese sonevanne"],
+    sprinklerSpecs: ["Roterende en vaste sproeiers", "Mikrosproeiers vir kweekhuise", "Reënkanonne vir groot oppervlaktes", "Mobiele besproeiingsbome"],
+    fertigationSpecs: ["Venturi-inspuiters", "Elektroniese dosierpompe", "In-lyn EC/pH-sensors", "Roesvaste mengtenks"],
+    digitalSpecs: ["Wi-Fi & 4G-beheerders", "Grondvogsenors", "iOS/Android-mobiele app", "Intydse waarskuwings en verslae"],
+    waterSpecs: ["Meervlakkige filtrasie", "UV-antialgbehandeling", "Ontsalting en omgekeerde osmose", "pH-analise en -korreksie"],
+    customTitle: "Pasgemaakte Ontwerp",
+    customDesc: "Elke plaas is uniek. Ons ingenieurs doen 'n volledige hidrouliese studie van jou terrein voor enige installasie.",
+    customBtn: "Versoek 'n gratis studie",
+    processH2: "Ons Installasieproses",
+    steps: [
+      { title: "Oudit en Terreinanalise", desc: "Besoek aan jou plaas, watergehalte-analise, terreinkartering, evaluering van gewaswater behoeftes en netwerk dimensionering." },
+      { title: "Stelselontwerp", desc: "Opstel van hidrouliese skema, keuse van geskikte toerusting (druppels, filters, beheerders), gedetailleerde kwotasie en installasieskedule." },
+      { title: "Installasie en Inbedryfstel", desc: "Installasie deur ons gesertifiseerde tegniese span, hidrouliese en elektriese verbindings, beheerder programmering en volledige funksietoetse." },
+      { title: "Opleiding en Opvolg", desc: "Volledige spanopskieting in die gebruik en onderhoud van die stelsel met tegniese dokumentasie. Onderhoudskontrakte beskikbaar." },
+    ],
+    faqH2: "Gereelde Vrae oor Besproeiing",
+    faq: [
+      { q: "Watter besproeiingstelsel is die geskikste vir marktuingewasse in Wes-Afrika?", a: "Vir marktuingewasse (tamaties, rissies, uie, slaai) is drupbesproeiing die mees kostedoeltreffende stelsel in Wes-Afrika. Dit bied die beste waterdoeltreffendheid, is versoenbaar met fertigation, en handhaaf konstante vog in die wortelgebied ondanks die hitte. Vir groot korrel- of voergewasse is sproeier-besproeiing verkieslik." },
+      { q: "Hoeveel kos drupbesproeiing installasie in Ivoorkus?", a: "Die koste hang af van die oppervlakte, gewastipe, hoogteverskil en gekose toerusting. Vir een hektaar kwekhuisgroente wissel installasikoste gewoonlik tussen 1,5 en 4 miljoen FCFA na gelang van kompleksiteit. Arbre Bio Africa bied 'n gratis studie en gedetailleerde kwotasie sonder verbintenis." },
+      { q: "Kan drupbesproeiing gekoppel word met 'n fertigationstelsel?", a: "Absoluut. Fertigation — inspuiting van kunsmis en voedingstowwe direk in die besproeiingsnetwerk — is een van die doeltreffendste praktyke van presisieboerdery. Dit verminder kunsmisverliese deur uitloging met 30-50%, verbeter voedingstofopname en verminder aansoekkoste. Al ons drupstelsels is ontwerp om versoenbaar te wees met fertigation." },
+      { q: "Sorg Arbre Bio Africa vir onderhoud van geïnstalleerde besproeiingstelsels?", a: "Ja. Ons bied voorkomende en korrektiewe onderhoudskontrakte vir alle stelsels wat ons installeer. Dit sluit gereelde inspeksiebesoeke in, filter- en druppelreiniging, druk- en vloeiverifikasie, en vinnige ingryping in geval van onderbrekings." },
+      { q: "Hoeveel water kan drupbesproeiing bespaar teenoor tradisionele besproeiing?", a: "In vergelyking met oppervlak- of handbesproeiing bespaar 'n goed ontworpe drupstelsel tussen 40% en 70% van die water. Met vogsenors en 'n slim beheerder kan die besparing 70% oorskry, wat aansienlike besparings op pomp- en energiekoste verteenwoordig." },
+    ],
+    ctaH2: "Kry 'n Gratis Besproeiingstudie",
+    ctaSub: "Ons ingenieurs analiseer jou plaas en stel die optimale besproeiingstelsel voor met 'n opbrengs-op-belegging simulasie.",
+    ctaSecondary: "Sien ons drupstelsels",
+  },
+};
+
+const c = content[lang] ?? content.fr;
 ---
-<Layout title={lang === 'fr' ? "Systèmes d'Irrigation Agricole en Afrique | Goutte-à-Goutte, Aspersion & Fertigation | Arbre Bio" : lang === 'es' ? "Sistemas de Riego Agrícola en África | Arbre Bio" : "Agricultural Irrigation Systems in Africa | Drip, Sprinkler & Fertigation | Arbre Bio"} description={lang === 'fr' ? "Arbre Bio Africa installe les meilleurs systèmes d'irrigation : goutte-à-goutte, aspersion, fertigation et contrôleurs intelligents. Économisez jusqu'à 70% d'eau et doublez vos rendements en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Los mejores sistemas de riego: goteo, aspersión y fertigación. Ahorre hasta 70% de agua en África." : "The best irrigation systems: drip, sprinkler, fertigation. Save up to 70% water in Africa."}>
+<Layout title={c.metaTitle} description={c.metaDesc}>
 
   {/* Hero */}
   <section class="relative bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-700 text-white py-20 px-4 overflow-hidden">
     <div class="absolute inset-0 opacity-10 bg-[url('/images/irrigation-hero.jpg')] bg-cover bg-center"></div>
     <div class="relative max-w-6xl mx-auto text-center">
-      <p class="text-cyan-300 font-semibold text-sm uppercase tracking-widest mb-4">
-        {lang === 'fr' ? "Systèmes d'Irrigation" : lang === 'es' ? "Sistemas de Riego" : "Irrigation Systems"}
-      </p>
-      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-        {lang === 'fr' ? "L'Irrigation Intelligente pour une Agriculture Rentable en Afrique" : lang === 'es' ? "Riego Inteligente para Agricultura Rentable en África" : "Smart Irrigation for Profitable Farming in Africa"}
-      </h1>
-      <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-        {lang === 'fr' ? "Économisez jusqu'à 70% d'eau, doublez vos rendements et automatisez votre ferme grâce aux systèmes d'irrigation de précision Arbre Bio Africa — installés et maintenus par nos experts en Côte d'Ivoire et en Afrique de l'Ouest." : lang === 'es' ? "Ahorre hasta 70% de agua y duplique sus rendimientos con sistemas de riego de precisión." : "Save up to 70% water and double your yields with precision irrigation systems."}
-      </p>
+      <p class="text-cyan-300 font-semibold text-sm uppercase tracking-widest mb-4">{c.heroLabel}</p>
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">{c.heroH1}</h1>
+      <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-8">{c.heroSubtitle}</p>
       <div class="flex flex-wrap gap-4 justify-center mb-12">
         <a href={`/${lang}/contact`} class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
           {T.freeConsultation}
@@ -41,13 +188,12 @@ const technologies = [
           {T.chatWhatsApp}
         </a>
       </div>
-      {/* Key stats */}
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
         {[
-          { value: "70%", label: lang === 'fr' ? "Économie d'eau" : lang === 'es' ? "Ahorro de agua" : "Water savings" },
-          { value: "2×", label: lang === 'fr' ? "Rendement moyen" : lang === 'es' ? "Rendimiento" : "Avg. yield boost" },
-          { value: "200+", label: lang === 'fr' ? "Projets installés" : lang === 'es' ? "Proyectos instalados" : "Projects installed" },
-          { value: "98%", label: lang === 'fr' ? "Satisfaction client" : lang === 'es' ? "Satisfacción cliente" : "Client satisfaction" }
+          { value: "70%", label: c.statLabels[0] },
+          { value: "2×",  label: c.statLabels[1] },
+          { value: "200+",label: c.statLabels[2] },
+          { value: "98%", label: c.statLabels[3] },
         ].map(s => (
           <div class="bg-white/10 backdrop-blur rounded-xl p-4">
             <div class="text-3xl font-bold text-cyan-300">{s.value}</div>
@@ -63,27 +209,13 @@ const technologies = [
     <div class="max-w-6xl mx-auto">
       <div class="grid md:grid-cols-2 gap-12 items-start">
         <div>
-          <h2 class="text-3xl font-bold text-blue-900 mb-6">
-            {lang === 'fr' ? "Pourquoi l'Irrigation de Précision est Essentielle en Afrique ?" : lang === 'es' ? "¿Por qué el riego de precisión es esencial en África?" : "Why Precision Irrigation is Essential in Africa"}
-          </h2>
-          <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "L'Afrique de l'Ouest fait face à des défis hydriques croissants : sécheresses prolongées, irrégularité des pluies, et pression sur les ressources en eau souterraines. Dans ce contexte, l'irrigation de précision n'est plus un luxe — c'est une nécessité économique pour tout agriculteur qui souhaite produire de façon rentable et durable." : lang === 'es' ? "África Occidental enfrenta desafíos hídricos crecientes: sequías prolongadas, lluvia irregular. El riego de precisión ya no es un lujo sino una necesidad económica." : "West Africa faces growing water challenges: prolonged droughts, irregular rainfall. Precision irrigation is no longer a luxury but an economic necessity."}
-          </p>
-          <p class="text-gray-700 mb-4 leading-relaxed">
-            {lang === 'fr' ? "Un système d'irrigation conventionnel par aspersion ou par surface perd entre 40% et 60% de l'eau apportée par évaporation et ruissellement. Un système goutte-à-goutte de précision, correctement installé et piloté, délivre l'eau directement à la zone racinaire avec une efficience supérieure à 90%. La différence de rendement — et de facture d'eau — est considérable." : lang === 'es' ? "Un sistema convencional pierde 40-60% del agua. El riego por goteo entrega agua directamente a la raíz con eficiencia superior al 90%." : "Conventional systems waste 40–60% of water. Precision drip delivers water directly to the root zone at over 90% efficiency."}
-          </p>
-          <p class="text-gray-700 leading-relaxed">
-            {lang === 'fr' ? "Arbre Bio Africa conçoit, installe et entretient des systèmes d'irrigation sur mesure pour toutes les tailles d'exploitation, des petits jardins maraîchers aux grandes fermes commerciales sous serre. Nos ingénieurs calculent précisément vos besoins en eau, dimensionnent votre réseau et programment vos contrôleurs pour une gestion totalement automatisée." : lang === 'es' ? "Arbre Bio Africa diseña e instala sistemas de riego a medida para todos los tamaños de explotación." : "Arbre Bio Africa designs and installs custom irrigation for all farm sizes, from small market gardens to large commercial greenhouses."}
-          </p>
+          <h2 class="text-3xl font-bold text-blue-900 mb-6">{c.whyH2}</h2>
+          <p class="text-gray-700 mb-4 leading-relaxed">{c.whyP1}</p>
+          <p class="text-gray-700 mb-4 leading-relaxed">{c.whyP2}</p>
+          <p class="text-gray-700 leading-relaxed">{c.whyP3}</p>
         </div>
         <div class="space-y-4">
-          {[
-            { icon: "water", title: lang === 'fr' ? "Efficience Hydrique Maximale" : "Maximum Water Efficiency", desc: lang === 'fr' ? "Jusqu'à 90% d'efficience vs 50-60% pour l'aspersion traditionnelle. Chaque litre d'eau est utilisé là où il est nécessaire." : "Up to 90% efficiency vs 50–60% for traditional sprinklers." },
-            { icon: "plant", title: lang === 'fr' ? "Croissance Accélérée des Cultures" : "Accelerated Crop Growth", desc: lang === 'fr' ? "L'humidité constante à la zone racinaire favorise une croissance régulière et réduit le stress hydrique qui affecte la qualité des fruits et légumes." : "Constant root-zone moisture promotes steady growth and reduces water stress." },
-            { icon: "pill", title: lang === 'fr' ? "Fertigation Intégrée" : "Integrated Fertigation", desc: lang === 'fr' ? "Distribuez engrais et nutriments directement via votre réseau d'irrigation. Réduisez les coûts d'engrais de 30% tout en améliorant l'assimilation." : "Deliver fertilisers directly through your irrigation network, cutting costs 30%." },
-            { icon: "phone", title: lang === 'fr' ? "Pilotage Automatisé & Connecté" : "Automated & Connected Control", desc: lang === 'fr' ? "Contrôleurs intelligents avec programmation horaire, capteurs d'humidité, et gestion à distance depuis votre smartphone." : "Smart controllers with scheduling, moisture sensors and remote smartphone management." },
-            { icon: "trophy", title: lang === 'fr' ? "ROI Rapide" : "Fast ROI", desc: lang === 'fr' ? "Nos clients récupèrent leur investissement en 1 à 2 saisons grâce aux économies d'eau, d'engrais et à l'augmentation des rendements." : "Our clients recover their investment in 1–2 seasons through water and fertiliser savings." }
-          ].map(item => (
+          {c.benefits.map(item => (
             <div class="flex gap-4 p-4 bg-blue-50 rounded-xl">
               <span class="text-2xl flex-shrink-0"><EmojiIcon id={item.icon} size="2rem" /></span>
               <div>
@@ -100,12 +232,8 @@ const technologies = [
   {/* Products Section */}
   <section class="py-16 px-4 bg-gray-50">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-900 text-center mb-4">
-        {lang === 'fr' ? "Nos Systèmes d'Irrigation" : lang === 'es' ? "Nuestros Sistemas de Riego" : "Our Irrigation Systems"}
-      </h2>
-      <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">
-        {lang === 'fr' ? "De l'irrigation goutte-à-goutte à l'aspersion automatisée, découvrez nos solutions complètes pour chaque type de culture et d'exploitation agricole en Afrique." : lang === 'es' ? "Desde el goteo hasta la aspersión automatizada, soluciones completas para cada tipo de cultivo en África." : "From drip to automated sprinklers, complete solutions for every crop type in Africa."}
-      </p>
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-4">{c.productsH2}</h2>
+      <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">{c.productsSub}</p>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
         <div class="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-blue-500">
@@ -113,10 +241,7 @@ const technologies = [
           <h3 class="text-xl font-bold text-blue-900 mb-2">{T.dripTitle}</h3>
           <p class="text-gray-600 text-sm mb-4">{T.dripDesc}</p>
           <ul class="text-xs text-gray-500 space-y-1">
-            <li>✓ {lang === 'fr' ? "Goutteurs compensants pression" : "Pressure-compensating drippers"}</li>
-            <li>✓ {lang === 'fr' ? "Tuyaux anti-colmatage" : "Anti-clogging tubing"}</li>
-            <li>✓ {lang === 'fr' ? "Filtres à sable et à disques" : "Sand and disc filters"}</li>
-            <li>✓ {lang === 'fr' ? "Vannes de secteur automatisées" : "Automated zone valves"}</li>
+            {c.dripSpecs.map(s => <li>✓ {s}</li>)}
           </ul>
         </div>
 
@@ -125,10 +250,7 @@ const technologies = [
           <h3 class="text-xl font-bold text-blue-900 mb-2">{T.sprinklerTitle}</h3>
           <p class="text-gray-600 text-sm mb-4">{T.sprinklerDesc}</p>
           <ul class="text-xs text-gray-500 space-y-1">
-            <li>✓ {lang === 'fr' ? "Asperseurs rotatifs et fixes" : "Rotary and fixed sprinklers"}</li>
-            <li>✓ {lang === 'fr' ? "Micro-aspersion sous serre" : "Micro-sprinklers for greenhouses"}</li>
-            <li>✓ {lang === 'fr' ? "Canons d'arrosage grandes surfaces" : "Rain guns for large areas"}</li>
-            <li>✓ {lang === 'fr' ? "Rampes d'arrosage mobiles" : "Mobile irrigation booms"}</li>
+            {c.sprinklerSpecs.map(s => <li>✓ {s}</li>)}
           </ul>
         </div>
 
@@ -137,10 +259,7 @@ const technologies = [
           <h3 class="text-xl font-bold text-blue-900 mb-2">{T.fertigationTitle}</h3>
           <p class="text-gray-600 text-sm mb-4">{T.fertigationDesc}</p>
           <ul class="text-xs text-gray-500 space-y-1">
-            <li>✓ {lang === 'fr' ? "Injecteurs Venturi" : "Venturi injectors"}</li>
-            <li>✓ {lang === 'fr' ? "Pompes doseuses électroniques" : "Electronic dosing pumps"}</li>
-            <li>✓ {lang === 'fr' ? "Sondes EC/pH en ligne" : "In-line EC/pH probes"}</li>
-            <li>✓ {lang === 'fr' ? "Cuves de mélange inox" : "Stainless mixing tanks"}</li>
+            {c.fertigationSpecs.map(s => <li>✓ {s}</li>)}
           </ul>
         </div>
 
@@ -149,10 +268,7 @@ const technologies = [
           <h3 class="text-xl font-bold text-blue-900 mb-2">{T.digitalTitle}</h3>
           <p class="text-gray-600 text-sm mb-4">{T.digitalDesc}</p>
           <ul class="text-xs text-gray-500 space-y-1">
-            <li>✓ {lang === 'fr' ? "Contrôleurs Wi-Fi & 4G" : "Wi-Fi & 4G controllers"}</li>
-            <li>✓ {lang === 'fr' ? "Capteurs d'humidité du sol" : "Soil moisture sensors"}</li>
-            <li>✓ {lang === 'fr' ? "Application mobile iOS/Android" : "iOS/Android mobile app"}</li>
-            <li>✓ {lang === 'fr' ? "Alertes et rapports en temps réel" : "Real-time alerts and reports"}</li>
+            {c.digitalSpecs.map(s => <li>✓ {s}</li>)}
           </ul>
         </div>
 
@@ -161,23 +277,16 @@ const technologies = [
           <h3 class="text-xl font-bold text-blue-900 mb-2">{T.waterTreatmentTitle}</h3>
           <p class="text-gray-600 text-sm mb-4">{T.waterTreatmentDesc}</p>
           <ul class="text-xs text-gray-500 space-y-1">
-            <li>✓ {lang === 'fr' ? "Filtration multi-étages" : "Multi-stage filtration"}</li>
-            <li>✓ {lang === 'fr' ? "Traitement UV anti-algues" : "UV anti-algae treatment"}</li>
-            <li>✓ {lang === 'fr' ? "Déminéralisation et osmose inverse" : "Demineralisation and RO"}</li>
-            <li>✓ {lang === 'fr' ? "Analyse et correction du pH" : "pH analysis and correction"}</li>
+            {c.waterSpecs.map(s => <li>✓ {s}</li>)}
           </ul>
         </div>
 
         <div class="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-sm p-6 text-white">
           <div class="text-4xl mb-3"><EmojiIcon id="target" size="2rem" /></div>
-          <h3 class="text-xl font-bold mb-2">
-            {lang === 'fr' ? "Conception Sur Mesure" : lang === 'es' ? "Diseño a Medida" : "Custom Design"}
-          </h3>
-          <p class="text-blue-100 text-sm mb-4">
-            {lang === 'fr' ? "Chaque exploitation est unique. Nos ingénieurs réalisent une étude hydraulique complète de votre terrain avant toute installation." : lang === 'es' ? "Cada explotación es única. Nuestros ingenieros realizan un estudio hidráulico completo." : "Every farm is unique. Our engineers carry out a full hydraulic study before installation."}
-          </p>
+          <h3 class="text-xl font-bold mb-2">{c.customTitle}</h3>
+          <p class="text-blue-100 text-sm mb-4">{c.customDesc}</p>
           <a href={`/${lang}/contact`} class="inline-block bg-white text-blue-700 font-bold py-2 px-6 rounded-lg text-sm hover:bg-blue-50 transition-colors">
-            {lang === 'fr' ? "Demander une étude gratuite" : lang === 'es' ? "Solicitar estudio gratuito" : "Request free study"}
+            {c.customBtn}
           </a>
         </div>
       </div>
@@ -187,19 +296,12 @@ const technologies = [
   {/* Process Section */}
   <section class="py-16 px-4 bg-white">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">
-        {lang === 'fr' ? "Notre Processus d'Installation" : lang === 'es' ? "Nuestro Proceso de Instalación" : "Our Installation Process"}
-      </h2>
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">{c.processH2}</h2>
       <div class="space-y-6">
-        {[
-          { step: "01", title: lang === 'fr' ? "Audit & Analyse du Terrain" : "Site Audit & Analysis", desc: lang === 'fr' ? "Visite de votre exploitation, analyse de la qualité de l'eau, cartographie du terrain, évaluation des besoins en eau de vos cultures et dimensionnement du réseau." : "Site visit, water quality analysis, terrain mapping and irrigation network sizing." },
-          { step: "02", title: lang === 'fr' ? "Conception du Système" : "System Design", desc: lang === 'fr' ? "Élaboration du schéma hydraulique, sélection des équipements adaptés (goutteurs, filtres, contrôleurs), établissement du devis détaillé et du planning d'installation." : "Hydraulic design, equipment selection and detailed quotation." },
-          { step: "03", title: lang === 'fr' ? "Installation & Mise en Service" : "Installation & Commissioning", desc: lang === 'fr' ? "Pose des réseaux par notre équipe technique certifiée, raccordements hydrauliques et électriques, programmation des contrôleurs et tests de fonctionnement complets." : "Installation by our certified team, hydraulic connections and full commissioning tests." },
-          { step: "04", title: lang === 'fr' ? "Formation & Suivi" : "Training & Follow-up", desc: lang === 'fr' ? "Formation complète de votre équipe à l'utilisation et à l'entretien du système, avec documentation technique en français. Contrat de maintenance disponible." : "Full team training, French technical documentation and optional maintenance contract." }
-        ].map(item => (
+        {c.steps.map((item, i) => (
           <div class="flex gap-6 items-start">
             <div class="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-              {item.step}
+              {String(i + 1).padStart(2, '0')}
             </div>
             <div>
               <h3 class="font-bold text-blue-900 text-lg mb-1">{item.title}</h3>
@@ -214,32 +316,9 @@ const technologies = [
   {/* FAQ Section */}
   <section class="py-16 px-4 bg-gray-50">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">
-        {lang === 'fr' ? "Questions Fréquentes sur l'Irrigation" : lang === 'es' ? "Preguntas Frecuentes sobre Riego" : "Irrigation FAQ"}
-      </h2>
+      <h2 class="text-3xl font-bold text-blue-900 text-center mb-12">{c.faqH2}</h2>
       <div class="space-y-6">
-        {[
-          {
-            q: lang === 'fr' ? "Quel système d'irrigation est le plus adapté aux cultures maraîchères en Afrique de l'Ouest ?" : "Which irrigation system suits market garden crops in West Africa?",
-            a: lang === 'fr' ? "Pour les cultures maraîchères (tomates, poivrons, oignons, laitues), le goutte-à-goutte est le système le plus rentable en Afrique de l'Ouest. Il offre la meilleure efficience hydrique, est compatible avec la fertigation, et permet de maintenir une humidité constante à la zone racinaire malgré les chaleurs. Pour les grandes cultures céréalières ou fourragères, l'aspersion par rampe ou canon d'arrosage est préférable." : "For market garden crops, drip irrigation offers the best water efficiency and fertigation compatibility in West Africa.",
-          },
-          {
-            q: lang === 'fr' ? "Combien coûte l'installation d'un système d'irrigation goutte-à-goutte en Côte d'Ivoire ?" : "What does drip irrigation installation cost in Côte d'Ivoire?",
-            a: lang === 'fr' ? "Le coût d'un système d'irrigation goutte-à-goutte dépend de la superficie, du type de culture, du dénivelé et des équipements choisis. Pour un hectare de maraîchage sous serre, les coûts d'installation oscillent généralement entre 1,5 et 4 millions FCFA selon la complexité. Arbre Bio Africa propose une étude gratuite et un devis détaillé sans engagement pour votre projet." : "Installation cost depends on area, crop type and equipment. Contact us for a free study and detailed quote.",
-          },
-          {
-            q: lang === 'fr' ? "Est-il possible de coupler l'irrigation goutte-à-goutte avec un système de fertigation ?" : "Can drip irrigation be coupled with a fertigation system?",
-            a: lang === 'fr' ? "Absolument. La fertigation — injection d'engrais et nutriments directement dans le réseau d'irrigation — est l'une des pratiques les plus efficaces de l'agriculture de précision. Elle permet de réduire les pertes d'engrais par lessivage de 30 à 50%, d'améliorer l'assimilation des nutriments par les plantes, et de réduire les coûts d'application. Tous nos systèmes goutte-à-goutte sont conçus pour être compatibles avec la fertigation." : "Yes. Fertigation reduces fertiliser losses by 30–50% and improves nutrient uptake. All our drip systems are fertigation-compatible.",
-          },
-          {
-            q: lang === 'fr' ? "Arbre Bio Africa assure-t-il la maintenance des systèmes d'irrigation installés ?" : "Does Arbre Bio Africa handle maintenance of installed irrigation systems?",
-            a: lang === 'fr' ? "Oui. Nous proposons des contrats de maintenance préventive et curative pour tous les systèmes que nous installons. Ces contrats incluent des visites d'inspection régulières, le nettoyage des filtres et goutteurs, la vérification des pressions et débits, et l'intervention rapide en cas de panne. Nous disposons d'une équipe technique basée en Côte d'Ivoire pour des interventions rapides sur site." : "Yes. We offer preventive and corrective maintenance contracts with regular inspections, filter cleaning and rapid on-site intervention.",
-          },
-          {
-            q: lang === 'fr' ? "Quelle économie d'eau peut-on réaliser avec un système goutte-à-goutte par rapport à l'irrigation traditionnelle ?" : "How much water can drip irrigation save versus traditional methods?",
-            a: lang === 'fr' ? "En comparaison avec l'irrigation de surface ou l'arrosage manuel, un système goutte-à-goutte bien conçu permet d'économiser entre 40% et 70% de l'eau consommée. Avec un système couplé à des capteurs d'humidité et un contrôleur intelligent, l'économie peut dépasser 70%. Sur une exploitation de maraîchage commerciale, cela représente des économies significatives sur les coûts de pompage et d'énergie." : "A well-designed drip system saves 40–70% of water versus surface irrigation, exceeding 70% with smart soil moisture sensors.",
-          }
-        ].map((item, i) => (
+        {c.faq.map((item) => (
           <div class="bg-white rounded-xl p-6 shadow-sm">
             <h3 class="font-bold text-blue-900 text-lg mb-3">{item.q}</h3>
             <p class="text-gray-700 leading-relaxed">{item.a}</p>
@@ -252,18 +331,14 @@ const technologies = [
   {/* CTA */}
   <section class="py-16 px-4 bg-blue-900 text-white">
     <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">
-        {lang === 'fr' ? "Obtenez une Étude d'Irrigation Gratuite" : lang === 'es' ? "Obtenga un Estudio de Riego Gratuito" : "Get a Free Irrigation Study"}
-      </h2>
-      <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">
-        {lang === 'fr' ? "Nos ingénieurs analysent votre exploitation et vous proposent le système d'irrigation optimal avec une simulation de retour sur investissement." : lang === 'es' ? "Nuestros ingenieros analizan su explotación y proponen el sistema óptimo con ROI simulado." : "Our engineers analyse your farm and propose the optimal irrigation system with ROI simulation."}
-      </p>
+      <h2 class="text-3xl font-bold mb-4">{c.ctaH2}</h2>
+      <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">{c.ctaSub}</p>
       <div class="flex flex-wrap gap-4 justify-center">
         <a href={`/${lang}/contact`} class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 px-8 rounded-lg transition-colors">
           {T.freeConsultation}
         </a>
         <a href={`/${lang}/irrigation/drip-systems`} class="border-2 border-white text-white hover:bg-white hover:text-blue-900 font-bold py-3 px-8 rounded-lg transition-colors">
-          {lang === 'fr' ? "Voir nos systèmes goutte-à-goutte" : lang === 'es' ? "Ver sistemas de goteo" : "See our drip systems"}
+          {c.ctaSecondary}
         </a>
       </div>
     </div>
@@ -273,23 +348,11 @@ const technologies = [
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": lang === 'fr' ? [
-      {
-        "@type": "Question",
-        "name": "Quel système d'irrigation est le plus adapté aux cultures maraîchères en Afrique de l'Ouest ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pour les cultures maraîchères, le goutte-à-goutte est le système le plus rentable en Afrique de l'Ouest. Il offre la meilleure efficience hydrique et est compatible avec la fertigation." }
-      },
-      {
-        "@type": "Question",
-        "name": "Quelle économie d'eau peut-on réaliser avec un système goutte-à-goutte ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Un système goutte-à-goutte bien conçu permet d'économiser entre 40% et 70% de l'eau consommée par rapport à l'irrigation de surface, dépassant 70% avec des capteurs d'humidité intelligents." }
-      },
-      {
-        "@type": "Question",
-        "name": "Est-il possible de coupler l'irrigation goutte-à-goutte avec un système de fertigation ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Absolument. La fertigation réduit les pertes d'engrais de 30 à 50% et améliore l'assimilation des nutriments. Tous nos systèmes goutte-à-goutte sont conçus pour être compatibles avec la fertigation." }
-      }
-    ] : []
+    "mainEntity": c.faq.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": { "@type": "Answer", "text": item.a }
+    }))
   })} />
 
 </Layout>
