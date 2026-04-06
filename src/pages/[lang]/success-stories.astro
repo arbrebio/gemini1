@@ -10,54 +10,387 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 
-const caseStudies = [
-  {
-    title: "Large-Scale Tomato Greenhouse",
-    client: "Marie Koné",
-    location: "Yamoussoukro, Côte d\'Ivoire",
-    description: "Implementation of a 2-hectare greenhouse facility with automated irrigation",
-    challenge: "Traditional farming methods yielded inconsistent harvests and were vulnerable to weather conditions",
-    solution: "Installation of climate-controlled greenhouses with precision irrigation systems",
-    results: ["300% increase in annual yield", "Water usage reduced by 60%", "Year-round production achieved", "Product quality improvement leading to premium market prices"],
-    testimonial: "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
-    clientImage: "https://imgur.com/YbVGmcu.jpg",
-    beforeImage: "https://imgur.com/tXiE4Aq.jpg",
-    afterImage: "https://imgur.com/hjafzfj.jpg"
+// ── UI labels ──────────────────────────────────────────────────────────────────
+const ui: Record<string, Record<string, string>> = {
+  fr: {
+    resultsTitle: "Résultats Mesurables de l'Agriculture de Précision en Afrique",
+    resultsSubtitle: "L'agriculture de précision transforme les exploitations africaines. Nos clients en Côte d'Ivoire et en Afrique de l'Ouest obtiennent des résultats concrets grâce à nos serres, systèmes d'irrigation, substrats fibre de coco et programmes de fertilisation.",
+    faqTitle: "Questions Fréquentes sur les Résultats Agricoles",
+    faqSubtitle: "Découvrez comment nos clients africains transforment leur agriculture grâce aux techniques de précision.",
+    whatClientsSay: "Ce que Disent Nos Clients",
   },
-  {
-    title: "Smart Irrigation for Cocoa Farm",
-    client: "Emmanuel Osei",
-    location: "Kumasi, Ghana",
-    description: "Modernization of 50-hectare cocoa plantation with smart irrigation",
-    challenge: "Drought periods severely impacted crop yields and quality",
-    solution: "Implementation of automated drip irrigation system with soil moisture monitoring",
-    results: ["180% increase in cocoa yield", "40% reduction in water consumption", "Improved bean quality and consistency", "Higher price per kg achieved through quality improvements"],
-    testimonial: "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we\'re seeing much better yields than ever before.",
-    clientImage: "https://imgur.com/qreTzRX.jpg",
-    beforeImage: "https://imgur.com/CEQXAs2.jpg",
-    afterImage: "https://imgur.com/6XtSwqS.jpg"
+  es: {
+    resultsTitle: "Resultados Medibles de la Agricultura de Precisión en África",
+    resultsSubtitle: "La agricultura de precisión transforma las explotaciones africanas. Nuestros clientes en Côte d'Ivoire y África Occidental obtienen resultados concretos gracias a nuestros invernaderos, sistemas de riego, sustratos de fibra de coco y programas de fertilización.",
+    faqTitle: "Preguntas Frecuentes sobre Resultados Agrícolas",
+    faqSubtitle: "Descubre cómo nuestros clientes africanos están transformando su agricultura a través de técnicas de precisión.",
+    whatClientsSay: "Lo que Dicen Nuestros Clientes",
   },
-  {
-    title: "Hydroponic Vegetable Farm",
-    client: "Sarah Mensah",
-    location: "Abidjan, Côte d\'Ivoire",
-    description: "Establishment of hydroponic vegetable farm for premium market supply",
-    challenge: "Limited arable land and soil quality issues preventing profitable farming",
-    solution: "Installation of complete hydroponic system with coco peat growing media",
-    results: ["Year-round production of premium vegetables", "Supplying major supermarkets and restaurants", "Zero soil-borne diseases", "60% lower water usage than conventional farming"],
-    testimonial: "Moving to hydroponics in greenhouses has revolutionized our business. We\'re now the preferred supplier for several high-end restaurants and supermarkets.",
-    clientImage: "https://imgur.com/bjqispj.jpg",
-    beforeImage: "https://imgur.com/KAh1QAU.jpg",
-    afterImage: "https://imgur.com/WgMc6pm.jpg"
+  af: {
+    resultsTitle: "Meetbare Resultate van Presisieboerdery in Afrika",
+    resultsSubtitle: "Presisieboerdery transformeer Afrika se plase. Ons kliënte in Côte d'Ivoire en Wes-Afrika behaal konkrete resultate deur ons kweekhuise, besproeiingstelsels, kokosveselsubs trate en bemestingsprogramme.",
+    faqTitle: "Gereelde Vrae oor Landbou Resultate",
+    faqSubtitle: "Ontdek hoe ons Afrika-kliënte hul landbou transformeer deur presisie-tegnieke.",
+    whatClientsSay: "Wat Ons Kliënte Sê",
   },
-];
+};
+const UI = (ui[lang] ?? ui.fr) as Record<string, string>;
+
+// ── Case studies ───────────────────────────────────────────────────────────────
+interface Study {
+  title: string;
+  client: string;
+  location: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  results: string[];
+  testimonial: string;
+  clientImage: string;
+  beforeImage: string;
+  afterImage: string;
+}
+
+const studiesByLang: Record<string, Study[]> = {
+  fr: [
+    {
+      title: "Serre de Tomates à Grande Échelle",
+      client: "Marie Koné",
+      location: "Yamoussoukro, Côte d'Ivoire",
+      description: "Mise en place d'une installation de serre de 2 hectares avec irrigation automatisée",
+      challenge: "Les méthodes agricoles traditionnelles produisaient des récoltes irrégulières et étaient vulnérables aux conditions météorologiques",
+      solution: "Installation de serres à climat contrôlé avec des systèmes d'irrigation de précision",
+      results: ["Augmentation de 300% du rendement annuel", "Réduction de 60% de la consommation d'eau", "Production toute l'année atteinte", "Amélioration de la qualité menant à des prix premium"],
+      testimonial: "La technologie de serre d'Arbre Bio a transformé notre exploitation. Nous produisons maintenant des tomates de haute qualité toute l'année, et nos revenus ont considérablement augmenté.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+      afterImage: "https://imgur.com/hjafzfj.jpg"
+    },
+    {
+      title: "Irrigation Intelligente pour Plantation de Cacao",
+      client: "Emmanuel Osei",
+      location: "Kumasi, Ghana",
+      description: "Modernisation d'une plantation de cacao de 50 hectares avec irrigation intelligente",
+      challenge: "Les périodes de sécheresse ont gravement affecté les rendements et la qualité des cultures",
+      solution: "Mise en place d'un système d'irrigation goutte-à-goutte automatisé avec surveillance de l'humidité du sol",
+      results: ["Augmentation de 180% du rendement en cacao", "Réduction de 40% de la consommation d'eau", "Amélioration de la qualité et de la régularité des fèves", "Prix au kg plus élevé grâce aux améliorations de qualité"],
+      testimonial: "Le système d'irrigation a rendu notre ferme plus résistante aux changements climatiques. Nos cacaoyers sont plus sains et nous constatons des rendements bien meilleurs qu'avant.",
+      clientImage: "https://imgur.com/m4XZt0I.jpg",
+      beforeImage: "https://imgur.com/Sm4hQzW.jpg",
+      afterImage: "https://imgur.com/FTly7JB.jpg"
+    },
+    {
+      title: "Transformation d'une Ferme Maraîchère",
+      client: "Sarah Mensah",
+      location: "Abidjan, Côte d'Ivoire",
+      description: "Modernisation complète de la ferme avec serres et hydroponique",
+      challenge: "Espace de culture limité et approvisionnement irrégulier du marché",
+      solution: "Installation de systèmes hydroponiques dans des serres modernes",
+      results: ["Augmentation de 500% de la production par mètre carré", "Approvisionnement toute l'année des marchés premium", "Réduction de 90% des pertes liées aux parasites", "Obtention de la certification biologique"],
+      testimonial: "Le passage à l'hydroponique en serre a révolutionné notre activité. Nous sommes maintenant le fournisseur privilégié de plusieurs restaurants haut de gamme et supermarchés.",
+      clientImage: "https://imgur.com/bjqispj.jpg",
+      beforeImage: "https://imgur.com/d6UGBx9.jpg",
+      afterImage: "https://imgur.com/mzATBKP.jpg"
+    },
+    {
+      title: "Serre Tropicale Pacobo, Toumodi 250 m² x 2",
+      client: "Ghassan",
+      location: "Pacobo, Côte d'Ivoire",
+      description: "Installation de deux serres de 250 m² dédiées aux pépinières de tomates et légumes.",
+      challenge: "Les configurations de pépinières traditionnelles sont sous-performantes, avec une pression des insectes et une chaleur excessive empêchant régulièrement les taux de germination d'atteindre le seuil de 90%.",
+      solution: "Déploiement d'une serre tropicale à climat contrôlé avec une dynamique d'airflow optimisée, associée à un réseau complet de goutte-à-goutte et de fertigation intégré, conçu et installé par Arbre Bio Africa. Cette configuration clé en main porte les performances de germination jusqu'à 99,99%, garantissant une production de plants prévisible, uniforme et évolutive.",
+      results: ["Taux de germination portés à 99,99% certifié", "Plants uniformes avec réduction des pertes", "Cycle de production plus stable et efficace", "Opérations simplifiées"],
+      testimonial: "Grâce à la solution serre et irrigation goutte-à-goutte déployée par Arbre Bio Africa, nos performances de germination se sont complètement transformées. Nous atteignons maintenant une régularité de 99,99%, avec des plants robustes et uniformes à chaque cycle. C'est l'un des meilleurs investissements que nous ayons réalisés.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/7LRhbGQ.jpg",
+      afterImage: "https://i.imgur.com/1BqfnT6.jpg"
+    },
+    {
+      title: "Serre Tropicale Brofodoume, Abidjan 500 m² x 2 (Tomate & Poivron) Bénéficiaire PDC2V",
+      client: "Coulibaly Fousseni",
+      location: "Brofodoume, Côte d'Ivoire",
+      description: "Installation de deux serres de 500 m² dédiées à l'horticulture de tomates et poivrons.",
+      challenge: "La culture en plein champ exposée aux infestations d'insectes et aux rendements irréguliers.",
+      solution: "Augmenter la productivité avec la serre d'horticulture tropicale d'Arbre Bio Africa, dotée d'un contrôle climatique avancé, d'un airflow optimisé et d'un système d'irrigation goutte-à-goutte entièrement intégré pour des performances culturales maximales.",
+      results: ["Tomates : +65–80% d'augmentation de rendement avec des fruits uniformes", "Poivrons : +50–70% d'augmentation de rendement avec des fruits plus gros", "Réduction significative des dégâts parasitaires", "Économies d'eau de 35–40%", "Apport optimisé en nutriments", "Récoltes régulières et rentabilité accrue"],
+      testimonial: "Depuis l'installation de la serre tropicale et du système d'irrigation goutte-à-goutte d'Arbre Bio Africa, nos rendements de tomates et de poivrons ont explosé. La qualité des produits est remarquable, les problèmes de parasites ont pratiquement disparu et la consommation d'eau a considérablement diminué. Cette solution a transformé notre ferme en une exploitation hautement productive et rentable.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/V1agtHR.jpg",
+      afterImage: "https://i.imgur.com/RukeS15.jpg"
+    },
+    {
+      title: "Sassandra, Serre Tropicale (2) 400 m² + (1) 500 m² (Poivron) Bénéficiaire PDC2V",
+      client: "Konan Kouassi",
+      location: "Sassandra, Côte d'Ivoire",
+      description: "Installation de deux serres de 400 m² et une de 500 m² dédiées à l'horticulture de tomates et poivrons.",
+      challenge: "La culture en plein champ présentait de multiples risques : infestations d'insectes, faibles taux de production et terrain accidenté compliquant l'installation de serres.",
+      solution: "Mise en place d'un contrôle climatique avec airflow optimisé dans une serre horticole tropicale. Stabilisation du terrain pour une installation sécurisée des serres et fourniture d'un forage alimenté par panneau solaire pour un approvisionnement en eau fiable.",
+      results: ["Augmentation significative du rendement grâce au climat contrôlé", "Réduction des pertes de récoltes dues aux attaques d'insectes", "Installation stable sur terrain accidenté", "Approvisionnement en eau durable via forage solaire", "Réduction des coûts d'exploitation", "Amélioration globale de l'efficacité de production et de la rentabilité"],
+      testimonial: "Grâce à la solution de serre tropicale, notre ferme a connu une augmentation remarquable des rendements et de la qualité des cultures. Le système de contrôle climatique maintient nos plantes en bonne santé, tandis que le forage solaire assure un approvisionnement en eau fiable. Cet investissement a véritablement transformé notre production et notre efficacité.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/yXO0iip.jpg",
+      afterImage: "https://i.imgur.com/2ae4sUI.jpg"
+    },
+  ],
+  es: [
+    {
+      title: "Invernadero de Tomates a Gran Escala",
+      client: "Marie Koné",
+      location: "Yamoussoukro, Côte d'Ivoire",
+      description: "Implementación de una instalación de invernadero de 2 hectáreas con riego automatizado",
+      challenge: "Los métodos agrícolas tradicionales producían cosechas inconsistentes y eran vulnerables a las condiciones climáticas",
+      solution: "Instalación de invernaderos con clima controlado con sistemas de riego de precisión",
+      results: ["Aumento del 300% en el rendimiento anual", "Uso del agua reducido en un 60%", "Producción durante todo el año lograda", "Mejora de la calidad que conduce a precios de mercado premium"],
+      testimonial: "La tecnología de invernadero de Arbre Bio ha transformado nuestra operación. Ahora producimos tomates de alta calidad durante todo el año y nuestros ingresos han crecido significativamente.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+      afterImage: "https://imgur.com/hjafzfj.jpg"
+    },
+    {
+      title: "Riego Inteligente para Granja de Cacao",
+      client: "Emmanuel Osei",
+      location: "Kumasi, Ghana",
+      description: "Modernización de una plantación de cacao de 50 hectáreas con riego inteligente",
+      challenge: "Los períodos de sequía impactaron gravemente en los rendimientos y la calidad de los cultivos",
+      solution: "Implementación de sistema de riego por goteo automatizado con monitoreo de humedad del suelo",
+      results: ["Aumento del 180% en el rendimiento de cacao", "Reducción del 40% en el consumo de agua", "Mejora de la calidad y consistencia del grano", "Mayor precio por kg logrado a través de mejoras de calidad"],
+      testimonial: "El sistema de riego ha hecho que nuestra granja sea más resistente a los cambios climáticos. Nuestros árboles de cacao están más sanos y estamos viendo rendimientos mucho mejores que nunca.",
+      clientImage: "https://imgur.com/m4XZt0I.jpg",
+      beforeImage: "https://imgur.com/Sm4hQzW.jpg",
+      afterImage: "https://imgur.com/FTly7JB.jpg"
+    },
+    {
+      title: "Transformación de Granja de Verduras",
+      client: "Sarah Mensah",
+      location: "Abidjan, Côte d'Ivoire",
+      description: "Modernización completa de la granja con invernaderos e hidroponía",
+      challenge: "Espacio de cultivo limitado y suministro de mercado inconsistente",
+      solution: "Instalación de sistemas hidropónicos en invernaderos modernos",
+      results: ["Aumento del 500% en la producción por metro cuadrado", "Suministro durante todo el año a mercados premium", "Reducción del 90% en pérdidas relacionadas con plagas", "Obtenida la certificación orgánica"],
+      testimonial: "Pasar a la hidroponía en invernaderos ha revolucionado nuestro negocio. Ahora somos el proveedor preferido de varios restaurantes de alta gama y supermercados.",
+      clientImage: "https://imgur.com/bjqispj.jpg",
+      beforeImage: "https://imgur.com/d6UGBx9.jpg",
+      afterImage: "https://imgur.com/mzATBKP.jpg"
+    },
+    {
+      title: "Invernadero Tropical Pacobo, Toumodi 250 m² x 2",
+      client: "Ghassan",
+      location: "Pacobo, Côte d'Ivoire",
+      description: "Instalación de dos invernaderos de 250 m² dedicados a viveros de tomate y verduras.",
+      challenge: "Las instalaciones tradicionales de viveros tienen bajo rendimiento, con presión de insectos y calor excesivo que impiden constantemente que las tasas de germinación alcancen el umbral del 90%.",
+      solution: "Despliegue de un invernadero tropical con clima controlado y flujo de aire optimizado, junto con una red completa de riego por goteo y fertigación diseñada e instalada por Arbre Bio Africa. Esta configuración lleva el rendimiento de germinación hasta el 99,99%, garantizando una producción de plántulas predecible, uniforme y escalable.",
+      results: ["Tasas de germinación aumentadas al 99,99% verificado", "Plántulas uniformes con pérdidas reducidas", "Ciclo de producción más estable y eficiente", "Operaciones optimizadas"],
+      testimonial: "Gracias a la solución de invernadero y riego por goteo de Arbre Bio Africa, nuestro rendimiento de germinación se ha transformado completamente. Ahora logramos una consistencia del 99,99%, con plántulas fuertes y uniformes en cada ciclo. Es una de las mejores inversiones que hemos realizado.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/7LRhbGQ.jpg",
+      afterImage: "https://i.imgur.com/1BqfnT6.jpg"
+    },
+    {
+      title: "Invernadero Tropical Brofodoume, Abidján 500 m² x 2 (Tomate y Pimiento) Beneficiario PDC2V",
+      client: "Coulibaly Fousseni",
+      location: "Brofodoume, Côte d'Ivoire",
+      description: "Instalación de dos invernaderos de 500 m² dedicados a la horticultura de tomate y pimiento.",
+      challenge: "El cultivo a campo abierto expuesto a infestaciones de insectos y rendimientos inconsistentes.",
+      solution: "Aumentar la productividad con el invernadero de horticultura tropical de Arbre Bio Africa, con control climático avanzado, flujo de aire optimizado y un sistema de riego por goteo totalmente integrado para el máximo rendimiento de los cultivos.",
+      results: ["Tomates: +65–80% de aumento de rendimiento con frutos uniformes", "Pimientos: +50–70% de aumento de rendimiento con frutos más grandes", "Reducción significativa del daño por plagas", "Ahorro de agua del 35–40%", "Entrega optimizada de nutrientes", "Cosechas consistentes y mayor rentabilidad"],
+      testimonial: "Desde la instalación del invernadero tropical y el sistema de riego por goteo de Arbre Bio Africa, nuestros rendimientos de tomate y pimiento se han disparado. La calidad del producto es sobresaliente, los problemas de plagas han desaparecido prácticamente y el uso del agua ha bajado significativamente. Esta solución ha transformado nuestra granja en una operación altamente productiva y rentable.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/V1agtHR.jpg",
+      afterImage: "https://i.imgur.com/RukeS15.jpg"
+    },
+    {
+      title: "Sassandra, Invernadero Tropical (2) 400 m² + (1) 500 m² (Pimiento) Beneficiario PDC2V",
+      client: "Konan Kouassi",
+      location: "Sassandra, Côte d'Ivoire",
+      description: "Instalación de dos invernaderos de 400 m² y uno de 500 m² dedicados a la horticultura de tomate y pimiento.",
+      challenge: "El cultivo a campo abierto enfrentaba múltiples riesgos, incluyendo infestaciones de insectos, bajas tasas de producción y terreno irregular que complica la instalación del invernadero.",
+      solution: "Implementar control climático con flujo de aire optimizado en un invernadero hortícola tropical. Estabilizar el terreno para una instalación segura y proporcionar un pozo perforado alimentado por panel solar para un suministro de agua fiable.",
+      results: ["Aumento significativo del rendimiento debido al clima controlado", "Reducción de las pérdidas de cultivos por ataques de insectos", "Instalación estable en terreno irregular", "Suministro sostenible de agua mediante pozo solar", "Reducción de costos operativos", "Mejora general de la eficiencia de producción y rentabilidad"],
+      testimonial: "Gracias a la solución de invernadero tropical, nuestra granja ha experimentado un aumento notable en el rendimiento y la calidad de los cultivos. El sistema de control climático mantiene nuestras plantas sanas, mientras que el pozo solar garantiza un suministro de agua fiable. Esta inversión ha transformado verdaderamente nuestra producción y eficiencia.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/yXO0iip.jpg",
+      afterImage: "https://i.imgur.com/2ae4sUI.jpg"
+    },
+  ],
+  af: [
+    {
+      title: "Grootskaalse Tamatie Kweekhuis",
+      client: "Marie Koné",
+      location: "Yamoussoukro, Côte d'Ivoire",
+      description: "Implementering van 'n 2-hektaar kweekhuis fasiliteit met outomatiese besproeiing",
+      challenge: "Tradisionele boerderymetodes het onkonsekwente oeste gelewer en was kwesbaar vir weersomstandighede",
+      solution: "Installasie van klimaatbeheerde kweekhuise met presisie besproeiingstelsels",
+      results: ["300% toename in jaarlikse opbrengs", "Watergebruik verminder met 60%", "Jaarrondse produksie bereik", "Verbeterde produktgehalte wat lei tot premium markpryse"],
+      testimonial: "Die kweekhuis tegnologie van Arbre Bio het ons bedrywighede getransformeer. Ons produseer nou die heeljaar hoëgehalte tamaties, en ons inkomste het aansienlik gegroei.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://imgur.com/tXiE4Aq.jpg",
+      afterImage: "https://imgur.com/hjafzfj.jpg"
+    },
+    {
+      title: "Slim Besproeiing vir Kakaoplaas",
+      client: "Emmanuel Osei",
+      location: "Kumasi, Ghana",
+      description: "Modernisering van 'n 50-hektaar kakaoplantasie met slim besproeiing",
+      challenge: "Droogteperiodes het gewasopbrengste en -gehalte ernstig beïnvloed",
+      solution: "Implementering van outomatiese druppelbesproeiingstelsel met grondvog monitering",
+      results: ["180% toename in kakao-opbrengs", "40% vermindering in waterverbruik", "Verbeterde boontjiegehalte en -konsekwentheid", "Hoër prys per kg behaal deur gehalteverbeterings"],
+      testimonial: "Die besproeiingstelsel het ons plaas meer veerkragtig gemaak teen klimaatsveranderinge. Ons kakaobome is gesonder en ons sien baie beter opbrengste as ooit tevore.",
+      clientImage: "https://imgur.com/m4XZt0I.jpg",
+      beforeImage: "https://imgur.com/Sm4hQzW.jpg",
+      afterImage: "https://imgur.com/FTly7JB.jpg"
+    },
+    {
+      title: "Groenteplaasstransformasie",
+      client: "Sarah Mensah",
+      location: "Abidjan, Côte d'Ivoire",
+      description: "Volledige plaasmodernisering met kweekhuise en hidroponiese teelt",
+      challenge: "Beperkte groeispasie en inkonsekwente markaanbod",
+      solution: "Installasie van hidroponiese stelsels in moderne kweekhuise",
+      results: ["500% toename in produksie per vierkante meter", "Jaarrondse lewering aan premium markte", "90% vermindering in plaag-verwante verliese", "Organiese sertifisering behaal"],
+      testimonial: "Die oorskakeling na hidroponies in kweekhuise het ons besigheid gerevolutioneer. Ons is nou die voorkeurverskaffer vir verskeie hoë-end restaurante en supermarkte.",
+      clientImage: "https://imgur.com/bjqispj.jpg",
+      beforeImage: "https://imgur.com/d6UGBx9.jpg",
+      afterImage: "https://imgur.com/mzATBKP.jpg"
+    },
+    {
+      title: "Tropiese Kweekhuis Pacobo, Toumodi 250 m² x 2",
+      client: "Ghassan",
+      location: "Pacobo, Côte d'Ivoire",
+      description: "Installasie van twee 250 m² kweekhuise toegewy aan tamatie- en groentekwekery.",
+      challenge: "Tradisionele kwekery opstellings onderpresteer, met insekdruk en oormatige hitte wat kiemingskoerse konsekwent verhinder om die 90% drempel te bereik.",
+      solution: "Ontplooi 'n klimaatbeheerde tropiese kweekhuis met geoptimaliseerde lugvloei, saam met 'n volledig geïntegreerde druppelbesproeiing en fertigasie netwerk ontwerp en geïnstalleer deur Arbre Bio Africa. Hierdie sleutelklaar konfigurasie dryf kiemingsprestasie tot 99,99%, wat voorspelbare, uniforme en skaleerbare saailing produksie verseker.",
+      results: ["Kiemingskoerse verhoog tot geverifieerde 99,99%", "Uniforme saailinge met verminderde verliese", "Meer stabiele en doeltreffende produksiesiklus", "Gestroomlynde bedrywighede"],
+      testimonial: "Danksy die kweekhuis en druppelbesproeiing oplossing van Arbre Bio Africa het ons kiemingsprestasie volledig getransformeer. Ons bereik nou 99,99% konsekwentheid, met sterk, uniforme saailinge elke siklus. Dit is een van die beste beleggings wat ons gemaak het.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/7LRhbGQ.jpg",
+      afterImage: "https://i.imgur.com/1BqfnT6.jpg"
+    },
+    {
+      title: "Tropiese Kweekhuis Brofodoume, Abidjan 500 m² x 2 (Tamatie & Soetrissie) PDC2V Begunstigde",
+      client: "Coulibaly Fousseni",
+      location: "Brofodoume, Côte d'Ivoire",
+      description: "Installasie van twee 500 m² kweekhuise toegewy aan tamatie- en soetrissie hortikultuur.",
+      challenge: "Oop-veld verbouing blootgestel aan insek-infestasies en inkonsekwente opbrengste.",
+      solution: "Verhoog produktiwiteit met Arbre Bio Africa se tropiese hortikultuur kweekhuis, met gevorderde klimaatbeheer, geoptimaliseerde lugvloei en 'n volledig geïntegreerde druppelbesproeiingstelsel vir maksimum gewasprestasie.",
+      results: ["Tamaties: +65–80% opbrengs toename met uniforme vrugte", "Soetrissies: +50–70% opbrengs toename met groter vrugte", "Plaagskade aansienlik verminder", "35–40% waterbesparings", "Geoptimaliseerde voedingstoflewering", "Konsekwente oeste en hoër winsgewendheid"],
+      testimonial: "Sedert die installasie van Arbre Bio Africa se tropiese kweekhuis en druppelbesproeiingstelsel het ons tamatie- en soetrissie-opbrengste gestyg. Die gehalte van die produkte is uitstekend, plaagprobleme is prakties uitgeskakel en watergebruik het aansienlik gedaal. Hierdie oplossing het ons plaas omskep in 'n hoogs produktiewe, doeltreffende en winsgewende bedrywigheid.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/V1agtHR.jpg",
+      afterImage: "https://i.imgur.com/RukeS15.jpg"
+    },
+    {
+      title: "Sassandra, Tropiese Kweekhuis (2) 400 m² + (1) 500 m² (Soetrissie) PDC2V Begunstigde",
+      client: "Konan Kouassi",
+      location: "Sassandra, Côte d'Ivoire",
+      description: "Installasie van twee 400 m² kweekhuise en een 500 m² toegewy aan tamatie- en soetrissie hortikultuur.",
+      challenge: "Oop-veld verbouing het verskeie risiko's gehad, insluitend insek-infestasies, lae produksiekoerse en ongelyke terrein wat kweekhuis installasie bemoeilik.",
+      solution: "Implementeer klimaatbeheer met geoptimaliseerde lugvloei binne 'n tropiese hortikulturele kweekhuis. Stabiliseer die grond vir veilige kweekhuis installasie en voorsien 'n boorgat aangedryf deur 'n sonpaneel vir betroubare watertoevoer.",
+      results: ["Beduidende toename in gewasopbrengs as gevolg van beheerde klimaat", "Vermindering van gewasverliese deur insek-aanvalle", "Stabiele kweekhuis installasie op ongelyke terrein", "Volhoubare watertoevoer via sonboorput", "Verlaagde bedryfskoste", "Algehele verbetering in produksiedoeltreffendheid en winsgewendheid"],
+      testimonial: "Danksy die tropiese kweekhuis oplossing het ons plaas 'n merkwaardige toename in opbrengs en gewasgehalte gesien. Die klimaatbeheerstelsel hou ons plante gesond, terwyl die sonboorput 'n betroubare watertoevoer verseker. Selfs op ongelyke terrein staan die kweekhuis sterk en veilig. Hierdie belegging het ons produksie en doeltreffendheid werklik getransformeer.",
+      clientImage: "https://imgur.com/YbVGmcu.jpg",
+      beforeImage: "https://i.imgur.com/yXO0iip.jpg",
+      afterImage: "https://i.imgur.com/2ae4sUI.jpg"
+    },
+  ],
+};
+const studies = studiesByLang[lang] ?? studiesByLang.fr;
+
+// ── Testimonials ───────────────────────────────────────────────────────────────
+interface Testimonial {
+  name: string;
+  role: string;
+  location: string;
+  image: string;
+  text: string;
+}
+const testimonialsByLang: Record<string, Testimonial[]> = {
+  fr: [
+    { name: "Jean Kouassi", role: "Propriétaire d'Exploitation", location: "Bouaké, Côte d'Ivoire", image: "https://imgur.com/7P4E0Ac.jpg", text: "L'expertise et le soutien d'Arbre Bio ont été inestimables. La productivité de notre ferme a doublé depuis la mise en œuvre de leurs solutions." },
+    { name: "Aisha Diallo", role: "Présidente de Coopérative Agricole", location: "Abidjan, Côte d'Ivoire", image: "https://imgur.com/MT6lgiD.jpg", text: "Travailler avec Arbre Bio a transformé notre coopérative. Leur technologie et leur formation ont aidé nos membres à augmenter considérablement leurs revenus." },
+    { name: "Kwame Olei", role: "Agriculteur Commercial", location: "Accra, Ghana", image: "https://imgur.com/9Xk7pCh.jpg", text: "Les solutions de serre fournies par Arbre Bio ont dépassé nos attentes. Nous produisons maintenant des légumes de qualité premium toute l'année." },
+  ],
+  es: [
+    { name: "Jean Kouassi", role: "Propietario de Granja", location: "Bouaké, Côte d'Ivoire", image: "https://imgur.com/7P4E0Ac.jpg", text: "La experiencia y el apoyo de Arbre Bio han sido invaluables. La productividad de nuestra granja se ha duplicado desde que implementamos sus soluciones." },
+    { name: "Aisha Diallo", role: "Presidenta de Cooperativa Agrícola", location: "Abidjan, Côte d'Ivoire", image: "https://imgur.com/MT6lgiD.jpg", text: "Trabajar con Arbre Bio ha transformado nuestra cooperativa. Su tecnología y capacitación han ayudado a nuestros miembros a aumentar sus ingresos significativamente." },
+    { name: "Kwame Olei", role: "Agricultor Comercial", location: "Accra, Ghana", image: "https://imgur.com/9Xk7pCh.jpg", text: "Las soluciones de invernadero proporcionadas por Arbre Bio han superado nuestras expectativas. Ahora producimos verduras de calidad premium durante todo el año." },
+  ],
+  af: [
+    { name: "Jean Kouassi", role: "Plaaseienaar", location: "Bouaké, Côte d'Ivoire", image: "https://imgur.com/7P4E0Ac.jpg", text: "Die kundigheid en ondersteuning van Arbre Bio was van onskatbare waarde. Die produktiwiteit van ons plaas het verdubbel sedert die implementering van hul oplossings." },
+    { name: "Aisha Diallo", role: "President van Landboukoöperasie", location: "Abidjan, Côte d'Ivoire", image: "https://imgur.com/MT6lgiD.jpg", text: "Om met Arbre Bio te werk het ons koöperasie getransformeer. Hul tegnologie en opleiding het ons lede gehelp om hul inkomste aansienlik te verhoog." },
+    { name: "Kwame Olei", role: "Kommersiële Boer", location: "Accra, Ghana", image: "https://imgur.com/9Xk7pCh.jpg", text: "Die kweekhuis oplossings van Arbre Bio het ons verwagtinge oortref. Ons produseer nou die heeljaar premiumgehalte groente." },
+  ],
+};
+const testimonials = testimonialsByLang[lang] ?? testimonialsByLang.fr;
+
+// ── Result cards ───────────────────────────────────────────────────────────────
+interface ResultCard {
+  icon: string;
+  colorClass: string;
+  title: string;
+  body: string;
+  stat1val: string; stat1lbl: string;
+  stat2val: string; stat2lbl: string;
+  stat3val: string; stat3lbl: string;
+}
+const resultCardsByLang: Record<string, ResultCard[]> = {
+  fr: [
+    { icon: "tomato", colorClass: "text-green-700", title: "Tomates sous Serre — Yamoussoukro", body: "Un producteur de Yamoussoukro est passé de 8 tonnes/ha en plein champ à 47 tonnes/ha sous serre tunnel avec irrigation goutte-à-goutte et substrat fibre de coco Arbre Bio. Le substrat tourbe de coco a permis une gestion optimale de l'eau et des engrais hydrosolubles.", stat1val: "+488%", stat1lbl: "Rendement", stat2val: "-65%", stat2lbl: "Eau utilisée", stat3val: "22 mois", stat3lbl: "ROI" },
+    { icon: "pepper", colorClass: "text-blue-700", title: "Poivrons Hydroponiques — Abidjan", body: "Une ferme péri-urbaine d'Abidjan cultive des poivrons colorés en hors-sol avec substrat perlite-fibre de coco et fertilisation de précision. Production continue 12 mois/an, livrée directement aux supermarchés locaux.", stat1val: "52 t/ha", stat1lbl: "Rendement", stat2val: "12 mois", stat2lbl: "Saison", stat3val: "3x", stat3lbl: "Prix marché" },
+    { icon: "cucumber", colorClass: "text-purple-700", title: "Concombres Irrigués — Bouaké", body: "Grâce à un système d'aspersion programmé et à un programme phytosanitaire intégré, ce producteur de Bouaké a réduit ses pertes post-récolte de 40 % et triplé son chiffre d'affaires en deux saisons.", stat1val: "-40%", stat1lbl: "Pertes", stat2val: "3x", stat2lbl: "Chiffre d'affaires", stat3val: "2 saisons", stat3lbl: "Durée" },
+    { icon: "leaf", colorClass: "text-orange-700", title: "Herbes Aromatiques — Dakar", body: "Une startup agri-tech de Dakar cultive basilic, menthe et persil sous serre avec substrat tourbe de coco et éclairage LED. Cycles de production de 3 semaines, distribution dans les hôtels et restaurants haut de gamme du Sénégal.", stat1val: "18 cycles/an", stat1lbl: "Production", stat2val: "5x", stat2lbl: "Valeur ajoutée", stat3val: "0 pesticide", stat3lbl: "Chimique" },
+  ],
+  es: [
+    { icon: "tomato", colorClass: "text-green-700", title: "Tomates en Invernadero — Yamoussoukro", body: "Un productor de Yamoussoukro pasó de 8 t/ha en campo abierto a 47 t/ha en un invernadero túnel con riego por goteo y sustrato de fibra de coco Arbre Bio. El sustrato de turba de coco permitió una gestión óptima del agua y los fertilizantes solubles.", stat1val: "+488%", stat1lbl: "Rendimiento", stat2val: "-65%", stat2lbl: "Agua usada", stat3val: "22 meses", stat3lbl: "ROI" },
+    { icon: "pepper", colorClass: "text-blue-700", title: "Pimientos Hidropónicos — Abidján", body: "Una granja periurbana de Abidján cultiva pimientos de colores en cultivo sin suelo con sustrato de perlita-fibra de coco y fertilización de precisión. Producción continua 12 meses/año, entregada directamente a los supermercados locales.", stat1val: "52 t/ha", stat1lbl: "Rendimiento", stat2val: "12 meses", stat2lbl: "Temporada", stat3val: "3x", stat3lbl: "Precio de mercado" },
+    { icon: "cucumber", colorClass: "text-purple-700", title: "Pepinos Irrigados — Bouaké", body: "Con un sistema de aspersión programado y manejo integrado de plagas, este productor en Bouaké redujo las pérdidas postcosecha en un 40% y triplicó la facturación en dos temporadas.", stat1val: "-40%", stat1lbl: "Pérdidas", stat2val: "3x", stat2lbl: "Facturación", stat3val: "2 temporadas", stat3lbl: "Duración" },
+    { icon: "leaf", colorClass: "text-orange-700", title: "Hierbas Aromáticas — Dakar", body: "Una startup agri-tech en Dakar cultiva albahaca, menta y perejil en invernaderos con sustrato de turba de coco e iluminación LED. Ciclos de producción de 3 semanas, distribuidos a los mejores hoteles y restaurantes de Senegal.", stat1val: "18 ciclos/año", stat1lbl: "Producción", stat2val: "5x", stat2lbl: "Valor añadido", stat3val: "0 pesticida", stat3lbl: "Químico" },
+  ],
+  af: [
+    { icon: "tomato", colorClass: "text-green-700", title: "Kweekhuis Tamaties — Yamoussoukro", body: "'n Boer in Yamoussoukro het van 8 t/ha in die oop veld na 47 t/ha in 'n tonnelkweekhuis gegaan met druppelbesproeiing en Arbre Bio se kokosveselsubs traat. Die kokosveensubstraat het optimale bestuur van water en wateroplosbare kunsmis moontlik gemaak.", stat1val: "+488%", stat1lbl: "Opbrengs", stat2val: "-65%", stat2lbl: "Water gebruik", stat3val: "22 maande", stat3lbl: "ROI" },
+    { icon: "pepper", colorClass: "text-blue-700", title: "Hidroniese Soetrissies — Abidjan", body: "'n Peri-stedelike plaas in Abidjan kweek gekleurde soetrissies in grondlose teelt met perliet-kokosvesels ubstraat en presisiebemesting. Deurlopende produksie 12 maande/jaar, direk gelewer aan plaaslike supermarkte.", stat1val: "52 t/ha", stat1lbl: "Opbrengs", stat2val: "12 maande", stat2lbl: "Seisoen", stat3val: "3x", stat3lbl: "Markprys" },
+    { icon: "cucumber", colorClass: "text-purple-700", title: "Besproei Komkommers — Bouaké", body: "Met 'n geskeduleerde sprinklerbesproeiingstelsel en geïntegreerde plaagbestuur het hierdie boer in Bouaké naoesverliese met 40% verminder en omset in twee seisoene verdriedubbel.", stat1val: "-40%", stat1lbl: "Verliese", stat2val: "3x", stat2lbl: "Omset", stat3val: "2 seisoene", stat3lbl: "Duur" },
+    { icon: "leaf", colorClass: "text-orange-700", title: "Aromatiese Kruie — Dakar", body: "'n Agri-tegnologie opstartonderneming in Dakar kweek basiliekruid, kruisement en pietersielie in kweekhuise met kokosveensubstraat en LED-beligting. 3-week produksiesiklusse, versprei na Senegal se tophotels en restaurante.", stat1val: "18 siklusse/jr", stat1lbl: "Produksie", stat2val: "5x", stat2lbl: "Toegevoegde waarde", stat3val: "0 plaagdoder", stat3lbl: "Chemies" },
+  ],
+};
+const resultCards = resultCardsByLang[lang] ?? resultCardsByLang.fr;
+
+// ── FAQs ───────────────────────────────────────────────────────────────────────
+interface FAQ { q: string; a: string; }
+const faqByLang: Record<string, FAQ[]> = {
+  fr: [
+    { q: "Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?", a: "Les résultats varient selon la culture, mais en moyenne nos clients obtiennent : tomates 40 à 60 t/ha (vs 8 à 12 t/ha en plein champ), poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha, laitues 30 cycles/an. Ces performances sont rendues possibles grâce à la combinaison serre + irrigation de précision + substrat fibre de coco + fertilisation hydrosoluble adaptée." },
+    { q: "Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte par rapport à l'irrigation traditionnelle ?", a: "L'irrigation goutte-à-goutte avec programmateur intelligent permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation par gravité ou aspersion classique. En Côte d'Ivoire, où l'eau représente 30 à 40 % des coûts d'exploitation maraîchère, cette économie est critique pour la rentabilité. Le substrat tourbe de coco amplifie encore cet effet grâce à sa capacité de rétention d'eau supérieure à la terre." },
+    { q: "Quel est le retour sur investissement (ROI) typique pour une installation de serre en Afrique de l'Ouest ?", a: "Pour une installation complète (serre tunnel 2 000 m² + irrigation + substrats), le retour sur investissement est généralement atteint en 18 à 36 mois selon la culture et le circuit de distribution. Les cultures à haute valeur ajoutée comme les tomates cerise, poivrons, herbes aromatiques et fraises permettent les ROI les plus rapides (12 à 24 mois). Contactez-nous pour une étude de rentabilité personnalisée." },
+    { q: "La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?", a: "Oui, la fibre de coco et la tourbe de coco sont particulièrement bien adaptées aux conditions africaines. Contrairement à la tourbe classique, le coco peat résiste à la chaleur, conserve sa structure sur 3 à 5 ans, ne se compacte pas et maintient une porosité stable même sous des températures de 35-40°C. Sa capacité de rétention d'eau (650 % de son poids) et son pH neutre (5,5-6,5) en font le substrat idéal pour la culture maraîchère intensive en Afrique." },
+    { q: "Arbre Bio Africa propose-t-il un suivi après installation pour garantir les résultats ?", a: "Oui, chaque projet inclut un programme de suivi agronomique post-installation : visites terrain régulières, analyses de nutriments dans les plantes et substrats, ajustement des programmes de fertilisation et de protection phytosanitaire, formation continue des équipes. Notre objectif est que chaque client atteigne les rendements cibles dans les 2 premières saisons et les maintienne sur le long terme." },
+  ],
+  es: [
+    { q: "¿Qué rendimientos se pueden esperar con un invernadero y riego por goteo en África?", a: "Los resultados varían según el cultivo, pero en promedio nuestros clientes logran: tomates 40 a 60 t/ha (vs 8 a 12 t/ha en campo abierto), pimientos 45 a 55 t/ha, pepinos 60 a 80 t/ha, lechugas 30 ciclos/año. Estos rendimientos son posibles gracias a la combinación invernadero + riego de precisión + sustrato de fibra de coco + fertilización hidrosoluble adaptada." },
+    { q: "¿Cuánta agua se ahorra con el riego por goteo comparado con el riego tradicional?", a: "El riego por goteo con programador inteligente ahorra entre un 50% y un 70% de agua en comparación con el riego por gravedad o aspersión convencional. En Côte d'Ivoire, donde el agua representa el 30 al 40% de los costos de operación hortícola, este ahorro es crítico para la rentabilidad. El sustrato de turba de coco amplifica este efecto gracias a su superior capacidad de retención de agua." },
+    { q: "¿Cuál es el retorno de inversión típico para una instalación de invernadero en África Occidental?", a: "Para una instalación completa (invernadero túnel de 2.000 m² + riego + sustratos), el retorno de inversión se logra generalmente en 18 a 36 meses según el cultivo y el canal de distribución. Los cultivos de alto valor como tomates cherry, pimientos, hierbas aromáticas y fresas permiten los ROI más rápidos (12 a 24 meses). Contáctenos para un estudio de rentabilidad personalizado." },
+    { q: "¿Es la fibra de coco (coco peat) adecuada para las condiciones climáticas africanas?", a: "Sí, la fibra de coco y la turba de coco están particularmente bien adaptadas a las condiciones africanas. A diferencia de la turba clásica, el coco peat resiste el calor, mantiene su estructura durante 3 a 5 años, no se compacta y mantiene una porosidad estable incluso a temperaturas de 35-40°C. Su capacidad de retención de agua (650% de su peso) y pH neutro (5,5-6,5) lo convierten en el sustrato ideal para el cultivo intensivo de hortalizas en África." },
+    { q: "¿Ofrece Arbre Bio Africa seguimiento postventa para garantizar los resultados?", a: "Sí, cada proyecto incluye un programa de seguimiento agronómico post-instalación: visitas regulares al campo, análisis de nutrientes en plantas y sustratos, ajuste de programas de fertilización y protección fitosanitaria, formación continua del equipo. Nuestro objetivo es que cada cliente alcance los rendimientos objetivo dentro de las primeras 2 temporadas y los mantenga a largo plazo." },
+  ],
+  af: [
+    { q: "Watter opbrengste kan jy verwag met 'n kweekhuis en druppelbesproeiing in Afrika?", a: "Resultate wissel per gewas, maar gemiddeld behaal ons kliënte: tamaties 40 tot 60 t/ha (vs 8 tot 12 t/ha in oop veld), soetrissies 45 tot 55 t/ha, komkommers 60 tot 80 t/ha, blaarslaai 30 siklusse/jaar. Hierdie prestasies word moontlik gemaak deur die kombinasie kweekhuis + presisiebesproeiing + kokosveselsubs traat + aangepaste wateroplosbare bemesting." },
+    { q: "Hoeveel water word gespaar met druppelbesproeiing in vergelyking met tradisionele besproeiing?", a: "Slim druppelbesproeiing bespaar tussen 50% en 70% water in vergelyking met swaartekrag of konvensionele sprinklerbesproeiing. In Côte d'Ivoire, waar water 30 tot 40% van hortikulturele bedryfskoste verteenwoordig, is hierdie besparing krities vir winsgewendheid. Kokosveen substraat versterk hierdie effek verder danksy sy superieure waterretensie kapasiteit." },
+    { q: "Wat is die tipiese ROI vir 'n kweekhuis installasie in Wes-Afrika?", a: "Vir 'n volledige installasie (2.000 m² tonnelkweekhuis + besproeiing + substrate), word opbrengs op belegging gewoonlik bereik in 18 tot 36 maande, afhangende van die gewas en distribusiekanaal. Hoëwaarde gewasse soos kersiietamaties, soetrissies, aromatiese kruie en aarbeie maak die vinnigste ROI moontlik (12 tot 24 maande). Kontak ons vir 'n persoonlike winsgewendheidstudie." },
+    { q: "Is kokosvesels (coco peat) geskik vir Afrika se klimaatsomstandighede?", a: "Ja, kokosvesels en kokosveen is veral goed aangepas by Afrika-toestande. Anders as klassieke turf weerstaan kokosveen hitte, behou sy struktuur vir 3 tot 5 jaar, kompakteer nie en handhaaf stabiele porositeit selfs by temperature van 35-40°C. Sy waterretensie kapasiteit (650% van sy gewig) en neutrale pH (5,5-6,5) maak dit die ideale substraat vir intensiewe groenteteelt in Afrika." },
+    { q: "Bied Arbre Bio Africa na-installasie opvolg om resultate te waarborg?", a: "Ja, elke projek sluit 'n na-installasie agronomiese moniteringsprogram in: gereelde veldbesoeke, voedingstofanalises in plante en substrate, aanpassing van bemestings- en plantbeskerming programme, deurlopende spanopleiding. Ons doel is dat elke kliënt teikenopbrengste bereik binne die eerste 2 seisoene en dit op die lang termyn handhaaf." },
+  ],
+};
+const faqs = faqByLang[lang] ?? faqByLang.fr;
 ---
 
-<Layout title={({'fr':'Témoignages & Résultats Agricoles | Arbre Bio Africa','en':'Agriculture Success Stories | Arbre Bio Africa','es':'Casos de Éxito en Agricultura | Arbre Bio Africa','af':'Suksesverhale in Landbou | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Agriculture Success Stories | Arbre Bio Africa'} description={T.ssHeroDesc}>
+<Layout
+  title={({'fr':'Histoires de Succès — Résultats Réels | Arbre Bio Africa','es':'Historias de Éxito — Resultados Reales | Arbre Bio Africa','af':'Suksesverhale — Werklike Resultate | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Success Stories | Arbre Bio Africa'}
+  description={T.ssHeroDesc}
+>
 
+  <!-- Hero -->
   <section class="relative h-[50vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="https://imgur.com/YbVGmcu.jpg" alt="Success Stories" class="w-full h-full object-cover"/>
+      <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3" alt={T.ssHeroTitle} class="w-full h-full object-cover"/>
       <div class="absolute inset-0 bg-black bg-opacity-55"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10 text-center">
@@ -66,7 +399,8 @@ const caseStudies = [
     </div>
   </section>
 
-  {caseStudies.map((study, index) => (
+  <!-- Case Studies -->
+  {studies.map((study, index) => (
     <section class={`py-20 ${index % 2 !== 0 ? "bg-gray-50" : "bg-white"}`}>
       <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
@@ -86,8 +420,8 @@ const caseStudies = [
               <h3 class="font-bold text-green-700 mb-3">{T.results}</h3>
               <ul class="space-y-1">
                 {study.results.map(r => (
-                  <li class="text-sm text-gray-700 flex items-start gap-1">
-                    <span class="text-green-600 font-bold mt-0.5"><EmojiIcon id="shield" size="2rem" /></span>{r}
+                  <li class="text-sm text-gray-700 flex items-start gap-2">
+                    <span class="text-green-500 font-bold mt-0.5 flex-shrink-0">✓</span>{r}
                   </li>
                 ))}
               </ul>
@@ -96,11 +430,11 @@ const caseStudies = [
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div>
               <p class="text-sm font-semibold text-gray-500 mb-2">{T.beforeLabel}</p>
-              <img src={study.beforeImage} alt="Before" class="w-full h-48 object-cover rounded-lg shadow"/>
+              <img src={study.beforeImage} alt={T.beforeLabel} class="w-full h-48 object-cover rounded-lg shadow"/>
             </div>
             <div>
               <p class="text-sm font-semibold text-gray-500 mb-2">{T.afterLabel}</p>
-              <img src={study.afterImage} alt="After" class="w-full h-48 object-cover rounded-lg shadow"/>
+              <img src={study.afterImage} alt={T.afterLabel} class="w-full h-48 object-cover rounded-lg shadow"/>
             </div>
           </div>
           <blockquote class="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg">
@@ -115,6 +449,29 @@ const caseStudies = [
     </section>
   ))}
 
+  <!-- What Clients Say -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">{UI.whatClientsSay}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {testimonials.map((t) => (
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex items-center mb-4">
+              <img src={t.image} alt={t.name} class="w-16 h-16 rounded-full object-cover mr-4"/>
+              <div>
+                <h3 class="font-bold">{t.name}</h3>
+                <p class="text-gray-600">{t.role}</p>
+                <p class="text-gray-500 text-sm">{t.location}</p>
+              </div>
+            </div>
+            <blockquote class="text-gray-700 italic">"{t.text}"</blockquote>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-6">{T.transformFarm}</h2>
@@ -128,94 +485,52 @@ const caseStudies = [
     </div>
   </section>
 
-  <!-- Results Section -->
+  <!-- Measurable Results -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-4">Résultats Mesurables de l'Agriculture de Précision en Afrique</h2>
-      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">L'agriculture de précision transforme les exploitations africaines. Nos clients en Côte d'Ivoire et en Afrique de l'Ouest obtiennent des résultats concrets grâce à nos serres, systèmes d'irrigation, substrats fibre de coco et programmes de fertilisation.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">{UI.resultsTitle}</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{UI.resultsSubtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-green-700"><EmojiIcon id="tomato" size="1.5rem" class="mr-2" /> Tomates sous Serre — Yamoussoukro</h3>
-          <p class="text-gray-600 mb-4">Un producteur de Yamoussoukro est passé de 8 tonnes/ha en plein champ à <strong>47 tonnes/ha</strong> sous serre tunnel avec irrigation goutte-à-goutte et substrat fibre de coco Arbre Bio. Le substrat tourbe de coco a permis une gestion optimale de l'eau et des engrais hydrosolubles.</p>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">+488%</div><div class="text-sm text-gray-600">Rendement</div></div>
-            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">-65%</div><div class="text-sm text-gray-600">Eau utilisée</div></div>
-            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">22 mois</div><div class="text-sm text-gray-600">ROI</div></div>
+        {resultCards.map((card) => (
+          <div class="bg-white rounded-xl p-8 shadow-md">
+            <h3 class={`text-2xl font-bold mb-4 ${card.colorClass} flex items-center gap-2`}>
+              <EmojiIcon id={card.icon} size="1.5rem" />{card.title}
+            </h3>
+            <p class="text-gray-600 mb-4">{card.body}</p>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="text-center bg-green-50 p-3 rounded-lg">
+                <div class="text-2xl font-bold text-green-600">{card.stat1val}</div>
+                <div class="text-sm text-gray-600">{card.stat1lbl}</div>
+              </div>
+              <div class="text-center bg-blue-50 p-3 rounded-lg">
+                <div class="text-2xl font-bold text-blue-600">{card.stat2val}</div>
+                <div class="text-sm text-gray-600">{card.stat2lbl}</div>
+              </div>
+              <div class="text-center bg-orange-50 p-3 rounded-lg">
+                <div class="text-2xl font-bold text-orange-600">{card.stat3val}</div>
+                <div class="text-sm text-gray-600">{card.stat3lbl}</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-blue-700"><EmojiIcon id="pepper" size="1.5rem" class="mr-2" /> Poivrons Hydroponiques — Abidjan</h3>
-          <p class="text-gray-600 mb-4">Une ferme péri-urbaine d'Abidjan cultive des poivrons colorés en hors-sol avec substrat perlite-fibre de coco et fertilisation de précision. Production continue 12 mois/an, livrée directement aux supermarchés locaux.</p>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">52 t/ha</div><div class="text-sm text-gray-600">Rendement</div></div>
-            <div class="text-center bg-purple-50 p-3 rounded-lg"><div class="text-2xl font-bold text-purple-600">12 mois</div><div class="text-sm text-gray-600">Saison</div></div>
-            <div class="text-center bg-orange-50 p-3 rounded-lg"><div class="text-2xl font-bold text-orange-600">3x</div><div class="text-sm text-gray-600">Prix marché</div></div>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-purple-700"><EmojiIcon id="cucumber" size="1.5rem" class="mr-2" /> Concombres Irrigués — Bouaké</h3>
-          <p class="text-gray-600 mb-4">Grâce à un système d'aspersion programmé et à un programme phytosanitaire intégré, ce producteur de Bouaké a réduit ses pertes post-récolte de 40 % et triplé son chiffre d'affaires en deux saisons.</p>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">-40%</div><div class="text-sm text-gray-600">Pertes</div></div>
-            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">3x</div><div class="text-sm text-gray-600">Chiffre d'affaires</div></div>
-            <div class="text-center bg-yellow-50 p-3 rounded-lg"><div class="text-2xl font-bold text-yellow-600">2 saisons</div><div class="text-sm text-gray-600">Durée</div></div>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl p-8 shadow-md">
-          <h3 class="text-2xl font-bold mb-4 text-orange-700"><EmojiIcon id="leaf" size="1.5rem" class="mr-2" /> Herbes Aromatiques — Dakar</h3>
-          <p class="text-gray-600 mb-4">Une startup agri-tech de Dakar cultive basilic, menthe et persil sous serre avec substrat tourbe de coco et éclairage LED. Cycles de production de 3 semaines, distribution dans les hôtels et restaurants haut de gamme du Sénégal.</p>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center bg-green-50 p-3 rounded-lg"><div class="text-2xl font-bold text-green-600">18 cycles/an</div><div class="text-sm text-gray-600">Production</div></div>
-            <div class="text-center bg-blue-50 p-3 rounded-lg"><div class="text-2xl font-bold text-blue-600">5x</div><div class="text-sm text-gray-600">Valeur ajoutée</div></div>
-            <div class="text-center bg-red-50 p-3 rounded-lg"><div class="text-2xl font-bold text-red-600">0 pesticide</div><div class="text-sm text-gray-600">Chimique</div></div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section -->
+  <!-- FAQ -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h2 class="text-3xl font-bold text-center mb-4">Questions Fréquentes sur les Résultats Agricoles</h2>
-      <p class="text-gray-600 text-center mb-12">Découvrez comment nos clients africains transforment leur agriculture grâce aux techniques de précision.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">{UI.faqTitle}</h2>
+      <p class="text-gray-600 text-center mb-12">{UI.faqSubtitle}</p>
       <div class="space-y-4">
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Les résultats varient selon la culture, mais en moyenne nos clients obtiennent : tomates 40 à 60 t/ha (vs 8 à 12 t/ha en plein champ), poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha, laitues 30 cycles/an. Ces performances sont rendues possibles grâce à la combinaison serre + irrigation de précision + substrat fibre de coco + fertilisation hydrosoluble adaptée.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte par rapport à l'irrigation traditionnelle ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">L'irrigation goutte-à-goutte avec programmateur intelligent permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation par gravité ou aspersion classique. En Côte d'Ivoire, où l'eau représente 30 à 40 % des coûts d'exploitation maraîchère, cette économie est critique pour la rentabilité. Le substrat tourbe de coco amplifie encore cet effet grâce à sa capacité de rétention d'eau supérieure à la terre.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quel est le retour sur investissement (ROI) typique pour une installation de serre en Afrique de l'Ouest ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Pour une installation complète (serre tunnel 2 000 m² + irrigation + substrats), le retour sur investissement est généralement atteint en 18 à 36 mois selon la culture et le circuit de distribution. Les cultures à haute valeur ajoutée comme les tomates cerise, poivrons, herbes aromatiques et fraises permettent les ROI les plus rapides (12 à 24 mois). Contactez-nous pour une étude de rentabilité personnalisée.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, la fibre de coco et la tourbe de coco sont particulièrement bien adaptées aux conditions africaines. Contrairement à la tourbe classique, le coco peat résiste à la chaleur, conserve sa structure sur 3 à 5 ans, ne se compacte pas et maintient une porosité stable même sous des températures de 35-40°C. Sa capacité de rétention d'eau (650 % de son poids) et son pH neutre (5,5-6,5) en font le substrat idéal pour la culture maraîchère intensive en Afrique.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa propose-t-il un suivi après installation pour garantir les résultats ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, chaque projet inclut un programme de suivi agronomique post-installation : visites terrain régulières, analyses de nutriments dans les plantes et substrats, ajustement des programmes de fertilisation et de protection phytosanitaire, formation continue des équipes. Notre objectif est que chaque client atteigne les rendements cibles dans les 2 premières saisons et les maintienne sur le long terme.</div>
-        </details>
+        {faqs.map((faq) => (
+          <details class="border border-gray-200 rounded-lg overflow-hidden">
+            <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">{faq.q}</summary>
+            <div class="px-6 pb-6 text-gray-600 leading-relaxed">{faq.a}</div>
+          </details>
+        ))}
       </div>
     </div>
   </section>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"Quels rendements peut-on espérer avec une serre et l'irrigation goutte-à-goutte en Afrique ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne : tomates 40 à 60 t/ha, poivrons 45 à 55 t/ha, concombres 60 à 80 t/ha. Ces performances combinent serre, irrigation de précision, substrat fibre de coco et fertilisation hydrosoluble."}},
-      {"@type":"Question","name":"Combien d'eau économise-t-on avec l'irrigation goutte-à-goutte ?","acceptedAnswer":{"@type":"Answer","text":"L'irrigation goutte-à-goutte permet d'économiser entre 50 % et 70 % d'eau par rapport à l'irrigation traditionnelle. Le substrat tourbe de coco amplifie cet effet grâce à sa capacité de rétention d'eau."}},
-      {"@type":"Question","name":"Quel est le retour sur investissement typique pour une serre en Afrique de l'Ouest ?","acceptedAnswer":{"@type":"Answer","text":"Pour une installation complète (serre 2 000 m² + irrigation + substrats), le ROI est atteint en 18 à 36 mois. Les cultures à haute valeur ajoutée permettent un ROI en 12 à 24 mois."}},
-      {"@type":"Question","name":"La fibre de coco (coco peat) est-elle adaptée aux conditions climatiques africaines ?","acceptedAnswer":{"@type":"Answer","text":"Oui, le coco peat résiste à la chaleur, conserve sa structure 3 à 5 ans, ne se compacte pas à 35-40°C et retient 650 % de son poids en eau. C'est le substrat idéal pour l'Afrique."}},
-      {"@type":"Question","name":"Arbre Bio Africa propose-t-il un suivi après installation ?","acceptedAnswer":{"@type":"Answer","text":"Oui, chaque projet inclut un suivi agronomique : visites terrain, analyses substrats, ajustement fertilisation et protection phytosanitaire, formation des équipes pour atteindre les rendements cibles."}}
-    ]
-  }
-  </script>
 
 </Layout>
