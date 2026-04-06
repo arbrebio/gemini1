@@ -8,125 +8,282 @@ export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
 const p = `/${lang}`;
 
-const structuralComponents = [
-  {
-    category: "Arches & Trusses",
-    items: [
-      {
-        name: "Premium Arch 9600",
-        specs: { material: "Hot-dip galvanized steel Z600", thickness: "2.0-3.0mm", loadCapacity: "55 kg/m²", span: "9.6 meters", coating: "275g/m² zinc" },
-        certifications: ["ISO 9001:2015", "EN 1090-1"],
-        image: "https://imgur.com/Fn2AVYj.jpg"
-      },
-      {
-        name: "Reinforced Truss System",
-        specs: { material: "Hot-dip galvanized steel Z600", thickness: "2.5-4.0mm", loadCapacity: "75 kg/m²", span: "8.0-12.0 meters", coating: "275g/m² zinc" },
-        certifications: ["ISO 9001:2015", "EN 1090-1"],
-        image: "https://imgur.com/h9Sd2nf.jpg"
-      }
-    ]
+const tr: Record<string, Record<string, string>> = {
+  en: {
+    layoutTitle: "Greenhouse Accessories & Components | Arbre Bio Africa",
+    layoutDesc: "Complete range of professional-grade greenhouse components and accessories. From structural elements to growing systems, discover our quality-certified products.",
+    heroTitle: "Professional Greenhouse Components",
+    heroSub: "Quality-Certified Accessories & Supplies",
+    btnQuote: "Request Quote",
+    btnSpecs: "View Technical Specs",
+    navStructural: "Structural Components",
+    navFasteners: "Fasteners & Connections",
+    navCoverage: "Coverage Materials",
+    navGrowing: "Growing Accessories",
+    secStructural: "Structural Components",
+    secFasteners: "Fasteners & Connection Systems",
+    secCoverage: "Coverage Materials & Climate Control",
+    secGrowing: "Growing Accessories",
+    secDocs: "Technical Documentation",
+    secCerts: "Quality Certifications",
+    lblApplications: "Applications:",
+    formTitle: "Request a Quote",
+    lblFirstName: "First Name *",
+    lblLastName: "Last Name *",
+    lblEmail: "Email Address *",
+    lblPhone: "Phone Number *",
+    lblCategory: "Product Category *",
+    selectCategory: "Select a category",
+    optStructural: "Structural Components",
+    optFasteners: "Fasteners & Connections",
+    optCoverage: "Coverage Materials",
+    optGrowing: "Growing Accessories",
+    lblProjectDetails: "Project Details",
+    phProjectDetails: "Tell us about your project and specific requirements...",
+    btnSubmit: "Submit Quote Request",
+    ctaTitle: "Need Expert Advice?",
+    ctaDesc: "Contact us today for technical consultation and custom solutions.",
+    btnContact: "Contact Us",
+    btnWhatsapp: "Chat on WhatsApp",
+    docSpecs: "Technical Specifications",
+    docInstall: "Installation Guide",
+    docCad: "CAD Files",
+    docSpecsDesc: "Complete product specifications",
+    docInstallDesc: "Step-by-step installation instructions",
+    docCadDesc: "Technical drawings and 3D models",
   },
-  {
-    category: "Support Systems",
-    items: [
-      {
-        name: "Heavy-Duty Column",
-        specs: { material: "Hot-dip galvanized steel Z600", thickness: "3.0-4.0mm", loadCapacity: "2500 kg vertical", height: "3.0-6.0 meters", coating: "275g/m² zinc" },
-        certifications: ["ISO 9001:2015", "EN 1090-1"],
-        image: "https://imgur.com/9zbYXXU.jpg"
-      },
-      {
-        name: "Cross Bracing Kit",
-        specs: { material: "Hot-dip galvanized steel wire", thickness: "8mm diameter", loadCapacity: "1200 kg tension", length: "Customizable", coating: "275g/m² zinc" },
-        certifications: ["ISO 9001:2015"],
-        image: "https://imgur.com/cgLqE5E.jpg"
-      }
-    ]
-  }
+  fr: {
+    layoutTitle: "Accessoires et Composants pour Serres | Arbre Bio Africa",
+    layoutDesc: "Gamme complète de composants professionnels pour serres. Des éléments structurels aux systèmes de culture, découvrez nos produits certifiés.",
+    heroTitle: "Composants Professionnels pour Serres",
+    heroSub: "Accessoires et Fournitures Certifiés",
+    btnQuote: "Demander un Devis",
+    btnSpecs: "Voir les Spécifications Techniques",
+    navStructural: "Composants Structurels",
+    navFasteners: "Fixations et Connexions",
+    navCoverage: "Matériaux de Couverture",
+    navGrowing: "Accessoires de Culture",
+    secStructural: "Composants Structurels",
+    secFasteners: "Systèmes de Fixation et Connexion",
+    secCoverage: "Matériaux de Couverture et Contrôle Climatique",
+    secGrowing: "Accessoires de Culture",
+    secDocs: "Documentation Technique",
+    secCerts: "Certifications Qualité",
+    lblApplications: "Applications :",
+    formTitle: "Demander un Devis",
+    lblFirstName: "Prénom *",
+    lblLastName: "Nom de Famille *",
+    lblEmail: "Adresse E-mail *",
+    lblPhone: "Numéro de Téléphone *",
+    lblCategory: "Catégorie de Produit *",
+    selectCategory: "Sélectionner une catégorie",
+    optStructural: "Composants Structurels",
+    optFasteners: "Fixations et Connexions",
+    optCoverage: "Matériaux de Couverture",
+    optGrowing: "Accessoires de Culture",
+    lblProjectDetails: "Détails du Projet",
+    phProjectDetails: "Décrivez votre projet et vos besoins spécifiques...",
+    btnSubmit: "Soumettre la Demande de Devis",
+    ctaTitle: "Besoin de Conseils d'Experts ?",
+    ctaDesc: "Contactez-nous aujourd'hui pour une consultation technique et des solutions personnalisées.",
+    btnContact: "Nous Contacter",
+    btnWhatsapp: "Discuter sur WhatsApp",
+    docSpecs: "Spécifications Techniques",
+    docInstall: "Guide d'Installation",
+    docCad: "Fichiers CAO",
+    docSpecsDesc: "Spécifications complètes des produits",
+    docInstallDesc: "Instructions d'installation étape par étape",
+    docCadDesc: "Dessins techniques et modèles 3D",
+  },
+  es: {
+    layoutTitle: "Accesorios y Componentes para Invernaderos | Arbre Bio Africa",
+    layoutDesc: "Gama completa de componentes profesionales para invernaderos. Desde elementos estructurales hasta sistemas de cultivo, descubra nuestros productos certificados.",
+    heroTitle: "Componentes Profesionales para Invernaderos",
+    heroSub: "Accesorios y Suministros Certificados",
+    btnQuote: "Solicitar Presupuesto",
+    btnSpecs: "Ver Especificaciones Técnicas",
+    navStructural: "Componentes Estructurales",
+    navFasteners: "Fijaciones y Conexiones",
+    navCoverage: "Materiales de Cobertura",
+    navGrowing: "Accesorios de Cultivo",
+    secStructural: "Componentes Estructurales",
+    secFasteners: "Sistemas de Fijación y Conexión",
+    secCoverage: "Materiales de Cobertura y Control Climático",
+    secGrowing: "Accesorios de Cultivo",
+    secDocs: "Documentación Técnica",
+    secCerts: "Certificaciones de Calidad",
+    lblApplications: "Aplicaciones:",
+    formTitle: "Solicitar Presupuesto",
+    lblFirstName: "Nombre *",
+    lblLastName: "Apellido *",
+    lblEmail: "Correo Electrónico *",
+    lblPhone: "Número de Teléfono *",
+    lblCategory: "Categoría de Producto *",
+    selectCategory: "Seleccionar una categoría",
+    optStructural: "Componentes Estructurales",
+    optFasteners: "Fijaciones y Conexiones",
+    optCoverage: "Materiales de Cobertura",
+    optGrowing: "Accesorios de Cultivo",
+    lblProjectDetails: "Detalles del Proyecto",
+    phProjectDetails: "Cuéntenos sobre su proyecto y requisitos específicos...",
+    btnSubmit: "Enviar Solicitud de Presupuesto",
+    ctaTitle: "¿Necesita Asesoramiento Experto?",
+    ctaDesc: "Contáctenos hoy para consulta técnica y soluciones personalizadas.",
+    btnContact: "Contáctenos",
+    btnWhatsapp: "Chat en WhatsApp",
+    docSpecs: "Especificaciones Técnicas",
+    docInstall: "Guía de Instalación",
+    docCad: "Archivos CAD",
+    docSpecsDesc: "Especificaciones completas del producto",
+    docInstallDesc: "Instrucciones de instalación paso a paso",
+    docCadDesc: "Planos técnicos y modelos 3D",
+  },
+  af: {
+    layoutTitle: "Kweekhuis Bykomstighede en Komponente | Arbre Bio Africa",
+    layoutDesc: "Volledige reeks professionele kweekhuiskomponente. Van strukturele elemente tot kweekstelsels, ontdek ons gesertifiseerde produkte.",
+    heroTitle: "Professionele Kweekhuiskomponente",
+    heroSub: "Gesertifiseerde Bykomstighede en Voorrade",
+    btnQuote: "Versoek Kwotasie",
+    btnSpecs: "Bekyk Tegniese Spesifikasies",
+    navStructural: "Strukturele Komponente",
+    navFasteners: "Bevestigings en Verbindings",
+    navCoverage: "Bedekkingsmateriaal",
+    navGrowing: "Kweekbykomstighede",
+    secStructural: "Strukturele Komponente",
+    secFasteners: "Bevestigings- en Verbindingstelsels",
+    secCoverage: "Bedekkingsmateriaal en Klimaatbeheer",
+    secGrowing: "Kweekbykomstighede",
+    secDocs: "Tegniese Dokumentasie",
+    secCerts: "Kwaliteitsertifikate",
+    lblApplications: "Toepassings:",
+    formTitle: "Versoek 'n Kwotasie",
+    lblFirstName: "Voornaam *",
+    lblLastName: "Van *",
+    lblEmail: "E-posadres *",
+    lblPhone: "Telefoonnommer *",
+    lblCategory: "Produkategorie *",
+    selectCategory: "Kies 'n kategorie",
+    optStructural: "Strukturele Komponente",
+    optFasteners: "Bevestigings en Verbindings",
+    optCoverage: "Bedekkingsmateriaal",
+    optGrowing: "Kweekbykomstighede",
+    lblProjectDetails: "Projekbesonderhede",
+    phProjectDetails: "Vertel ons van u projek en spesifieke vereistes...",
+    btnSubmit: "Dien Kwotasieversoek In",
+    ctaTitle: "Het u Kundige Advies Nodig?",
+    ctaDesc: "Kontak ons vandag vir tegniese konsultasie en pasgemaakte oplossings.",
+    btnContact: "Kontak Ons",
+    btnWhatsapp: "Gesels op WhatsApp",
+    docSpecs: "Tegniese Spesifikasies",
+    docInstall: "Installasiegids",
+    docCad: "CAD-lêers",
+    docSpecsDesc: "Volledige produkspesifikasies",
+    docInstallDesc: "Stap-vir-stap installasie-instruksies",
+    docCadDesc: "Tegniese tekeninge en 3D-modelle",
+  },
+};
+const T = (tr[lang] ?? tr.en) as Record<string, string>;
+
+// Structural components — category names translated, product names stay (technical)
+const catNames: Record<string, Record<string, string>> = {
+  en: { archesTrusses: "Arches & Trusses", supportSystems: "Support Systems", structuralConnectors: "Structural Connectors", filmsSheets: "Films & Sheets", insectScreens: "Insect Screens" },
+  fr: { archesTrusses: "Arcs et Fermes", supportSystems: "Systèmes de Support", structuralConnectors: "Connecteurs Structurels", filmsSheets: "Films et Feuilles", insectScreens: "Grillages Anti-Insectes" },
+  es: { archesTrusses: "Arcos y Cerchas", supportSystems: "Sistemas de Soporte", structuralConnectors: "Conectores Estructurales", filmsSheets: "Películas y Láminas", insectScreens: "Mallas Anti-Insectos" },
+  af: { archesTrusses: "Boë en Spante", supportSystems: "Ondersteuningstelsel", structuralConnectors: "Strukturele Verbinders", filmsSheets: "Filme en Plate", insectScreens: "Insekskermgaas" },
+};
+const C = (catNames[lang] ?? catNames.en) as Record<string, string>;
+
+// Applications translation map
+const appsByLang: Record<string, Record<string, string[]>> = {
+  en: {
+    bolt: ["Arch connections","Main frame assembly","Support bracing"],
+    channel: ["Purlin connections","Cross member joining","Gutter support"],
+    wire: ["Tomato support","Cucumber training","Vine crops"],
+    trellis: ["Vertical growing","Plant training","Row crops"],
+  },
+  fr: {
+    bolt: ["Connexions d'arcs","Assemblage du cadre principal","Contreventement de support"],
+    channel: ["Connexions de pannes","Jonction des membrures transversales","Support de gouttière"],
+    wire: ["Support de tomates","Formation des concombres","Cultures grimpantes"],
+    trellis: ["Culture verticale","Formation des plantes","Cultures en rangées"],
+  },
+  es: {
+    bolt: ["Conexiones de arcos","Ensamblaje del marco principal","Arriostramiento de soporte"],
+    channel: ["Conexiones de correas","Unión de elementos transversales","Soporte de canalón"],
+    wire: ["Soporte de tomates","Entrenamiento de pepinos","Cultivos en enredadera"],
+    trellis: ["Cultivo vertical","Entrenamiento de plantas","Cultivos en filas"],
+  },
+  af: {
+    bolt: ["Boogverbindings","Hoofraammontage","Ondersteuningsverstywing"],
+    channel: ["Gordynverbindings","Dwarslid-samewerking","Geloopondersteuning"],
+    wire: ["Tamatiestut","Komkommeropleiding","Rankgewasse"],
+    trellis: ["Vertikale kweek","Plantopleiding","Rylgewasse"],
+  },
+};
+const A = appsByLang[lang] ?? appsByLang.en;
+
+const structuralComponents = [
+  { category: C.archesTrusses, items: [
+    { name: "Premium Arch 9600", specs: { material: "Hot-dip galvanized steel Z600", thickness: "2.0-3.0mm", loadCapacity: "55 kg/m²", span: "9.6 meters", coating: "275g/m² zinc" }, certifications: ["ISO 9001:2015","EN 1090-1"], image: "https://imgur.com/Fn2AVYj.jpg" },
+    { name: "Reinforced Truss System", specs: { material: "Hot-dip galvanized steel Z600", thickness: "2.5-4.0mm", loadCapacity: "75 kg/m²", span: "8.0-12.0 meters", coating: "275g/m² zinc" }, certifications: ["ISO 9001:2015","EN 1090-1"], image: "https://imgur.com/h9Sd2nf.jpg" },
+  ]},
+  { category: C.supportSystems, items: [
+    { name: "Heavy-Duty Column", specs: { material: "Hot-dip galvanized steel Z600", thickness: "3.0-4.0mm", loadCapacity: "2500 kg vertical", height: "3.0-6.0 meters", coating: "275g/m² zinc" }, certifications: ["ISO 9001:2015","EN 1090-1"], image: "https://imgur.com/9zbYXXU.jpg" },
+    { name: "Cross Bracing Kit", specs: { material: "Hot-dip galvanized steel wire", thickness: "8mm diameter", loadCapacity: "1200 kg tension", length: "Customizable", coating: "275g/m² zinc" }, certifications: ["ISO 9001:2015"], image: "https://imgur.com/cgLqE5E.jpg" },
+  ]},
 ];
 
 const fasteners = [
-  {
-    category: "Structural Connectors",
-    items: [
-      {
-        name: "Heavy-Duty Bolt Set",
-        specs: { material: "Grade 8.8 steel", size: "M8-M12", torque: "25-85 Nm", coating: "Hot-dip galvanized", standard: "DIN 933" },
-        applications: ["Arch connections", "Main frame assembly", "Support bracing"],
-        image: "https://imgur.com/Sz7oYdN.jpg"
-      },
-      {
-        name: "Channel Connector",
-        specs: { material: "Galvanized steel", thickness: "2.5mm", loadCapacity: "850 kg", coating: "Z275", standard: "EN 10346" },
-        applications: ["Purlin connections", "Cross member joining", "Gutter support"],
-        image: "https://imgur.com/QGICSpN.jpg"
-      }
-    ]
-  }
+  { category: C.structuralConnectors, items: [
+    { name: "Heavy-Duty Bolt Set", specs: { material: "Grade 8.8 steel", size: "M8-M12", torque: "25-85 Nm", coating: "Hot-dip galvanized", standard: "DIN 933" }, applications: A.bolt, image: "https://imgur.com/Sz7oYdN.jpg" },
+    { name: "Channel Connector", specs: { material: "Galvanized steel", thickness: "2.5mm", loadCapacity: "850 kg", coating: "Z275", standard: "EN 10346" }, applications: A.channel, image: "https://imgur.com/QGICSpN.jpg" },
+  ]},
 ];
 
 const coverageMaterials = [
-  {
-    category: "Films & Sheets",
-    items: [
-      {
-        name: "Ultra-Clear EVA Film",
-        specs: { material: "EVA copolymer", thickness: "200 microns", lightTransmission: "91%", uvStability: "48 months", thermalRetention: "85%" },
-        certifications: ["EN 13206", "ISO 4892-2"],
-        image: "https://imgur.com/v1WwRzr.jpg"
-      },
-      {
-        name: "Diffused Light Film",
-        specs: { material: "PE-EVA blend", thickness: "200 microns", lightDiffusion: "70%", uvStability: "48 months", thermalRetention: "82%" },
-        certifications: ["EN 13206", "ISO 4892-2"],
-        image: "https://imgur.com/yLyIJMa.jpg"
-      }
-    ]
-  },
-  {
-    category: "Insect Screens",
-    items: [
-      {
-        name: "Anti-Thrip Net",
-        specs: { material: "HDPE monofilament", mesh: "50x25", uvStability: "5 years", airflow: "45%", shading: "22%" },
-        certifications: ["ISO 9001:2015"],
-        image: "https://imgur.com/KRKFqz1.jpg"
-      }
-    ]
-  }
+  { category: C.filmsSheets, items: [
+    { name: "Ultra-Clear EVA Film", specs: { material: "EVA copolymer", thickness: "200 microns", lightTransmission: "91%", uvStability: "48 months", thermalRetention: "85%" }, certifications: ["EN 13206","ISO 4892-2"], image: "https://imgur.com/v1WwRzr.jpg" },
+    { name: "Diffused Light Film", specs: { material: "PE-EVA blend", thickness: "200 microns", lightDiffusion: "70%", uvStability: "48 months", thermalRetention: "82%" }, certifications: ["EN 13206","ISO 4892-2"], image: "https://imgur.com/yLyIJMa.jpg" },
+  ]},
+  { category: C.insectScreens, items: [
+    { name: "Anti-Thrip Net", specs: { material: "HDPE monofilament", mesh: "50x25", uvStability: "5 years", airflow: "45%", shading: "22%" }, certifications: ["ISO 9001:2015"], image: "https://imgur.com/KRKFqz1.jpg" },
+  ]},
 ];
 
 const growingAccessories = [
-  {
-    category: "Support Systems",
-    items: [
-      {
-        name: "Crop Support Wire",
-        specs: { material: "High-tensile steel", diameter: "2.5mm", coating: "Hot-dip galvanized", strength: "700 N/mm²", rollLength: "500m" },
-        applications: ["Tomato support", "Cucumber training", "Vine crops"],
-        image: "https://imgur.com/U8pORSQ.jpg"
-      },
-      {
-        name: "Trellis Support System",
-        specs: { material: "Galvanized steel", wireSpacing: "20cm", postHeight: "2.5m", loadCapacity: "45 kg/m", coating: "Z275" },
-        applications: ["Vertical growing", "Plant training", "Row crops"],
-        image: "https://imgur.com/jKVZds5.jpg"
-      }
-    ]
-  }
+  { category: C.supportSystems, items: [
+    { name: "Crop Support Wire", specs: { material: "High-tensile steel", diameter: "2.5mm", coating: "Hot-dip galvanized", strength: "700 N/mm²", rollLength: "500m" }, applications: A.wire, image: "https://imgur.com/U8pORSQ.jpg" },
+    { name: "Trellis Support System", specs: { material: "Galvanized steel", wireSpacing: "20cm", postHeight: "2.5m", loadCapacity: "45 kg/m", coating: "Z275" }, applications: A.trellis, image: "https://imgur.com/jKVZds5.jpg" },
+  ]},
 ];
 
-const certifications = [
-  { name: "ISO 9001:2015", description: "Quality Management System", icon: "medal" },
-  { name: "EN 1090-1", description: "Structural Steel Components", icon: "greenhouse" },
-  { name: "EN 13206", description: "Greenhouse Covering Materials", icon: "leaf" }
-];
+type Cert = { name: string; description: string; icon: string };
+const certsByLang: Record<string, Cert[]> = {
+  en: [
+    { name: "ISO 9001:2015", description: "Quality Management System", icon: "medal" },
+    { name: "EN 1090-1", description: "Structural Steel Components", icon: "greenhouse" },
+    { name: "EN 13206", description: "Greenhouse Covering Materials", icon: "leaf" },
+  ],
+  fr: [
+    { name: "ISO 9001:2015", description: "Système de Management de la Qualité", icon: "medal" },
+    { name: "EN 1090-1", description: "Composants en Acier Structurel", icon: "greenhouse" },
+    { name: "EN 13206", description: "Matériaux de Couverture pour Serres", icon: "leaf" },
+  ],
+  es: [
+    { name: "ISO 9001:2015", description: "Sistema de Gestión de Calidad", icon: "medal" },
+    { name: "EN 1090-1", description: "Componentes de Acero Estructural", icon: "greenhouse" },
+    { name: "EN 13206", description: "Materiales de Cobertura para Invernaderos", icon: "leaf" },
+  ],
+  af: [
+    { name: "ISO 9001:2015", description: "Kwaliteitsbestuurstelsel", icon: "medal" },
+    { name: "EN 1090-1", description: "Strukturele Staalkomponente", icon: "greenhouse" },
+    { name: "EN 13206", description: "Kweekhuisbedekkingsmateriaal", icon: "leaf" },
+  ],
+};
+const certifications = certsByLang[lang] ?? certsByLang.en;
 ---
 
-<Layout
-  title="Greenhouse Accessories & Components | Arbre Bio Africa"
-  description="Complete range of professional-grade greenhouse components and accessories. From structural elements to growing systems, discover our quality-certified products."
->
+<Layout title={T.layoutTitle} description={T.layoutDesc}>
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
@@ -136,12 +293,12 @@ const certifications = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Professional Greenhouse Components
-          <span class="block text-2xl md:text-3xl mt-2">Quality-Certified Accessories & Supplies</span>
+          {T.heroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.heroSub}</span>
         </h1>
         <div class="flex flex-wrap gap-4">
-          <a href="#quote-form" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Request Quote</a>
-          <a href="#technical-specs" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">View Technical Specs</a>
+          <a href="#quote-form" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.btnQuote}</a>
+          <a href="#technical-specs" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.btnSpecs}</a>
         </div>
       </div>
     </div>
@@ -151,10 +308,10 @@ const certifications = [
   <section class="py-8 bg-gray-50 sticky top-32 z-30 border-b">
     <div class="container mx-auto px-4">
       <div class="flex flex-wrap gap-4 justify-center">
-        <a href="#structural" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">Structural Components</a>
-        <a href="#fasteners" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">Fasteners & Connections</a>
-        <a href="#coverage" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">Coverage Materials</a>
-        <a href="#growing" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">Growing Accessories</a>
+        <a href="#structural" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">{T.navStructural}</a>
+        <a href="#fasteners" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">{T.navFasteners}</a>
+        <a href="#coverage" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">{T.navCoverage}</a>
+        <a href="#growing" class="px-4 py-2 rounded-full bg-white shadow-md hover:bg-primary hover:text-white transition-colors">{T.navGrowing}</a>
       </div>
     </div>
   </section>
@@ -162,7 +319,7 @@ const certifications = [
   <!-- Structural Components -->
   <section id="structural" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Structural Components</h2>
+      <h2 class="text-3xl font-bold mb-12">{T.secStructural}</h2>
       {structuralComponents.map((category) => (
         <div class="mb-16">
           <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
@@ -199,7 +356,7 @@ const certifications = [
   <!-- Fasteners Section -->
   <section id="fasteners" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Fasteners & Connection Systems</h2>
+      <h2 class="text-3xl font-bold mb-12">{T.secFasteners}</h2>
       {fasteners.map((category) => (
         <div class="mb-16">
           <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
@@ -219,13 +376,11 @@ const certifications = [
                       </div>
                     ))}
                   </div>
-                  <h5 class="font-bold mb-2">Applications:</h5>
+                  <h5 class="font-bold mb-2">{T.lblApplications}</h5>
                   <ul class="space-y-1">
                     {item.applications.map((app) => (
                       <li class="flex items-center text-gray-700">
-                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
+                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         {app}
                       </li>
                     ))}
@@ -242,7 +397,7 @@ const certifications = [
   <!-- Coverage Materials -->
   <section id="coverage" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Coverage Materials & Climate Control</h2>
+      <h2 class="text-3xl font-bold mb-12">{T.secCoverage}</h2>
       {coverageMaterials.map((category) => (
         <div class="mb-16">
           <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
@@ -279,7 +434,7 @@ const certifications = [
   <!-- Growing Accessories -->
   <section id="growing" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-12">Growing Accessories</h2>
+      <h2 class="text-3xl font-bold mb-12">{T.secGrowing}</h2>
       {growingAccessories.map((category) => (
         <div class="mb-16">
           <h3 class="text-2xl font-bold mb-8">{category.category}</h3>
@@ -299,13 +454,11 @@ const certifications = [
                       </div>
                     ))}
                   </div>
-                  <h5 class="font-bold mb-2">Applications:</h5>
+                  <h5 class="font-bold mb-2">{T.lblApplications}</h5>
                   <ul class="space-y-1">
                     {item.applications.map((app) => (
                       <li class="flex items-center text-gray-700">
-                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
+                        <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         {app}
                       </li>
                     ))}
@@ -322,18 +475,16 @@ const certifications = [
   <!-- Technical Documentation -->
   <section id="technical-specs" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secDocs}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {[
-          { name: "Technical Specifications", desc: "Complete product specifications" },
-          { name: "Installation Guide", desc: "Step-by-step installation instructions" },
-          { name: "CAD Files", desc: "Technical drawings and 3D models" }
+          { name: T.docSpecs, desc: T.docSpecsDesc },
+          { name: T.docInstall, desc: T.docInstallDesc },
+          { name: T.docCad, desc: T.docCadDesc },
         ].map((doc) => (
           <a href="#" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group">
             <div class="flex items-center justify-between mb-4">
-              <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
+              <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               <span class="text-sm font-medium text-gray-500">PDF</span>
             </div>
             <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
@@ -347,7 +498,7 @@ const certifications = [
   <!-- Certifications -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secCerts}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         {certifications.map((cert) => (
           <div class="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -364,41 +515,41 @@ const certifications = [
   <section id="quote-form" class="py-20">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
             <input type="email" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
             <input type="tel" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Product Category *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblCategory}</label>
             <select required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-              <option value="">Select a category</option>
-              <option value="structural">Structural Components</option>
-              <option value="fasteners">Fasteners & Connections</option>
-              <option value="coverage">Coverage Materials</option>
-              <option value="growing">Growing Accessories</option>
+              <option value="">{T.selectCategory}</option>
+              <option value="structural">{T.optStructural}</option>
+              <option value="fasteners">{T.optFasteners}</option>
+              <option value="coverage">{T.optCoverage}</option>
+              <option value="growing">{T.optGrowing}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Tell us about your project and specific requirements..."></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblProjectDetails}</label>
+            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phProjectDetails}></textarea>
           </div>
-          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">Submit Quote Request</button>
+          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
         </form>
       </div>
     </div>
@@ -407,12 +558,12 @@ const certifications = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for technical consultation and custom solutions.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaDesc}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Contact Us</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.btnContact}</a>
         <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Chat on WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.btnWhatsapp}
         </a>
       </div>
     </div>
@@ -428,6 +579,6 @@ const certifications = [
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
   "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
   "offers": { "@type": "AggregateOffer", "priceCurrency": "XOF", "availability": "https://schema.org/InStock" },
-  "image": ["https://imgur.com/YKw3f5L.jpg","https://imgur.com/L8mP4Nv.jpg","https://imgur.com/R7kTmXq.jpg"]
+  "image": ["https://imgur.com/Fn2AVYj.jpg","https://imgur.com/v1WwRzr.jpg","https://imgur.com/U8pORSQ.jpg"]
 }
 </script>

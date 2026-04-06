@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import EmojiIcon from '../../../components/EmojiIcon.astro';
 import { getAllLangPaths } from "../../../lib/langPaths";
 import type { Language } from "../../../lib/i18n";
 
@@ -7,70 +8,438 @@ export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
 const p = `/${lang}`;
 
-const products = [
-  {
-    name: "D-Net™ 0950",
-    shortDescription: "VERY LOW TRAJECTORY IMPACT SPRINKLER FOR UNIFORM UNDER-CANOPY IRRIGATION",
-    description: "With its low water trajectory angle, D-Net™ 0950 is ideally suited for precise under canopy irrigation of banana or oil palm plantations up to 10 x 10 meters or field crops with windy conditions.",
-    image: "https://imgur.com/vQFO4ob.jpg",
-    features: [
-      { title: "High water distribution uniformity & Higher yield", description: "Innovative 3D diffusion arm, ensures relatively high water distribution uniformity, resulting uniform crop yields." },
-      { title: "Efficient Water Usage", description: "The lower trajectory angle of the water prevents evaporation to the air in areas with winds, and guarantees maximum water-use efficiency." },
-      { title: "Robust product & Long lasting performances", description: "D-Net ™ 0950 has a special design that makes the sprinkler resistant to wear and ensures high performance throughout the long product life." },
-      { title: "Reduced labor cost & Easy maintenance", description: "Versatile installation. Can be installed on solid sets or on removable field stands. Easy to maintain. A special nozzle design, allows simple cleaning of the nozzle even under pressure." },
-      { title: "Durability", description: "D-Net™ 0950 is made of UV-protected materials, making it durable under all climate conditions and with any applied." }
-    ],
-    specifications: {
-      general: { type: "1/2\" impact sprinkler", design: "Unique 3D arm", trajectory: "9.0 degrees water angle", coverage: "Up to 10X11 meters spacing" },
-      performance: { "Flow rates": "355, 400, 510 L/H", "Nominal flow rate": "2.5 bar", "Pressure range": "2.0 - 3.0 bar", "Trajectory angle": "9.0 Degrees" },
-      technical: { "Water distribution": "Single front nozzle", "Inlet connector": "1/2\" male threaded" }
-    },
-    applications: {
-      type: ["Irrigation"],
-      pressure: ["Medium pressure", "Low Pressure"],
-      coverage: ["Full Coverage: Medium spacing installation", "Full Coverage: Small spacing installation"],
-      crops: ["Field crops", "Orchards"],
-      trajectory: ["Low"]
-    },
-    advantages: ["Optimal water distribution uniformity","Reduced evaporation in windy conditions","Durable UV-protected materials","Easy maintenance and cleaning","Versatile installation options","Long product lifespan"],
-    limitations: ["Limited to specific spacing requirements","Requires minimum operating pressure","Fixed trajectory angle"],
-    catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf"
+const tr: Record<string, Record<string, string>> = {
+  en: {
+    layoutTitle: "Irrigation Sprinklers - Precision Water Distribution | Arbre Bio Africa",
+    layoutDesc: "Discover our range of professional irrigation sprinklers designed for optimal water distribution and crop coverage in various agricultural applications.",
+    heroTitle: "Professional Sprinklers",
+    heroSub: "Precision Water Distribution",
+    heroPara: "Advanced sprinkler solutions for optimal crop irrigation",
+    btnProducts: "View Products",
+    btnQuote: "Request Quote",
+    secProducts: "Our Sprinklers",
+    lblFeatures: "Key Features:",
+    lblSpecs: "Technical Specifications:",
+    lblApplications: "Applications:",
+    lblAdvantages: "Advantages:",
+    lblLimitations: "Limitations:",
+    lblDocs: "Documentation:",
+    btnDownload: "Download Product Catalog (PDF)",
+    secCerts: "Quality Certifications",
+    formTitle: "Request a Quote",
+    lblFirstName: "First Name *",
+    lblLastName: "Last Name *",
+    lblEmail: "Email Address *",
+    lblPhone: "Phone Number *",
+    lblProduct: "Product *",
+    selectProduct: "Select a product",
+    lblAppType: "Application Type *",
+    selectAppType: "Select application type",
+    optFieldCrops: "Field Crops",
+    optOrchards: "Orchards",
+    optOther: "Other",
+    lblArea: "Project Area (Hectares) *",
+    lblAdditional: "Additional Requirements",
+    phAdditional: "Tell us about your specific needs, crop types, or any questions you have...",
+    btnSubmit: "Submit Quote Request",
+    ctaTitle: "Need Expert Advice?",
+    ctaDesc: "Contact us today for personalized recommendations and support.",
+    btnContact: "Contact Us",
+    btnWhatsapp: "Chat on WhatsApp",
   },
-  {
-    name: "D-NET™ 8550 F.R.",
-    shortDescription: "DURABLE IMPACT SPRINKLER with flow regulated nozzles FOR FIELD CROPS AND VEGETABLES IRRIGATION",
-    description: "D-Net™ 8550 F.R. 1/2\" impact sprinklers, with 3D diffusion arm and unique flow regulated nozzles guarantees excellent crop uniformity and consistency for field crops and vegetables irrigation throughout the field, with sprinkler spacing up to 12x14 meters. Precise and water-efficient distribution also offers an ideal solution for crop germination and orchard cooling.",
-    image: "https://imgur.com/KWWtez3.jpg",
-    features: [
-      { title: "High and uniform yields", description: "Innovative 3D diffusion arm and unique flow regulated nozzles ensure the highest level of water distribution uniformity in the market, for more consistent production and higher crop yields." },
-      { title: "Greater water efficiency", description: "Outstanding water distribution uniformity eliminates over watering and optimizes water usage." },
-      { title: "Long-lasting performance", description: "Tough UV-protected materials withstand all climate conditions, applied nutrients and chemicals ensuring trouble-free operation over the product's life." },
-      { title: "Versatile installation", description: "Installs on solid sets or on removable field stands." },
-      { title: "Labor-saving maintenance", description: "Special nozzle-key is designed to make it easy to clean debris from the nozzle even under pressure." }
-    ],
-    specifications: {
-      general: { type: "1/2\" impact sprinkler", design: "3D diffusion arm", trajectory: "24 degrees water angle", coverage: "Up to 12X14 meters spacing" },
-      performance: { "Flow rates": "590, 680, 800 L/H", "Pressure regulation": "2.5 to 4.0 bar", "Trajectory angle": "24 Degrees", "Nozzles": "Color-coded for identification" },
-      technical: { "Water distribution": "Flow regulated nozzles", "Inlet connector": "1/2\" male threaded" }
+  fr: {
+    layoutTitle: "Arroseurs d'Irrigation | Distribution d'Eau de Précision | Arbre Bio Africa",
+    layoutDesc: "Découvrez notre gamme d'arroseurs professionnels conçus pour une distribution optimale de l'eau dans diverses applications agricoles.",
+    heroTitle: "Arroseurs Professionnels",
+    heroSub: "Distribution d'Eau de Précision",
+    heroPara: "Solutions d'aspersion avancées pour une irrigation optimale des cultures",
+    btnProducts: "Voir les Produits",
+    btnQuote: "Demander un Devis",
+    secProducts: "Nos Arroseurs",
+    lblFeatures: "Caractéristiques Principales :",
+    lblSpecs: "Spécifications Techniques :",
+    lblApplications: "Applications :",
+    lblAdvantages: "Avantages :",
+    lblLimitations: "Limitations :",
+    lblDocs: "Documentation :",
+    btnDownload: "Télécharger le Catalogue PDF",
+    secCerts: "Certifications Qualité",
+    formTitle: "Demander un Devis",
+    lblFirstName: "Prénom *",
+    lblLastName: "Nom de Famille *",
+    lblEmail: "Adresse E-mail *",
+    lblPhone: "Numéro de Téléphone *",
+    lblProduct: "Produit *",
+    selectProduct: "Sélectionner un produit",
+    lblAppType: "Type d'Application *",
+    selectAppType: "Sélectionner le type d'application",
+    optFieldCrops: "Cultures en Plein Champ",
+    optOrchards: "Vergers",
+    optOther: "Autre",
+    lblArea: "Superficie du Projet (Hectares) *",
+    lblAdditional: "Exigences Supplémentaires",
+    phAdditional: "Décrivez vos besoins spécifiques, types de cultures, ou toute question...",
+    btnSubmit: "Soumettre la Demande de Devis",
+    ctaTitle: "Besoin de Conseils d'Experts ?",
+    ctaDesc: "Contactez-nous aujourd'hui pour des recommandations personnalisées et un support.",
+    btnContact: "Nous Contacter",
+    btnWhatsapp: "Discuter sur WhatsApp",
+  },
+  es: {
+    layoutTitle: "Aspersores de Riego | Distribución de Agua de Precisión | Arbre Bio Africa",
+    layoutDesc: "Descubra nuestra gama de aspersores de riego profesionales diseñados para una distribución óptima del agua en diversas aplicaciones agrícolas.",
+    heroTitle: "Aspersores Profesionales",
+    heroSub: "Distribución de Agua de Precisión",
+    heroPara: "Soluciones avanzadas de aspersión para una irrigación óptima de cultivos",
+    btnProducts: "Ver Productos",
+    btnQuote: "Solicitar Presupuesto",
+    secProducts: "Nuestros Aspersores",
+    lblFeatures: "Características Principales:",
+    lblSpecs: "Especificaciones Técnicas:",
+    lblApplications: "Aplicaciones:",
+    lblAdvantages: "Ventajas:",
+    lblLimitations: "Limitaciones:",
+    lblDocs: "Documentación:",
+    btnDownload: "Descargar Catálogo PDF",
+    secCerts: "Certificaciones de Calidad",
+    formTitle: "Solicitar Presupuesto",
+    lblFirstName: "Nombre *",
+    lblLastName: "Apellido *",
+    lblEmail: "Correo Electrónico *",
+    lblPhone: "Número de Teléfono *",
+    lblProduct: "Producto *",
+    selectProduct: "Seleccionar un producto",
+    lblAppType: "Tipo de Aplicación *",
+    selectAppType: "Seleccionar tipo de aplicación",
+    optFieldCrops: "Cultivos de Campo",
+    optOrchards: "Huertos",
+    optOther: "Otro",
+    lblArea: "Área del Proyecto (Hectáreas) *",
+    lblAdditional: "Requisitos Adicionales",
+    phAdditional: "Cuéntenos sobre sus necesidades específicas, tipos de cultivos o cualquier pregunta...",
+    btnSubmit: "Enviar Solicitud de Presupuesto",
+    ctaTitle: "¿Necesita Asesoramiento Experto?",
+    ctaDesc: "Contáctenos hoy para recomendaciones personalizadas y soporte.",
+    btnContact: "Contáctenos",
+    btnWhatsapp: "Chat en WhatsApp",
+  },
+  af: {
+    layoutTitle: "Besproeiingsprinklers | Presisie Waterverspreiding | Arbre Bio Africa",
+    layoutDesc: "Ontdek ons reeks professionele besproeiingsprinklers ontwerp vir optimale waterverspreiding in verskeie landboutoepassings.",
+    heroTitle: "Professionele Sprinklers",
+    heroSub: "Presisie Waterverspreiding",
+    heroPara: "Gevorderde sprinkleroplossings vir optimale gewasbesproeiing",
+    btnProducts: "Bekyk Produkte",
+    btnQuote: "Versoek Kwotasie",
+    secProducts: "Ons Sprinklers",
+    lblFeatures: "Sleutelkenmerke:",
+    lblSpecs: "Tegniese Spesifikasies:",
+    lblApplications: "Toepassings:",
+    lblAdvantages: "Voordele:",
+    lblLimitations: "Beperkings:",
+    lblDocs: "Dokumentasie:",
+    btnDownload: "Laai Produk Katalogus Af (PDF)",
+    secCerts: "Kwaliteitsertifikate",
+    formTitle: "Versoek Kwotasie",
+    lblFirstName: "Voornaam *",
+    lblLastName: "Van *",
+    lblEmail: "E-posadres *",
+    lblPhone: "Telefoonnommer *",
+    lblProduct: "Produk *",
+    selectProduct: "Kies 'n produk",
+    lblAppType: "Toepassingstipe *",
+    selectAppType: "Kies toepassingstipe",
+    optFieldCrops: "Veldgewasse",
+    optOrchards: "Boorde",
+    optOther: "Ander",
+    lblArea: "Projekoppervlakte (Hektaar) *",
+    lblAdditional: "Addisionele Vereistes",
+    phAdditional: "Vertel ons van u spesifieke behoeftes, gewastipes of enige vrae...",
+    btnSubmit: "Dien Kwotasieversoek In",
+    ctaTitle: "Het u Kundige Advies Nodig?",
+    ctaDesc: "Kontak ons vandag vir persoonlike aanbevelings en ondersteuning.",
+    btnContact: "Kontak Ons",
+    btnWhatsapp: "Gesels op WhatsApp",
+  },
+};
+const T = (tr[lang] ?? tr.en) as Record<string, string>;
+
+type Product = {
+  name: string;
+  shortDescription: string;
+  description: string;
+  image: string;
+  catalog: string;
+  features: { title: string; description: string }[];
+  specifications: Record<string, Record<string, string>>;
+  applications: Record<string, string[]>;
+  advantages: string[];
+  limitations: string[];
+};
+
+const productsByLang: Record<string, Product[]> = {
+  en: [
+    {
+      name: "D-Net™ 0950",
+      shortDescription: "VERY LOW TRAJECTORY IMPACT SPRINKLER FOR UNIFORM UNDER-CANOPY IRRIGATION",
+      description: "With its low water trajectory angle, D-Net™ 0950 is ideally suited for precise under canopy irrigation of banana or oil palm plantations up to 10 x 10 meters or field crops with windy conditions.",
+      image: "https://imgur.com/vQFO4ob.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf",
+      features: [
+        { title: "High water distribution uniformity & Higher yield", description: "Innovative 3D diffusion arm ensures relatively high water distribution uniformity, resulting in uniform crop yields." },
+        { title: "Efficient Water Usage", description: "The lower trajectory angle prevents evaporation in windy areas and guarantees maximum water-use efficiency." },
+        { title: "Robust product & Long lasting performances", description: "Special design makes the sprinkler resistant to wear and ensures high performance throughout the long product life." },
+        { title: "Reduced labor cost & Easy maintenance", description: "Versatile installation on solid sets or removable field stands. Special nozzle design allows simple cleaning even under pressure." },
+        { title: "Durability", description: "Made of UV-protected materials, making it durable under all climate conditions." },
+      ],
+      specifications: {
+        general: { type: "1/2\" impact sprinkler", design: "Unique 3D arm", trajectory: "9.0 degrees", coverage: "Up to 10×11 m spacing" },
+        performance: { "Flow rates": "355, 400, 510 L/H", "Nominal pressure": "2.5 bar", "Pressure range": "2.0 - 3.0 bar", "Trajectory angle": "9.0°" },
+        technical: { "Distribution": "Single front nozzle", "Inlet": "1/2\" male threaded" },
+      },
+      applications: {
+        type: ["Irrigation"],
+        pressure: ["Medium pressure", "Low Pressure"],
+        coverage: ["Full Coverage: Medium spacing", "Full Coverage: Small spacing"],
+        crops: ["Field crops", "Orchards"],
+        trajectory: ["Low"],
+      },
+      advantages: ["Optimal water distribution uniformity","Reduced evaporation in windy conditions","Durable UV-protected materials","Easy maintenance and cleaning","Versatile installation options","Long product lifespan"],
+      limitations: ["Limited to specific spacing requirements","Requires minimum operating pressure","Fixed trajectory angle"],
     },
-    applications: {
-      type: ["Irrigation"],
-      pressure: ["Medium pressure", "Low Pressure"],
-      coverage: ["Full Coverage: Small spacing installation"],
-      crops: ["Field crops"],
-      trajectory: ["Normal"]
+    {
+      name: "D-NET™ 8550 F.R.",
+      shortDescription: "DURABLE IMPACT SPRINKLER WITH FLOW REGULATED NOZZLES FOR FIELD CROPS AND VEGETABLES",
+      description: "D-Net™ 8550 F.R. 1/2\" impact sprinklers with 3D diffusion arm and unique flow regulated nozzles guarantee excellent crop uniformity for field crops and vegetables with sprinkler spacing up to 12×14 meters.",
+      image: "https://imgur.com/KWWtez3.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf",
+      features: [
+        { title: "High and uniform yields", description: "Innovative 3D diffusion arm and unique flow regulated nozzles ensure the highest water distribution uniformity for consistent production." },
+        { title: "Greater water efficiency", description: "Outstanding water distribution uniformity eliminates over watering and optimizes water usage." },
+        { title: "Long-lasting performance", description: "Tough UV-protected materials withstand all climate conditions and applied chemicals ensuring trouble-free operation." },
+        { title: "Versatile installation", description: "Installs on solid sets or on removable field stands." },
+        { title: "Labor-saving maintenance", description: "Special nozzle-key makes it easy to clean debris from the nozzle even under pressure." },
+      ],
+      specifications: {
+        general: { type: "1/2\" impact sprinkler", design: "3D diffusion arm", trajectory: "24 degrees", coverage: "Up to 12×14 m spacing" },
+        performance: { "Flow rates": "590, 680, 800 L/H", "Pressure regulation": "2.5 to 4.0 bar", "Trajectory angle": "24°", "Nozzles": "Color-coded" },
+        technical: { "Distribution": "Flow regulated nozzles", "Inlet": "1/2\" male threaded" },
+      },
+      applications: {
+        type: ["Irrigation"],
+        pressure: ["Medium pressure", "Low Pressure"],
+        coverage: ["Full Coverage: Small spacing"],
+        crops: ["Field crops"],
+        trajectory: ["Normal"],
+      },
+      advantages: ["Highest water distribution uniformity","Flow regulation for consistent performance","UV-protected durable materials","Easy maintenance with special nozzle-key","Flexible installation options","Color-coded nozzles for easy identification"],
+      limitations: ["Specific spacing requirements","Minimum pressure requirements","Fixed trajectory angle"],
     },
-    advantages: ["Highest water distribution uniformity","Flow regulation for consistent performance","UV-protected durable materials","Easy maintenance with special nozzle-key","Flexible installation options","Color-coded nozzles for easy identification"],
-    limitations: ["Specific spacing requirements","Minimum pressure requirements","Fixed trajectory angle"],
-    catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf"
-  }
-];
+  ],
+  fr: [
+    {
+      name: "D-Net™ 0950",
+      shortDescription: "ARROSEUR À IMPACT TRÈS BAS POUR UNE IRRIGATION UNIFORME SOUS COUVERT",
+      description: "Avec son angle de trajectoire d'eau bas, le D-Net™ 0950 est idéalement adapté pour l'irrigation précise sous couvert des plantations de bananiers ou de palmiers à huile jusqu'à 10 x 10 mètres.",
+      image: "https://imgur.com/vQFO4ob.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf",
+      features: [
+        { title: "Haute uniformité de distribution & Rendement accru", description: "Le bras diffuseur 3D innovant assure une uniformité de distribution de l'eau relativement élevée, permettant des rendements uniformes." },
+        { title: "Utilisation Efficace de l'Eau", description: "Le faible angle de trajectoire empêche l'évaporation dans les zones venteuses et garantit une efficacité maximale de l'eau." },
+        { title: "Produit Robuste & Performances Durables", description: "La conception spéciale rend l'arroseur résistant à l'usure et assure de hautes performances tout au long de sa vie." },
+        { title: "Coût de Main-d'œuvre Réduit & Entretien Facile", description: "Installation polyvalente sur supports fixes ou amovibles. La conception spéciale de la buse permet un nettoyage simple même sous pression." },
+        { title: "Durabilité", description: "Fabriqué en matériaux protégés contre les UV, le rendant durable dans toutes les conditions climatiques." },
+      ],
+      specifications: {
+        general: { type: "Arroseur à impact 1/2\"", design: "Bras 3D unique", trajectory: "9,0 degrés", coverage: "Espacement jusqu'à 10×11 m" },
+        performance: { "Débits": "355, 400, 510 L/H", "Pression nominale": "2,5 bar", "Plage de pression": "2,0 - 3,0 bar", "Angle de trajectoire": "9,0°" },
+        technical: { "Distribution": "Buse frontale unique", "Raccord d'entrée": "Fileté mâle 1/2\"" },
+      },
+      applications: {
+        type: ["Irrigation"],
+        pressure: ["Pression moyenne", "Basse pression"],
+        coverage: ["Couverture complète : espacement moyen", "Couverture complète : petit espacement"],
+        crops: ["Cultures en plein champ", "Vergers"],
+        trajectory: ["Basse"],
+      },
+      advantages: ["Uniformité optimale de distribution de l'eau","Évaporation réduite dans les conditions venteuses","Matériaux durables protégés UV","Entretien et nettoyage faciles","Options d'installation polyvalentes","Longue durée de vie du produit"],
+      limitations: ["Limité à des exigences d'espacement spécifiques","Pression de fonctionnement minimale requise","Angle de trajectoire fixe"],
+    },
+    {
+      name: "D-NET™ 8550 F.R.",
+      shortDescription: "ARROSEUR À IMPACT DURABLE AVEC BUSES À DÉBIT RÉGULÉ POUR CULTURES ET LÉGUMES",
+      description: "Les arroseurs à impact D-Net™ 8550 F.R. 1/2\" avec bras diffuseur 3D et buses à débit régulé garantissent une excellente uniformité pour les cultures en plein champ avec un espacement jusqu'à 12×14 mètres.",
+      image: "https://imgur.com/KWWtez3.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf",
+      features: [
+        { title: "Rendements élevés et uniformes", description: "Le bras diffuseur 3D innovant et les buses à débit régulé assurent la meilleure uniformité de distribution pour une production constante." },
+        { title: "Meilleure efficacité hydrique", description: "L'uniformité de distribution excellente élimine les sur-arrosages et optimise l'utilisation de l'eau." },
+        { title: "Performance durable", description: "Matériaux robustes protégés UV résistant à toutes les conditions climatiques et aux produits chimiques." },
+        { title: "Installation polyvalente", description: "S'installe sur supports fixes ou sur des supports de terrain amovibles." },
+        { title: "Entretien économique", description: "La clé de buse spéciale facilite le nettoyage des débris même sous pression." },
+      ],
+      specifications: {
+        general: { type: "Arroseur à impact 1/2\"", design: "Bras diffuseur 3D", trajectory: "24 degrés", coverage: "Espacement jusqu'à 12×14 m" },
+        performance: { "Débits": "590, 680, 800 L/H", "Régulation de pression": "2,5 à 4,0 bar", "Angle de trajectoire": "24°", "Buses": "Code couleur" },
+        technical: { "Distribution": "Buses à débit régulé", "Raccord d'entrée": "Fileté mâle 1/2\"" },
+      },
+      applications: {
+        type: ["Irrigation"],
+        pressure: ["Pression moyenne", "Basse pression"],
+        coverage: ["Couverture complète : petit espacement"],
+        crops: ["Cultures en plein champ"],
+        trajectory: ["Normale"],
+      },
+      advantages: ["Uniformité de distribution la plus élevée","Régulation du débit pour des performances constantes","Matériaux durables protégés UV","Entretien facile avec clé de buse spéciale","Options d'installation flexibles","Buses codées par couleur pour identification facile"],
+      limitations: ["Exigences d'espacement spécifiques","Exigences de pression minimale","Angle de trajectoire fixe"],
+    },
+  ],
+  es: [
+    {
+      name: "D-Net™ 0950",
+      shortDescription: "ASPERSOR DE IMPACTO DE TRAYECTORIA MUY BAJA PARA RIEGO UNIFORME BAJO DOSEL",
+      description: "Con su bajo ángulo de trayectoria, el D-Net™ 0950 es ideal para el riego preciso bajo dosel en plantaciones de plátano o palma de aceite hasta 10 x 10 metros o cultivos de campo en condiciones de viento.",
+      image: "https://imgur.com/vQFO4ob.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf",
+      features: [
+        { title: "Alta uniformidad de distribución & Mayor rendimiento", description: "El innovador brazo difusor 3D garantiza una alta uniformidad de distribución del agua, resultando en rendimientos uniformes." },
+        { title: "Uso Eficiente del Agua", description: "El ángulo de trayectoria bajo previene la evaporación en zonas ventosas y garantiza máxima eficiencia hídrica." },
+        { title: "Producto Robusto & Rendimiento Duradero", description: "El diseño especial hace el aspersor resistente al desgaste y garantiza alto rendimiento durante su larga vida útil." },
+        { title: "Menor Costo Laboral & Fácil Mantenimiento", description: "Instalación versátil en sistemas fijos o soportes removibles. Diseño de boquilla especial permite limpieza simple incluso bajo presión." },
+        { title: "Durabilidad", description: "Fabricado con materiales protegidos UV, haciéndolo duradero bajo todas las condiciones climáticas." },
+      ],
+      specifications: {
+        general: { type: "Aspersor de impacto 1/2\"", design: "Brazo 3D único", trajectory: "9,0 grados", coverage: "Hasta 10×11 m de separación" },
+        performance: { "Caudales": "355, 400, 510 L/H", "Presión nominal": "2,5 bar", "Rango de presión": "2,0 - 3,0 bar", "Ángulo de trayectoria": "9,0°" },
+        technical: { "Distribución": "Boquilla frontal única", "Conector de entrada": "Roscado macho 1/2\"" },
+      },
+      applications: {
+        type: ["Irrigación"],
+        pressure: ["Presión media", "Baja presión"],
+        coverage: ["Cobertura completa: espaciado medio", "Cobertura completa: espaciado pequeño"],
+        crops: ["Cultivos de campo", "Huertos"],
+        trajectory: ["Baja"],
+      },
+      advantages: ["Uniformidad óptima de distribución del agua","Evaporación reducida en condiciones de viento","Materiales duraderos protegidos UV","Fácil mantenimiento y limpieza","Opciones de instalación versátiles","Larga vida útil del producto"],
+      limitations: ["Limitado a requisitos de espaciado específicos","Requiere presión mínima de operación","Ángulo de trayectoria fijo"],
+    },
+    {
+      name: "D-NET™ 8550 F.R.",
+      shortDescription: "ASPERSOR DE IMPACTO DURADERO CON BOQUILLAS DE CAUDAL REGULADO PARA CULTIVOS Y VERDURAS",
+      description: "Los aspersores de impacto D-Net™ 8550 F.R. 1/2\" con brazo difusor 3D y boquillas de caudal regulado único garantizan excelente uniformidad para cultivos de campo con separación hasta 12×14 metros.",
+      image: "https://imgur.com/KWWtez3.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf",
+      features: [
+        { title: "Rendimientos altos y uniformes", description: "El innovador brazo difusor 3D y las boquillas de caudal regulado aseguran la mayor uniformidad de distribución para producción consistente." },
+        { title: "Mayor eficiencia hídrica", description: "La excelente uniformidad de distribución elimina el riego excesivo y optimiza el uso del agua." },
+        { title: "Rendimiento duradero", description: "Materiales resistentes protegidos UV soportan todas las condiciones climáticas y productos químicos aplicados." },
+        { title: "Instalación versátil", description: "Se instala en sistemas fijos o en soportes removibles de campo." },
+        { title: "Mantenimiento que ahorra trabajo", description: "La llave de boquilla especial facilita la limpieza de residuos incluso bajo presión." },
+      ],
+      specifications: {
+        general: { type: "Aspersor de impacto 1/2\"", design: "Brazo difusor 3D", trajectory: "24 grados", coverage: "Hasta 12×14 m de separación" },
+        performance: { "Caudales": "590, 680, 800 L/H", "Regulación de presión": "2,5 a 4,0 bar", "Ángulo de trayectoria": "24°", "Boquillas": "Código de color" },
+        technical: { "Distribución": "Boquillas de caudal regulado", "Conector de entrada": "Roscado macho 1/2\"" },
+      },
+      applications: {
+        type: ["Irrigación"],
+        pressure: ["Presión media", "Baja presión"],
+        coverage: ["Cobertura completa: espaciado pequeño"],
+        crops: ["Cultivos de campo"],
+        trajectory: ["Normal"],
+      },
+      advantages: ["Mayor uniformidad de distribución del agua","Regulación del caudal para rendimiento consistente","Materiales duraderos protegidos UV","Fácil mantenimiento con llave de boquilla especial","Opciones de instalación flexibles","Boquillas con código de color para fácil identificación"],
+      limitations: ["Requisitos de espaciado específicos","Requisitos de presión mínima","Ángulo de trayectoria fijo"],
+    },
+  ],
+  af: [
+    {
+      name: "D-Net™ 0950",
+      shortDescription: "BAIE LAE TRAJEK IMPAK SPRINKLER VIR UNIFORME ONDERBLAARDAK BESPROEIING",
+      description: "Met sy lae watertrajektor hoek is die D-Net™ 0950 ideaal geskik vir presiese onderblaardak-besproeiing van piesang- of oliepalm-aanplantings tot 10 x 10 meter of veldgewasse in winderige toestande.",
+      image: "https://imgur.com/vQFO4ob.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/0950/netafim-d-net-0950-technical-product-sheet.pdf",
+      features: [
+        { title: "Hoë waterverspreidingsuniformiteit & Hoër opbrengs", description: "Innoverende 3D diffusiearm verseker relatief hoë waterverspreidingsuniformiteit, wat uniforme gewasopbrengste tot gevolg het." },
+        { title: "Doeltreffende Watergebruik", description: "Die laer trajektor hoek verhoed verdamping in winderige areas en waarborg maksimale watergebruiksdoeltreffendheid." },
+        { title: "Robuuste produk & Langdurige prestasies", description: "Spesiale ontwerp maak die sprinkler bestand teen slytasie en verseker hoë werkverrigting oor die lang produklewe." },
+        { title: "Verminderde arbeidskoste & Maklike onderhoud", description: "Veelsydige installasie op vaste stelsels of verwisselbare veldstaanders. Spesiale mondstukontwerp laat eenvoudige skoonmaak toe selfs onder druk." },
+        { title: "Duursaamheid", description: "Gemaak van UV-beskermde materiale, wat dit duursaam maak onder alle klimaatstoestande." },
+      ],
+      specifications: {
+        general: { type: "1/2\" impak sprinkler", design: "Unieke 3D arm", trajectory: "9,0 grade", coverage: "Tot 10×11 m spasiëring" },
+        performance: { "Vloeitempo's": "355, 400, 510 L/H", "Nominale druk": "2,5 bar", "Drukreeks": "2,0 - 3,0 bar", "Trajektor hoek": "9,0°" },
+        technical: { "Verspreiding": "Enkele voorste mondstuk", "Inlaatverbinder": "1/2\" manlike skroefdraad" },
+      },
+      applications: {
+        type: ["Besproeiing"],
+        pressure: ["Medium druk", "Lae druk"],
+        coverage: ["Volle dekking: medium spasiëring", "Volle dekking: klein spasiëring"],
+        crops: ["Veldgewasse", "Boorde"],
+        trajectory: ["Laag"],
+      },
+      advantages: ["Optimale waterverspreidingsuniformiteit","Verminderde verdamping in winderige toestande","Duursame UV-beskermde materiale","Maklike onderhoud en skoonmaak","Veelsydige installasie-opsies","Lang produklewe"],
+      limitations: ["Beperk tot spesifieke spasiëringsvereistes","Vereis minimum werkdruk","Vaste trajektor hoek"],
+    },
+    {
+      name: "D-NET™ 8550 F.R.",
+      shortDescription: "DUURSAME IMPAK SPRINKLER MET VLOEIGEREGULEERDE MONDSTUKKE VIR VELDGEWASSE",
+      description: "D-Net™ 8550 F.R. 1/2\" impak sprinklers met 3D diffusiearm en unieke vloeigereguleerde mondstukke waarborg uitstekende gewasuniformiteit vir veldgewasse met spasiëring tot 12×14 meter.",
+      image: "https://imgur.com/KWWtez3.jpg",
+      catalog: "https://www.netafim.africa/globalassets/products/sprinklers/d-net/8550-f.r/netafim-d-net-8550-fr-technical-product-sheet.pdf",
+      features: [
+        { title: "Hoë en uniforme opbrengste", description: "Innoverende 3D diffusiearm en unieke vloeigereguleerde mondstukke verseker die hoogste vlak van waterverspreidingsuniformiteit vir konsekwente produksie." },
+        { title: "Groter watereffektiwiteit", description: "Uitstekende waterverspreidingsuniformiteit elimineer oor-besproeiing en optimeer watergebruik." },
+        { title: "Langdurige prestasie", description: "Taai UV-beskermde materiale weerstaan alle klimaatstoestande en toegepaste chemikalieë vir problemlose werking." },
+        { title: "Veelsydige installasie", description: "Installeer op vaste stelsels of op verwisselbare veldstaanders." },
+        { title: "Arbeidsbesparende onderhoud", description: "Spesiale mondstuksleutel maak dit maklik om rommel van die mondstuk te verwyder selfs onder druk." },
+      ],
+      specifications: {
+        general: { type: "1/2\" impak sprinkler", design: "3D diffusiearm", trajectory: "24 grade", coverage: "Tot 12×14 m spasiëring" },
+        performance: { "Vloeitempo's": "590, 680, 800 L/H", "Drukregulasie": "2,5 tot 4,0 bar", "Trajektor hoek": "24°", "Mondstukke": "Kleurkodering" },
+        technical: { "Verspreiding": "Vloeigereguleerde mondstukke", "Inlaatverbinder": "1/2\" manlike skroefdraad" },
+      },
+      applications: {
+        type: ["Besproeiing"],
+        pressure: ["Medium druk", "Lae druk"],
+        coverage: ["Volle dekking: klein spasiëring"],
+        crops: ["Veldgewasse"],
+        trajectory: ["Normaal"],
+      },
+      advantages: ["Hoogste waterverspreidingsuniformiteit","Vloeiregulasie vir konsekwente werkverrigting","UV-beskermde duursame materiale","Maklike onderhoud met spesiale mondstuksleutel","Buigsame installasie-opsies","Kleurgekodineerde mondstukke vir maklike identifikasie"],
+      limitations: ["Spesifieke spasiëringsvereistes","Minimum druk vereistes","Vaste trajektor hoek"],
+    },
+  ],
+};
+const products = productsByLang[lang] ?? productsByLang.en;
+
+type Cert = { name: string; description: string; icon: string };
+const certsByLang: Record<string, Cert[]> = {
+  en: [
+    { name: "ISO 9001:2015", description: "Manufacturer Quality Management", icon: "medal" },
+    { name: "Irrigation Uniformity", description: "Certified and tested flow uniformity", icon: "target" },
+    { name: "UV Resistance", description: "Certified for professional agricultural use", icon: "shield" },
+  ],
+  fr: [
+    { name: "ISO 9001:2015", description: "Système de Management de la Qualité du Fabricant", icon: "medal" },
+    { name: "Uniformité d'Irrigation", description: "Uniformité de débit certifiée et testée", icon: "target" },
+    { name: "Résistance UV", description: "Certifié pour usage agricole professionnel", icon: "shield" },
+  ],
+  es: [
+    { name: "ISO 9001:2015", description: "Sistema de Gestión de Calidad del Fabricante", icon: "medal" },
+    { name: "Uniformidad de Riego", description: "Uniformidad de caudal certificada y probada", icon: "target" },
+    { name: "Resistencia UV", description: "Certificado para uso agrícola profesional", icon: "shield" },
+  ],
+  af: [
+    { name: "ISO 9001:2015", description: "Vervaardiger Kwaliteitsbestuurstelsel", icon: "medal" },
+    { name: "Besproeiingsuniformiteit", description: "Gesertifiseerde en getoetste vloei-uniformiteit", icon: "target" },
+    { name: "UV-Weerstand", description: "Gesertifiseer vir professionele landbougebruik", icon: "shield" },
+  ],
+};
+const certifications = certsByLang[lang] ?? certsByLang.en;
 ---
 
-<Layout
-  title="Irrigation Sprinklers - Precision Water Distribution | Arbre Bio Africa"
-  description="Discover our range of professional irrigation sprinklers designed for optimal water distribution and crop coverage in various agricultural applications."
->
+<Layout title={T.layoutTitle} description={T.layoutDesc}>
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
@@ -80,13 +449,13 @@ const products = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Professional Sprinklers
-          <span class="block text-2xl md:text-3xl mt-2">Precision Water Distribution</span>
+          {T.heroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.heroSub}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Advanced sprinkler solutions for optimal crop irrigation</p>
+        <p class="text-xl text-white mb-8">{T.heroPara}</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#products" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">View Products</a>
-          <a href="#quote-form" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">Request Quote</a>
+          <a href="#products" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.btnProducts}</a>
+          <a href="#quote-form" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.btnQuote}</a>
         </div>
       </div>
     </div>
@@ -95,7 +464,7 @@ const products = [
   <!-- Products Section -->
   <section id="products" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Sprinklers</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secProducts}</h2>
       {products.map((product, index) => (
         <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -105,7 +474,7 @@ const products = [
               <p class="text-gray-600 mb-6">{product.description}</p>
               <div class="space-y-6">
                 <div>
-                  <h4 class="font-bold mb-3">Key Features:</h4>
+                  <h4 class="font-bold mb-3">{T.lblFeatures}</h4>
                   <div class="space-y-4">
                     {product.features.map((feature) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -116,7 +485,7 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Technical Specifications:</h4>
+                  <h4 class="font-bold mb-3">{T.lblSpecs}</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.specifications).map(([category, specs]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -134,7 +503,7 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Applications:</h4>
+                  <h4 class="font-bold mb-3">{T.lblApplications}</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.applications).map(([category, items]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -155,7 +524,7 @@ const products = [
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-bold mb-3">Advantages:</h4>
+                    <h4 class="font-bold mb-3">{T.lblAdvantages}</h4>
                     <ul class="space-y-2">
                       {product.advantages.map((advantage) => (
                         <li class="flex items-center text-gray-700 text-sm">
@@ -168,7 +537,7 @@ const products = [
                     </ul>
                   </div>
                   <div class="bg-gray-50 p-4 rounded-lg">
-                    <h4 class="font-bold mb-3">Limitations:</h4>
+                    <h4 class="font-bold mb-3">{T.lblLimitations}</h4>
                     <ul class="space-y-2">
                       {product.limitations.map((limitation) => (
                         <li class="flex items-center text-gray-700 text-sm">
@@ -182,13 +551,13 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Documentation:</h4>
+                  <h4 class="font-bold mb-3">{T.lblDocs}</h4>
                   <div class="bg-gray-50 p-4 rounded-lg">
                     <a href={product.catalog} target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary hover:text-primary-600 transition-colors">
                       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
-                      Download Product Catalog (PDF)
+                      {T.btnDownload}
                     </a>
                   </div>
                 </div>
@@ -203,55 +572,71 @@ const products = [
     </div>
   </section>
 
+  <!-- Certifications -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secCerts}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {certifications.map((cert) => (
+          <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-4xl mb-4"><EmojiIcon id={cert.icon} size="2rem" /></div>
+            <h3 class="text-xl font-bold mb-2">{cert.name}</h3>
+            <p class="text-gray-600">{cert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Quote Form -->
-  <section id="quote-form" class="py-20 bg-gray-50">
+  <section id="quote-form" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
-        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
+        <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
             <input type="email" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
             <input type="tel" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Product *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblProduct}</label>
             <select required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-              <option value="">Select a product</option>
+              <option value="">{T.selectProduct}</option>
               {products.map((product) => (<option value={product.name}>{product.name}</option>))}
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Application Type *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAppType}</label>
             <select required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-              <option value="">Select application type</option>
-              <option value="field-crops">Field Crops</option>
-              <option value="orchards">Orchards</option>
-              <option value="other">Other</option>
+              <option value="">{T.selectAppType}</option>
+              <option value="field-crops">{T.optFieldCrops}</option>
+              <option value="orchards">{T.optOrchards}</option>
+              <option value="other">{T.optOther}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Project Area (Hectares) *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblArea}</label>
             <input type="number" required min="0.1" step="0.1" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Additional Requirements</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Tell us about your specific needs, crop types, or any questions you have..."></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
+            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
-          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">Submit Quote Request</button>
+          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
         </form>
       </div>
     </div>
@@ -260,12 +645,12 @@ const products = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for personalized recommendations and support.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaDesc}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Contact Us</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.btnContact}</a>
         <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Chat on WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.btnWhatsapp}
         </a>
       </div>
     </div>
@@ -281,6 +666,6 @@ const products = [
   "brand": { "@type": "Brand", "name": "Netafim" },
   "manufacturer": { "@type": "Organization", "name": "Netafim", "url": "https://arbrebio.com" },
   "offers": { "@type": "Offer", "priceCurrency": "XOF", "availability": "https://schema.org/InStock" },
-  "image": ["https://imgur.com/KRKFqz1.jpg"]
+  "image": ["https://imgur.com/vQFO4ob.jpg"]
 }
 </script>

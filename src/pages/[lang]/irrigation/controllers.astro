@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import EmojiIcon from '../../../components/EmojiIcon.astro';
 import { getAllLangPaths } from "../../../lib/langPaths";
 import type { Language } from "../../../lib/i18n";
 
@@ -7,27 +8,255 @@ export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
 const p = `/${lang}`;
 
+const tr: Record<string, Record<string, string>> = {
+  en: {
+    layoutTitle: "Irrigation Controllers | Automation Solutions | Arbre Bio Africa",
+    layoutDesc: "Advanced irrigation control systems from Rain Bird. Smart automation for optimal water management in agricultural and commercial applications.",
+    heroTitle: "Precision Irrigation Controllers",
+    heroSub: "Smart Automation for Optimal Water Management",
+    btnQuote: "Request Quote",
+    btnProducts: "View Products",
+    secProducts: "Our Premium Controllers",
+    lblFeatures: "Key Features",
+    lblSpecs: "Technical Specifications",
+    lblModels: "Available Models",
+    lblAccessories: "Compatible Accessories",
+    lblCerts: "Certifications",
+    btnDownload: "Download Product Catalog (PDF)",
+    secCerts: "Quality Certifications",
+    formTitle: "Request a Quote",
+    lblFirstName: "First Name *",
+    lblLastName: "Last Name *",
+    lblEmail: "Email Address *",
+    lblPhone: "Phone Number *",
+    lblModel: "Controller Model *",
+    selectModel: "Select a model",
+    lblZones: "Number of Zones *",
+    lblAdditional: "Additional Requirements",
+    phAdditional: "Tell us about your specific irrigation system and needs...",
+    btnSubmit: "Submit Quote Request",
+    ctaTitle: "Need Expert Advice?",
+    ctaDesc: "Contact us today for personalized recommendations and support.",
+    btnContact: "Contact Us",
+    btnWhatsapp: "Chat on WhatsApp",
+  },
+  fr: {
+    layoutTitle: "Contrôleurs d'Irrigation | Solutions d'Automatisation | Arbre Bio Africa",
+    layoutDesc: "Systèmes de contrôle d'irrigation avancés de Rain Bird. Automatisation intelligente pour une gestion optimale de l'eau dans les applications agricoles et commerciales.",
+    heroTitle: "Contrôleurs d'Irrigation de Précision",
+    heroSub: "Automatisation Intelligente pour une Gestion Optimale de l'Eau",
+    btnQuote: "Demander un Devis",
+    btnProducts: "Voir les Produits",
+    secProducts: "Nos Contrôleurs Premium",
+    lblFeatures: "Caractéristiques",
+    lblSpecs: "Spécifications Techniques",
+    lblModels: "Modèles Disponibles",
+    lblAccessories: "Accessoires Compatibles",
+    lblCerts: "Certifications",
+    btnDownload: "Télécharger le Catalogue PDF",
+    secCerts: "Certifications Qualité",
+    formTitle: "Demander un Devis",
+    lblFirstName: "Prénom *",
+    lblLastName: "Nom de Famille *",
+    lblEmail: "Adresse E-mail *",
+    lblPhone: "Numéro de Téléphone *",
+    lblModel: "Modèle *",
+    selectModel: "Sélectionner un modèle",
+    lblZones: "Nombre de Zones *",
+    lblAdditional: "Exigences Supplémentaires",
+    phAdditional: "Décrivez votre système d'irrigation et vos besoins spécifiques...",
+    btnSubmit: "Soumettre la Demande de Devis",
+    ctaTitle: "Prêt à Automatiser votre Irrigation ?",
+    ctaDesc: "Contactez nos experts pour une solution de contrôle d'irrigation personnalisée.",
+    btnContact: "Nous Contacter",
+    btnWhatsapp: "Discuter sur WhatsApp",
+  },
+  es: {
+    layoutTitle: "Controladores de Riego | Soluciones de Automatización | Arbre Bio Africa",
+    layoutDesc: "Sistemas de control de riego avanzados de Rain Bird. Automatización inteligente para una gestión óptima del agua en aplicaciones agrícolas y comerciales.",
+    heroTitle: "Controladores de Riego de Precisión",
+    heroSub: "Automatización Inteligente para una Gestión Óptima del Agua",
+    btnQuote: "Solicitar Presupuesto",
+    btnProducts: "Ver Productos",
+    secProducts: "Nuestros Controladores Premium",
+    lblFeatures: "Características",
+    lblSpecs: "Especificaciones Técnicas",
+    lblModels: "Modelos Disponibles",
+    lblAccessories: "Accesorios Compatibles",
+    lblCerts: "Certificaciones",
+    btnDownload: "Descargar Catálogo PDF",
+    secCerts: "Certificaciones de Calidad",
+    formTitle: "Solicitar Presupuesto",
+    lblFirstName: "Nombre *",
+    lblLastName: "Apellido *",
+    lblEmail: "Correo Electrónico *",
+    lblPhone: "Número de Teléfono *",
+    lblModel: "Modelo *",
+    selectModel: "Seleccionar un modelo",
+    lblZones: "Número de Zonas *",
+    lblAdditional: "Requisitos Adicionales",
+    phAdditional: "Describa su sistema de riego y necesidades específicas...",
+    btnSubmit: "Enviar Solicitud de Presupuesto",
+    ctaTitle: "¿Listo para Automatizar su Riego?",
+    ctaDesc: "Contáctenos para una solución de control de riego personalizada.",
+    btnContact: "Contáctenos",
+    btnWhatsapp: "Chat en WhatsApp",
+  },
+  af: {
+    layoutTitle: "Besproeiingsbeheerders | Outomatiseringsoplossings | Arbre Bio Africa",
+    layoutDesc: "Gevorderde besproeiingbeheerstelsels van Rain Bird. Intelligente outomatisering vir optimale waterbestuur in landbou- en kommersiële toepassings.",
+    heroTitle: "Presisiebesproeiingsbeheerders",
+    heroSub: "Intelligente Outomatisering vir Optimale Waterbestuur",
+    btnQuote: "Versoek Kwotasie",
+    btnProducts: "Bekyk Produkte",
+    secProducts: "Ons Premium Beheerders",
+    lblFeatures: "Kenmerke",
+    lblSpecs: "Tegniese Spesifikasies",
+    lblModels: "Beskikbare Modelle",
+    lblAccessories: "Versoenbare Bykomstighede",
+    lblCerts: "Sertifikate",
+    btnDownload: "Laai PDF-katalogus Af",
+    secCerts: "Kwaliteitsertifikate",
+    formTitle: "Versoek Kwotasie",
+    lblFirstName: "Voornaam *",
+    lblLastName: "Van *",
+    lblEmail: "E-posadres *",
+    lblPhone: "Telefoonnommer *",
+    lblModel: "Model *",
+    selectModel: "Kies 'n model",
+    lblZones: "Aantal Sones *",
+    lblAdditional: "Addisionele Vereistes",
+    phAdditional: "Beskryf u besproeiingstelsel en spesifieke behoeftes...",
+    btnSubmit: "Dien Kwotasieversoek In",
+    ctaTitle: "Gereed om u Besproeiing te Outomatiseer?",
+    ctaDesc: "Kontak ons kundiges vir 'n pasgemaakte besproeiingsbeheersoplossing.",
+    btnContact: "Kontak Ons",
+    btnWhatsapp: "Gesels op WhatsApp",
+  },
+};
+const T = (tr[lang] ?? tr.en) as Record<string, string>;
+
+// Language-specific product descriptions
+const productDescriptions: Record<string, { esp: string; st8: string }> = {
+  en: {
+    esp: "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+    st8: "ST8 2.0, 8-Zone Smart Irrigation WiFi Sprinkler Timer. Put control of your sprinkler system in the palm of your hand with a Smart Irrigation WiFi Timer from Rain Bird. It is simple to setup customized watering schedules that can be adjusted automatically all year long to ensure a healthy, beautiful landscape saving you time and money. That's The Intelligent Use of Water™.",
+  },
+  fr: {
+    esp: "Contrôleur d'irrigation résidentiel et commercial avancé avec programmation intuitive et connectivité Wi-Fi optionnelle. Conçu pour les systèmes d'irrigation exigeants avec jusqu'à 12 zones.",
+    st8: "Contrôleur d'irrigation résidentiel connecté Wi-Fi avec intégration intelligente pour une gestion basée sur les données météorologiques et les informations de sol. Idéal pour les propriétés résidentielles et les petites propriétés commerciales.",
+  },
+  es: {
+    esp: "Controlador de riego residencial y comercial avanzado con programación intuitiva y conectividad Wi-Fi opcional. Diseñado para sistemas de riego exigentes con hasta 12 zonas.",
+    st8: "Controlador de riego residencial conectado por Wi-Fi con integración inteligente para una gestión basada en datos meteorológicos e información del suelo. Ideal para propiedades residenciales y pequeñas propiedades comerciales.",
+  },
+  af: {
+    esp: "Gevorderde residensiële en kommersiële besproeiingsbeheerder met intuïtiewe programmering en opsionele Wi-Fi-konnektiwiteit. Ontwerp vir veeleisende besproeiingstelsels met tot 12 sones.",
+    st8: "Wi-Fi-gekoppelde residensiële besproeiingsbeheerder met intelligente integrasie vir bestuur gebaseer op weerdata en grondligting. Ideaal vir residensiële eiendomme en klein kommersiële eiendomme.",
+  },
+};
+const desc = productDescriptions[lang] ?? productDescriptions.en;
+
+// Language-specific features
+const espFeatures: Record<string, string[]> = {
+  en: [
+    "Upgradeable for WiFi-based remote monitoring and control",
+    "Internet-based weather information for smart scheduling",
+    "4, 6, 8, and 12 station models available",
+    "Set Permanent Days Off per program",
+    "Easy indoor/outdoor installation",
+    "Quick 3-step programming",
+    "3 programs with 4 start times each",
+    "One-touch manual watering",
+    "Large back-lit LCD display",
+    "Contractor Default™ save/restore",
+    "14-day watering delay",
+    "Bypass Rain Sensor per station",
+    "Seasonal Adjust by program",
+  ],
+  fr: [
+    "Jusqu'à 12 stations avec expansion possible à 22",
+    "Connexion Wi-Fi optionnelle avec l'application Rain Bird",
+    "Programmation saisonnière automatique",
+    "3 programmes indépendants avec 4 heures de démarrage par programme",
+    "Technologie d'ajustement saisonnier",
+    "Économiseur d'eau certifié EPA WaterSense®",
+  ],
+  es: [
+    "Hasta 12 estaciones con expansión posible a 22",
+    "Conexión Wi-Fi opcional con la aplicación Rain Bird",
+    "Programación estacional automática",
+    "3 programas independientes con 4 horas de inicio por programa",
+    "Tecnología de ajuste estacional",
+    "Ahorro de agua certificado EPA WaterSense®",
+  ],
+  af: [
+    "Tot 12 stasies met moontlike uitbreiding na 22",
+    "Opsionele Wi-Fi-verbinding met die Rain Bird-app",
+    "Outomatiese seisoensprogrammering",
+    "3 onafhanklike programme met 4 beginure per program",
+    "Seisoenlike aanpassingstegnologie",
+    "EPA WaterSense® gesertifiseerde waterbesparing",
+  ],
+};
+
+const st8Features: Record<string, string[]> = {
+  en: [
+    "Improved WIFI Connection and app connection speed",
+    "Watering reports for maximizing efficiency",
+    "Manual watering in the palm of your hand",
+    "Automatic seasonal adjust based on weather",
+    "Fully customizable zone scheduling",
+    "Notification alerts for system events",
+    "Control multiple timers remotely",
+    "Easy setup and schedule customization",
+    "Up to 8 zones",
+    "Back-up manual interface at timer",
+    "Rain Sensor input with software override",
+    "Master valve/pump start circuit",
+  ],
+  fr: [
+    "Wi-Fi intégré avec connexion à l'application LNK2",
+    "Contrôle intelligent basé sur la météo",
+    "8 zones avec expansion possible",
+    "Compatible avec le capteur de pluie et de débit",
+    "Mise à jour automatique de l'arrosage basée sur les données météo",
+    "Contrôle via smartphone depuis n'importe où",
+  ],
+  es: [
+    "Wi-Fi integrado con conexión a la aplicación LNK2",
+    "Control inteligente basado en el clima",
+    "8 zonas con posible expansión",
+    "Compatible con sensor de lluvia y flujo",
+    "Actualización automática de riego basada en datos meteorológicos",
+    "Control vía smartphone desde cualquier lugar",
+  ],
+  af: [
+    "Ingeboude Wi-Fi met verbinding na die LNK2-app",
+    "Intelligente weergerigte beheer",
+    "8 sones met moontlike uitbreiding",
+    "Versoenbaar met reën- en vloei-sensor",
+    "Outomatiese besproeiingsopdatering gebaseer op weerdata",
+    "Slimfoonbeheer van enige plek",
+  ],
+};
+
+const certDescriptions: Record<string, string[]> = {
+  en: ["Water saving certified", "Manufacturer quality management", "Wi-Fi compatibility certification"],
+  fr: ["Certifié économie d'eau", "Gestion de la qualité du fabricant", "Certification Wi-Fi compatible"],
+  es: ["Certificado de ahorro de agua", "Gestión de calidad del fabricante", "Certificación de compatibilidad Wi-Fi"],
+  af: ["Waterbesparing gesertifiseer", "Vervaardiger kwaliteitsbestuur", "Wi-Fi-versoenbaarheidssertifikaat"],
+};
+const certDesc = certDescriptions[lang] ?? certDescriptions.en;
+
 const products = [
   {
     name: "ESP-TM2 Series Controllers",
     shortDescription: "Simple, Flexible and Reliable for Residential Applications",
-    description: "The ESP-TM2 irrigation controller is the perfect option for basic residential solutions. Building upon Rain Bird's legacy of The Intelligent Use of Water®, this controller offers simple water saving features that you will actually use.",
+    description: desc.esp,
     image: "https://imgur.com/NaJWgvW.jpg",
-    features: [
-      "Upgradeable for WiFi-based remote monitoring and control",
-      "Internet-based weather information for smart scheduling",
-      "4, 6, 8, and 12 station models available",
-      "Set Permanent Days Off per program",
-      "Easy indoor/outdoor installation",
-      "Quick 3-step programming",
-      "3 programs with 4 start times each",
-      "One-touch manual watering",
-      "Large back-lit LCD display",
-      "Contractor Default™ save/restore",
-      "14-day watering delay",
-      "Bypass Rain Sensor per station",
-      "Seasonal Adjust by program"
-    ],
+    pdfUrl: "https://www.rainbird.com/sites/default/files/media/documents/2023-05/esp-tm2-tech_spec-itl_1.pdf",
+    features: espFeatures[lang] ?? espFeatures.en,
     specifications: {
       operating: {
         temperature: "Up to 149°F (65°C)",
@@ -62,22 +291,10 @@ const products = [
   {
     name: "ST8-2.0 WiFi Smart Irrigation Timers",
     shortDescription: "Smart Watering Made Simple",
-    description: "ST8 2.0, 8-Zone Smart Irrigation WiFi Sprinkler Timer. Put control of your sprinkler system in the palm of your hand with a Smart Irrigation WiFi Timer from Rain Bird. It is simple to setup customized watering schedules that can be adjusted automatically all year long to ensure a healthy, beautiful landscape saving you time and money. That's The Intelligent Use of Water™.",
+    description: desc.st8,
     image: "https://imgur.com/U5GEgAP.jpg",
-    features: [
-      "Improved WIFI Connection and app connection speed",
-      "Watering reports for maximizing efficiency",
-      "Manual watering in the palm of your hand",
-      "Automatic seasonal adjust based on weather",
-      "Fully customizable zone scheduling",
-      "Notification alerts for system events",
-      "Control multiple timers remotely",
-      "Easy setup and schedule customization",
-      "Up to 8 zones",
-      "Back-up manual interface at timer",
-      "Rain Sensor input with software override",
-      "Master valve/pump start circuit"
-    ],
+    pdfUrl: "https://www.rainbird.com/sites/default/files/media/documents/2018-03/man_ST8-WiFi_guide_en_0.pdf",
+    features: st8Features[lang] ?? st8Features.en,
     specifications: {
       operating: {
         timing: "0 to 199 min",
@@ -109,11 +326,17 @@ const products = [
     }
   }
 ];
+
+const qualityCertifications = [
+  { name: "EPA WaterSense®", description: certDesc[0], icon: "water" },
+  { name: "ISO 9001:2015", description: certDesc[1], icon: "medal" },
+  { name: "Wi-Fi Certified", description: certDesc[2], icon: "laptop" },
+];
 ---
 
 <Layout
-  title="Irrigation Controllers - Smart Water Management | Arbre Bio Africa"
-  description="Discover our range of smart irrigation controllers for precise water management. From basic residential solutions to advanced WiFi-enabled systems."
+  title={T.layoutTitle}
+  description={T.layoutDesc}
 >
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
@@ -124,13 +347,12 @@ const products = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Smart Irrigation Controllers
-          <span class="block text-2xl md:text-3xl mt-2">Precision Water Management</span>
+          {T.heroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.heroSub}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Advanced control systems for efficient water management</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#products" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">View Products</a>
-          <a href="#quote-form" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">Request Quote</a>
+          <a href="#products" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.btnProducts}</a>
+          <a href="#quote-form" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.btnQuote}</a>
         </div>
       </div>
     </div>
@@ -139,7 +361,7 @@ const products = [
   <!-- Products Section -->
   <section id="products" class="py-20">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Controllers</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secProducts}</h2>
       {products.map((product, index) => (
         <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -149,7 +371,7 @@ const products = [
               <p class="text-gray-600 mb-6">{product.description}</p>
               <div class="space-y-6">
                 <div>
-                  <h4 class="font-bold mb-3">Key Features:</h4>
+                  <h4 class="font-bold mb-3">{T.lblFeatures}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {product.features.map((feature) => (
                       <div class="flex items-center text-gray-700">
@@ -164,20 +386,18 @@ const products = [
                 <div>
                   <h4 class="font-bold mb-3">Documentation:</h4>
                   <div class="bg-gray-50 p-4 rounded-lg">
-                    <a href={product.name === "ESP-TM2 Series Controllers"
-                        ? "https://www.rainbird.com/sites/default/files/media/documents/2023-05/esp-tm2-tech_spec-itl_1.pdf"
-                        : "https://www.rainbird.com/sites/default/files/media/documents/2018-03/man_ST8-WiFi_guide_en_0.pdf"}
+                    <a href={product.pdfUrl}
                       target="_blank" rel="noopener noreferrer"
                       class="inline-flex items-center text-primary hover:text-primary-600 transition-colors">
                       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
-                      Download Product Catalog (PDF)
+                      {T.btnDownload}
                     </a>
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Technical Specifications:</h4>
+                  <h4 class="font-bold mb-3">{T.lblSpecs}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.specifications).map(([category, specs]) => {
                       if (typeof specs !== 'object' || specs === null) {
@@ -208,7 +428,7 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Available Models:</h4>
+                  <h4 class="font-bold mb-3">{T.lblModels}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.models).map(([category, models]: [string, any]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -221,7 +441,7 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Compatible Accessories:</h4>
+                  <h4 class="font-bold mb-3">{T.lblAccessories}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.accessories.map((accessory) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -232,7 +452,7 @@ const products = [
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-bold mb-3">Certifications:</h4>
+                  <h4 class="font-bold mb-3">{T.lblCerts}:</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(product.certifications).map(([category, certs]: [string, any]) => (
                       <div class="bg-gray-50 p-4 rounded-lg">
@@ -255,34 +475,50 @@ const products = [
     </div>
   </section>
 
+  <!-- Certifications Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secCerts}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {qualityCertifications.map((cert) => (
+          <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-4xl mb-4"><EmojiIcon id={cert.icon} size="2rem" /></div>
+            <h3 class="text-xl font-bold mb-2">{cert.name}</h3>
+            <p class="text-gray-600">{cert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Quote Form -->
-  <section id="quote-form" class="py-20 bg-gray-50">
+  <section id="quote-form" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
-        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
+        <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
             <input type="email" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
             <input type="tel" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Controller Model *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblModel}</label>
             <select required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-              <option value="">Select a model</option>
+              <option value="">{T.selectModel}</option>
               {products.map((product) => (
                 <optgroup label={product.name}>
                   {Object.entries(product.models).flatMap(([category, models]: [string, any]) =>
@@ -295,14 +531,14 @@ const products = [
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Number of Zones *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblZones}</label>
             <input type="number" required min="1" max="12" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Additional Requirements</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Tell us about your specific needs or any questions you have..."></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
+            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
-          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">Submit Quote Request</button>
+          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
         </form>
       </div>
     </div>
@@ -311,12 +547,12 @@ const products = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for personalized recommendations and support.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaDesc}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Contact Us</a>
+        <a href={`${p}/contact`} class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.btnContact}</a>
         <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Chat on WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.btnWhatsapp}
         </a>
       </div>
     </div>

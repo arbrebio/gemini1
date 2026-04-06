@@ -8,60 +8,292 @@ export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
 const p = `/${lang}`;
 
-const products = [
-  {
-    type: "Type 20",
-    name: "Pure Coco Peat",
-    description: "Premium-grade pure coco peat, ideal for professional horticulture and hydroponic applications.",
-    specs: [
-      { label: "EC Level", value: "0.3-0.5 mS/cm" },
-      { label: "pH Level", value: "5.5-6.0" },
-      { label: "Water Retention", value: "8-9x by weight" },
-      { label: "Particle Size", value: "2-10mm" }
-    ],
-    applications: ["Hydroponic growing systems","Professional nurseries","Greenhouse cultivation","Vertical farming"],
-    image: "https://imgur.com/AlUvYxz.jpg"
+const tr: Record<string, Record<string, string>> = {
+  en: {
+    layoutTitle: "Premium Growing Solutions | Organic Coco Peat & Coir | Arbre Bio Africa",
+    layoutDesc: "Discover Arbre Bio Africa's premium organic coco peat and coir products. Sustainable growing solutions engineered for maximum yield and crop health.",
+    heroTitle: "Sustainable Growth Starts Here",
+    heroSub: "Premium Organic Coco Peat & Coir",
+    heroPara: "Engineered for maximum yield and optimal crop health",
+    btnQuote: "Request Quote",
+    btnProducts: "View Products",
+    secBenefits: "Why Choose Our Growing Solutions",
+    secProducts: "Our Premium Products",
+    lblIdealApps: "Ideal Applications:",
+    secProcess: "Our Production Process",
+    secCerts: "Quality Certifications",
+    formTitle: "Request a Quote",
+    lblFirstName: "First Name *",
+    lblLastName: "Last Name *",
+    lblEmail: "Email Address *",
+    lblPhone: "Phone Number *",
+    lblProductType: "Product Type *",
+    selectProduct: "Select a product",
+    optType20: "Type 20 - Pure Coco Peat",
+    optType30: "Type 30 - 80/20 Premium Blend",
+    optCustom: "Custom Blend",
+    lblQuantity: "Quantity (Metric Tons) *",
+    lblAdditional: "Additional Requirements",
+    phAdditional: "Tell us about your specific needs or custom blend requirements...",
+    btnSubmit: "Submit Quote Request",
+    ctaTitle: "Ready to Transform Your Growing Operation?",
+    ctaDesc: "Contact us today for expert advice and custom solutions.",
+    btnStart: "Get Started",
+    btnWhatsapp: "Chat on WhatsApp",
   },
-  {
-    type: "Type 30",
-    name: "80/20 Premium Blend",
-    description: "Optimized blend of 80% coco peat and 20% coco chips, providing ideal air-to-water ratio for robust root development.",
-    specs: [
-      { label: "EC Level", value: "0.4-0.6 mS/cm" },
-      { label: "pH Level", value: "5.5-6.0" },
-      { label: "Water Retention", value: "7-8x by weight" },
-      { label: "Aeration", value: "25-30%" }
-    ],
-    applications: ["Commercial agriculture","Fruit tree cultivation","Long-term crops","Container growing"],
-    image: "https://imgur.com/YbSloPL.jpg"
-  }
-];
+  fr: {
+    layoutTitle: "Solutions de Culture Premium | Coco Peat Bio | Arbre Bio Africa",
+    layoutDesc: "Découvrez les produits premium de coco peat et fibre de coco d'Arbre Bio Africa. Solutions de culture durables pour un rendement maximal et une santé optimale des cultures.",
+    heroTitle: "La Croissance Durable Commence Ici",
+    heroSub: "Coco Peat & Fibre de Coco Bio Premium",
+    heroPara: "Conçu pour un rendement maximal et une santé optimale des cultures",
+    btnQuote: "Demander un Devis",
+    btnProducts: "Voir les Produits",
+    secBenefits: "Pourquoi Choisir Nos Solutions de Culture",
+    secProducts: "Nos Produits Premium",
+    lblIdealApps: "Applications Idéales :",
+    secProcess: "Notre Processus de Production",
+    secCerts: "Certifications Qualité",
+    formTitle: "Demander un Devis",
+    lblFirstName: "Prénom *",
+    lblLastName: "Nom de Famille *",
+    lblEmail: "Adresse E-mail *",
+    lblPhone: "Numéro de Téléphone *",
+    lblProductType: "Type de Produit *",
+    selectProduct: "Sélectionner un produit",
+    optType20: "Type 20 - Coco Peat Pur",
+    optType30: "Type 30 - Mélange Premium 80/20",
+    optCustom: "Mélange Personnalisé",
+    lblQuantity: "Quantité (Tonnes Métriques) *",
+    lblAdditional: "Exigences Supplémentaires",
+    phAdditional: "Parlez-nous de vos besoins spécifiques ou de vos exigences de mélange personnalisé...",
+    btnSubmit: "Soumettre la Demande de Devis",
+    ctaTitle: "Prêt à Transformer votre Culture ?",
+    ctaDesc: "Contactez-nous aujourd'hui pour des conseils d'experts et des solutions personnalisées.",
+    btnStart: "Commencer",
+    btnWhatsapp: "Discuter sur WhatsApp",
+  },
+  es: {
+    layoutTitle: "Soluciones de Cultivo Premium | Coco Peat Orgánico | Arbre Bio Africa",
+    layoutDesc: "Descubra los productos premium de coco peat y fibra de coco de Arbre Bio Africa. Soluciones de cultivo sostenibles para el máximo rendimiento y salud de los cultivos.",
+    heroTitle: "El Crecimiento Sostenible Comienza Aquí",
+    heroSub: "Coco Peat y Fibra de Coco Orgánica Premium",
+    heroPara: "Diseñado para el máximo rendimiento y salud óptima de los cultivos",
+    btnQuote: "Solicitar Presupuesto",
+    btnProducts: "Ver Productos",
+    secBenefits: "Por qué Elegir Nuestras Soluciones de Cultivo",
+    secProducts: "Nuestros Productos Premium",
+    lblIdealApps: "Aplicaciones Ideales:",
+    secProcess: "Nuestro Proceso de Producción",
+    secCerts: "Certificaciones de Calidad",
+    formTitle: "Solicitar Presupuesto",
+    lblFirstName: "Nombre *",
+    lblLastName: "Apellido *",
+    lblEmail: "Correo Electrónico *",
+    lblPhone: "Número de Teléfono *",
+    lblProductType: "Tipo de Producto *",
+    selectProduct: "Seleccionar un producto",
+    optType20: "Tipo 20 - Coco Peat Puro",
+    optType30: "Tipo 30 - Mezcla Premium 80/20",
+    optCustom: "Mezcla Personalizada",
+    lblQuantity: "Cantidad (Toneladas Métricas) *",
+    lblAdditional: "Requisitos Adicionales",
+    phAdditional: "Cuéntenos sobre sus necesidades específicas o requisitos de mezcla personalizada...",
+    btnSubmit: "Enviar Solicitud de Presupuesto",
+    ctaTitle: "¿Listo para Transformar su Cultivo?",
+    ctaDesc: "Contáctenos hoy para asesoramiento experto y soluciones personalizadas.",
+    btnStart: "Comenzar",
+    btnWhatsapp: "Chat en WhatsApp",
+  },
+  af: {
+    layoutTitle: "Premium Groeimedia | Organiese Kokosvesel | Arbre Bio Africa",
+    layoutDesc: "Ontdek Arbre Bio Africa se premium kokosveselprodukle. Volhoubare groeioplossings vir maksimale opbrengs en optimale gewasgesondheid.",
+    heroTitle: "Volhoubare Groei Begin Hier",
+    heroSub: "Premium Organiese Kokosvesel & Kokosveselprodukle",
+    heroPara: "Ontwerp vir maksimale opbrengs en optimale gewasgesondheid",
+    btnQuote: "Versoek Kwotasie",
+    btnProducts: "Bekyk Produkte",
+    secBenefits: "Waarom Ons Groeioplossings Kies",
+    secProducts: "Ons Premium Produkte",
+    lblIdealApps: "Ideale Toepassings:",
+    secProcess: "Ons Produksieproses",
+    secCerts: "Kwaliteitsertifikate",
+    formTitle: "Versoek Kwotasie",
+    lblFirstName: "Voornaam *",
+    lblLastName: "Van *",
+    lblEmail: "E-posadres *",
+    lblPhone: "Telefoonnommer *",
+    lblProductType: "Produktipe *",
+    selectProduct: "Kies 'n produk",
+    optType20: "Tipe 20 - Suiwer Kokosveselproduk",
+    optType30: "Tipe 30 - Premium 80/20 Mengsel",
+    optCustom: "Pasgemaakte Mengsel",
+    lblQuantity: "Hoeveelheid (Metrieke Ton) *",
+    lblAdditional: "Addisionele Vereistes",
+    phAdditional: "Vertel ons van u spesifieke behoeftes of pasgemaakte mengselbehoeftes...",
+    btnSubmit: "Dien Kwotasieversoek In",
+    ctaTitle: "Gereed om u Gewasse te Transformeer?",
+    ctaDesc: "Kontak ons vandag vir kundige advies en pasgemaakte oplossings.",
+    btnStart: "Begin",
+    btnWhatsapp: "Gesels op WhatsApp",
+  },
+};
+const T = (tr[lang] ?? tr.en) as Record<string, string>;
 
-const processSteps = [
-  { title: "Natural Harvesting", description: "Sustainably sourced coconut husks processed using eco-friendly methods", icon: "plant" },
-  { title: "Solar Drying", description: "Natural sun-drying process ensuring optimal moisture content", icon: "sun" },
-  { title: "Advanced Filtration", description: "Multi-stage filtration removing impurities and ensuring consistent quality", icon: "microscope" },
-  { title: "Quality Testing", description: "Rigorous testing for EC, pH, and physical properties", icon: "flask" }
-];
+type Product = { type: string; name: string; description: string; specs: { label: string; value: string }[]; applications: string[]; image: string };
+const productsByLang: Record<string, Product[]> = {
+  en: [
+    {
+      type: "Type 20", name: "Pure Coco Peat",
+      description: "Premium-grade pure coco peat, ideal for professional horticulture and hydroponic applications.",
+      specs: [{ label: "EC Level", value: "0.3-0.5 mS/cm" },{ label: "pH Level", value: "5.5-6.0" },{ label: "Water Retention", value: "8-9x by weight" },{ label: "Particle Size", value: "2-10mm" }],
+      applications: ["Hydroponic growing systems","Professional nurseries","Greenhouse cultivation","Vertical farming"],
+      image: "https://imgur.com/AlUvYxz.jpg"
+    },
+    {
+      type: "Type 30", name: "80/20 Premium Blend",
+      description: "Optimized blend of 80% coco peat and 20% coco chips, providing ideal air-to-water ratio for robust root development.",
+      specs: [{ label: "EC Level", value: "0.4-0.6 mS/cm" },{ label: "pH Level", value: "5.5-6.0" },{ label: "Water Retention", value: "7-8x by weight" },{ label: "Aeration", value: "25-30%" }],
+      applications: ["Commercial agriculture","Fruit tree cultivation","Long-term crops","Container growing"],
+      image: "https://imgur.com/YbSloPL.jpg"
+    },
+  ],
+  fr: [
+    {
+      type: "Type 20", name: "Coco Peat Pur",
+      description: "Coco peat pur de qualité premium, idéal pour les applications horticoles professionnelles et hydroponiques.",
+      specs: [{ label: "Niveau EC", value: "0.3-0.5 mS/cm" },{ label: "Niveau pH", value: "5.5-6.0" },{ label: "Rétention d'Eau", value: "8-9x par poids" },{ label: "Granulométrie", value: "2-10mm" }],
+      applications: ["Systèmes de culture hydroponique","Pépinières professionnelles","Culture en serre","Agriculture verticale"],
+      image: "https://imgur.com/AlUvYxz.jpg"
+    },
+    {
+      type: "Type 30", name: "Mélange Premium 80/20",
+      description: "Mélange optimisé de 80% de coco peat et 20% de chips de coco, offrant le ratio air/eau idéal pour un développement racinaire robuste.",
+      specs: [{ label: "Niveau EC", value: "0.4-0.6 mS/cm" },{ label: "Niveau pH", value: "5.5-6.0" },{ label: "Rétention d'Eau", value: "7-8x par poids" },{ label: "Aération", value: "25-30%" }],
+      applications: ["Agriculture commerciale","Culture d'arbres fruitiers","Cultures de longue durée","Culture en conteneur"],
+      image: "https://imgur.com/YbSloPL.jpg"
+    },
+  ],
+  es: [
+    {
+      type: "Type 20", name: "Coco Peat Puro",
+      description: "Coco peat puro de calidad premium, ideal para aplicaciones hortícolas profesionales e hidropónicas.",
+      specs: [{ label: "Nivel EC", value: "0.3-0.5 mS/cm" },{ label: "Nivel pH", value: "5.5-6.0" },{ label: "Retención de Agua", value: "8-9x por peso" },{ label: "Tamaño de Partícula", value: "2-10mm" }],
+      applications: ["Sistemas de cultivo hidropónico","Viveros profesionales","Cultivo en invernadero","Agricultura vertical"],
+      image: "https://imgur.com/AlUvYxz.jpg"
+    },
+    {
+      type: "Type 30", name: "Mezcla Premium 80/20",
+      description: "Mezcla optimizada de 80% coco peat y 20% chips de coco, que proporciona la relación aire-agua ideal para un desarrollo radicular robusto.",
+      specs: [{ label: "Nivel EC", value: "0.4-0.6 mS/cm" },{ label: "Nivel pH", value: "5.5-6.0" },{ label: "Retención de Agua", value: "7-8x por peso" },{ label: "Aireación", value: "25-30%" }],
+      applications: ["Agricultura comercial","Cultivo de árboles frutales","Cultivos a largo plazo","Cultivo en contenedor"],
+      image: "https://imgur.com/YbSloPL.jpg"
+    },
+  ],
+  af: [
+    {
+      type: "Type 20", name: "Suiwer Kokosveselproduk",
+      description: "Premium suiwer kokosveselproduk, ideaal vir professionele tuinbou- en hidroponiese toepassings.",
+      specs: [{ label: "EC-vlak", value: "0.3-0.5 mS/cm" },{ label: "pH-vlak", value: "5.5-6.0" },{ label: "Waterretensie", value: "8-9x per gewig" },{ label: "Partikelgrootte", value: "2-10mm" }],
+      applications: ["Hidroponiesekweekstelsels","Professionele kwekeries","Kweekhuiskultuur","Vertikale boerdery"],
+      image: "https://imgur.com/AlUvYxz.jpg"
+    },
+    {
+      type: "Type 30", name: "Premium 80/20 Mengsel",
+      description: "Geoptimaliseerde mengsel van 80% kokosveselproduk en 20% kokosskyfies, wat die ideale lug-tot-water-verhouding bied vir robuuste wortelontwikkeling.",
+      specs: [{ label: "EC-vlak", value: "0.4-0.6 mS/cm" },{ label: "pH-vlak", value: "5.5-6.0" },{ label: "Waterretensie", value: "7-8x per gewig" },{ label: "Lugverversing", value: "25-30%" }],
+      applications: ["Kommersiële landbou","Vrugtebootkultuur","Langtermyngewasse","Houerkweek"],
+      image: "https://imgur.com/YbSloPL.jpg"
+    },
+  ],
+};
+const products = productsByLang[lang] ?? productsByLang.en;
 
-const certifications = [
-  { name: "Organic Certified", description: "Meets international organic farming standards", icon: "leaf" },
-  { name: "ISO 9001:2015", description: "Certified quality management system", icon: "medal" },
-  { name: "RHP Certified", description: "Meets European horticultural standards", icon: "earth" }
-];
+type ProcessStep = { title: string; description: string; icon: string };
+const processByLang: Record<string, ProcessStep[]> = {
+  en: [
+    { title: "Natural Harvesting", description: "Sustainably sourced coconut husks processed using eco-friendly methods", icon: "plant" },
+    { title: "Solar Drying", description: "Natural sun-drying process ensuring optimal moisture content", icon: "sun" },
+    { title: "Advanced Filtration", description: "Multi-stage filtration removing impurities and ensuring consistent quality", icon: "microscope" },
+    { title: "Quality Testing", description: "Rigorous testing for EC, pH, and physical properties", icon: "flask" },
+  ],
+  fr: [
+    { title: "Récolte Naturelle", description: "Enveloppes de noix de coco d'origine durable traitées selon des méthodes écologiques", icon: "plant" },
+    { title: "Séchage Solaire", description: "Processus de séchage naturel au soleil assurant une teneur optimale en humidité", icon: "sun" },
+    { title: "Filtration Avancée", description: "Filtration multi-étapes éliminant les impuretés et assurant une qualité constante", icon: "microscope" },
+    { title: "Contrôle Qualité", description: "Tests rigoureux d'EC, pH et propriétés physiques", icon: "flask" },
+  ],
+  es: [
+    { title: "Cosecha Natural", description: "Cáscaras de coco de origen sostenible procesadas con métodos ecológicos", icon: "plant" },
+    { title: "Secado Solar", description: "Proceso natural de secado al sol que garantiza el contenido óptimo de humedad", icon: "sun" },
+    { title: "Filtración Avanzada", description: "Filtración de múltiples etapas que elimina impurezas y garantiza calidad constante", icon: "microscope" },
+    { title: "Control de Calidad", description: "Pruebas rigurosas de EC, pH y propiedades físicas", icon: "flask" },
+  ],
+  af: [
+    { title: "Natuurlike Oes", description: "Volhoubaar gebronne kokosdoppies verwerk met omvriendelike metodes", icon: "plant" },
+    { title: "Sondroog", description: "Natuurlike sondroging proses wat optimale voginhoud verseker", icon: "sun" },
+    { title: "Gevorderde Filtrasie", description: "Veelstadige filtrasie wat onsuiwerhede verwyder en konsekwente kwaliteit verseker", icon: "microscope" },
+    { title: "Kwaliteitstoetsing", description: "Strenge toetsing vir EC, pH en fisiese eienskappe", icon: "flask" },
+  ],
+};
+const processSteps = processByLang[lang] ?? processByLang.en;
 
-const benefits = [
-  { title: "Superior Water Retention", description: "Holds up to 9 times its weight in water, reducing irrigation frequency", icon: "water" },
-  { title: "Optimal Aeration", description: "Perfect air-to-water ratio promoting healthy root development", icon: "wind" },
-  { title: "pH Balanced", description: "Stable pH levels ideal for nutrient uptake", icon: "shield" },
-  { title: "100% Organic", description: "Natural, renewable, and environmentally sustainable", icon: "plant" }
-];
+type Cert = { name: string; description: string; icon: string };
+const certsByLang: Record<string, Cert[]> = {
+  en: [
+    { name: "Organic Certified", description: "Meets international organic farming standards", icon: "leaf" },
+    { name: "ISO 9001:2015", description: "Certified quality management system", icon: "medal" },
+    { name: "RHP Certified", description: "Meets European horticultural standards", icon: "earth" },
+  ],
+  fr: [
+    { name: "Organic Certified", description: "Répond aux normes d'agriculture biologique internationales", icon: "leaf" },
+    { name: "ISO 9001:2015", description: "Système de management de la qualité certifié", icon: "medal" },
+    { name: "RHP Certified", description: "Répond aux normes horticoles européennes", icon: "earth" },
+  ],
+  es: [
+    { name: "Organic Certified", description: "Cumple los estándares internacionales de agricultura orgánica", icon: "leaf" },
+    { name: "ISO 9001:2015", description: "Sistema de gestión de calidad certificado", icon: "medal" },
+    { name: "RHP Certified", description: "Cumple los estándares hortícolas europeos", icon: "earth" },
+  ],
+  af: [
+    { name: "Organic Certified", description: "Voldoen aan internasionale organiese landboustandaarde", icon: "leaf" },
+    { name: "ISO 9001:2015", description: "Gesertifiseerde kwaliteitsbestuurstelsel", icon: "medal" },
+    { name: "RHP Certified", description: "Voldoen aan Europese tuinboustandaarde", icon: "earth" },
+  ],
+};
+const certifications = certsByLang[lang] ?? certsByLang.en;
+
+type Benefit = { title: string; description: string; icon: string };
+const benefitsByLang: Record<string, Benefit[]> = {
+  en: [
+    { title: "Superior Water Retention", description: "Holds up to 9 times its weight in water, reducing irrigation frequency", icon: "water" },
+    { title: "Optimal Aeration", description: "Perfect air-to-water ratio promoting healthy root development", icon: "wind" },
+    { title: "pH Balanced", description: "Stable pH levels ideal for nutrient uptake", icon: "shield" },
+    { title: "100% Organic", description: "Natural, renewable, and environmentally sustainable", icon: "plant" },
+  ],
+  fr: [
+    { title: "Rétention d'Eau Supérieure", description: "Retient jusqu'à 9 fois son poids en eau, réduisant la fréquence d'irrigation", icon: "water" },
+    { title: "Aération Optimale", description: "Ratio air/eau parfait favorisant un développement racinaire sain", icon: "wind" },
+    { title: "pH Équilibré", description: "Niveaux de pH stables idéaux pour l'absorption des nutriments", icon: "shield" },
+    { title: "100% Bio", description: "Naturel, renouvelable et écologiquement durable", icon: "plant" },
+  ],
+  es: [
+    { title: "Superior Retención de Agua", description: "Retiene hasta 9 veces su peso en agua, reduciendo la frecuencia de riego", icon: "water" },
+    { title: "Aireación Óptima", description: "Relación perfecta aire-agua que promueve el desarrollo saludable de raíces", icon: "wind" },
+    { title: "pH Equilibrado", description: "Niveles de pH estables ideales para la absorción de nutrientes", icon: "shield" },
+    { title: "100% Orgánico", description: "Natural, renovable y ecológicamente sostenible", icon: "plant" },
+  ],
+  af: [
+    { title: "Uitstekende Waterretensie", description: "Hou tot 9 keer sy gewig in water, wat besproeiingsfrekwensie verminder", icon: "water" },
+    { title: "Optimale Lugverversing", description: "Perfekte lug-tot-water-verhouding wat gesonde wortelontwikkeling bevorder", icon: "wind" },
+    { title: "pH-Gebalanseerd", description: "Stabiele pH-vlakke ideaal vir nutriëntopname", icon: "shield" },
+    { title: "100% Organies", description: "Natuurlik, hernubaar en ekologies volhoubaar", icon: "plant" },
+  ],
+};
+const benefits = benefitsByLang[lang] ?? benefitsByLang.en;
 ---
 
-<Layout
-  title="Premium Growing Solutions | Organic Coco Peat & Coir | Arbre Bio Africa"
-  description="Discover Arbre Bio Africa's premium organic coco peat and coir products. Sustainable growing solutions engineered for maximum yield and crop health."
->
+<Layout title={T.layoutTitle} description={T.layoutDesc}>
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
@@ -71,13 +303,13 @@ const benefits = [
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-4xl">
         <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-          Sustainable Growth Starts Here
-          <span class="block text-2xl md:text-3xl mt-2">Premium Organic Coco Peat & Coir</span>
+          {T.heroTitle}
+          <span class="block text-2xl md:text-3xl mt-2">{T.heroSub}</span>
         </h1>
-        <p class="text-xl text-white mb-8">Engineered for maximum yield and optimal crop health</p>
+        <p class="text-xl text-white mb-8">{T.heroPara}</p>
         <div class="flex flex-wrap gap-4">
-          <a href="#quote-form" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">Request Quote</a>
-          <a href="#products" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">View Products</a>
+          <a href="#quote-form" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.btnQuote}</a>
+          <a href="#products" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.btnProducts}</a>
         </div>
       </div>
     </div>
@@ -86,7 +318,7 @@ const benefits = [
   <!-- Benefits Section -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Why Choose Our Growing Solutions</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secBenefits}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {benefits.map((benefit) => (
           <div class="text-center">
@@ -102,7 +334,7 @@ const benefits = [
   <!-- Products Section -->
   <section id="products" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Premium Products</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secProducts}</h2>
       {products.map((product, index) => (
         <div class={`mb-20 ${index !== 0 ? 'border-t pt-20' : ''}`}>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -118,7 +350,7 @@ const benefits = [
                   </div>
                 ))}
               </div>
-              <h4 class="font-bold mb-3">Ideal Applications:</h4>
+              <h4 class="font-bold mb-3">{T.lblIdealApps}</h4>
               <div class="space-y-2">
                 {product.applications.map((app) => (
                   <div class="flex items-center text-gray-700">
@@ -142,7 +374,7 @@ const benefits = [
   <!-- Production Process -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Our Production Process</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secProcess}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {processSteps.map((step, index) => (
           <div class="relative">
@@ -165,7 +397,7 @@ const benefits = [
   <!-- Certifications -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Quality Certifications</h2>
+      <h2 class="text-3xl font-bold text-center mb-12">{T.secCerts}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         {certifications.map((cert) => (
           <div class="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -182,44 +414,44 @@ const benefits = [
   <section id="quote-form" class="py-20 bg-white">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
         <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
               <input type="text" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
             <input type="email" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
             <input type="tel" required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Product Type *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblProductType}</label>
             <select required class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-              <option value="">Select a product</option>
-              <option value="type20">Type 20 - Pure Coco Peat</option>
-              <option value="type30">Type 30 - 80/20 Premium Blend</option>
-              <option value="custom">Custom Blend</option>
+              <option value="">{T.selectProduct}</option>
+              <option value="type20">{T.optType20}</option>
+              <option value="type30">{T.optType30}</option>
+              <option value="custom">{T.optCustom}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity (Metric Tons) *</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblQuantity}</label>
             <input type="number" required min="1" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Additional Requirements</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Tell us about your specific needs or custom blend requirements..."></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
+            <textarea rows="4" class="w-full px-4 py-2 rounded-md border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
-          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">Submit Quote Request</button>
+          <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
         </form>
       </div>
     </div>
@@ -228,12 +460,12 @@ const benefits = [
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Growing Operation?</h2>
-      <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
+      <h2 class="text-3xl font-bold text-white mb-6">{T.ctaTitle}</h2>
+      <p class="text-xl text-white mb-8">{T.ctaDesc}</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="#quote-form" class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">Get Started</a>
+        <a href="#quote-form" class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90">{T.btnStart}</a>
         <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-          <i class="fab fa-whatsapp mr-2"></i>Chat on WhatsApp
+          <i class="fab fa-whatsapp mr-2"></i>{T.btnWhatsapp}
         </a>
       </div>
     </div>
@@ -248,7 +480,7 @@ const benefits = [
   "description": "Premium organic coco peat and coir products for professional horticulture and agriculture, featuring superior water retention and optimal aeration.",
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
   "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
-  "offers": { "@type": "Offer", "priceCurrency": "XOF", "priceValidUntil": "2025-12-31", "availability": "https://schema.org/InStock" },
-  "image": ["https://images.unsplash.com/photo-1624958723474-05d32b99005c?ixlib=rb-4.0.3"]
+  "offers": { "@type": "Offer", "priceCurrency": "XOF", "priceValidUntil": "2026-12-31", "availability": "https://schema.org/InStock" },
+  "image": ["https://imgur.com/AlUvYxz.jpg"]
 }
 </script>
