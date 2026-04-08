@@ -1,0 +1,136 @@
+---
+export const prerender = false;
+import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
+---
+
+<SalesAgentLayout title="Dashboard" activeTab="dashboard">
+  <div class="p-4 max-w-lg mx-auto">
+    <!-- Welcome header -->
+    <div class="mb-5">
+      <p class="text-sm text-gray-500" data-i18n="welcome">Bonjour</p>
+      <h1 id="agent-name" class="text-xl font-bold text-gray-800">—</h1>
+      <p id="agent-worker-id" class="text-xs text-gray-400 mt-0.5"></p>
+    </div>
+
+    <!-- Commission card -->
+    <div class="rounded-xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #194642, #2a5e59)">
+      <p class="text-xs font-medium uppercase tracking-wide opacity-80" data-i18n="myCommission">Ma Commission</p>
+      <p id="commission-year" class="text-xs opacity-60 mt-0.5">2026</p>
+      <p id="commission-amount" class="text-3xl font-bold mt-1">—</p>
+      <p class="text-xs opacity-70 mt-0.5">FCFA</p>
+      <div class="flex items-center gap-2 mt-3 pt-3 border-t border-white/20">
+        <span class="text-xs opacity-80" data-i18n="commissionRate">Taux:</span>
+        <span id="commission-rate" class="text-sm font-semibold bg-white/20 px-2 py-0.5 rounded-full">—%</span>
+      </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="bg-white rounded-xl p-3 text-center border border-gray-100 shadow-sm">
+        <p id="stat-total" class="text-xl font-bold text-gray-800">—</p>
+        <p class="text-xs text-gray-500 mt-0.5" data-i18n="totalSales">Total</p>
+      </div>
+      <div class="bg-white rounded-xl p-3 text-center border border-yellow-100 shadow-sm">
+        <p id="stat-pending" class="text-xl font-bold text-yellow-600">—</p>
+        <p class="text-xs text-yellow-600 mt-0.5" data-i18n="pendingSales">En attente</p>
+      </div>
+      <div class="bg-white rounded-xl p-3 text-center border border-green-100 shadow-sm">
+        <p id="stat-validated" class="text-xl font-bold text-green-600">—</p>
+        <p class="text-xs text-green-600 mt-0.5" data-i18n="validatedSales">Validées</p>
+      </div>
+    </div>
+
+    <!-- Quick action -->
+    <a href="/sales-agent/sales/" class="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-semibold text-sm mb-5 transition-opacity hover:opacity-90" style="background:#194642">
+      <i class="fas fa-plus-circle"></i>
+      <span data-i18n="registerSale">Enregistrer une vente</span>
+    </a>
+
+    <!-- Recent sales -->
+    <div class="mb-2 flex items-center justify-between">
+      <h2 class="font-semibold text-gray-800 text-sm" data-i18n="recentSales">Ventes récentes</h2>
+      <a href="/sales-agent/sales/" class="text-xs text-[#194642] font-medium" data-i18n="viewAll">Voir tout</a>
+    </div>
+    <div id="recent-sales" class="space-y-2">
+      <div class="bg-white rounded-xl p-4 border border-gray-100 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<script is:inline>
+  (function() {
+    var PAYMENT_SHORT = { wire_transfer:'Wire', orange_money:'Orange', mtn_money:'MTN', moov_money:'Moov', wave:'WAVE', cash:'Cash' };
+    var STATUS_COLOR = { pending:'text-yellow-600 bg-yellow-50', validated:'text-green-600 bg-green-50', rejected:'text-red-600 bg-red-50' };
+    var STATUS_LABEL = {
+      fr: { pending:'En attente', validated:'Validée', rejected:'Rejetée' },
+      en: { pending:'Pending', validated:'Validated', rejected:'Rejected' },
+      es: { pending:'Pendiente', validated:'Validada', rejected:'Rechazada' },
+      af: { pending:'Awagtend', validated:'Gevalideer', rejected:'Verwerp' },
+    };
+
+    var lang = localStorage.getItem('agentLang') || 'fr';
+    var token = localStorage.getItem('agentToken');
+    var profile = null;
+    try { profile = JSON.parse(localStorage.getItem('agentProfile') || 'null'); } catch {}
+
+    // Show cached profile immediately
+    if (profile) {
+      document.getElementById('agent-name').textContent = profile.full_name || '';
+      if (profile.worker_id) document.getElementById('agent-worker-id').textContent = profile.worker_id;
+    }
+
+    async function loadDashboard() {
+      if (!token) { window.location.href = '/sales-agent/login'; return; }
+      try {
+        // Load profile + commission stats
+        var authRes = await fetch('/api/sales-agent/auth', { headers: { Authorization: 'Bearer ' + token } });
+        if (!authRes.ok) { window.location.href = '/sales-agent/login'; return; }
+        var authData = await authRes.json();
+        var p = authData.profile;
+        var stats = authData.commissionStats;
+
+        localStorage.setItem('agentProfile', JSON.stringify(p));
+        document.getElementById('agent-name').textContent = p.full_name;
+        if (p.worker_id) document.getElementById('agent-worker-id').textContent = p.worker_id;
+
+        document.getElementById('commission-year').textContent = String(stats.year);
+        document.getElementById('commission-amount').textContent = new Intl.NumberFormat('fr-FR').format(stats.commission_earned);
+        document.getElementById('commission-rate').textContent = '—'; // Rate varies per sale
+        document.getElementById('stat-total').textContent = String(stats.total_count);
+        document.getElementById('stat-pending').textContent = String(stats.pending_count);
+        document.getElementById('stat-validated').textContent = String(stats.validated_count);
+
+        // Load recent sales
+        var salesRes = await fetch('/api/sales-agent/sales?limit=5', { headers: { Authorization: 'Bearer ' + token } });
+        var salesData = await salesRes.json();
+        var sales = salesData.sales || [];
+        var sl = STATUS_LABEL[lang] || STATUS_LABEL['fr'];
+
+        var recentEl = document.getElementById('recent-sales');
+        if (!sales.length) {
+          recentEl.innerHTML = '<div class="bg-white rounded-xl p-4 border border-gray-100 text-center text-gray-400 text-sm" data-i18n="noSalesYet">Aucune vente enregistrée.</div>';
+          return;
+        }
+        recentEl.innerHTML = sales.map(function(s) {
+          var sc = STATUS_COLOR[s.status] || 'text-gray-600 bg-gray-50';
+          var d = new Date(s.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+          return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex items-center gap-3">' +
+            '<div class="flex-1 min-w-0">' +
+              '<p class="font-medium text-gray-800 text-sm truncate">' + (s.client_name || '') + '</p>' +
+              '<p class="text-xs text-gray-400 truncate">' + (s.product_name || '') + ' · ' + d + '</p>' +
+            '</div>' +
+            '<div class="text-right shrink-0">' +
+              '<p class="font-semibold text-sm text-gray-800">' + new Intl.NumberFormat('fr-FR').format(Number(s.total_amount)) + ' <span class="text-xs font-normal text-gray-400">FCFA</span></p>' +
+              '<span class="text-xs px-1.5 py-0.5 rounded-full ' + sc + '">' + (sl[s.status] || s.status) + '</span>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } catch (err) {
+        // Offline — show cached data
+        console.warn('Dashboard load failed (possibly offline):', err);
+      }
+    }
+
+    loadDashboard();
+  })();
+</script>

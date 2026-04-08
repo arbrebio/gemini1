@@ -1,0 +1,598 @@
+---
+export const prerender = false;
+import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
+---
+
+<SalesAgentLayout title="Sales" activeTab="sales">
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl">
+      <div class="text-center mb-4">
+        <i class="fas fa-shopping-cart text-3xl text-[#194642] mb-2"></i>
+        <h2 class="font-bold text-gray-800" data-i18n="confirmSale">Confirmer la vente</h2>
+        <p class="text-sm text-gray-500 mt-1" data-i18n="confirmSaleMsg">Soumettre pour validation ?</p>
+      </div>
+      <div id="confirm-summary" class="bg-gray-50 rounded-xl p-3 mb-4 text-sm text-gray-700 space-y-1"></div>
+      <div class="flex gap-3">
+        <button id="cancel-confirm" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600" data-i18n="cancel">Annuler</button>
+        <button id="do-submit" class="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#194642" data-i18n="confirm">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sale detail modal (for history view) -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/50" style="padding-bottom:72px">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[75vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
+        <h2 class="font-bold text-gray-800" data-i18n="sales">Détail de la vente</h2>
+        <button id="close-detail" class="text-gray-400 text-xl p-1"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="detail-content" class="p-4 text-sm text-gray-700 space-y-2"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-16 left-4 right-4 z-50 px-4 py-3 rounded-xl text-sm font-medium shadow-lg"></div>
+
+  <!-- Offline sales badge -->
+  <div id="offline-queue-banner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between" style="margin-top:0">
+    <p class="text-xs text-amber-700"><i class="fas fa-clock mr-1"></i><span id="queue-count">0</span> vente(s) hors ligne en attente</p>
+    <button id="btn-sync" class="text-xs text-amber-700 font-semibold underline" data-i18n="syncNow">Synchroniser</button>
+  </div>
+
+  <div class="p-4">
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 mb-4">
+      <button id="tab-register" class="flex-1 py-2.5 text-sm font-semibold border-b-2 border-[#194642] text-[#194642] transition-colors" data-i18n="registerSale">Enregistrer</button>
+      <button id="tab-history" class="flex-1 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 transition-colors" data-i18n="salesHistory">Historique</button>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="panel-register">
+      <form id="sale-form" class="space-y-3" novalidate>
+
+        <!-- Product -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="product">Produit</label>
+          <div class="relative">
+            <input id="product-search" type="text" autocomplete="off" placeholder="Chercher ou saisir le nom du produit…"
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white" />
+            <input id="product-id" type="hidden" />
+            <div id="product-dropdown" class="hidden absolute z-20 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <!-- Quantity & Unit Price -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="quantity">Quantité</label>
+            <input id="quantity" type="number" inputmode="decimal" min="0.01" step="0.01" required value="1"
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="unitPrice">Prix unitaire (FCFA)</label>
+            <input id="unit-price" type="number" inputmode="decimal" min="0" step="1" required
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+        </div>
+
+        <!-- Total (auto-calculated) -->
+        <div class="bg-gray-50 rounded-xl p-3 flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-600" data-i18n="totalAmount">Montant total</span>
+          <span id="total-display" class="text-lg font-bold text-[#194642]">0 FCFA</span>
+        </div>
+
+        <!-- Client -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="clientName">Nom du client <span class="text-red-400">*</span></label>
+          <input id="client-name" type="text" required autocomplete="name"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+
+        <!-- Payment method -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="paymentMethod">Mode de paiement <span class="text-red-400">*</span></label>
+          <select id="payment-method" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white">
+            <option value="">— Sélectionner —</option>
+            <option value="orange_money" data-i18n="orangeMoney">Orange Money</option>
+            <option value="mtn_money" data-i18n="mtnMoney">MTN Money</option>
+            <option value="moov_money" data-i18n="moovMoney">Moov Money</option>
+            <option value="wave" data-i18n="wave">WAVE</option>
+            <option value="wire_transfer" data-i18n="wireTransfer">Virement bancaire</option>
+            <option value="cash" data-i18n="cash">Espèces</option>
+          </select>
+        </div>
+
+        <!-- Transaction reference -->
+        <div id="ref-group">
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="transactionRef">Référence de transaction</label>
+          <input id="transaction-ref" type="text" inputmode="text"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]"
+            placeholder="Numéro de transaction…" />
+          <p class="text-xs text-gray-400 mt-0.5" id="ref-hint">Obligatoire pour les paiements mobiles/virement</p>
+        </div>
+
+        <!-- Proof of payment -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="proofOfPayment">Preuve de paiement</label>
+          <div class="flex gap-2">
+            <!-- Take photo (mobile) -->
+            <label class="flex-1 flex flex-col items-center gap-1.5 p-3 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-[#194642] hover:bg-gray-50 transition-colors text-center" id="photo-label">
+              <i class="fas fa-camera text-gray-400 text-xl"></i>
+              <span class="text-xs text-gray-500 font-medium" data-i18n="takePhoto">Prendre une photo</span>
+              <input id="proof-camera" type="file" accept="image/*" capture="environment" class="hidden" />
+            </label>
+            <!-- Upload file -->
+            <label class="flex-1 flex flex-col items-center gap-1.5 p-3 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-[#194642] hover:bg-gray-50 transition-colors text-center" id="upload-label">
+              <i class="fas fa-file-upload text-gray-400 text-xl"></i>
+              <span class="text-xs text-gray-500 font-medium" data-i18n="uploadFile">Télécharger fichier</span>
+              <input id="proof-file" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" />
+            </label>
+          </div>
+          <div id="proof-preview" class="hidden mt-2 relative">
+            <div id="proof-preview-inner" class="flex items-center gap-2 bg-gray-50 rounded-xl p-2"></div>
+            <button type="button" id="remove-proof" class="absolute top-1 right-1 text-gray-400 hover:text-red-500 text-xs p-1"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="notes">Notes (optionnel)</label>
+          <textarea id="notes" rows="2"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] resize-none"></textarea>
+        </div>
+
+        <!-- Commission preview -->
+        <div id="commission-preview" class="hidden bg-green-50 border border-green-100 rounded-xl p-3 flex items-center gap-2">
+          <i class="fas fa-percent text-green-500 text-sm"></i>
+          <p class="text-xs text-green-700" id="commission-text"></p>
+        </div>
+
+        <button type="submit" id="submit-sale" class="w-full py-3.5 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90" style="background:#194642">
+          <i class="fas fa-check mr-1.5"></i>
+          <span data-i18n="submitSale">Soumettre la vente</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- History Panel -->
+    <div id="panel-history" class="hidden">
+      <!-- Filter -->
+      <div class="flex gap-2 mb-3">
+        <select id="history-filter" class="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#194642]">
+          <option value="">Toutes les ventes</option>
+          <option value="pending" data-i18n="pending">En attente</option>
+          <option value="validated" data-i18n="validated">Validées</option>
+          <option value="rejected" data-i18n="rejected">Rejetées</option>
+        </select>
+      </div>
+      <div id="history-list" class="space-y-2">
+        <div class="bg-white rounded-xl p-4 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
+      </div>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<script is:inline>
+  (function() {
+    var token = localStorage.getItem('agentToken');
+    var products = [];
+    var pendingProof = null; // { url, file_name }
+    var pendingFormData = null; // Captured form data for confirm modal
+
+    var PAYMENT_LABELS = { wire_transfer:'Virement', orange_money:'Orange Money', mtn_money:'MTN Money', moov_money:'Moov Money', wave:'WAVE', cash:'Espèces' };
+    var STATUS_COLOR = { pending:'bg-yellow-50 text-yellow-600', validated:'bg-green-50 text-green-600', rejected:'bg-red-50 text-red-500' };
+    var STATUS_LABEL_FR = { pending:'En attente', validated:'Validée', rejected:'Rejetée' };
+
+    // ── Offline queue (IndexedDB-based) ─────────────────────────────────
+    var DB_NAME = 'arbre-bio-agent';
+    var DB_VERSION = 1;
+    var dbPromise = null;
+
+    function openDB() {
+      if (dbPromise) return dbPromise;
+      dbPromise = new Promise(function(resolve, reject) {
+        var req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = function(e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains('pending-sales')) {
+            db.createObjectStore('pending-sales', { keyPath: 'localId' });
+          }
+        };
+        req.onsuccess = function(e) { resolve(e.target.result); };
+        req.onerror = function(e) { reject(e.target.error); };
+      });
+      return dbPromise;
+    }
+
+    async function queueOfflineSale(saleData) {
+      var db = await openDB();
+      var tx = db.transaction('pending-sales', 'readwrite');
+      tx.objectStore('pending-sales').put(Object.assign({ localId: Date.now().toString() }, saleData));
+      updateOfflineQueueBadge();
+    }
+
+    async function getPendingCount() {
+      var db = await openDB();
+      return new Promise(function(resolve) {
+        var req = db.transaction('pending-sales', 'readonly').objectStore('pending-sales').count();
+        req.onsuccess = function() { resolve(req.result); };
+        req.onerror = function() { resolve(0); };
+      });
+    }
+
+    async function syncOfflineSales() {
+      if (!navigator.onLine) return;
+      var db = await openDB();
+      var all = await new Promise(function(resolve) {
+        var req = db.transaction('pending-sales', 'readonly').objectStore('pending-sales').getAll();
+        req.onsuccess = function() { resolve(req.result); };
+        req.onerror = function() { resolve([]); };
+      });
+      for (var i = 0; i < all.length; i++) {
+        var sale = all[i];
+        var localId = sale.localId;
+        var payload = Object.assign({}, sale);
+        delete payload.localId;
+        try {
+          var res = await fetch('/api/sales-agent/sales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            var tx2 = db.transaction('pending-sales', 'readwrite');
+            tx2.objectStore('pending-sales').delete(localId);
+          }
+        } catch (err) { /* keep in queue */ }
+      }
+      updateOfflineQueueBadge();
+      loadHistory();
+    }
+
+    async function updateOfflineQueueBadge() {
+      var count = await getPendingCount();
+      var banner = document.getElementById('offline-queue-banner');
+      if (count > 0) {
+        banner.classList.remove('hidden');
+        document.getElementById('queue-count').textContent = String(count);
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+    updateOfflineQueueBadge();
+
+    document.getElementById('btn-sync').addEventListener('click', syncOfflineSales);
+    window.addEventListener('online', syncOfflineSales);
+
+    // ── Load products for autocomplete ──────────────────────────────────
+    async function loadProducts() {
+      try {
+        var res = await fetch('/api/sales-agent/inventory?limit=200', { headers: { Authorization: 'Bearer ' + token } });
+        var data = await res.json();
+        products = data.products || [];
+        localStorage.setItem('agentProducts', JSON.stringify(products));
+      } catch {
+        var cached = localStorage.getItem('agentProducts');
+        products = cached ? JSON.parse(cached) : [];
+      }
+    }
+    loadProducts();
+
+    // ── Product autocomplete ─────────────────────────────────────────────
+    var productSearch = document.getElementById('product-search');
+    var productDropdown = document.getElementById('product-dropdown');
+
+    productSearch.addEventListener('input', function() {
+      var q = productSearch.value.toLowerCase().trim();
+      document.getElementById('product-id').value = '';
+      updateCommissionPreview();
+      if (!q) { productDropdown.classList.add('hidden'); return; }
+      var matches = products.filter(function(p) { return (p.name || '').toLowerCase().includes(q); }).slice(0, 8);
+      if (!matches.length) { productDropdown.classList.add('hidden'); return; }
+      productDropdown.innerHTML = matches.map(function(p) {
+        var price = new Intl.NumberFormat('fr-FR').format(Number(p.unit_price));
+        return '<div class="product-option px-3 py-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-50 last:border-0" data-id="' + p.id + '" data-name="' + p.name + '" data-price="' + p.unit_price + '">' +
+          '<p class="text-sm font-medium text-gray-800">' + p.name + '</p>' +
+          '<p class="text-xs text-gray-400">' + price + ' FCFA / ' + (p.unit_of_measure || 'u') + '</p>' +
+        '</div>';
+      }).join('');
+      productDropdown.classList.remove('hidden');
+
+      productDropdown.querySelectorAll('.product-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          productSearch.value = opt.getAttribute('data-name');
+          document.getElementById('product-id').value = opt.getAttribute('data-id');
+          var price = opt.getAttribute('data-price');
+          if (price) document.getElementById('unit-price').value = price;
+          productDropdown.classList.add('hidden');
+          calcTotal();
+        });
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!productSearch.contains(e.target)) productDropdown.classList.add('hidden');
+    });
+
+    // ── Total calculation ────────────────────────────────────────────────
+    function calcTotal() {
+      var qty = parseFloat(document.getElementById('quantity').value) || 0;
+      var price = parseFloat(document.getElementById('unit-price').value) || 0;
+      var total = qty * price;
+      document.getElementById('total-display').textContent = new Intl.NumberFormat('fr-FR').format(total) + ' FCFA';
+      updateCommissionPreview(total);
+      return total;
+    }
+
+    document.getElementById('quantity').addEventListener('input', calcTotal);
+    document.getElementById('unit-price').addEventListener('input', calcTotal);
+
+    // ── Commission preview ───────────────────────────────────────────────
+    function updateCommissionPreview(total) {
+      var p = null;
+      try { p = JSON.parse(localStorage.getItem('agentProfile') || 'null'); } catch {}
+      var hiredAt = p ? p.hired_at : null;
+      var rate = hiredAt ? (((Date.now() - new Date(hiredAt).getTime()) / 86400000) > 180 ? 8 : 5) : 5;
+      var amount = total || calcTotal();
+      var commission = (amount * rate / 100);
+      var el = document.getElementById('commission-preview');
+      var text = document.getElementById('commission-text');
+      if (amount > 0) {
+        el.classList.remove('hidden');
+        text.textContent = 'Commission estimée: ' + rate + '% = ' + new Intl.NumberFormat('fr-FR').format(commission) + ' FCFA (après validation)';
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+
+    // ── Payment method change ────────────────────────────────────────────
+    document.getElementById('payment-method').addEventListener('change', function() {
+      var method = document.getElementById('payment-method').value;
+      var hint = document.getElementById('ref-hint');
+      if (method === 'cash') {
+        hint.textContent = 'Un reçu est requis pour les paiements en espèces';
+      } else {
+        hint.textContent = 'Obligatoire pour les paiements mobiles/virement';
+      }
+    });
+
+    // ── Proof upload ─────────────────────────────────────────────────────
+    async function handleFileUpload(file) {
+      if (!file) return;
+      var previewEl = document.getElementById('proof-preview');
+      var previewInner = document.getElementById('proof-preview-inner');
+      previewEl.classList.remove('hidden');
+      previewInner.innerHTML = '<i class="fas fa-spinner fa-spin text-gray-400"></i><span class="text-xs text-gray-500">Téléchargement…</span>';
+
+      var fd = new FormData();
+      fd.append('file', file);
+      try {
+        var res = await fetch('/api/sales-agent/upload-proof', { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: fd });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error);
+        pendingProof = { url: data.url, signed_url: data.signed_url, file_name: data.file_name };
+        var isImg = file.type.startsWith('image/');
+        previewInner.innerHTML = isImg
+          ? '<img src="' + data.signed_url + '" class="h-12 w-12 object-cover rounded-lg" /><span class="text-xs text-gray-600 truncate max-w-xs">' + file.name + '</span>'
+          : '<i class="fas fa-file-pdf text-red-500 text-xl"></i><span class="text-xs text-gray-600 truncate max-w-xs">' + file.name + '</span>';
+        showToast('Fichier téléchargé avec succès.', false);
+      } catch (err) {
+        previewEl.classList.add('hidden');
+        pendingProof = null;
+        showToast('Échec du téléchargement: ' + err.message, true);
+      }
+    }
+
+    document.getElementById('proof-camera').addEventListener('change', function(e) {
+      var f = e.target.files && e.target.files[0];
+      if (f) handleFileUpload(f);
+    });
+    document.getElementById('proof-file').addEventListener('change', function(e) {
+      var f = e.target.files && e.target.files[0];
+      if (f) handleFileUpload(f);
+    });
+    document.getElementById('remove-proof').addEventListener('click', function() {
+      pendingProof = null;
+      document.getElementById('proof-preview').classList.add('hidden');
+      document.getElementById('proof-camera').value = '';
+      document.getElementById('proof-file').value = '';
+    });
+
+    // ── Form submit → show confirm modal ─────────────────────────────────
+    document.getElementById('sale-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var productName = document.getElementById('product-search').value.trim();
+      var clientName = document.getElementById('client-name').value.trim();
+      var method = document.getElementById('payment-method').value;
+      var qty = parseFloat(document.getElementById('quantity').value);
+      var price = parseFloat(document.getElementById('unit-price').value);
+
+      if (!productName) { showToast('Veuillez indiquer le produit.', true); return; }
+      if (!clientName) { showToast('Veuillez indiquer le nom du client.', true); return; }
+      if (!method) { showToast('Veuillez choisir le mode de paiement.', true); return; }
+      if (!qty || qty <= 0) { showToast('Quantité invalide.', true); return; }
+      if (isNaN(price) || price < 0) { showToast('Prix invalide.', true); return; }
+
+      var total = qty * price;
+      pendingFormData = {
+        product_name: productName,
+        product_id: document.getElementById('product-id').value || undefined,
+        quantity: qty,
+        unit_price: price,
+        total_amount: total,
+        client_name: clientName,
+        payment_method: method,
+        transaction_reference: document.getElementById('transaction-ref').value.trim() || undefined,
+        proof_url: pendingProof ? pendingProof.url : undefined,
+        proof_file_name: pendingProof ? pendingProof.file_name : undefined,
+        notes: document.getElementById('notes').value.trim() || undefined,
+      };
+
+      // Show confirm summary
+      document.getElementById('confirm-summary').innerHTML =
+        '<p><strong>Produit:</strong> ' + productName + '</p>' +
+        '<p><strong>Client:</strong> ' + clientName + '</p>' +
+        '<p><strong>Montant:</strong> <strong>' + new Intl.NumberFormat('fr-FR').format(total) + ' FCFA</strong></p>' +
+        '<p><strong>Paiement:</strong> ' + (PAYMENT_LABELS[method] || method) + '</p>' +
+        (pendingProof ? '<p><i class="fas fa-check-circle text-green-500 mr-1"></i>Preuve jointe</p>' : '');
+      document.getElementById('confirm-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('cancel-confirm').addEventListener('click', function() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+    });
+
+    document.getElementById('do-submit').addEventListener('click', async function() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      var btn = document.getElementById('submit-sale');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1.5"></i>Envoi en cours…';
+
+      if (!navigator.onLine) {
+        // Queue offline
+        await queueOfflineSale(pendingFormData);
+        showToast('Vente mise en file d\'attente (hors ligne). Elle sera envoyée à la reconnexion.');
+        resetForm();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check mr-1.5"></i>Soumettre la vente';
+        return;
+      }
+
+      try {
+        var res = await fetch('/api/sales-agent/sales', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: JSON.stringify(pendingFormData),
+        });
+        var data = await res.json();
+
+        if (!res.ok || data.error) throw new Error(data.error || 'Erreur');
+
+        showToast('Vente enregistrée avec succès ! En attente de validation.');
+        resetForm();
+      } catch (err) {
+        // Try to queue offline
+        await queueOfflineSale(pendingFormData);
+        showToast('Vente sauvegardée hors ligne. Elle sera soumise à la reconnexion.');
+        resetForm();
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check mr-1.5"></i>Soumettre la vente';
+    });
+
+    function resetForm() {
+      document.getElementById('sale-form').reset();
+      document.getElementById('quantity').value = '1';
+      document.getElementById('product-id').value = '';
+      document.getElementById('total-display').textContent = '0 FCFA';
+      pendingProof = null;
+      pendingFormData = null;
+      document.getElementById('proof-preview').classList.add('hidden');
+      document.getElementById('commission-preview').classList.add('hidden');
+    }
+
+    // ── History ──────────────────────────────────────────────────────────
+    async function loadHistory() {
+      var status = document.getElementById('history-filter').value;
+      var params = new URLSearchParams({ limit: '50' });
+      if (status) params.set('status', status);
+      try {
+        var res = await fetch('/api/sales-agent/sales?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        var data = await res.json();
+        var sales = data.sales || [];
+        renderHistory(sales);
+      } catch {
+        document.getElementById('history-list').innerHTML = '<div class="bg-white rounded-xl p-4 text-center text-gray-400 text-sm">Hors ligne — historique indisponible.</div>';
+      }
+    }
+
+    function renderHistory(sales) {
+      var el = document.getElementById('history-list');
+      if (!sales.length) {
+        el.innerHTML = '<div class="bg-white rounded-xl p-6 text-center text-gray-400 text-sm">Aucune vente trouvée.</div>';
+        return;
+      }
+      el.innerHTML = sales.map(function(s) {
+        var sc = STATUS_COLOR[s.status] || 'bg-gray-50 text-gray-600';
+        var sl = STATUS_LABEL_FR[s.status] || s.status;
+        var d = new Date(s.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+        return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm cursor-pointer active:bg-gray-50" data-sale-id="' + s.id + '">' +
+          '<div class="flex items-center justify-between">' +
+            '<div class="flex-1 min-w-0">' +
+              '<p class="font-semibold text-gray-800 text-sm truncate">' + s.client_name + '</p>' +
+              '<p class="text-xs text-gray-400">' + s.product_name + ' · ' + d + '</p>' +
+            '</div>' +
+            '<div class="text-right shrink-0 ml-2">' +
+              '<p class="font-bold text-sm text-gray-800">' + new Intl.NumberFormat('fr-FR').format(Number(s.total_amount)) + ' <span class="text-xs font-normal text-gray-400">FCFA</span></p>' +
+              '<span class="text-xs px-1.5 py-0.5 rounded-full ' + sc + '">' + sl + '</span>' +
+            '</div>' +
+          '</div>' +
+          (s.status === 'rejected' && s.rejection_reason
+            ? '<p class="text-xs text-red-500 mt-1.5 bg-red-50 rounded-lg px-2 py-1"><i class="fas fa-exclamation-circle mr-1"></i>' + s.rejection_reason + '</p>'
+            : '') +
+        '</div>';
+      }).join('');
+
+      // Click to view detail
+      document.querySelectorAll('[data-sale-id]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var id = el.getAttribute('data-sale-id');
+          var sale = sales.find(function(s) { return s.id === id; });
+          if (sale) showSaleDetail(sale);
+        });
+      });
+    }
+
+    function showSaleDetail(s) {
+      var d = new Date(s.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+      var sc = STATUS_COLOR[s.status] || 'bg-gray-50 text-gray-600';
+      var sl = STATUS_LABEL_FR[s.status] || s.status;
+      document.getElementById('detail-content').innerHTML =
+        '<div class="grid grid-cols-2 gap-y-2 gap-x-4">' +
+          '<p class="text-gray-400 text-xs">Statut</p><p><span class="text-xs px-1.5 py-0.5 rounded-full ' + sc + '">' + sl + '</span></p>' +
+          '<p class="text-gray-400 text-xs">Date</p><p class="text-xs">' + d + '</p>' +
+          '<p class="text-gray-400 text-xs">Client</p><p class="text-xs font-semibold">' + s.client_name + '</p>' +
+          '<p class="text-gray-400 text-xs">Produit</p><p class="text-xs">' + s.product_name + '</p>' +
+          '<p class="text-gray-400 text-xs">Quantité</p><p class="text-xs">' + s.quantity + '</p>' +
+          '<p class="text-gray-400 text-xs">Prix unitaire</p><p class="text-xs">' + new Intl.NumberFormat('fr-FR').format(Number(s.unit_price)) + ' FCFA</p>' +
+          '<p class="text-gray-400 text-xs">Total</p><p class="text-sm font-bold text-[#194642]">' + new Intl.NumberFormat('fr-FR').format(Number(s.total_amount)) + ' FCFA</p>' +
+          '<p class="text-gray-400 text-xs">Paiement</p><p class="text-xs">' + (PAYMENT_LABELS[s.payment_method] || s.payment_method) + '</p>' +
+          '<p class="text-gray-400 text-xs">Référence</p><p class="text-xs">' + (s.transaction_reference || '—') + '</p>' +
+          '<p class="text-gray-400 text-xs">Commission</p><p class="text-xs font-semibold text-green-600">' + s.commission_rate + '% = ' + new Intl.NumberFormat('fr-FR').format(Number(s.commission_amount)) + ' FCFA</p>' +
+          (s.notes ? '<p class="text-gray-400 text-xs">Notes</p><p class="text-xs">' + s.notes + '</p>' : '') +
+          (s.rejection_reason ? '<p class="text-gray-400 text-xs col-span-2">Motif de rejet:</p><p class="text-xs col-span-2 bg-red-50 text-red-600 rounded-lg p-2">' + s.rejection_reason + '</p>' : '') +
+        '</div>' +
+        (s.proof_url ? '<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-xs font-semibold text-gray-500 mb-2">Preuve de paiement:</p><a href="' + s.proof_url + '" target="_blank" class="text-blue-600 text-xs underline"><i class="fas fa-external-link-alt mr-1"></i>Voir la preuve</a></div>' : '');
+      document.getElementById('detail-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('close-detail').addEventListener('click', function() { document.getElementById('detail-modal').classList.add('hidden'); });
+    document.getElementById('history-filter').addEventListener('change', loadHistory);
+
+    // ── Tabs ─────────────────────────────────────────────────────────────
+    document.getElementById('tab-register').addEventListener('click', function() {
+      document.getElementById('panel-register').classList.remove('hidden');
+      document.getElementById('panel-history').classList.add('hidden');
+      document.getElementById('tab-register').className = 'flex-1 py-2.5 text-sm font-semibold border-b-2 border-[#194642] text-[#194642] transition-colors';
+      document.getElementById('tab-history').className = 'flex-1 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 transition-colors';
+    });
+    document.getElementById('tab-history').addEventListener('click', function() {
+      document.getElementById('panel-register').classList.add('hidden');
+      document.getElementById('panel-history').classList.remove('hidden');
+      document.getElementById('tab-register').className = 'flex-1 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 transition-colors';
+      document.getElementById('tab-history').className = 'flex-1 py-2.5 text-sm font-semibold border-b-2 border-[#194642] text-[#194642] transition-colors';
+      loadHistory();
+    });
+
+    // ── Toast ─────────────────────────────────────────────────────────────
+    function showToast(msg, isError) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'fixed top-16 left-4 right-4 z-50 px-4 py-3 rounded-xl text-sm font-medium shadow-lg ' + (isError ? 'bg-red-600' : 'bg-green-600') + ' text-white';
+      t.classList.remove('hidden');
+      setTimeout(function() { t.classList.add('hidden'); }, 4000);
+    }
+  })();
+</script>

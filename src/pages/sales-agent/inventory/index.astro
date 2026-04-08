@@ -1,0 +1,150 @@
+---
+export const prerender = false;
+import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
+---
+
+<SalesAgentLayout title="Inventory" activeTab="inventory">
+  <div class="p-4">
+    <!-- Header -->
+    <div class="mb-4">
+      <h1 class="text-xl font-bold text-gray-800" data-i18n="products">Produits</h1>
+    </div>
+
+    <!-- Search + filter -->
+    <div class="flex gap-2 mb-4">
+      <div class="relative flex-1">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+        <input id="search-input" type="search" inputmode="search" placeholder="Rechercher…"
+          data-i18n-placeholder="searchProducts"
+          class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white" />
+      </div>
+      <select id="cat-filter" class="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white max-w-36">
+        <option value="" data-i18n="allCategories">Toutes</option>
+      </select>
+    </div>
+
+    <!-- Products grid -->
+    <div id="products-grid" class="space-y-2">
+      <div class="bg-white rounded-xl p-4 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
+    </div>
+
+    <div id="load-more-wrap" class="mt-4 text-center hidden">
+      <button id="btn-load-more" class="px-4 py-2 text-sm border border-gray-300 rounded-xl text-gray-600 hover:bg-gray-50 bg-white">
+        Charger plus
+      </button>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<script is:inline>
+  (function() {
+    var token = localStorage.getItem('agentToken');
+    var allProducts = [];
+    var offset = 0;
+
+    // Load categories
+    async function loadCategories() {
+      try {
+        var res = await fetch('/api/sales-agent/categories', { headers: { Authorization: 'Bearer ' + token } });
+        var data = await res.json();
+        var cats = data.categories || [];
+        var sel = document.getElementById('cat-filter');
+        cats.forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.name;
+          sel.appendChild(opt);
+        });
+        // Cache for offline
+        localStorage.setItem('agentCategories', JSON.stringify(cats));
+      } catch {
+        // Use cached
+        var cached = localStorage.getItem('agentCategories');
+        if (cached) {
+          var cats = JSON.parse(cached);
+          var sel = document.getElementById('cat-filter');
+          cats.forEach(function(c) {
+            var opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            sel.appendChild(opt);
+          });
+        }
+      }
+    }
+
+    async function loadProducts(append) {
+      if (!append) offset = 0;
+      var search = document.getElementById('search-input').value.trim();
+      var catId = document.getElementById('cat-filter').value;
+      var params = new URLSearchParams({ limit: '30', offset: String(offset) });
+      if (search) params.set('search', search);
+      if (catId) params.set('category_id', catId);
+
+      try {
+        var res = await fetch('/api/sales-agent/inventory?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var data = await res.json();
+        var products = data.products || [];
+
+        if (!append) allProducts = products;
+        else allProducts = allProducts.concat(products);
+
+        renderProducts();
+        offset += products.length;
+
+        var loadMoreWrap = document.getElementById('load-more-wrap');
+        loadMoreWrap.classList.toggle('hidden', products.length < 30);
+
+        // Cache for offline
+        if (!append && !search && !catId) {
+          localStorage.setItem('agentProducts', JSON.stringify(products));
+        }
+      } catch {
+        // Use cached products
+        var cached = localStorage.getItem('agentProducts');
+        if (cached && !append) {
+          allProducts = JSON.parse(cached);
+          renderProducts();
+        }
+      }
+    }
+
+    function renderProducts() {
+      var grid = document.getElementById('products-grid');
+      if (!allProducts.length) {
+        grid.innerHTML = '<div class="bg-white rounded-xl p-6 text-center text-gray-400 text-sm" data-i18n="noProducts">Aucun produit trouvé.</div>';
+        return;
+      }
+      grid.innerHTML = allProducts.map(function(p) {
+        var cat = p.admin_product_categories ? p.admin_product_categories.name : '';
+        var inStock = Number(p.stock_quantity) > 0;
+        var price = new Intl.NumberFormat('fr-FR').format(Number(p.unit_price));
+        return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex gap-3 items-start">' +
+          (p.photo_url ? '<img src="' + p.photo_url + '" alt="" class="w-14 h-14 rounded-lg object-cover shrink-0 bg-gray-100" />' : '<div class="w-14 h-14 rounded-lg bg-gray-100 shrink-0 flex items-center justify-center"><i class="fas fa-box text-gray-300 text-xl"></i></div>') +
+          '<div class="flex-1 min-w-0">' +
+            '<p class="font-semibold text-gray-800 text-sm leading-tight">' + (p.name || '') + '</p>' +
+            (cat ? '<p class="text-xs text-gray-400 mt-0.5">' + cat + '</p>' : '') +
+            '<div class="flex items-center justify-between mt-1.5 gap-2">' +
+              '<p class="font-bold text-[#194642] text-sm">' + price + ' <span class="text-xs font-normal text-gray-400">FCFA/' + (p.unit_of_measure || 'u') + '</span></p>' +
+              '<span class="text-xs px-1.5 py-0.5 rounded-full ' + (inStock ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500') + '">' +
+                (inStock ? p.stock_quantity + ' en stock' : 'Rupture') + '</span>' +
+            '</div>' +
+            (p.sku ? '<p class="text-xs text-gray-300 mt-0.5">SKU: ' + p.sku + '</p>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    loadCategories();
+    loadProducts(false);
+
+    var searchTimer;
+    document.getElementById('search-input').addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function() { loadProducts(false); }, 400);
+    });
+    document.getElementById('cat-filter').addEventListener('change', function() { loadProducts(false); });
+    document.getElementById('btn-load-more').addEventListener('click', function() { loadProducts(true); });
+  })();
+</script>

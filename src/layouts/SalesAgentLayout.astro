@@ -1,0 +1,301 @@
+---
+// Sales Agent Portal Layout
+// Mobile-first, PWA-ready, offline-capable, multi-language
+
+export const prerender = false;
+
+interface Props {
+  title: string;
+  activeTab?: 'sales' | 'inventory' | 'customers' | 'categories' | 'dashboard';
+}
+
+const { title, activeTab = 'dashboard' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr" id="agent-html">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+    <meta name="theme-color" content="#194642" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Arbre Bio Sales" />
+    <meta name="description" content="Arbre Bio Africa — Sales Agent Portal" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest-agent.json" />
+    <!-- Font Awesome — also cached by SW for offline -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title id="page-title">{title} | Arbre Bio Sales</title>
+    <style>
+      /* Critical base styles inlined for offline reliability */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      body { background: #f9fafb; color: #111827; min-height: 100vh; }
+      .agent-header {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+        background: #194642; color: white;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 1rem; height: 56px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      }
+      .agent-header-logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1rem; }
+      .agent-header-logo img { height: 32px; width: auto; border-radius: 6px; background: rgba(255,255,255,0.1); padding: 2px; }
+      .agent-header-actions { display: flex; align-items: center; gap: 0.75rem; }
+      .lang-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; cursor: pointer; }
+      .logout-btn { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; cursor: pointer; }
+      .agent-main { padding-top: 56px; padding-bottom: 72px; min-height: 100vh; }
+      /* Bottom navigation */
+      .bottom-nav {
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+        background: white; border-top: 1px solid #e5e7eb;
+        display: flex; height: 68px;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+      }
+      .bottom-nav-item {
+        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 2px; text-decoration: none; color: #9ca3af; font-size: 0.625rem; font-weight: 500;
+        transition: color 0.15s; padding: 0.5rem 0;
+        border: none; background: none; cursor: pointer;
+      }
+      .bottom-nav-item i { font-size: 1.1rem; }
+      .bottom-nav-item.active { color: #194642; }
+      .bottom-nav-item.active i { color: #194642; }
+      /* Offline banner */
+      .offline-banner {
+        display: none; background: #f59e0b; color: white;
+        text-align: center; padding: 0.5rem 1rem; font-size: 0.8rem;
+        position: fixed; top: 56px; left: 0; right: 0; z-index: 40;
+      }
+      .offline-banner.show { display: block; }
+      /* Lang picker modal */
+      .lang-modal-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100;
+        align-items: center; justify-content: center;
+      }
+      .lang-modal-overlay.show { display: flex; }
+      .lang-modal {
+        background: white; border-radius: 12px; padding: 1.5rem;
+        min-width: 240px; max-width: 90vw;
+      }
+      .lang-modal h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: #111827; }
+      .lang-option {
+        width: 100%; text-align: left; padding: 0.75rem 1rem;
+        border: 1px solid #e5e7eb; border-radius: 8px;
+        margin-bottom: 0.5rem; background: white; cursor: pointer;
+        font-size: 0.9rem; font-weight: 500; transition: all 0.15s;
+      }
+      .lang-option:hover { border-color: #194642; background: #f0fdf4; }
+      .lang-option.selected { border-color: #194642; background: #e6f4f1; color: #194642; }
+    </style>
+  </head>
+  <body>
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="offline-banner">
+      <i class="fas fa-wifi"></i>
+      <span id="offline-text">Vous êtes hors ligne — les ventes seront synchronisées à la reconnexion</span>
+    </div>
+
+    <!-- Top Header -->
+    <header class="agent-header">
+      <div class="agent-header-logo">
+        <img src="/logo.svg" alt="Arbre Bio Africa" />
+        <span>Sales Agent</span>
+      </div>
+      <div class="agent-header-actions">
+        <button class="lang-btn" id="lang-toggle-btn" title="Change language">
+          <i class="fas fa-globe"></i> <span id="lang-label">FR</span>
+        </button>
+        <button class="logout-btn" id="agent-logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="agent-main" id="agent-main">
+      <slot />
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" role="navigation">
+      <a href="/sales-agent/" class:list={['bottom-nav-item', activeTab === 'dashboard' && 'active']}>
+        <i class="fas fa-home"></i>
+        <span data-i18n="dashboard">Tableau de bord</span>
+      </a>
+      <a href="/sales-agent/sales/" class:list={['bottom-nav-item', activeTab === 'sales' && 'active']}>
+        <i class="fas fa-shopping-cart"></i>
+        <span data-i18n="sales">Ventes</span>
+      </a>
+      <a href="/sales-agent/inventory/" class:list={['bottom-nav-item', activeTab === 'inventory' && 'active']}>
+        <i class="fas fa-boxes"></i>
+        <span data-i18n="inventory">Inventaire</span>
+      </a>
+      <a href="/sales-agent/customers/" class:list={['bottom-nav-item', activeTab === 'customers' && 'active']}>
+        <i class="fas fa-users"></i>
+        <span data-i18n="customers">Clients</span>
+      </a>
+      <a href="/sales-agent/categories/" class:list={['bottom-nav-item', activeTab === 'categories' && 'active']}>
+        <i class="fas fa-tags"></i>
+        <span data-i18n="categories">Catégories</span>
+      </a>
+    </nav>
+
+    <!-- Language Picker Modal -->
+    <div id="lang-modal" class="lang-modal-overlay" role="dialog" aria-modal="true">
+      <div class="lang-modal">
+        <h3 id="lang-modal-title">Choisissez votre langue</h3>
+        <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-option" data-lang="en">🇬🇧 English</button>
+        <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-option" data-lang="af">🇿🇦 Afrikaans</button>
+      </div>
+    </div>
+
+    <!-- Translations + Auth + PWA Scripts -->
+    <script>
+      // ── Translations (embedded for offline use) ──────────────────────────
+      const TRANSLATIONS = {
+        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
+        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
+        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
+        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
+      };
+
+      const LANG_LABELS = { en: 'EN', fr: 'FR', es: 'ES', af: 'AF' };
+
+      function getLang() {
+        return localStorage.getItem('agentLang') || 'fr';
+      }
+
+      function applyTranslations() {
+        const lang = getLang();
+        const T = (TRANSLATIONS as any)[lang] || TRANSLATIONS['fr'];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (key && T[key]) el.textContent = T[key];
+        });
+        const labelEl = document.getElementById('lang-label');
+        if (labelEl) labelEl.textContent = (LANG_LABELS as any)[lang] || 'FR';
+        const offlineText = document.getElementById('offline-text');
+        if (offlineText) offlineText.textContent = T['offlineMsg'] || '';
+        const modalTitle = document.getElementById('lang-modal-title');
+        if (modalTitle && T['selectLanguage']) modalTitle.textContent = T['selectLanguage'];
+        document.documentElement.lang = lang;
+        // Highlight selected lang in modal
+        document.querySelectorAll('.lang-option').forEach(btn => {
+          btn.classList.toggle('selected', btn.getAttribute('data-lang') === lang);
+        });
+      }
+
+      // ── Language modal ────────────────────────────────────────────────────
+      const langModal = document.getElementById('lang-modal');
+      const langToggleBtn = document.getElementById('lang-toggle-btn');
+
+      langToggleBtn?.addEventListener('click', () => {
+        langModal?.classList.add('show');
+      });
+
+      langModal?.addEventListener('click', (e) => {
+        if (e.target === langModal) langModal.classList.remove('show');
+      });
+
+      document.querySelectorAll('.lang-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          if (lang) {
+            localStorage.setItem('agentLang', lang);
+            langModal?.classList.remove('show');
+            applyTranslations();
+            // Reload page so server-rendered text is also refreshed
+            window.location.reload();
+          }
+        });
+      });
+
+      // ── Logout ────────────────────────────────────────────────────────────
+      document.getElementById('agent-logout-btn')?.addEventListener('click', async () => {
+        try {
+          const token = localStorage.getItem('agentToken');
+          localStorage.removeItem('agentToken');
+          localStorage.removeItem('agentProfile');
+        } catch {}
+        window.location.href = '/sales-agent/login';
+      });
+
+      // ── Auth check ────────────────────────────────────────────────────────
+      async function checkAgentAuth() {
+        const token = localStorage.getItem('agentToken');
+        if (!token) {
+          window.location.href = '/sales-agent/login';
+          return;
+        }
+        try {
+          const res = await fetch('/api/sales-agent/auth', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) {
+            localStorage.removeItem('agentToken');
+            localStorage.removeItem('agentProfile');
+            window.location.href = '/sales-agent/login';
+            return;
+          }
+          const data = await res.json();
+          if (!data.profile) {
+            window.location.href = '/sales-agent/login';
+            return;
+          }
+          // Cache profile for offline use
+          localStorage.setItem('agentProfile', JSON.stringify(data.profile));
+        } catch {
+          // Network error — check if we have a cached profile
+          const cached = localStorage.getItem('agentProfile');
+          if (!cached) {
+            window.location.href = '/sales-agent/login';
+          }
+          // If cached, allow access (offline mode)
+        }
+      }
+
+      // ── Offline detection ─────────────────────────────────────────────────
+      const offlineBanner = document.getElementById('offline-banner');
+      const agentMain = document.getElementById('agent-main');
+
+      function updateOnlineStatus() {
+        if (!navigator.onLine) {
+          offlineBanner?.classList.add('show');
+          if (agentMain) agentMain.style.paddingTop = '96px'; // header + banner
+        } else {
+          offlineBanner?.classList.remove('show');
+          if (agentMain) agentMain.style.paddingTop = '56px';
+          // Try to sync any queued sales
+          triggerSync();
+        }
+      }
+
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      updateOnlineStatus();
+
+      async function triggerSync() {
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          const reg = await navigator.serviceWorker.ready;
+          try {
+            await (reg as any).sync.register('sync-pending-sales');
+          } catch {}
+        }
+      }
+
+      // ── PWA Service Worker registration ──────────────────────────────────
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
+
+      // ── Initialize ────────────────────────────────────────────────────────
+      applyTranslations();
+      checkAgentAuth();
+    </script>
+  </body>
+</html>

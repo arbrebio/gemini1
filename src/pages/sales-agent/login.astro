@@ -1,0 +1,263 @@
+---
+export const prerender = false;
+// Inject public env vars so the client-side script can use them
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+
+<!doctype html>
+<html lang="fr" id="login-html">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#194642" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest-agent.json" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Sales Agent Login — Arbre Bio Africa</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #194642 0%, #2a5e59 50%, #194642 100%);
+        min-height: 100vh; display: flex; align-items: center; justify-content: center;
+        padding: 1.5rem;
+      }
+      .login-card {
+        background: white; border-radius: 20px; padding: 2rem;
+        width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      }
+      .logo-section { text-align: center; margin-bottom: 1.5rem; }
+      .logo-section img { height: 56px; width: auto; border-radius: 12px; background: #194642; padding: 6px; margin-bottom: 0.75rem; }
+      .logo-section h1 { font-size: 1.25rem; font-weight: 700; color: #111827; }
+      .logo-section p { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
+      .lang-selector { margin-bottom: 1.5rem; }
+      .lang-selector-label { font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; }
+      .lang-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+      .lang-btn { padding: 0.5rem 0.25rem; border: 2px solid #e5e7eb; border-radius: 10px; background: white; cursor: pointer; text-align: center; font-size: 0.7rem; font-weight: 500; color: #374151; transition: all 0.15s; line-height: 1.4; }
+      .lang-btn:hover { border-color: #194642; background: #f0fdf4; }
+      .lang-btn.selected { border-color: #194642; background: #e6f4f1; color: #194642; font-weight: 700; }
+      .lang-btn .flag { font-size: 1.25rem; display: block; }
+      .form-group { margin-bottom: 1rem; }
+      .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem; }
+      .form-input { width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; color: #111827; transition: border-color 0.15s; outline: none; -webkit-appearance: none; }
+      .form-input:focus { border-color: #194642; }
+      .form-input.has-icon { padding-left: 2.75rem; }
+      .input-wrapper { position: relative; }
+      .input-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; }
+      .toggle-pw { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.85rem; background: none; border: none; cursor: pointer; padding: 0.25rem; }
+      .submit-btn { width: 100%; padding: 0.875rem; background: #194642; color: white; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; margin-top: 0.5rem; }
+      .submit-btn:hover:not(:disabled) { opacity: 0.9; }
+      .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      .error-msg { display: none; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8rem; margin-bottom: 1rem; align-items: center; gap: 0.5rem; }
+      .error-msg.show { display: flex; }
+      .suspension-msg { display: none; background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; border-radius: 10px; padding: 1rem; font-size: 0.85rem; text-align: center; margin-bottom: 1rem; }
+      .suspension-msg.show { display: block; }
+    </style>
+  </head>
+  <body>
+    <!-- Inject env vars so client script can access them -->
+    <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+      window.__AGENT_SUPABASE_URL__ = SUPABASE_URL;
+      window.__AGENT_SUPABASE_KEY__ = SUPABASE_ANON_KEY;
+    </script>
+
+    <div class="login-card">
+      <div class="logo-section">
+        <img src="/logo.svg" alt="Arbre Bio Africa" />
+        <h1 id="txt-title">Portail Agent Commercial</h1>
+        <p>Arbre Bio Africa</p>
+      </div>
+
+      <!-- Language Selection -->
+      <div class="lang-selector">
+        <span class="lang-selector-label" id="txt-selectLang">Choisissez votre langue</span>
+        <div class="lang-grid">
+          <button class="lang-btn" data-lang="fr"><span class="flag">🇫🇷</span>Français</button>
+          <button class="lang-btn" data-lang="en"><span class="flag">🇬🇧</span>English</button>
+          <button class="lang-btn" data-lang="es"><span class="flag">🇪🇸</span>Español</button>
+          <button class="lang-btn" data-lang="af"><span class="flag">🇿🇦</span>Afrikaans</button>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="error-msg" class="error-msg">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="error-text">E-mail ou mot de passe incorrect.</span>
+      </div>
+
+      <!-- Suspension -->
+      <div id="suspension-msg" class="suspension-msg">
+        <i class="fas fa-ban" style="font-size:1.75rem;display:block;margin-bottom:0.5rem"></i>
+        <strong id="txt-suspended">Compte suspendu</strong>
+        <p id="suspension-reason" class="mt-1 text-sm" style="margin-top:0.5rem;font-size:0.8rem"></p>
+        <p id="txt-contactAdmin" style="margin-top:0.5rem;font-size:0.75rem;opacity:0.8">Contactez votre administrateur.</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" id="lbl-email">Adresse e-mail</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input id="input-email" type="email" autocomplete="email" required
+              class="form-input has-icon" placeholder="agent@example.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="lbl-password">Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input id="input-password" type="password" autocomplete="current-password" required
+              class="form-input has-icon" style="padding-right:3rem" placeholder="••••••••" />
+            <button type="button" id="toggle-pw" class="toggle-pw"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" id="submit-btn" class="submit-btn">
+          <span id="btn-text">Se connecter</span>
+        </button>
+      </form>
+    </div>
+
+    <script is:inline>
+      (function() {
+        const TRANSLATIONS = {
+          fr: { title:'Portail Agent Commercial', selectLang:'Choisissez votre langue', email:'Adresse e-mail', password:'Mot de passe', loginBtn:'Se connecter', loggingIn:'Connexion en cours…', loginError:'E-mail ou mot de passe incorrect.', suspended:'Compte suspendu', contactAdmin:'Contactez votre administrateur.' },
+          en: { title:'Sales Agent Portal', selectLang:'Select your language', email:'Email Address', password:'Password', loginBtn:'Sign In', loggingIn:'Signing in…', loginError:'Invalid email or password.', suspended:'Account Suspended', contactAdmin:'Contact your administrator.' },
+          es: { title:'Portal de Agente Comercial', selectLang:'Seleccione su idioma', email:'Correo electrónico', password:'Contraseña', loginBtn:'Iniciar sesión', loggingIn:'Iniciando sesión…', loginError:'Correo o contraseña incorrectos.', suspended:'Cuenta suspendida', contactAdmin:'Contacte a su administrador.' },
+          af: { title:'Verkoopsagent-portaal', selectLang:'Kies jou taal', email:'E-posadres', password:'Wagwoord', loginBtn:'Meld aan', loggingIn:'Besig om aan te meld…', loginError:'Ongeldige e-pos of wagwoord.', suspended:'Rekening Opgeskort', contactAdmin:'Kontak jou administrateur.' },
+        };
+
+        var currentLang = localStorage.getItem('agentLang') || 'fr';
+
+        function applyLang(lang) {
+          currentLang = lang;
+          var t = TRANSLATIONS[lang] || TRANSLATIONS['fr'];
+          var el = function(id) { return document.getElementById(id); };
+          if (el('txt-title')) el('txt-title').textContent = t.title;
+          if (el('txt-selectLang')) el('txt-selectLang').textContent = t.selectLang;
+          if (el('lbl-email')) el('lbl-email').textContent = t.email;
+          if (el('lbl-password')) el('lbl-password').textContent = t.password;
+          if (el('btn-text')) el('btn-text').textContent = t.loginBtn;
+          if (el('txt-suspended')) el('txt-suspended').textContent = t.suspended;
+          if (el('txt-contactAdmin')) el('txt-contactAdmin').textContent = t.contactAdmin;
+          if (el('error-text')) el('error-text').textContent = t.loginError;
+          document.documentElement.lang = lang;
+          document.querySelectorAll('.lang-btn').forEach(function(b) {
+            b.classList.toggle('selected', b.getAttribute('data-lang') === lang);
+          });
+        }
+        applyLang(currentLang);
+
+        document.querySelectorAll('.lang-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var lang = btn.getAttribute('data-lang');
+            localStorage.setItem('agentLang', lang);
+            applyLang(lang);
+          });
+        });
+
+        // Password toggle
+        var togglePw = document.getElementById('toggle-pw');
+        if (togglePw) {
+          togglePw.addEventListener('click', function() {
+            var inp = document.getElementById('input-password');
+            var icon = togglePw.querySelector('i');
+            if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+            else { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+          });
+        }
+
+        // If already logged in, redirect
+        var existingToken = localStorage.getItem('agentToken');
+        if (existingToken) {
+          fetch('/api/sales-agent/auth', { headers: { Authorization: 'Bearer ' + existingToken } })
+            .then(function(r) { if (r.ok) window.location.href = '/sales-agent/'; })
+            .catch(function() {});
+        }
+
+        // Login form submit
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          var t = TRANSLATIONS[currentLang] || TRANSLATIONS['fr'];
+          var email = document.getElementById('input-email').value.trim();
+          var password = document.getElementById('input-password').value;
+          var btn = document.getElementById('submit-btn');
+          var btnText = document.getElementById('btn-text');
+          var errorMsg = document.getElementById('error-msg');
+          var suspensionMsg = document.getElementById('suspension-msg');
+
+          errorMsg.classList.remove('show');
+          suspensionMsg.classList.remove('show');
+          btn.disabled = true;
+          btnText.textContent = t.loggingIn;
+
+          try {
+            var supabaseUrl = window.__AGENT_SUPABASE_URL__;
+            var supabaseKey = window.__AGENT_SUPABASE_KEY__;
+
+            if (!supabaseUrl || !supabaseKey) throw new Error('Configuration error');
+
+            // Sign in via Supabase Auth REST API
+            var signInRes = await fetch(supabaseUrl + '/auth/v1/token?grant_type=password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'apikey': supabaseKey },
+              body: JSON.stringify({ email: email, password: password }),
+            });
+            var signInData = await signInRes.json();
+
+            if (!signInRes.ok || !signInData.access_token) {
+              document.getElementById('error-text').textContent = t.loginError;
+              errorMsg.classList.add('show');
+              btn.disabled = false;
+              btnText.textContent = t.loginBtn;
+              return;
+            }
+
+            var token = signInData.access_token;
+
+            // Verify agent profile
+            var profileRes = await fetch('/api/sales-agent/auth', {
+              headers: { Authorization: 'Bearer ' + token },
+            });
+            var profileData = await profileRes.json();
+
+            if (!profileRes.ok) {
+              if (profileData.suspended) {
+                suspensionMsg.classList.add('show');
+                var reasonEl = document.getElementById('suspension-reason');
+                if (reasonEl) reasonEl.textContent = profileData.reason || '';
+                btn.disabled = false;
+                btnText.textContent = t.loginBtn;
+                return;
+              }
+              var errText = profileData.error === 'Agent not found'
+                ? (currentLang === 'fr' ? 'Ce compte n\'est pas un compte agent.' : 'This account is not a sales agent.')
+                : t.loginError;
+              document.getElementById('error-text').textContent = errText;
+              errorMsg.classList.add('show');
+              btn.disabled = false;
+              btnText.textContent = t.loginBtn;
+              return;
+            }
+
+            localStorage.setItem('agentToken', token);
+            localStorage.setItem('agentProfile', JSON.stringify(profileData.profile));
+            window.location.href = '/sales-agent/';
+          } catch (err) {
+            document.getElementById('error-text').textContent = t.loginError;
+            errorMsg.classList.add('show');
+            btn.disabled = false;
+            btnText.textContent = t.loginBtn;
+          }
+        });
+
+        // PWA SW
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js').catch(function() {});
+        }
+      })();
+    </script>
+  </body>
+</html>

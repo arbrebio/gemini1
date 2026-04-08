@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
+---
+
+<SalesAgentLayout title="Categories" activeTab="categories">
+  <div class="p-4">
+    <div class="mb-4">
+      <h1 class="text-xl font-bold text-gray-800" data-i18n="productCategories">Catégories de produits</h1>
+    </div>
+
+    <div id="categories-list" class="space-y-2">
+      <div class="bg-white rounded-xl p-4 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<script is:inline>
+  (function() {
+    var token = localStorage.getItem('agentToken');
+
+    async function loadCategories() {
+      try {
+        var res = await fetch('/api/sales-agent/categories', { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var data = await res.json();
+        var cats = data.categories || [];
+        localStorage.setItem('agentCategories', JSON.stringify(cats));
+        render(cats);
+      } catch {
+        var cached = localStorage.getItem('agentCategories');
+        render(cached ? JSON.parse(cached) : []);
+      }
+    }
+
+    function render(cats) {
+      var el = document.getElementById('categories-list');
+      if (!cats.length) {
+        el.innerHTML = '<div class="bg-white rounded-xl p-6 text-center text-gray-400 text-sm" data-i18n="noCategories">Aucune catégorie trouvée.</div>';
+        return;
+      }
+      el.innerHTML = cats.map(function(c) {
+        return '<div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">' +
+          '<div class="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold shrink-0" style="background:#194642">' +
+            (c.name ? c.name.charAt(0).toUpperCase() : '?') +
+          '</div>' +
+          '<div>' +
+            '<p class="font-semibold text-gray-800 text-sm">' + (c.name || '') + '</p>' +
+            (c.description ? '<p class="text-xs text-gray-400 mt-0.5">' + c.description + '</p>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    loadCategories();
+  })();
+</script>

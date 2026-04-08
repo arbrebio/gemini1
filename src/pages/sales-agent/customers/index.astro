@@ -1,0 +1,236 @@
+---
+export const prerender = false;
+import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
+---
+
+<SalesAgentLayout title="Customers" activeTab="customers">
+  <!-- Customer Form Modal -->
+  <div id="customer-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/50" style="padding-bottom:72px">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
+        <h2 id="modal-title" class="font-bold text-gray-800" data-i18n="addCustomer">Ajouter un client</h2>
+        <button id="close-modal" class="text-gray-400 text-xl p-1"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="customer-form" class="p-4 space-y-3">
+        <input id="cf-id" type="hidden" />
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="fullName">Nom complet</label>
+          <input id="cf-name" type="text" required autocomplete="name"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="phone">Téléphone</label>
+          <input id="cf-phone" type="tel" autocomplete="tel"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="company">Entreprise</label>
+          <input id="cf-company" type="text"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="city">Ville</label>
+            <input id="cf-city" type="text"
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="country">Pays</label>
+            <input id="cf-country" type="text" value="Côte d'Ivoire"
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="customerType">Type de client</label>
+          <select id="cf-type" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="farmer" data-i18n="farmer">Agriculteur</option>
+            <option value="cooperative" data-i18n="cooperative">Coopérative</option>
+            <option value="enterprise" data-i18n="enterprise">Entreprise</option>
+            <option value="government" data-i18n="government">Gouvernement</option>
+          </select>
+        </div>
+        <button type="submit" id="submit-btn" class="w-full py-3 rounded-xl text-white font-semibold text-sm transition-opacity hover:opacity-90" style="background:#194642">
+          <span data-i18n="saveCustomer">Enregistrer le client</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl">
+      <p class="font-semibold text-gray-800 mb-2" data-i18n="confirmDelete">Supprimer ce client ?</p>
+      <p class="text-sm text-gray-500 mb-4">Cette action est irréversible.</p>
+      <div class="flex gap-3">
+        <button id="cancel-delete" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600" data-i18n="cancel">Annuler</button>
+        <button id="confirm-delete" class="flex-1 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium" data-i18n="delete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-xl font-bold text-gray-800" data-i18n="customers">Clients</h1>
+      <button id="btn-add" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-white text-sm font-medium" style="background:#194642">
+        <i class="fas fa-plus text-xs"></i>
+        <span data-i18n="addCustomer">Ajouter</span>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="relative mb-4">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input id="search-input" type="search" inputmode="search" placeholder="Rechercher…"
+        class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white" />
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed top-16 left-4 right-4 z-50 bg-green-600 text-white px-4 py-3 rounded-xl text-sm font-medium shadow-lg"></div>
+
+    <!-- List -->
+    <div id="customers-list" class="space-y-2">
+      <div class="bg-white rounded-xl p-4 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<script is:inline>
+  (function() {
+    var token = localStorage.getItem('agentToken');
+    var customers = [];
+    var selectedId = null;
+
+    async function loadCustomers() {
+      var search = document.getElementById('search-input').value.trim();
+      var params = new URLSearchParams({ limit: '100' });
+      if (search) params.set('search', search);
+      try {
+        var res = await fetch('/api/sales-agent/customers?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var data = await res.json();
+        customers = data.customers || [];
+        if (!search) localStorage.setItem('agentCustomers', JSON.stringify(customers));
+        render();
+      } catch {
+        var cached = localStorage.getItem('agentCustomers');
+        customers = cached ? JSON.parse(cached) : [];
+        render();
+      }
+    }
+
+    var TYPE_LABELS = { farmer:'Agriculteur', cooperative:'Coopérative', enterprise:'Entreprise', government:'Gouvernement' };
+
+    function render() {
+      var el = document.getElementById('customers-list');
+      if (!customers.length) {
+        el.innerHTML = '<div class="bg-white rounded-xl p-6 text-center text-gray-400 text-sm" data-i18n="noCustomers">Aucun client trouvé.</div>';
+        return;
+      }
+      el.innerHTML = customers.map(function(c) {
+        return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 text-sm" style="background:#194642">' +
+              (c.full_name ? c.full_name.charAt(0).toUpperCase() : '?') + '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<p class="font-semibold text-gray-800 text-sm truncate">' + (c.full_name || '') + '</p>' +
+              '<p class="text-xs text-gray-400">' + (c.phone || c.email || '') + '</p>' +
+            '</div>' +
+            '<div class="flex gap-1.5">' +
+              '<button class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50" data-id="' + c.id + '"><i class="fas fa-edit text-xs"></i></button>' +
+              '<button class="btn-delete w-8 h-8 flex items-center justify-center rounded-lg border border-red-200 text-red-400 hover:bg-red-50" data-id="' + c.id + '"><i class="fas fa-trash text-xs"></i></button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mt-2 flex flex-wrap gap-1.5">' +
+            '<span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">' + (TYPE_LABELS[c.customer_type] || c.customer_type) + '</span>' +
+            (c.city ? '<span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">' + c.city + '</span>' : '') +
+            (c.company_name ? '<span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">' + c.company_name + '</span>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      document.querySelectorAll('.btn-edit').forEach(function(btn) {
+        btn.addEventListener('click', function() { openEditModal(btn.getAttribute('data-id')); });
+      });
+      document.querySelectorAll('.btn-delete').forEach(function(btn) {
+        btn.addEventListener('click', function() { openDeleteModal(btn.getAttribute('data-id')); });
+      });
+    }
+
+    function openAddModal() {
+      document.getElementById('cf-id').value = '';
+      document.getElementById('customer-form').reset();
+      document.getElementById('cf-country').value = "Côte d'Ivoire";
+      document.getElementById('customer-modal').classList.remove('hidden');
+    }
+
+    function openEditModal(id) {
+      var c = customers.find(function(x) { return x.id === id; });
+      if (!c) return;
+      document.getElementById('cf-id').value = c.id;
+      document.getElementById('cf-name').value = c.full_name || '';
+      document.getElementById('cf-phone').value = c.phone || '';
+      document.getElementById('cf-company').value = c.company_name || '';
+      document.getElementById('cf-city').value = c.city || '';
+      document.getElementById('cf-country').value = c.country || "Côte d'Ivoire";
+      document.getElementById('cf-type').value = c.customer_type || 'farmer';
+      document.getElementById('customer-modal').classList.remove('hidden');
+    }
+
+    function openDeleteModal(id) {
+      selectedId = id;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-add').addEventListener('click', openAddModal);
+    document.getElementById('close-modal').addEventListener('click', function() { document.getElementById('customer-modal').classList.add('hidden'); });
+    document.getElementById('cancel-delete').addEventListener('click', function() { document.getElementById('delete-modal').classList.add('hidden'); });
+
+    document.getElementById('customer-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var id = document.getElementById('cf-id').value;
+      var body = {
+        full_name: document.getElementById('cf-name').value.trim(),
+        phone: document.getElementById('cf-phone').value.trim() || null,
+        company_name: document.getElementById('cf-company').value.trim() || null,
+        city: document.getElementById('cf-city').value.trim() || null,
+        country: document.getElementById('cf-country').value.trim() || "Côte d'Ivoire",
+        customer_type: document.getElementById('cf-type').value,
+      };
+      var method = id ? 'PUT' : 'POST';
+      if (id) body['id'] = id;
+
+      var res = await fetch('/api/sales-agent/customers', { method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+      var data = await res.json();
+      if (data.error) { showToast(data.error, true); return; }
+      showToast(id ? 'Client modifié.' : 'Client ajouté.');
+      document.getElementById('customer-modal').classList.add('hidden');
+      loadCustomers();
+    });
+
+    document.getElementById('confirm-delete').addEventListener('click', async function() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      var res = await fetch('/api/sales-agent/customers', { method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ id: selectedId }) });
+      var data = await res.json();
+      if (data.error) { showToast(data.error, true); return; }
+      showToast('Client supprimé.');
+      loadCustomers();
+    });
+
+    var searchTimer;
+    document.getElementById('search-input').addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(loadCustomers, 400);
+    });
+
+    function showToast(msg, isError) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'fixed top-16 left-4 right-4 z-50 px-4 py-3 rounded-xl text-sm font-medium shadow-lg ' + (isError ? 'bg-red-600 text-white' : 'bg-green-600 text-white');
+      t.classList.remove('hidden');
+      setTimeout(function() { t.classList.add('hidden'); }, 3000);
+    }
+
+    loadCustomers();
+  })();
+</script>
