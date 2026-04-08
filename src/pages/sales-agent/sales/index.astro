@@ -268,11 +268,13 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     // ── Load products for autocomplete ──────────────────────────────────
     async function loadProducts() {
       try {
-        var res = await fetch('/api/sales-agent/inventory?limit=200', { headers: { Authorization: 'Bearer ' + token } });
+        var res = await fetch('/api/sales-agent/inventory?limit=200&in_stock=true', { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
-        products = data.products || [];
+        products = (data.products || []).filter(function(p) { return p.stock_quantity > 0; });
         localStorage.setItem('agentProducts', JSON.stringify(products));
-      } catch {
+        if (products.length === 0) console.warn('No products in stock available');
+      } catch (err) {
+        console.error('Failed to load products:', err);
         var cached = localStorage.getItem('agentProducts');
         products = cached ? JSON.parse(cached) : [];
       }
@@ -292,9 +294,14 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       if (!matches.length) { productDropdown.classList.add('hidden'); return; }
       productDropdown.innerHTML = matches.map(function(p) {
         var price = new Intl.NumberFormat('fr-FR').format(Number(p.unit_price));
-        return '<div class="product-option px-3 py-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-50 last:border-0" data-id="' + p.id + '" data-name="' + p.name + '" data-price="' + p.unit_price + '">' +
-          '<p class="text-sm font-medium text-gray-800">' + p.name + '</p>' +
-          '<p class="text-xs text-gray-400">' + price + ' FCFA / ' + (p.unit_of_measure || 'u') + '</p>' +
+        var stock = Number(p.stock_quantity) || 0;
+        var stockColor = stock > 10 ? 'text-green-600' : stock > 0 ? 'text-orange-600' : 'text-red-600';
+        return '<div class="product-option px-3 py-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-50 last:border-0" data-id="' + p.id + '" data-name="' + p.name + '" data-price="' + p.unit_price + '" data-stock="' + stock + '">' +
+          '<div class="flex items-start justify-between">' +
+            '<p class="text-sm font-medium text-gray-800 flex-1">' + p.name + '</p>' +
+            '<span class="text-xs font-semibold ' + stockColor + ' ml-2">Stock: ' + stock + '</span>' +
+          '</div>' +
+          '<p class="text-xs text-gray-400 mt-0.5">' + price + ' FCFA / ' + (p.unit_of_measure || 'u') + '</p>' +
         '</div>';
       }).join('');
       productDropdown.classList.remove('hidden');
@@ -407,12 +414,22 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       var method = document.getElementById('payment-method').value;
       var qty = parseFloat(document.getElementById('quantity').value);
       var price = parseFloat(document.getElementById('unit-price').value);
+      var productId = document.getElementById('product-id').value;
 
       if (!productName) { showToast('Veuillez indiquer le produit.', true); return; }
       if (!clientName) { showToast('Veuillez indiquer le nom du client.', true); return; }
       if (!method) { showToast('Veuillez choisir le mode de paiement.', true); return; }
       if (!qty || qty <= 0) { showToast('Quantité invalide.', true); return; }
       if (isNaN(price) || price < 0) { showToast('Prix invalide.', true); return; }
+
+      // Check stock availability
+      if (productId) {
+        var product = products.find(function(p) { return p.id === productId; });
+        if (product && qty > product.stock_quantity) {
+          showToast('Quantité dépasse le stock disponible (' + product.stock_quantity + ' unités).', true);
+          return;
+        }
+      }
 
       var total = qty * price;
       pendingFormData = {

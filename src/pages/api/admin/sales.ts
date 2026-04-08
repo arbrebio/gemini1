@@ -157,6 +157,27 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (error) throw error;
 
+    // Deduct inventory when validating sale
+    if (action === 'validate' && sale.product_id) {
+      const quantity = Number(sale.quantity) || 0;
+      if (quantity > 0) {
+        // Get current stock and deduct
+        const { data: product } = await supabase
+          .from('admin_products')
+          .select('stock_quantity')
+          .eq('id', sale.product_id)
+          .single();
+
+        if (product) {
+          const newStock = Math.max(0, Number(product.stock_quantity) - quantity);
+          await supabase
+            .from('admin_products')
+            .update({ stock_quantity: newStock })
+            .eq('id', sale.product_id);
+        }
+      }
+    }
+
     // Update the admin notification for this sale
     const statusLabel = action === 'validate' ? '✅ Vente validée' : '❌ Vente rejetée';
     const agentName = (sale.sales_agent_profiles as any)?.full_name || 'Agent';
