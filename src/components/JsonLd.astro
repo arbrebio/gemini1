@@ -4,6 +4,9 @@ interface Props {
 }
 
 const { data } = Astro.props;
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdHtml = scriptOpen + JSON.stringify(data) + scriptClose;
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(data)} />
+<Fragment set:html={jsonLdHtml} />

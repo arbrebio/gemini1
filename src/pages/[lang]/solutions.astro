@@ -53,6 +53,20 @@ const categories = [
     ]
   },
 ];
+
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdData = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Quelles sont les meilleures solutions agricoles pour débuter en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous recommandons : 1) Une serre tunnel (100-500m²). 2) Un système d irrigation goutte-à-goutte. 3) Du coco peat. Cette combinaison a le meilleur rapport investissement/rendement avec un ROI moyen de 14 mois." } },
+    { "@type": "Question", "name": "Quel budget prévoir pour une exploitation maraîchère sous serre en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Une unité pilote (500m²) nécessite 5-15 millions FCFA. Une exploitation commerciale (1 ha) nécessite 50-150 millions FCFA selon le niveau de technologie." } },
+    { "@type": "Question", "name": "Quelle est la différence entre irrigation goutte-à-goutte et aspersion ?", "acceptedAnswer": { "@type": "Answer", "text": "Le goutte-à-goutte délivre l eau directement aux racines, économise 70% d eau et permet la fertigation. L aspersion simule la pluie et convient aux grandes surfaces." } },
+    { "@type": "Question", "name": "Arbre Bio Africa propose-t-il des formations en agriculture de précision ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, toutes nos solutions incluent formation complète : installation de serres, programmation irrigation, gestion fertilisation, diagnostic phytosanitaire et IPM." } },
+    { "@type": "Question", "name": "Comment Arbre Bio Africa garantit-il les rendements annoncés ?", "acceptedAnswer": { "@type": "Answer", "text": "Nos garanties sont basées sur des données terrain en Côte d Ivoire depuis 2020, des essais agronomiques validés et un suivi mensuel par nos agronomes." } }
+  ]
+}) + scriptClose;
 ---
 
 <Layout title={({'fr':'Solutions Agriculture de Précision | Arbre Bio Africa','en':'Precision Agriculture Solutions | Arbre Bio Africa','es':'Soluciones Agricultura de Precisión | Arbre Bio Africa','af':'Presisie Landbou Oplossings | Arbre Bio Africa'} as Record<string,string>)[lang]||'Precision Agriculture Solutions | Arbre Bio Africa'} description={T.solutionsSubtitle}>
@@ -196,17 +210,7 @@ const categories = [
     </div>
   </section>
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      { "@type": "Question", "name": "Quelles sont les meilleures solutions agricoles pour débuter en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous recommandons : 1) Une serre tunnel (100-500m²). 2) Un système d irrigation goutte-à-goutte. 3) Du coco peat. Cette combinaison a le meilleur rapport investissement/rendement avec un ROI moyen de 14 mois." } },
-      { "@type": "Question", "name": "Quel budget prévoir pour une exploitation maraîchère sous serre en Afrique ?", "acceptedAnswer": { "@type": "Answer", "text": "Une unité pilote (500m²) nécessite 5-15 millions FCFA. Une exploitation commerciale (1 ha) nécessite 50-150 millions FCFA selon le niveau de technologie." } },
-      { "@type": "Question", "name": "Quelle est la différence entre irrigation goutte-à-goutte et aspersion ?", "acceptedAnswer": { "@type": "Answer", "text": "Le goutte-à-goutte délivre l eau directement aux racines, économise 70% d eau et permet la fertigation. L aspersion simule la pluie et convient aux grandes surfaces." } },
-      { "@type": "Question", "name": "Arbre Bio Africa propose-t-il des formations en agriculture de précision ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, toutes nos solutions incluent formation complète : installation de serres, programmation irrigation, gestion fertilisation, diagnostic phytosanitaire et IPM." } },
-      { "@type": "Question", "name": "Comment Arbre Bio Africa garantit-il les rendements annoncés ?", "acceptedAnswer": { "@type": "Answer", "text": "Nos garanties sont basées sur des données terrain en Côte d Ivoire depuis 2020, des essais agronomiques validés et un suivi mensuel par nos agronomes." } }
-    ]
-  })} />
+  <Fragment set:html={jsonLdData} />
 
 
 </Layout>

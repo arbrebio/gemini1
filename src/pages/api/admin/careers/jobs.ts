@@ -76,12 +76,24 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 };
 
-// DELETE — delete job
+// DELETE — delete job (cascades related applications and their child records)
 export const DELETE: APIRoute = async ({ request }) => {
   try {
     const supabase = getSupabase(request);
     const { id } = await request.json();
     if (!id) return new Response(JSON.stringify({ error: 'id required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+
+    // Get all applications for this job first
+    const { data: apps } = await supabase
+      .from('career_applications').select('id').eq('job_id', id);
+
+    if (apps && apps.length > 0) {
+      const appIds = apps.map((a: any) => a.id);
+      // Delete child records of each application
+      await supabase.from('career_application_timeline').delete().in('application_id', appIds);
+      await supabase.from('career_documents').delete().in('application_id', appIds);
+      await supabase.from('career_applications').delete().in('id', appIds);
+    }
 
     const { error } = await supabase.from('career_jobs').delete().eq('id', id);
     if (error) throw error;

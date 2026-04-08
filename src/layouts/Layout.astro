@@ -64,6 +64,59 @@ const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, Astro.site
 const breadcrumbData = {
   items: breadcrumbSchema.itemListElement || []
 };
+
+// Pre-build JSON-LD strings in frontmatter so the template parser never sees a <script> tag
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdOrg = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": ["Organization", "LocalBusiness"],
+  "@id": "https://www.arbrebio.com/#organization",
+  "name": "Arbre Bio Africa",
+  "alternateName": "Arbre Bio Côte d'Ivoire",
+  "url": "https://www.arbrebio.com",
+  "logo": { "@type": "ImageObject", "url": "https://www.arbrebio.com/logo.png", "width": 200, "height": 60 },
+  "description": "Leader en agriculture de précision en Afrique. Serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
+  "telephone": "+2250500552525",
+  "email": "farms@arbrebio.com",
+  "address": { "@type": "PostalAddress", "addressCountry": "CI", "addressRegion": "Abidjan", "addressLocality": "Abidjan" },
+  "areaServed": [
+    { "@type": "Continent", "name": "Africa" },
+    { "@type": "Country", "name": "Côte d'Ivoire" },
+    { "@type": "Country", "name": "Senegal" },
+    { "@type": "Country", "name": "Ghana" },
+    { "@type": "Country", "name": "Burkina Faso" }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Solutions Agriculture de Précision",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serres agricoles tunnel et multi-chapelles" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Systèmes d'irrigation goutte-à-goutte" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Substrats coco peat et growing media" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fertilisants et phytosanitaires" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de précision" } }
+    ]
+  },
+  "sameAs": ["https://www.facebook.com/arbrebioafrica", "https://www.linkedin.com/company/arbre-bio-africa"]
+}) + scriptClose;
+
+const jsonLdWebsite = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://www.arbrebio.com/#website",
+  "name": "Arbre Bio Africa",
+  "alternateName": "Arbre Bio Côte d'Ivoire",
+  "url": "https://www.arbrebio.com",
+  "description": "Agriculture de précision en Afrique : serres agricoles, irrigation goutte-à-goutte, substrats fibre de coco (coco peat), tourbe de coco, engrais, fertilisants et phytosanitaires.",
+  "inLanguage": ["fr", "en", "es", "af"],
+  "publisher": { "@type": "Organization", "@id": "https://www.arbrebio.com/#organization" },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": { "@type": "EntryPoint", "urlTemplate": "https://www.arbrebio.com/fr/?q={search_term_string}" },
+    "query-input": "required name=search_term_string"
+  }
+}) + scriptClose;
 ---
 
 <!doctype html>
@@ -195,75 +248,10 @@ const breadcrumbData = {
     })()}
   
   <!-- Organization / LocalBusiness structured data -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": ["Organization", "LocalBusiness"],
-    "@id": "https://www.arbrebio.com/#organization",
-    "name": "Arbre Bio Africa",
-    "alternateName": "Arbre Bio Côte d'Ivoire",
-    "url": "https://www.arbrebio.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://www.arbrebio.com/logo.png",
-      "width": 200,
-      "height": 60
-    },
-    "description": "Leader en agriculture de précision en Afrique. Serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
-    "telephone": "+2250500552525",
-    "email": "farms@arbrebio.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "CI",
-      "addressRegion": "Abidjan",
-      "addressLocality": "Abidjan"
-    },
-    "areaServed": [
-      { "@type": "Continent", "name": "Africa" },
-      { "@type": "Country", "name": "Côte d'Ivoire" },
-      { "@type": "Country", "name": "Senegal" },
-      { "@type": "Country", "name": "Ghana" },
-      { "@type": "Country", "name": "Burkina Faso" }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Solutions Agriculture de Précision",
-      "itemListElement": [
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Serres agricoles tunnel et multi-chapelles" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Systèmes d'irrigation goutte-à-goutte" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Substrats coco peat et growing media" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fertilisants et phytosanitaires" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de précision" } }
-      ]
-    },
-    "sameAs": [
-      "https://www.facebook.com/arbrebioafrica",
-      "https://www.linkedin.com/company/arbre-bio-africa"
-    ]
-  })} />
+  <Fragment set:html={jsonLdOrg} />
 
   <!-- WebSite structured data with SearchAction -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": "https://www.arbrebio.com/#website",
-    "name": "Arbre Bio Africa",
-    "alternateName": "Arbre Bio Côte d'Ivoire",
-    "url": "https://www.arbrebio.com",
-    "description": "Agriculture de précision en Afrique : serres agricoles, irrigation goutte-à-goutte, substrats fibre de coco (coco peat), tourbe de coco, engrais, fertilisants et phytosanitaires.",
-    "inLanguage": ["fr", "en", "es", "af"],
-    "publisher": {
-      "@type": "Organization",
-      "@id": "https://www.arbrebio.com/#organization"
-    },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.arbrebio.com/fr/?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  })} />
+  <Fragment set:html={jsonLdWebsite} />
 </head>
   <body class="bg-white antialiased">
     <!-- Skip to main content for accessibility -->

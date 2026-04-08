@@ -17,22 +17,43 @@
             class="text-xl font-semibold text-gray-800 hidden md:block"
             id="page-title"
         >
-            <!-- Title will be injected via slot or script -->
         </h1>
     </div>
 
     <div class="flex items-center gap-4">
-        <div class="relative">
+        <!-- Notification Bell -->
+        <div class="relative" id="notif-container">
             <button
-                class="text-gray-500 hover:text-primary p-2 rounded-full relative"
+                id="notif-btn"
+                class="text-gray-500 hover:text-[#194642] p-2 rounded-full relative transition-colors"
+                title="Notifications"
             >
                 <i class="fas fa-bell text-lg"></i>
                 <span
-                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
-                ></span>
+                    id="notif-badge"
+                    class="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center hidden"
+                    style="font-size:9px;"
+                >0</span>
             </button>
+            <!-- Notification dropdown -->
+            <div
+                id="notif-dropdown"
+                class="hidden absolute right-0 top-12 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
+            >
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                    <p class="font-semibold text-gray-800 text-sm">Notifications</p>
+                    <button id="notif-mark-all" class="text-xs text-[#194642] hover:underline font-medium">Mark all read</button>
+                </div>
+                <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-50">
+                    <p class="text-gray-400 text-xs text-center py-6">Loading…</p>
+                </div>
+                <div class="px-4 py-2 border-t border-gray-100 text-center">
+                    <a href="/admin/notifications" class="text-xs text-[#194642] hover:underline font-medium">View all activity</a>
+                </div>
+            </div>
         </div>
 
+        <!-- User Profile -->
         <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
             <div class="text-right hidden sm:block">
                 <p class="text-sm font-medium text-gray-900" id="user-name">
@@ -40,56 +61,279 @@
                 </p>
                 <p class="text-xs text-gray-500" id="user-role">...</p>
             </div>
-            <div
-                class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg"
-                id="user-avatar"
+            <button
+                id="user-avatar-btn"
+                class="h-10 w-10 rounded-full bg-[#194642]/10 flex items-center justify-center text-[#194642] font-bold text-lg relative group overflow-hidden border-2 border-transparent hover:border-[#194642] transition-all"
+                title="Change profile photo"
             >
-                <i class="fas fa-user"></i>
-            </div>
+                <span id="user-avatar-inner"><i class="fas fa-user"></i></span>
+                <span class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-full">
+                    <i class="fas fa-camera text-white text-xs"></i>
+                </span>
+            </button>
+            <input type="file" id="avatar-file-input" accept="image/*" class="hidden" />
         </div>
     </div>
 </header>
 
+<!-- Avatar upload progress overlay -->
+<div id="avatar-uploading" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div class="bg-white rounded-xl px-6 py-4 shadow-xl flex items-center gap-3">
+        <i class="fas fa-circle-notch fa-spin text-[#194642] text-xl"></i>
+        <p class="text-sm font-medium text-gray-700">Uploading photo…</p>
+    </div>
+</div>
+
 <script>
     import { supabase } from "../../lib/supabase";
 
-    // Fetch user profile
+    // ── User profile ──────────────────────────────────────────────
+    let currentUserId: string | null = null;
+
     async function loadUserProfile() {
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        currentUserId = user.id;
 
-        if (user) {
-            const { data: profile } = await supabase
-                .from("admin_profiles")
-                .select("*")
-                .eq("id", user.id)
-                .single();
+        const { data: profile } = await supabase
+            .from("admin_profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
 
-            const nameEl = document.getElementById("user-name");
-            const roleEl = document.getElementById("user-role");
-            const avatarEl = document.getElementById("user-avatar");
+        const nameEl  = document.getElementById("user-name");
+        const roleEl  = document.getElementById("user-role");
+        const avatarEl = document.getElementById("user-avatar-inner");
 
-            if (nameEl)
-                nameEl.textContent =
-                    profile?.full_name || user.email || "Admin";
-            if (roleEl)
-                roleEl.textContent = (profile?.role || "User")
-                    .replace("_", " ")
-                    .toUpperCase();
+        if (nameEl) nameEl.textContent = profile?.full_name || user.email || "Admin";
+        if (roleEl) roleEl.textContent = (profile?.role || "User").replace("_", " ").toUpperCase();
 
-            if (profile?.avatar_url && avatarEl) {
-                avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="Profile" class="h-full w-full rounded-full object-cover" />`;
-            }
+        if (profile?.avatar_url && avatarEl) {
+            avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="Profile" class="h-full w-full object-cover rounded-full" />`;
         }
     }
 
-    loadUserProfile();
+    // ── Avatar photo change ───────────────────────────────────────
+    const avatarBtn   = document.getElementById("user-avatar-btn");
+    const fileInput   = document.getElementById("avatar-file-input") as HTMLInputElement;
+    const uploadingEl = document.getElementById("avatar-uploading");
 
-    // Mobile sidebar toggle logic
+    avatarBtn?.addEventListener("click", () => fileInput.click());
+
+    fileInput?.addEventListener("change", async () => {
+        const file = fileInput.files?.[0];
+        if (!file || !currentUserId) return;
+
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!allowedTypes.includes(file.type)) {
+            alert("Only JPG, PNG, WebP or GIF images are allowed.");
+            fileInput.value = "";
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Photo must be smaller than 2 MB.");
+            fileInput.value = "";
+            return;
+        }
+
+        uploadingEl?.classList.remove("hidden");
+        try {
+            const ext  = file.name.split(".").pop();
+            const path = `avatars/${currentUserId}.${ext}`;
+
+            // Upload to Supabase storage
+            const { error: uploadError } = await supabase.storage
+                .from("admin-avatars")
+                .upload(path, file, { upsert: true, contentType: file.type });
+
+            if (uploadError) throw uploadError;
+
+            const { data: urlData } = supabase.storage
+                .from("admin-avatars")
+                .getPublicUrl(path);
+
+            const avatar_url = urlData.publicUrl + `?t=${Date.now()}`;
+
+            // Update profile in DB
+            await supabase
+                .from("admin_profiles")
+                .upsert({ id: currentUserId, avatar_url }, { onConflict: "id" });
+
+            // Update avatar in header
+            const avatarEl = document.getElementById("user-avatar-inner");
+            if (avatarEl) {
+                avatarEl.innerHTML = `<img src="${avatar_url}" alt="Profile" class="h-full w-full object-cover rounded-full" />`;
+            }
+
+            showHeaderToast("Profile photo updated");
+        } catch (e: any) {
+            showHeaderToast(e.message || "Upload failed", true);
+        } finally {
+            uploadingEl?.classList.add("hidden");
+            fileInput.value = "";
+        }
+    });
+
+    // ── Notifications ─────────────────────────────────────────────
+    let notifOpen = false;
+    let unreadCount = 0;
+
+    const notifBtn      = document.getElementById("notif-btn");
+    const notifDropdown = document.getElementById("notif-dropdown");
+    const notifBadge    = document.getElementById("notif-badge");
+    const notifList     = document.getElementById("notif-list");
+    const markAllBtn    = document.getElementById("notif-mark-all");
+
+    notifBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notifOpen = !notifOpen;
+        notifDropdown?.classList.toggle("hidden", !notifOpen);
+        if (notifOpen) loadNotifications();
+    });
+
+    document.addEventListener("click", (e) => {
+        const container = document.getElementById("notif-container");
+        if (notifOpen && container && !container.contains(e.target as Node)) {
+            notifOpen = false;
+            notifDropdown?.classList.add("hidden");
+        }
+    });
+
+    markAllBtn?.addEventListener("click", async () => {
+        try {
+            await fetch("/api/admin/notifications", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mark_all_read: true }),
+            });
+            unreadCount = 0;
+            updateBadge();
+            loadNotifications();
+        } catch { /* silent */ }
+    });
+
+    async function loadNotifications() {
+        if (!notifList) return;
+        notifList.innerHTML = '<p class="text-gray-400 text-xs text-center py-6">Loading…</p>';
+        try {
+            const res  = await fetch("/api/admin/notifications?limit=15");
+            const data = await res.json();
+            const notifications: any[] = data.notifications ?? [];
+            unreadCount = data.unread_count ?? 0;
+            updateBadge();
+
+            if (!notifications.length) {
+                notifList.innerHTML = '<p class="text-gray-400 text-xs text-center py-8">No activity yet</p>';
+                return;
+            }
+
+            notifList.innerHTML = notifications.map(n => {
+                const iconMap: Record<string, string> = {
+                    customer:  "fa-user text-green-500",
+                    project:   "fa-project-diagram text-blue-500",
+                    task:      "fa-tasks text-orange-500",
+                    supplier:  "fa-truck text-purple-500",
+                    order:     "fa-shopping-cart text-indigo-500",
+                    employee:  "fa-id-badge text-teal-500",
+                    inventory: "fa-box text-red-500",
+                    default:   "fa-bell text-gray-400",
+                };
+                const icon   = iconMap[n.type] ?? iconMap.default;
+                const timeAgo = formatTimeAgo(n.created_at);
+                const unreadCls = !n.is_read ? "bg-blue-50" : "";
+                return `
+                    <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${unreadCls}" data-notif-id="${n.id}">
+                        <div class="flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i class="fas ${icon} text-xs"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-gray-800 leading-snug">${escHtml(n.message)}</p>
+                                <p class="text-xs text-gray-400 mt-0.5">${timeAgo}</p>
+                            </div>
+                            ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-[#194642] flex-shrink-0 mt-1.5"></span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            // Mark as read on click
+            notifList.querySelectorAll("[data-notif-id]").forEach(el => {
+                el.addEventListener("click", async () => {
+                    const id = (el as HTMLElement).dataset.notifId;
+                    if (!id) return;
+                    await fetch("/api/admin/notifications", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id, is_read: true }),
+                    });
+                    el.classList.remove("bg-blue-50");
+                    el.querySelector("span.rounded-full.bg-\\[\\#194642\\]")?.remove();
+                    if (unreadCount > 0) { unreadCount--; updateBadge(); }
+                });
+            });
+        } catch {
+            if (notifList) notifList.innerHTML = '<p class="text-red-400 text-xs text-center py-6">Failed to load</p>';
+        }
+    }
+
+    function updateBadge() {
+        if (!notifBadge) return;
+        if (unreadCount > 0) {
+            notifBadge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+            notifBadge.classList.remove("hidden");
+        } else {
+            notifBadge.classList.add("hidden");
+        }
+    }
+
+    async function pollUnreadCount() {
+        try {
+            const res  = await fetch("/api/admin/notifications?count_only=true");
+            const data = await res.json();
+            unreadCount = data.unread_count ?? 0;
+            updateBadge();
+        } catch { /* silent */ }
+    }
+
+    function formatTimeAgo(dateStr: string): string {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1)  return "Just now";
+        if (mins < 60) return `${mins}m ago`;
+        const hrs = Math.floor(mins / 60);
+        if (hrs < 24)  return `${hrs}h ago`;
+        const days = Math.floor(hrs / 24);
+        return `${days}d ago`;
+    }
+
+    function escHtml(str: string): string {
+        return String(str ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
+    function showHeaderToast(msg: string, isError = false) {
+        let container = document.getElementById("_header-toast-container");
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "_header-toast-container";
+            container.className = "fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none";
+            document.body.appendChild(container);
+        }
+        const bg = isError ? "#dc2626" : "#194642";
+        const toast = document.createElement("div");
+        toast.className = "pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg";
+        toast.style.cssText = `background-color:${bg}; min-width:220px;`;
+        toast.innerHTML = `<i class="fas ${isError ? "fa-exclamation-circle" : "fa-check-circle"}"></i><span>${escHtml(msg)}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = "0"; toast.style.transition = "opacity 0.4s"; setTimeout(() => toast.remove(), 400); }, 3500);
+    }
+
+    // Mobile sidebar toggle
     const toggleBtn = document.getElementById("sidebar-toggle");
-    const sidebar = document.getElementById("admin-sidebar");
-
+    const sidebar   = document.getElementById("admin-sidebar");
     if (toggleBtn && sidebar) {
         toggleBtn.addEventListener("click", () => {
             sidebar.classList.toggle("-translate-x-full");
@@ -97,4 +341,10 @@
             sidebar.classList.toggle("z-50");
         });
     }
+
+    // Init
+    loadUserProfile();
+    pollUnreadCount();
+    // Poll every 30 seconds for new notifications
+    setInterval(pollUnreadCount, 30000);
 </script>

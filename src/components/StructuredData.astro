@@ -112,6 +112,9 @@ function generateStructuredData(type: string, data: any) {
 }
 
 const structuredData = generateStructuredData(type, data);
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdHtml = scriptOpen + JSON.stringify(structuredData) + scriptClose;
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<Fragment set:html={jsonLdHtml} />

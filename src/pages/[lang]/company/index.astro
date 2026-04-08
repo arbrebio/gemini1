@@ -32,6 +32,20 @@ const timeline = [
   { year: 2024, event: T.y2024t, description: T.y2024d, icon: 'laptop' },
   { year: 2025, event: T.y2025t, description: T.y2025d, icon: 'trophy' },
 ];
+
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdData = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Qu est-ce qu Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Arbre Bio Africa est une société spécialisée en agriculture de précision pour l Afrique : serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants. Basée en Côte d Ivoire, elle intervient dans toute l Afrique de l Ouest." } },
+    { "@type": "Question", "name": "Quels sont les domaines d expertise d Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Serres agricoles, irrigation de précision, substrats horticoles (coco peat, fibre de coco, perlite), fertilisation, protection phytosanitaire, suivi agronomique et formation." } },
+    { "@type": "Question", "name": "Dans quels pays Arbre Bio Africa intervient-elle ?", "acceptedAnswer": { "@type": "Answer", "text": "Côte d Ivoire (siège), Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin, Cameroun, Gabon — toute l Afrique de l Ouest et Centrale." } },
+    { "@type": "Question", "name": "Comment contacter Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "WhatsApp +225 05 00 55 25 25 (7j/7), email farms@arbrebio.com, ou formulaire de contact sur le site. Réponse sous 24h." } },
+    { "@type": "Question", "name": "Arbre Bio Africa propose-t-elle du financement ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous accompagnons les agriculteurs dans l accès aux financements agricoles en Afrique de l Ouest : fonds agricoles, microfinancement, coopératives et programmes d aide au développement." } }
+  ]
+}) + scriptClose;
 ---
 
 <Layout
@@ -252,17 +266,7 @@ const timeline = [
     </div>
   </section>
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      { "@type": "Question", "name": "Qu est-ce qu Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Arbre Bio Africa est une société spécialisée en agriculture de précision pour l Afrique : serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants. Basée en Côte d Ivoire, elle intervient dans toute l Afrique de l Ouest." } },
-      { "@type": "Question", "name": "Quels sont les domaines d expertise d Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "Serres agricoles, irrigation de précision, substrats horticoles (coco peat, fibre de coco, perlite), fertilisation, protection phytosanitaire, suivi agronomique et formation." } },
-      { "@type": "Question", "name": "Dans quels pays Arbre Bio Africa intervient-elle ?", "acceptedAnswer": { "@type": "Answer", "text": "Côte d Ivoire (siège), Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin, Cameroun, Gabon — toute l Afrique de l Ouest et Centrale." } },
-      { "@type": "Question", "name": "Comment contacter Arbre Bio Africa ?", "acceptedAnswer": { "@type": "Answer", "text": "WhatsApp +225 05 00 55 25 25 (7j/7), email farms@arbrebio.com, ou formulaire de contact sur le site. Réponse sous 24h." } },
-      { "@type": "Question", "name": "Arbre Bio Africa propose-t-elle du financement ?", "acceptedAnswer": { "@type": "Answer", "text": "Nous accompagnons les agriculteurs dans l accès aux financements agricoles en Afrique de l Ouest : fonds agricoles, microfinancement, coopératives et programmes d aide au développement." } }
-    ]
-  })} />
+  <Fragment set:html={jsonLdData} />
 
 
 </Layout>

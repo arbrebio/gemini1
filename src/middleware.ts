@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { getLangFromUrl, defaultLang, languages, getLocalizedPath } from './lib/i18n';
+import { getLangFromUrl } from './lib/i18n';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url);

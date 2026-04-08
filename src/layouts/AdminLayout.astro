@@ -53,8 +53,17 @@ const { title } = Astro.props;
             import { supabase } from "../lib/supabase";
 
             const checkAuth = async () => {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) window.location.href = "/admin/login";
+                // getUser() validates the JWT with Supabase servers and refreshes
+                // it automatically if the access token is expired but refresh
+                // token is still valid. Never use getSession() for auth checks —
+                // it reads local storage without server validation.
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (!user || error) {
+                    // Clear any stale session data before redirecting
+                    await supabase.auth.signOut();
+                    window.location.href = "/admin/login";
+                    return;
+                }
             };
             checkAuth();
 

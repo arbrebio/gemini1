@@ -129,6 +129,10 @@ export const POST: APIRoute = async ({ request }) => {
       .select()
       .single();
     if (error) throw error;
+    // Log notification (fire-and-forget)
+    supabase.from('admin_notifications').insert({
+      type: 'project', message: `New project created: ${name}`, entity_id: data.id, entity_type: 'project', is_read: false,
+    }).then(() => {});
     return json({ project: data }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);
@@ -144,16 +148,57 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (!id) return json({ error: 'id is required' }, 400);
 
-    // Update a task
-    if (_action === 'update_task') {
+    // Add a task to a project
+    if (_action === 'add_task') {
+      const { title, description, priority, due_date, assignee_name, employee_id } = updates;
+      if (!title) return json({ error: 'title is required' }, 400);
+      const taskData: Record<string, any> = {
+        project_id: id,
+        title,
+        description: description ?? null,
+        status: 'todo',
+        priority: priority ?? 'medium',
+        due_date: due_date ?? null,
+        assignee_name: assignee_name ?? null,
+      };
+      if (employee_id) taskData.employee_id = employee_id;
       const { data, error } = await supabase
         .from('admin_project_tasks')
-        .update(updates)
-        .eq('id', id)
+        .insert(taskData)
+        .select()
+        .single();
+      if (error) throw error;
+      // Log notification (fire-and-forget)
+      supabase.from('admin_notifications').insert({
+        type: 'task', message: `Task assigned: "${title}"${assignee_name ? ` → ${assignee_name}` : ''}`, entity_id: data.id, entity_type: 'task', is_read: false,
+      }).then(() => {});
+      return json({ task: data }, 201);
+    }
+
+    // Update a task
+    if (_action === 'update_task') {
+      const { task_id, ...taskUpdates } = updates;
+      if (!task_id) return json({ error: 'task_id is required' }, 400);
+      const { data, error } = await supabase
+        .from('admin_project_tasks')
+        .update(taskUpdates)
+        .eq('id', task_id)
         .select()
         .single();
       if (error) throw error;
       return json({ task: data });
+    }
+
+    // Delete a task
+    if (_action === 'delete_task') {
+      const { task_id } = updates;
+      if (!task_id) return json({ error: 'task_id is required' }, 400);
+      const { error } = await supabase
+        .from('admin_project_tasks')
+        .delete()
+        .eq('id', task_id);
+      if (error) throw error;
+      return json({ success: true });
     }
 
     // Update a project

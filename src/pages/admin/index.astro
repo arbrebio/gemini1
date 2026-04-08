@@ -139,7 +139,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             <h3 class="text-lg font-bold text-gray-800 mb-6">Quick Actions</h3>
             <div class="space-y-3">
                 <a
-                    href="/admin/orders/new"
+                    href="/admin/orders"
                     class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
                     <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
@@ -154,7 +154,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 </a>
 
                 <a
-                    href="/admin/customers/new"
+                    href="/admin/customers"
                     class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
                     <div class="bg-green-100 text-green-600 p-2 rounded-lg">
@@ -167,7 +167,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 </a>
 
                 <a
-                    href="/admin/projects/new"
+                    href="/admin/projects"
                     class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
                     <div class="bg-purple-100 text-purple-600 p-2 rounded-lg">
@@ -176,6 +176,45 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                     <div>
                         <p class="font-medium text-gray-900">Start Project</p>
                         <p class="text-xs text-gray-500">New installation</p>
+                    </div>
+                </a>
+
+                <a
+                    href="/admin/suppliers"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-orange-100 text-orange-600 p-2 rounded-lg">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Add Supplier</p>
+                        <p class="text-xs text-gray-500">Manage procurement</p>
+                    </div>
+                </a>
+
+                <a
+                    href="/admin/inventory"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-red-100 text-red-600 p-2 rounded-lg">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Manage Inventory</p>
+                        <p class="text-xs text-gray-500">Products & stock</p>
+                    </div>
+                </a>
+
+                <a
+                    href="/admin/careers"
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                    <div class="bg-teal-100 text-teal-600 p-2 rounded-lg">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">HR & Careers</p>
+                        <p class="text-xs text-gray-500">Employees & jobs</p>
                     </div>
                 </a>
             </div>
@@ -271,9 +310,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             document.getElementById("low-stock")!.textContent =
                 lowStockCount?.toString() || "0";
 
-            // Revenue (Simplified - sum of delivered orders)
-            // Ideally use an RPC function for this
-            document.getElementById("total-revenue")!.textContent = "---";
+            // Total Revenue — sum of all delivered orders via RPC
+            const { data: revenueData } = await supabase.rpc("get_total_revenue");
+            const revenue = revenueData ?? 0;
+            document.getElementById("total-revenue")!.textContent =
+                new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF", maximumFractionDigits: 0 }).format(revenue);
         } catch (error) {
             console.error("Error loading dashboard:", error);
         }

@@ -59,26 +59,20 @@ export const GET: APIRoute = async ({ url }) => {
 
     if (stock_filter === 'out') {
       q = q.eq('stock_quantity', 0);
-    } else if (stock_filter === 'low') {
-      // stock_quantity > 0 but <= reorder_level
-      q = q.gt('stock_quantity', 0).lte('stock_quantity', supabase.from('admin_products').select('reorder_level'));
-      // Supabase JS v2 doesn't support column-to-column comparison directly; use filter
-      // Reset and use raw filter
-      q = supabase
-        .from('admin_products')
-        .select('*, admin_product_categories(id, name)', { count: 'exact' })
-        .order('name', { ascending: true })
-        .gt('stock_quantity', 0)
-        .filter('stock_quantity', 'lte', 'reorder_level');
-      if (search)      q = q.ilike('name', `%${search}%`);
-      if (category_id) q = q.eq('category_id', category_id);
     } else if (stock_filter === 'in') {
       q = q.gt('stock_quantity', 0);
     }
 
     const { data, error, count } = await q;
     if (error) throw error;
-    return json({ products: data ?? [], total: count ?? 0 });
+
+    // "low stock": stock_quantity > 0 but <= reorder_level.
+    // Supabase JS v2 does not support column-to-column comparisons, so filter in JS.
+    let products = data ?? [];
+    if (stock_filter === 'low') {
+      products = products.filter((p: any) => p.stock_quantity > 0 && p.stock_quantity <= (p.reorder_level ?? 0));
+    }
+    return json({ products, total: stock_filter === 'low' ? products.length : (count ?? 0) });
   } catch (e: any) {
     return json({ error: e.message }, 500);
   }
@@ -131,10 +125,13 @@ export const POST: APIRoute = async ({ request }) => {
       sku,
       category_id,
       unit_price,
+      cost_price,
       unit_of_measure,
       stock_quantity,
       reorder_level,
+      max_stock_level,
       is_active,
+      photo_url,
     } = payload;
 
     if (!name) return json({ error: 'name is required' }, 400);
@@ -147,14 +144,21 @@ export const POST: APIRoute = async ({ request }) => {
         sku: sku ?? null,
         category_id: category_id ?? null,
         unit_price: unit_price ?? 0,
+        cost_price: cost_price ?? 0,
         unit_of_measure: unit_of_measure ?? 'piece',
         stock_quantity: stock_quantity ?? 0,
         reorder_level: reorder_level ?? 0,
+        max_stock_level: max_stock_level ?? 0,
         is_active: is_active !== undefined ? is_active : true,
+        photo_url: photo_url ?? null,
       })
       .select()
       .single();
     if (error) throw error;
+    // Log notification (fire-and-forget)
+    supabase.from('admin_notifications').insert({
+      type: 'inventory', message: `New product added: ${name}`, entity_id: data.id, entity_type: 'product', is_read: false,
+    }).then(() => {});
     return json({ product: data }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);

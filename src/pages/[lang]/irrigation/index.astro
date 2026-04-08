@@ -170,6 +170,18 @@ const content: Record<string, {
 };
 
 const c = content[lang] ?? content.fr;
+
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdData = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": c.faq.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+}) + scriptClose;
 ---
 <Layout title={c.metaTitle} description={c.metaDesc}>
 
@@ -345,14 +357,6 @@ const c = content[lang] ?? content.fr;
   </section>
 
   {/* FAQ Schema */}
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": c.faq.map(item => ({
-      "@type": "Question",
-      "name": item.q,
-      "acceptedAnswer": { "@type": "Answer", "text": item.a }
-    }))
-  })} />
+  <Fragment set:html={jsonLdData} />
 
 </Layout>

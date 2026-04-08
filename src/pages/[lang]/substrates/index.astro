@@ -121,6 +121,18 @@ const benefits = [
   { icon: 'plant', title: T.sustainable, desc: T.sustainableDesc },
   { icon: 'handshake', title: T.expertSupport, desc: T.expertSupportDesc },
 ];
+
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdData = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": guide.faq.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+}) + scriptClose;
 ---
 
 <Layout title={({'fr':'Fibre de Coco, Substrat & Tourbe de Coco | Arbre Bio','en':'Coco Peat, Growing Media & Substrates | Arbre Bio Africa','es':'Fibra de Coco, Sustrato & Turba de Coco | Arbre Bio','af':'Kokosvesels & Groeimedia | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Coco Peat, Growing Media & Substrates | Arbre Bio Africa'} description={T.subTagline}>
@@ -271,14 +283,6 @@ const benefits = [
     </div>
   </section>
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": guide.faq.map(item => ({
-      "@type": "Question",
-      "name": item.q,
-      "acceptedAnswer": { "@type": "Answer", "text": item.a }
-    }))
-  })} />
+  <Fragment set:html={jsonLdData} />
 
 </Layout>

@@ -366,12 +366,13 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
               />
             </div>
             <div class="sm:col-span-2">
-              <input
-                id="task-assignee"
-                type="text"
-                placeholder="Assignee name (optional)"
+              <label class="block text-xs font-medium text-gray-500 mb-1">Assign Employee</label>
+              <select
+                id="task-assignee-employee"
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
-              />
+              >
+                <option value="">— No assignee —</option>
+              </select>
             </div>
           </div>
           <div class="flex items-center gap-2 mt-3">
@@ -444,12 +445,13 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
               />
             </div>
             <div>
-              <input
-                id="edit-task-assignee"
-                type="text"
-                placeholder="Assignee name"
+              <label class="block text-xs font-medium text-gray-500 mb-1">Assign Employee</label>
+              <select
+                id="edit-task-assignee-employee"
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
-              />
+              >
+                <option value="">— No assignee —</option>
+              </select>
             </div>
           </div>
           <div class="flex items-center gap-2 mt-3">
@@ -560,14 +562,18 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     priority: 'low' | 'medium' | 'high' | 'urgent';
     due_date?: string;
     assignee_name?: string;
+    assignee_whatsapp?: string;
+    employee_id?: string;
     completed_at?: string;
   };
 
   type Customer = { id: string; full_name?: string; company_name?: string };
+  type Employee = { id: string; first_name?: string; last_name?: string; job_title?: string; whatsapp_number?: string; phone?: string };
 
   // ─── State ───────────────────────────────────────────────────────────────────
   let projects: Project[] = [];
   let customers: Customer[] = [];
+  let employees: Employee[] = [];
   let searchValue = '';
   let statusValue = '';
   let activeProjectId: string | null = null;
@@ -696,6 +702,53 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     } catch { /* silent */ }
   }
 
+  async function fetchEmployees() {
+    try {
+      const res = await fetch('/api/admin/careers/employees');
+      if (!res.ok) return;
+      const data = await res.json();
+      employees = data.employees ?? [];
+      populateEmployeeSelects();
+    } catch { /* silent */ }
+  }
+
+  function populateEmployeeSelects() {
+    const selIds = ['task-assignee-employee', 'edit-task-assignee-employee'];
+    selIds.forEach(selId => {
+      const sel = document.getElementById(selId) as HTMLSelectElement | null;
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">— No assignee —</option>';
+      employees.forEach(emp => {
+        const opt = document.createElement('option');
+        opt.value = emp.id;
+        opt.textContent = `${emp.first_name ?? ''} ${emp.last_name ?? ''}`.trim() + (emp.job_title ? ` (${emp.job_title})` : '');
+        opt.dataset.name = `${emp.first_name ?? ''} ${emp.last_name ?? ''}`.trim();
+        opt.dataset.whatsapp = emp.whatsapp_number || emp.phone || '';
+        sel.appendChild(opt);
+      });
+      if (current) sel.value = current;
+    });
+  }
+
+  async function sendWhatsAppNotification(whatsappNumber: string, employeeName: string, taskTitle: string, projectName: string, priority: string, dueDate: string | undefined) {
+    if (!whatsappNumber) return;
+    try {
+      await fetch('/api/admin/whatsapp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: whatsappNumber,
+          employee_name: employeeName,
+          task_title: taskTitle,
+          project_name: projectName,
+          priority,
+          due_date: dueDate,
+        }),
+      });
+    } catch { /* silent — notification failure shouldn't block task save */ }
+  }
+
   function populateCustomerSelect(selectId: string) {
     const sel = document.getElementById(selectId) as HTMLSelectElement | null;
     if (!sel) return;
@@ -781,7 +834,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
             </div>
             ${p.end_date ? `<p class="text-xs text-gray-400 mt-1"><i class="fas fa-flag-checkered mr-1"></i>Due ${formatDate(p.end_date)}</p>` : ''}
           </div>
-          <div class="border-t border-gray-100 px-5 py-3 flex items-center gap-2" onclick="event.stopPropagation()">
+          <div class="border-t border-gray-100 px-5 py-3 flex items-center gap-2">
             <button
               data-view-project="${esc(p.id)}"
               class="flex-1 text-center text-xs font-medium py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
@@ -1023,6 +1076,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   // ─── Add task ────────────────────────────────────────────────────────────────
   function showAddTaskForm() {
     hideEditTaskForm();
+    populateEmployeeSelects();
     document.getElementById('add-task-form-wrapper')!.classList.remove('hidden');
     (document.getElementById('task-title') as HTMLInputElement).focus();
   }
@@ -1033,7 +1087,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     (document.getElementById('task-description') as HTMLTextAreaElement).value = '';
     (document.getElementById('task-priority') as HTMLSelectElement).value = 'medium';
     (document.getElementById('task-due-date') as HTMLInputElement).value = '';
-    (document.getElementById('task-assignee') as HTMLInputElement).value = '';
+    (document.getElementById('task-assignee-employee') as HTMLSelectElement).value = '';
   }
 
   document.getElementById('btn-add-task')!.addEventListener('click', showAddTaskForm);
@@ -1049,6 +1103,14 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.disabled = true;
     spinner.classList.remove('hidden');
     try {
+      const empSelect = document.getElementById('task-assignee-employee') as HTMLSelectElement;
+      const empOption = empSelect.selectedOptions[0];
+      const employee_id = empSelect.value || undefined;
+      const assignee_name = empOption?.dataset.name || undefined;
+      const assignee_whatsapp = empOption?.dataset.whatsapp || '';
+      const priority = (document.getElementById('task-priority') as HTMLSelectElement).value;
+      const due_date = (document.getElementById('task-due-date') as HTMLInputElement).value || undefined;
+
       const res = await fetch('/api/admin/projects', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -1057,13 +1119,19 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
           _action:       'add_task',
           title,
           description:   (document.getElementById('task-description') as HTMLTextAreaElement).value.trim() || undefined,
-          priority:      (document.getElementById('task-priority') as HTMLSelectElement).value,
-          due_date:      (document.getElementById('task-due-date') as HTMLInputElement).value || undefined,
-          assignee_name: (document.getElementById('task-assignee') as HTMLInputElement).value.trim() || undefined,
+          priority,
+          due_date,
+          assignee_name,
+          employee_id,
         }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Failed to add task');
       showToast('Task added');
+      // Send WhatsApp notification to assigned employee
+      if (employee_id && assignee_whatsapp) {
+        const project = projects.find(p => p.id === activeProjectId);
+        await sendWhatsAppNotification(assignee_whatsapp, assignee_name ?? '', title, project?.name ?? '', priority, due_date);
+      }
       hideAddTaskForm();
       const idx = projects.findIndex(p => p.id === activeProjectId);
       if (idx !== -1) projects[idx].tasks_count = (projects[idx].tasks_count ?? 0) + 1;
@@ -1079,7 +1147,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   });
 
   // ─── Edit task ───────────────────────────────────────────────────────────────
-  function openEditTaskForm(task: Task) {
+  function openEditTaskForm(task: Task & { employee_id?: string }) {
     hideAddTaskForm();
     document.getElementById('edit-task-form-wrapper')!.classList.remove('hidden');
     (document.getElementById('edit-task-id') as HTMLInputElement).value              = task.id;
@@ -1088,7 +1156,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     (document.getElementById('edit-task-status') as HTMLSelectElement).value         = task.status;
     (document.getElementById('edit-task-priority') as HTMLSelectElement).value       = task.priority;
     (document.getElementById('edit-task-due-date') as HTMLInputElement).value        = task.due_date ? task.due_date.split('T')[0] : '';
-    (document.getElementById('edit-task-assignee') as HTMLInputElement).value        = task.assignee_name ?? '';
+    const empSel = document.getElementById('edit-task-assignee-employee') as HTMLSelectElement;
+    if (task.employee_id) empSel.value = task.employee_id;
+    else empSel.value = '';
     document.getElementById('edit-task-form-wrapper')!.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -1109,14 +1179,28 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.disabled = true;
     spinner.classList.remove('hidden');
     try {
+      const empSelect = document.getElementById('edit-task-assignee-employee') as HTMLSelectElement;
+      const empOption = empSelect.selectedOptions[0];
+      const employee_id = empSelect.value || undefined;
+      const assignee_name = empOption?.dataset.name || undefined;
+      const assignee_whatsapp = empOption?.dataset.whatsapp || '';
+      const priority = (document.getElementById('edit-task-priority') as HTMLSelectElement).value as Task['priority'];
+      const due_date = (document.getElementById('edit-task-due-date') as HTMLInputElement).value || undefined;
+
       await updateTask(taskId, {
         title,
         description:   (document.getElementById('edit-task-description') as HTMLTextAreaElement).value.trim() || undefined,
         status:        (document.getElementById('edit-task-status') as HTMLSelectElement).value as Task['status'],
-        priority:      (document.getElementById('edit-task-priority') as HTMLSelectElement).value as Task['priority'],
-        due_date:      (document.getElementById('edit-task-due-date') as HTMLInputElement).value || undefined,
-        assignee_name: (document.getElementById('edit-task-assignee') as HTMLInputElement).value.trim() || undefined,
+        priority,
+        due_date,
+        assignee_name,
+        employee_id,
       }, true);
+      // Send WhatsApp if employee was assigned
+      if (employee_id && assignee_whatsapp) {
+        const project = projects.find(p => p.id === activeProjectId);
+        await sendWhatsAppNotification(assignee_whatsapp, assignee_name ?? '', title, project?.name ?? '', priority, due_date);
+      }
       hideEditTaskForm();
     } finally {
       isTaskSubmitting = false;
@@ -1350,4 +1434,5 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   // ─── Init ────────────────────────────────────────────────────────────────────
   fetchProjects();
   fetchCustomers();
+  fetchEmployees();
 </script>

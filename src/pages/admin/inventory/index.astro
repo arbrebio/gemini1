@@ -176,6 +176,26 @@ export const prerender = false;
       </div>
       <form id="form-product" class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <input type="hidden" id="fp-id" />
+        <input type="hidden" id="fp-photo-url" />
+
+        <!-- Photo upload -->
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-medium text-gray-700 mb-2">Product Photo</label>
+          <div class="flex items-center gap-4">
+            <div id="fp-photo-preview" class="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden flex-shrink-0">
+              <i class="fas fa-image text-gray-300 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <label for="fp-photo-file" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#194642] border border-[#194642] rounded-lg cursor-pointer hover:bg-[#194642]/5 transition-colors">
+                <i class="fas fa-upload text-xs"></i>
+                Choose Photo
+              </label>
+              <input type="file" id="fp-photo-file" accept="image/*" class="hidden" />
+              <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP — max 5 MB</p>
+              <p id="fp-photo-status" class="text-xs mt-1 hidden"></p>
+            </div>
+          </div>
+        </div>
 
         <div class="sm:col-span-2">
           <label class="block text-xs font-medium text-gray-700 mb-1">Product Name <span class="text-red-500">*</span></label>
@@ -604,8 +624,15 @@ export const prerender = false;
       return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
           <td class="px-5 py-3">
-            <div class="font-medium text-gray-800 text-sm">${p.name}</div>
-            ${p.description ? `<div class="text-xs text-gray-400 truncate max-w-xs">${p.description}</div>` : ''}
+            <div class="flex items-center gap-3">
+              ${p.photo_url
+                ? `<img src="${p.photo_url}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-100" />`
+                : `<div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0"><i class="fas fa-image text-gray-300 text-sm"></i></div>`}
+              <div>
+                <div class="font-medium text-gray-800 text-sm">${p.name}</div>
+                ${p.description ? `<div class="text-xs text-gray-400 truncate max-w-xs">${p.description}</div>` : ''}
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 text-sm text-gray-600 font-mono">${p.sku || '—'}</td>
           <td class="px-5 py-3">
@@ -766,6 +793,55 @@ export const prerender = false;
   document.getElementById('tab-products')!.addEventListener('click', () => switchTab('products'));
   document.getElementById('tab-categories')!.addEventListener('click', () => switchTab('categories'));
 
+  // ─── Product photo upload ───────────────────────────────────────────────────
+
+  const photoFileInput   = document.getElementById('fp-photo-file') as HTMLInputElement;
+  const photoPreview     = document.getElementById('fp-photo-preview')!;
+  const photoUrlInput    = document.getElementById('fp-photo-url') as HTMLInputElement;
+  const photoStatusEl    = document.getElementById('fp-photo-status')!;
+
+  photoFileInput.addEventListener('change', async () => {
+    const file = photoFileInput.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      photoStatusEl.textContent = 'File too large (max 5 MB)';
+      photoStatusEl.className = 'text-xs mt-1 text-red-500';
+      photoStatusEl.classList.remove('hidden');
+      return;
+    }
+    photoStatusEl.textContent = 'Uploading…';
+    photoStatusEl.className = 'text-xs mt-1 text-gray-500';
+    photoStatusEl.classList.remove('hidden');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('bucket', 'product-images');
+      const res = await fetch('/api/admin/upload-asset', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Upload failed');
+      const data = await res.json();
+      const url = data.url;
+      photoUrlInput.value = url;
+      photoPreview.innerHTML = `<img src="${url}" alt="Product" class="w-full h-full object-cover rounded-lg" />`;
+      photoStatusEl.textContent = 'Photo uploaded ✓';
+      photoStatusEl.className = 'text-xs mt-1 text-green-600';
+    } catch (err: any) {
+      photoStatusEl.textContent = err.message || 'Upload failed';
+      photoStatusEl.className = 'text-xs mt-1 text-red-500';
+    }
+  });
+
+  function setPhotoPreview(url: string | null) {
+    photoUrlInput.value = url ?? '';
+    if (url) {
+      photoPreview.innerHTML = `<img src="${url}" alt="Product" class="w-full h-full object-cover rounded-lg" />`;
+    } else {
+      photoPreview.innerHTML = '<i class="fas fa-image text-gray-300 text-2xl"></i>';
+    }
+    photoStatusEl.classList.add('hidden');
+    photoFileInput.value = '';
+  }
+
   // ─── Product Modal helpers ──────────────────────────────────────────────────
 
   function openProductModal(product?: any) {
@@ -785,6 +861,8 @@ export const prerender = false;
     (document.getElementById('fp-max-stock') as HTMLInputElement).value   = product?.max_stock_level ?? '';
     (document.getElementById('fp-uom') as HTMLSelectElement).value        = product?.unit_of_measure ?? 'kg';
     (document.getElementById('fp-category') as HTMLSelectElement).value   = product?.category_id ?? '';
+
+    setPhotoPreview(product?.photo_url ?? null);
 
     const isActive = product?.is_active !== false;
     setActiveToggle(isActive);
@@ -836,6 +914,7 @@ export const prerender = false;
       reorder_level:   Number((document.getElementById('fp-reorder') as HTMLInputElement).value) || 0,
       max_stock_level: Number((document.getElementById('fp-max-stock') as HTMLInputElement).value) || 0,
       is_active:       (document.getElementById('fp-active') as HTMLInputElement).value === 'true',
+      photo_url:       (document.getElementById('fp-photo-url') as HTMLInputElement).value || null,
     };
 
     const btn = document.getElementById('fp-submit') as HTMLButtonElement;

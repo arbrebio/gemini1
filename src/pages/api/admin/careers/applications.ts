@@ -151,12 +151,17 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 };
 
-// DELETE — delete application
+// DELETE — delete application (cascades related records first to avoid FK errors)
 export const DELETE: APIRoute = async ({ request }) => {
   try {
     const supabase = getSupabase();
     const { id } = await request.json();
     if (!id) return new Response(JSON.stringify({ error: 'id required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+
+    // Delete child records first (FK constraints may not cascade automatically)
+    await supabase.from('career_application_timeline').delete().eq('application_id', id);
+    await supabase.from('career_documents').delete().eq('application_id', id);
+
     const { error } = await supabase.from('career_applications').delete().eq('id', id);
     if (error) throw error;
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });

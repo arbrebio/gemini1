@@ -37,6 +37,8 @@ export const GET: APIRoute = async ({ url }) => {
       return json({ customer: data });
     }
 
+    const customer_type = url.searchParams.get('customer_type') ?? '';
+
     // List with optional search + pagination
     let q = supabase
       .from('admin_customers')
@@ -48,6 +50,10 @@ export const GET: APIRoute = async ({ url }) => {
       q = q.or(
         `full_name.ilike.%${search}%,email.ilike.%${search}%,company_name.ilike.%${search}%,phone.ilike.%${search}%`
       );
+    }
+
+    if (customer_type) {
+      q = q.eq('customer_type', customer_type);
     }
 
     const { data, error, count } = await q;
@@ -102,6 +108,10 @@ export const POST: APIRoute = async ({ request }) => {
       .single();
 
     if (error) throw error;
+    // Log notification (fire-and-forget)
+    supabase.from('admin_notifications').insert({
+      type: 'customer', message: `New customer added: ${full_name}`, entity_id: data.id, entity_type: 'customer', is_read: false,
+    }).then(() => {});
     return json({ customer: data }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);

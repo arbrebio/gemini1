@@ -31,6 +31,55 @@ const partners = [
   { name: "GIZ", logo: "https://i.imgur.com/g3qxeY3.jpg", url: "https://www.giz.de/en/regions/africa/cote-divoire" },
   { name: "OMRI", logo: "https://i.imgur.com/pcM8A7v.jpg", url: "https://www.omri.org/" },
 ];
+
+const scriptOpen = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const jsonLdData = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'agriculture de précision utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle permet de s'affranchir des aléas climatiques et de produire toute l'année."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel est le coût d'une serre agricole en Côte d'Ivoire ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type : une serre tunnel simple commence à partir de 3 500 €/100m², une serre multi-chapelle high-tech peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget avec financement et installation inclus."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'irrigation goutte-à-goutte économise 70% d'eau, permet la fertigation et réduit les maladies foliaires. Nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La fibre de coco est la partie fibreuse utilisée en paillage. La tourbe de coco (coco peat) est la partie fine et spongieuse, idéale comme substrat hors-sol. Les deux améliorent la rétention d'eau des sols africains."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, Arbre Bio Africa livre dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Nous assurons l'installation, la formation et le suivi technique sur site."
+      }
+    }
+  ]
+}) + scriptClose;
 ---
 
 <Layout title={({'fr':'Agriculture de Précision en Afrique | Arbre Bio Africa','en':'Precision Agriculture in Africa | Arbre Bio Africa','es':'Agricultura de Precisión en África | Arbre Bio Africa','af':'Presisieboerdery in Afrika | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Precision Agriculture in Africa | Arbre Bio Africa'} description={T.heroSubtitle} image="https://i.imgur.com/Aab6e6c.jpg">
@@ -233,52 +282,8 @@ const partners = [
     </div>
   </section>
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Qu'est-ce que l'agriculture de précision et pourquoi est-elle adaptée à l'Afrique ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "L'agriculture de précision utilise des technologies modernes — serres, irrigation goutte-à-goutte, substrats optimisés — pour maximiser les rendements tout en réduisant les intrants. En Afrique, elle permet de s'affranchir des aléas climatiques et de produire toute l'année."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Quel est le coût d'une serre agricole en Côte d'Ivoire ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Le coût d'une serre agricole en Côte d'Ivoire varie selon le type : une serre tunnel simple commence à partir de 3 500 €/100m², une serre multi-chapelle high-tech peut atteindre 40 000 €/ha. Arbre Bio Africa propose des solutions adaptées à chaque budget avec financement et installation inclus."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Comment l'irrigation goutte-à-goutte améliore-t-elle les rendements en Afrique ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "L'irrigation goutte-à-goutte économise 70% d'eau, permet la fertigation et réduit les maladies foliaires. Nos clients en Côte d'Ivoire constatent une augmentation des rendements de 80 à 200% par rapport à l'irrigation traditionnelle."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Quelle est la différence entre coco peat, fibre de coco et tourbe de coco ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "La fibre de coco est la partie fibreuse utilisée en paillage. La tourbe de coco (coco peat) est la partie fine et spongieuse, idéale comme substrat hors-sol. Les deux améliorent la rétention d'eau des sols africains."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Arbre Bio Africa livre-t-il dans toute l'Afrique de l'Ouest ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Oui, Arbre Bio Africa livre dans toute l'Afrique de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Burkina Faso, Mali, Togo, Bénin. Nous assurons l'installation, la formation et le suivi technique sur site."
-        }
-      }
-    ]
-  })} />
+  <Fragment set:html={jsonLdData} />
+
 
 
 </Layout>

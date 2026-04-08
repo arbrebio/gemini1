@@ -18,9 +18,6 @@ export function getLangFromUrl(url: URL): Language {
   return defaultLang;
 }
 
-// Alias for backward compatibility
-const getLanguageFromUrl = getLangFromUrl;
-
 // Get localized path for a given language
 export function getLocalizedPath(path: string, lang: Language): string {
   // If it's the default language and we don't prefix it

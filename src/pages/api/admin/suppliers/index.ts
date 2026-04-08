@@ -117,6 +117,10 @@ export const POST: APIRoute = async ({ request }) => {
     // Create supplier
     const { data: supplier, error } = await sb.from('suppliers').insert(payload).select().single();
     if (error) throw error;
+    // Log notification (fire-and-forget)
+    sb.from('admin_notifications').insert({
+      type: 'supplier', message: `New supplier added: ${supplier.name || supplier.company_name || 'Unknown'}`, entity_id: supplier.id, entity_type: 'supplier', is_read: false,
+    }).then(() => {});
     return json({ supplier }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);
@@ -160,15 +164,17 @@ export const DELETE: APIRoute = async ({ request }) => {
     const { id, _target } = await request.json();
     if (!id) return json({ error: 'id required' }, 400);
 
+    let deleteError;
     if (_target === 'note') {
-      await sb.from('supplier_notes').delete().eq('id', id);
+      ({ error: deleteError } = await sb.from('supplier_notes').delete().eq('id', id));
     } else if (_target === 'contact') {
-      await sb.from('supplier_contacts').delete().eq('id', id);
+      ({ error: deleteError } = await sb.from('supplier_contacts').delete().eq('id', id));
     } else if (_target === 'order') {
-      await sb.from('supplier_orders').delete().eq('id', id);
+      ({ error: deleteError } = await sb.from('supplier_orders').delete().eq('id', id));
     } else {
-      await sb.from('suppliers').delete().eq('id', id);
+      ({ error: deleteError } = await sb.from('suppliers').delete().eq('id', id));
     }
+    if (deleteError) throw new Error(deleteError.message);
     return json({ success: true });
   } catch (e: any) {
     return json({ error: e.message }, 500);
