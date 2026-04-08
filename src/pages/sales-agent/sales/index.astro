@@ -266,20 +266,25 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     window.addEventListener('online', syncOfflineSales);
 
     // ── Load products for autocomplete ──────────────────────────────────
-    async function loadProducts() {
+    // Load cached products FIRST (synchronously) so search works immediately
+    var cached = localStorage.getItem('agentProducts');
+    products = cached ? JSON.parse(cached) : [];
+
+    // Then fetch fresh products from API (without awaiting, in background)
+    async function loadProductsFromAPI() {
       try {
         var res = await fetch('/api/sales-agent/inventory?limit=200&in_stock=true', { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
-        products = (data.products || []).filter(function(p) { return p.stock_quantity > 0; });
-        localStorage.setItem('agentProducts', JSON.stringify(products));
-        if (products.length === 0) console.warn('No products in stock available');
+        var freshProducts = (data.products || []).filter(function(p) { return p.stock_quantity > 0; });
+        products = freshProducts;  // Update global products array
+        localStorage.setItem('agentProducts', JSON.stringify(freshProducts));
+        if (freshProducts.length === 0) console.warn('No products in stock available');
       } catch (err) {
         console.error('Failed to load products:', err);
-        var cached = localStorage.getItem('agentProducts');
-        products = cached ? JSON.parse(cached) : [];
+        // If fetch fails, keep using cached products
       }
     }
-    loadProducts();
+    loadProductsFromAPI(); // Fire and forget - doesn't block the UI
 
     // ── Product autocomplete ─────────────────────────────────────────────
     var productSearch = document.getElementById('product-search');
