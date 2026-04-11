@@ -7,416 +7,464 @@ export const prerender = false;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Facture — Arbre Bio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* ── Reset ──────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #f0f0f0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #e8e8e8; }
 
-    /* ── Action bar (hidden when printing) ─────────────────────── */
+    /* ── Action bar ─────────────────────────────────────────────── */
     #action-bar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: #194642; padding: 12px 20px;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: #194642; padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
-    #action-bar h1 { color: #fff; font-size: 15px; font-weight: 600; }
+    #action-bar h1 { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
     .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      cursor: pointer; border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 13px; border-radius: 7px; font-size: 12.5px; font-weight: 600;
+      cursor: pointer; border: none; text-decoration: none; transition: opacity .15s;
     }
+    .btn:hover { opacity: .85; }
     .btn-white  { background: #fff; color: #194642; }
     .btn-green  { background: #25D366; color: #fff; }
     .btn-blue   { background: #2563eb; color: #fff; }
-    .btn-orange { background: #ea580c; color: #fff; }
+    .btn-back   { background: rgba(255,255,255,0.15); color: #fff; }
 
-    /* ── Page wrapper ───────────────────────────────────────────── */
-    #page-wrap { padding: 88px 20px 40px; max-width: 860px; margin: 0 auto; }
+    /* ── Wrapper ─────────────────────────────────────────────────── */
+    #page-wrap { padding: 76px 16px 48px; max-width: 820px; margin: 0 auto; }
 
-    /* ── Invoice card ───────────────────────────────────────────── */
+    /* ── Invoice card ────────────────────────────────────────────── */
     .invoice {
       background: #fff;
-      padding: 48px 52px 40px;
-      position: relative;
-      min-height: 1100px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
     }
 
-    /* ── Header ─────────────────────────────────────────────────── */
-    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
-    .logo-block svg { width: 90px; height: 90px; }
-    .invoice-type { text-align: right; }
-    .invoice-type .label { font-size: 11px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
-    .invoice-type .number { font-size: 20px; font-weight: 700; color: #e05c1a; margin-top: 4px; letter-spacing: 1px; }
-
-    /* ── Company info ───────────────────────────────────────────── */
-    .company-block { margin-bottom: 28px; line-height: 1.7; font-size: 12.5px; color: #333; }
-    .company-block strong { display: block; font-size: 13.5px; color: #111; margin-bottom: 2px; }
-
-    /* ── Meta row: date + client ────────────────────────────────── */
-    .meta-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-    .sale-date { font-size: 12.5px; color: #444; }
-    .client-block { text-align: right; font-size: 12.5px; line-height: 1.7; }
-    .client-block .client-name { font-weight: 700; font-size: 13.5px; color: #111; }
-    .client-block .city-label { font-weight: 700; }
-
-    /* ── Divider ────────────────────────────────────────────────── */
-    .divider { height: 2px; background: #c8d5b0; margin-bottom: 0; }
-
-    /* ── Items table ────────────────────────────────────────────── */
-    .items-table {
-      width: 100%; border-collapse: collapse; font-size: 12.5px;
-      position: relative;
+    /* ── Top green band ──────────────────────────────────────────── */
+    .inv-topband {
+      background: #194642;
+      padding: 22px 36px 18px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .items-table thead tr { background: #f5f5f2; }
-    .items-table th {
-      padding: 10px 12px; text-align: left;
-      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: #444; border-bottom: 2px solid #c8d5b0;
-    }
-    .items-table th:not(:first-child) { text-align: right; }
-    .items-table td { padding: 14px 12px; vertical-align: top; border-bottom: 1px solid #eee; }
-    .items-table td:not(:first-child) { text-align: right; }
-    .items-table .product-name { font-weight: 600; color: #111; }
-    .items-table .product-desc { color: #666; font-size: 11.5px; margin-top: 3px; line-height: 1.5; }
+    .inv-topband .logo-area { display: flex; align-items: center; gap: 14px; }
+    .inv-topband .logo-area img,
+    .inv-topband .logo-area svg { width: 68px; height: 68px; }
+    .inv-topband .brand-text { color: #fff; }
+    .inv-topband .brand-text .name { font-size: 18px; font-weight: 800; letter-spacing: 1px; line-height: 1; }
+    .inv-topband .brand-text .tagline { font-size: 10px; color: #a8c880; letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
+    .inv-topband .inv-title-area { text-align: right; }
+    .inv-topband .inv-label { color: #a8c880; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+    .inv-topband .inv-num { color: #fff; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; margin-top: 2px; }
 
-    /* Watermark inside table area */
-    .table-wrap { position: relative; }
+    /* ── Company + Client strip ──────────────────────────────────── */
+    .inv-info-row {
+      display: flex; justify-content: space-between;
+      padding: 20px 36px 0;
+      gap: 24px;
+    }
+    .inv-company { flex: 1; font-size: 11.5px; line-height: 1.75; color: #444; }
+    .inv-company .co-name { font-size: 13px; font-weight: 800; color: #194642; margin-bottom: 2px; }
+    .inv-client-box {
+      flex: 1; background: #f6f8f4; border-left: 4px solid #194642;
+      padding: 14px 16px; border-radius: 2px;
+    }
+    .inv-client-box .box-label { font-size: 9.5px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #194642; margin-bottom: 7px; }
+    .inv-client-box .client-name-main { font-size: 14px; font-weight: 800; color: #111; margin-bottom: 4px; }
+    .inv-client-box .client-detail { font-size: 11.5px; color: #555; line-height: 1.7; }
+
+    /* ── Date row ────────────────────────────────────────────────── */
+    .inv-date-row {
+      display: flex; justify-content: flex-end;
+      padding: 10px 36px 16px;
+      font-size: 11.5px; color: #666;
+    }
+    .inv-date-row span { margin-left: 4px; font-weight: 600; color: #194642; }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    .inv-divider { height: 2px; background: linear-gradient(to right, #194642, #a8c880); margin: 0 36px; }
+
+    /* ── Items table ─────────────────────────────────────────────── */
+    .table-outer { padding: 0 36px; position: relative; }
     .table-watermark {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      pointer-events: none; z-index: 0; opacity: 0.04;
+      pointer-events: none; z-index: 0; opacity: 0.035;
     }
-    .table-watermark svg { width: 260px; height: 260px; }
-    .items-table { position: relative; z-index: 1; }
+    .table-watermark svg { width: 300px; height: 300px; }
 
-    /* ── Validity note ───────────────────────────────────────────── */
-    .validity-note { text-align: center; padding: 10px; font-size: 11.5px; color: #e05c1a; font-style: italic; }
-    .pickup-note   { text-align: center; padding: 8px; font-size: 11.5px; color: #444; border-top: 1px solid #eee; }
+    table.items {
+      width: 100%; border-collapse: collapse; font-size: 12px; position: relative; z-index: 1; margin: 16px 0 0;
+    }
+    table.items thead tr {
+      background: #194642; color: #fff;
+    }
+    table.items thead th {
+      padding: 10px 12px; text-align: left;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    table.items thead th:not(:first-child) { text-align: right; }
+    table.items tbody tr:nth-child(even) { background: #f8faf6; }
+    table.items tbody tr:hover { background: #f0f5ee; }
+    table.items td { padding: 12px 12px; vertical-align: top; border-bottom: 1px solid #e8ede6; }
+    table.items td:not(:first-child) { text-align: right; }
+    table.items .p-name { font-weight: 700; color: #111; }
+    table.items tfoot td { padding: 6px 12px; font-size: 11px; color: #777; font-style: italic; }
+
+    /* ── Validity / pickup notes ─────────────────────────────────── */
+    .note-row { text-align: center; padding: 8px 36px; font-size: 11px; color: #e05c1a; font-style: italic; border-top: 1px dashed #ddd; }
+    .pickup-row { text-align: center; padding: 6px 36px 10px; font-size: 11px; color: #666; }
 
     /* ── Totals ──────────────────────────────────────────────────── */
-    .totals-section { border-top: 2px solid #c8d5b0; border-bottom: 2px solid #c8d5b0; margin-top: 0; }
-    .totals-row { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #eee; }
-    .totals-row:last-child { border-bottom: none; }
-    .totals-row .label { font-size: 12px; color: #444; }
-    .totals-row .label strong { font-weight: 700; color: #111; }
-    .totals-row .value { font-size: 13px; font-weight: 700; color: #111; }
-    .totals-row .value.big { font-size: 16px; }
+    .totals-wrap {
+      margin: 0 36px;
+      border: 2px solid #194642; border-radius: 4px; overflow: hidden;
+    }
+    .totals-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 16px; border-bottom: 1px solid #e0e8dc;
+      font-size: 12px;
+    }
+    .totals-row:last-child { border-bottom: none; background: #194642; }
+    .totals-row:last-child .t-label { color: #a8c880; font-weight: 700; font-size: 12.5px; }
+    .totals-row:last-child .t-value { color: #fff; font-size: 17px; font-weight: 800; }
+    .t-label { color: #555; }
+    .t-label strong { color: #194642; }
+    .t-value { font-weight: 700; color: #111; font-size: 13px; }
 
     /* ── Amount in words ─────────────────────────────────────────── */
     .amount-words {
-      text-align: center; padding: 14px 20px; font-size: 12px; color: #444; font-style: italic;
-      border-bottom: 2px solid #c8d5b0;
+      margin: 12px 36px 0;
+      background: #f6f8f4; border-left: 4px solid #a8c880;
+      padding: 10px 16px; font-size: 12px; color: #333; font-style: italic;
+      border-radius: 2px;
     }
+    .amount-words strong { color: #194642; font-style: normal; }
 
-    /* ── Center logo ─────────────────────────────────────────────── */
-    .center-logo { text-align: center; padding: 20px 0 10px; }
-    .center-logo svg { width: 70px; height: 70px; opacity: 0.9; }
+    /* ── Center logo separator ───────────────────────────────────── */
+    .center-logo-row { display: flex; align-items: center; gap: 12px; padding: 16px 36px 10px; }
+    .center-logo-row .cline { flex: 1; height: 1px; background: #c8d5b0; }
+    .center-logo-row svg { width: 54px; height: 54px; opacity: 0.85; }
 
     /* ── Payment info ────────────────────────────────────────────── */
-    .payment-info { text-align: center; font-size: 12px; color: #333; padding: 8px 0 14px; font-weight: 600; }
+    .payment-section { padding: 0 36px 16px; }
+    .payment-section .pay-label { font-size: 9.5px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #194642; margin-bottom: 8px; }
+    .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; font-size: 11.5px; }
+    .pay-grid .pk { color: #888; }
+    .pay-grid .pv { font-weight: 600; color: #111; }
 
-    /* ── Terms ────────────────────────────────────────────────────── */
-    .terms { font-size: 11px; color: #666; line-height: 1.6; padding: 10px 0; }
-    .terms p { margin-bottom: 4px; }
+    /* ── Terms ───────────────────────────────────────────────────── */
+    .terms-section { margin: 0 36px; padding: 12px 0; border-top: 1px solid #e0e8dc; }
+    .terms-section .t-label-title { font-size: 9.5px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #194642; margin-bottom: 6px; }
+    .terms-section p { font-size: 10.5px; color: #666; line-height: 1.6; margin-bottom: 4px; }
 
     /* ── Footer bar ──────────────────────────────────────────────── */
     .inv-footer {
+      background: #194642; color: #a8c880;
       display: flex; justify-content: space-between; align-items: center;
-      border-top: 2px solid #c8d5b0; padding-top: 14px; margin-top: 10px;
-      font-size: 11.5px; color: #555;
+      padding: 12px 36px; margin-top: 16px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
     }
-    .inv-footer span { display: flex; align-items: center; gap: 5px; }
 
-    /* ── Loading / Error states ──────────────────────────────────── */
-    #loading { text-align: center; padding: 80px 20px; color: #666; }
-    #error-msg { display: none; text-align: center; padding: 40px; color: #dc2626; }
+    /* ── Loading / error ─────────────────────────────────────────── */
+    #loading { text-align: center; padding: 80px 20px; color: #555; font-size: 15px; }
+    #error-msg { display: none; text-align: center; padding: 60px 20px; color: #dc2626; font-size: 15px; }
 
-    /* ── Print styles ─────────────────────────────────────────────── */
+    /* ── Print ───────────────────────────────────────────────────── */
     @media print {
       body { background: #fff; }
       #action-bar { display: none !important; }
       #page-wrap { padding: 0; max-width: none; margin: 0; }
-      .invoice { padding: 32px 40px 28px; min-height: auto; box-shadow: none; }
+      .invoice { box-shadow: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- Action bar (hidden on print) -->
+<!-- Action bar -->
 <div id="action-bar">
-  <h1>📄 Facture Arbre Bio</h1>
+  <h1>📄 Facture — Arbre Bio Africa</h1>
   <div class="action-btns">
-    <button class="btn btn-white" onclick="window.print()">⬇️ Télécharger / Imprimer</button>
-    <a id="btn-whatsapp" class="btn btn-green" href="#" target="_blank">💬 WhatsApp</a>
-    <a id="btn-email" class="btn btn-blue" href="#">✉️ Email</a>
-    <button class="btn btn-orange" onclick="history.back()">← Retour</button>
+    <button class="btn btn-white" onclick="window.print()"><i class="fas fa-download"></i> Télécharger / Imprimer</button>
+    <a id="btn-whatsapp" class="btn btn-green" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    <a id="btn-email"    class="btn btn-blue"  href="#"><i class="fas fa-envelope"></i> Email</a>
+    <button class="btn btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i> Retour</button>
   </div>
 </div>
 
 <div id="page-wrap">
-  <div id="loading">
-    <p style="font-size:15px;">⏳ Chargement de la facture…</p>
-  </div>
-  <div id="error-msg">
-    <p style="font-size:15px;">❌ <span id="error-text">Erreur de chargement</span></p>
-  </div>
-  <div id="invoice-content" style="display:none;">
-    <!-- filled by JS -->
-  </div>
+  <div id="loading">⏳ Chargement de la facture…</div>
+  <div id="error-msg"><span id="error-text">Erreur de chargement</span></div>
+  <div id="invoice-content" style="display:none;"></div>
 </div>
 
 <script is:inline>
 (function() {
   var token = localStorage.getItem('agentToken');
-  var saleId = window.location.pathname.split('/').pop();
-
+  var saleId = window.location.pathname.split('/').filter(Boolean).pop();
   if (!token) { window.location.href = '/sales-agent/login'; return; }
 
-  // ── French number-to-words ────────────────────────────────────────
-  var ONES = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze',
-              'treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  // ── French number-to-words ─────────────────────────────────────
+  var ONES = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf',
+              'dix','onze','douze','treize','quatorze','quinze','seize',
+              'dix-sept','dix-huit','dix-neuf'];
   var TENS = ['','','vingt','trente','quarante','cinquante','soixante','soixante','quatre-vingt','quatre-vingt'];
 
-  function hundreds(n) {
+  function h(n) {
     if (n === 0) return '';
     var r = '';
     if (n >= 100) {
-      var h = Math.floor(n / 100);
-      r = (h === 1 ? 'cent' : ONES[h] + '-cent') + (n % 100 === 0 && h > 1 ? 's' : '');
+      var q = Math.floor(n / 100);
+      r = (q === 1 ? 'cent' : ONES[q] + '-cent') + (n % 100 === 0 && q > 1 ? 's' : '');
       n = n % 100;
       if (n > 0) r += '-';
     }
     if (n >= 20) {
       var t = Math.floor(n / 10), o = n % 10;
-      if (t === 7 || t === 9) {
-        r += TENS[t] + '-' + ONES[10 + o];
-      } else {
+      if (t === 7 || t === 9) { r += TENS[t] + '-' + ONES[10 + o]; }
+      else {
         r += TENS[t];
         if (t === 8) { if (o === 0) r += 's'; }
         else if (o === 1) r += '-et-un';
         else if (o > 0) r += '-' + ONES[o];
       }
-    } else if (n > 0) {
-      r += ONES[n];
-    }
+    } else if (n > 0) { r += ONES[n]; }
     return r;
   }
-
   function numberToWords(n) {
     n = Math.round(Math.abs(n));
-    if (n === 0) return 'zéro';
+    if (n === 0) return 'Zéro';
     var parts = [];
-    if (n >= 1000000000) {
-      var b = Math.floor(n / 1000000000);
-      parts.push(hundreds(b) + '-milliard' + (b > 1 ? 's' : ''));
-      n %= 1000000000;
-    }
-    if (n >= 1000000) {
-      var m = Math.floor(n / 1000000);
-      parts.push(hundreds(m) + '-million' + (m > 1 ? 's' : ''));
-      n %= 1000000;
-    }
-    if (n >= 1000) {
-      var th = Math.floor(n / 1000);
-      parts.push((th === 1 ? 'mille' : hundreds(th) + '-mille'));
-      n %= 1000;
-    }
-    if (n > 0) parts.push(hundreds(n));
-    // Capitalize first letter
+    if (n >= 1000000000) { var b = Math.floor(n/1000000000); parts.push(h(b)+'-milliard'+(b>1?'s':'')); n%=1000000000; }
+    if (n >= 1000000)    { var m = Math.floor(n/1000000);    parts.push(h(m)+'-million'+(m>1?'s':'')); n%=1000000; }
+    if (n >= 1000)       { var k = Math.floor(n/1000);       parts.push(k===1?'mille':h(k)+'-mille'); n%=1000; }
+    if (n > 0) parts.push(h(n));
     var w = parts.join('-');
     return w.charAt(0).toUpperCase() + w.slice(1);
   }
 
-  function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); }
-  function fmtDate(d) {
-    if (!d) return '';
-    return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
-  }
+  function fmt(n)    { return new Intl.NumberFormat('fr-FR').format(Number(n)); }
+  function fmtDate(d){ return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}) : ''; }
 
-  var PAYMENT_LABELS = {
+  var PAY = {
     wire_transfer:'Virement bancaire', orange_money:'Orange Money',
     mtn_money:'MTN Money', moov_money:'Moov Money', wave:'WAVE', cash:'Espèces'
   };
 
-  // ── Arbre Bio logo SVG ─────────────────────────────────────────
-  var LOGO_SVG = `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="48" fill="#194642" stroke="#194642" stroke-width="1"/>
-    <text x="50" y="35" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold" letter-spacing="2">ARBRE</text>
-    <text x="50" y="45" text-anchor="middle" fill="#a8c880" font-size="7" letter-spacing="1">BIO</text>
-    <path d="M50 55 C50 55 38 45 38 38 C38 31 44 26 50 26 C56 26 62 31 62 38 C62 45 50 55 50 55Z" fill="#a8c880" opacity="0.8"/>
-    <path d="M50 55 L50 75" stroke="#a8c880" stroke-width="2" stroke-linecap="round"/>
-    <path d="M50 65 C50 65 43 60 40 55" stroke="#a8c880" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M50 60 C50 60 57 55 60 50" stroke="#a8c880" stroke-width="1.5" stroke-linecap="round"/>
-    <text x="50" y="88" text-anchor="middle" fill="#a8c880" font-size="5.5" letter-spacing="1.5">FARMER SEED</text>
-  </svg>`;
+  /* ── Arbre Bio SVG logo (circle + tree) ──────────────────────── */
+  var LOGO = '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="50" cy="50" r="49" fill="#194642"/>' +
+    '<circle cx="50" cy="50" r="45" fill="none" stroke="#a8c880" stroke-width="1.5"/>' +
+    /* trunk */ '<rect x="47.5" y="60" width="5" height="22" rx="2.5" fill="#a8c880"/>' +
+    /* left branch */ '<line x1="50" y1="72" x2="38" y2="64" stroke="#a8c880" stroke-width="2" stroke-linecap="round"/>' +
+    /* right branch */ '<line x1="50" y1="68" x2="63" y2="60" stroke="#a8c880" stroke-width="2" stroke-linecap="round"/>' +
+    /* canopy */ '<ellipse cx="50" cy="46" rx="16" ry="18" fill="#a8c880" opacity="0.9"/>' +
+    '<ellipse cx="38" cy="52" rx="10" ry="12" fill="#a8c880" opacity="0.7"/>' +
+    '<ellipse cx="62" cy="52" rx="10" ry="12" fill="#a8c880" opacity="0.7"/>' +
+    /* text */ '<text x="50" y="92" text-anchor="middle" fill="#a8c880" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial,sans-serif">ARBRE BIO</text>' +
+    '</svg>';
 
-  var CIRCLE_LOGO = `<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="60" cy="60" r="58" fill="none" stroke="#194642" stroke-width="3"/>
-    <circle cx="60" cy="60" r="50" fill="none" stroke="#a8c880" stroke-width="1"/>
-    <text x="60" y="42" text-anchor="middle" fill="#194642" font-size="9" font-weight="bold" letter-spacing="2">ORGANIC</text>
-    <path d="M60 60 C60 60 46 48 46 40 C46 32 52 26 60 26 C68 26 74 32 74 40 C74 48 60 60 60 60Z" fill="#194642" opacity="0.7"/>
-    <path d="M60 60 L60 84" stroke="#194642" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M60 72 C60 72 51 66 47 60" stroke="#194642" stroke-width="2" stroke-linecap="round"/>
-    <path d="M60 67 C60 67 69 61 73 55" stroke="#194642" stroke-width="2" stroke-linecap="round"/>
-    <text x="60" y="102" text-anchor="middle" fill="#194642" font-size="7" letter-spacing="2">ARBRE BIO</text>
-  </svg>`;
+  /* ── Watermark (large faint circle logo) ─────────────────────── */
+  var WATERMARK = '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="50" cy="50" r="49" fill="none" stroke="#194642" stroke-width="2"/>' +
+    '<circle cx="50" cy="50" r="42" fill="none" stroke="#a8c880" stroke-width="1"/>' +
+    '<rect x="47.5" y="60" width="5" height="22" rx="2.5" fill="#194642"/>' +
+    '<line x1="50" y1="72" x2="38" y2="64" stroke="#194642" stroke-width="2" stroke-linecap="round"/>' +
+    '<line x1="50" y1="68" x2="63" y2="60" stroke="#194642" stroke-width="2" stroke-linecap="round"/>' +
+    '<ellipse cx="50" cy="46" rx="16" ry="18" fill="#194642" opacity="0.9"/>' +
+    '<ellipse cx="38" cy="52" rx="10" ry="12" fill="#194642" opacity="0.7"/>' +
+    '<ellipse cx="62" cy="52" rx="10" ry="12" fill="#194642" opacity="0.7"/>' +
+    '<text x="50" y="92" text-anchor="middle" fill="#194642" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial,sans-serif">ARBRE BIO</text>' +
+    '</svg>';
 
-  // ── Render invoice HTML ────────────────────────────────────────
-  function renderInvoice(data) {
-    var sale = data.sale;
-    var items = data.items;
-    var client = data.client;
-    var total = Number(sale.total_amount);
-    var saleDate = fmtDate(sale.validated_at || sale.created_at);
+  /* ── Small circle logo for separator ────────────────────────── */
+  var SEAL = '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="50" cy="50" r="49" fill="#194642"/>' +
+    '<circle cx="50" cy="50" r="44" fill="none" stroke="#a8c880" stroke-width="1.5"/>' +
+    '<rect x="47.5" y="58" width="5" height="18" rx="2.5" fill="#a8c880"/>' +
+    '<ellipse cx="50" cy="44" rx="13" ry="15" fill="#a8c880"/>' +
+    '<ellipse cx="39" cy="50" rx="8" ry="10" fill="#a8c880" opacity="0.75"/>' +
+    '<ellipse cx="61" cy="50" rx="8" ry="10" fill="#a8c880" opacity="0.75"/>' +
+    '<text x="50" y="88" text-anchor="middle" fill="#a8c880" font-size="6.5" font-weight="700" letter-spacing="2" font-family="Arial,sans-serif">ORGANIC</text>' +
+    '</svg>';
 
-    // Build items rows
-    var itemsHtml = items.map(function(item) {
+  /* ── Render ──────────────────────────────────────────────────── */
+  function render(data) {
+    var sale   = data.sale;
+    var items  = data.items;
+    var client = data.client || {};
+    var total  = Number(sale.total_amount);
+    var date   = fmtDate(sale.validated_at || sale.created_at);
+
+    var rowsHtml = items.map(function(it, i) {
       return '<tr>' +
-        '<td><div class="product-name">' + item.product_name + '</div></td>' +
-        '<td>' + fmt(item.quantity) + '</td>' +
-        '<td>' + item.unit + '</td>' +
-        '<td>' + fmt(item.unit_price) + '</td>' +
-        '<td><strong>' + fmt(item.line_total) + '</strong></td>' +
-      '</tr>';
+        '<td><div class="p-name">' + it.product_name + '</div></td>' +
+        '<td>' + fmt(it.quantity) + '</td>' +
+        '<td>' + (it.unit || 'Unité') + '</td>' +
+        '<td>' + fmt(it.unit_price) + ' FCFA</td>' +
+        '<td><strong>' + fmt(it.line_total) + ' FCFA</strong></td>' +
+        '</tr>';
     }).join('');
 
-    var clientPhone = client?.phone || '';
-    var clientEmail = client?.email || '';
-    var clientAddr  = client?.address || '';
-    var clientCity  = client?.city || '';
-    var clientCompany = client?.company_name || sale.client_name;
+    var clientPhone   = client.phone   || '';
+    var clientEmail   = client.email   || '';
+    var clientAddr    = client.address || '';
+    var clientCity    = client.city    || '';
+    var clientCountry = client.country || "Côte d'Ivoire";
+    var clientCompany = client.company_name || sale.client_name;
 
-    var html = `
-    <div class="invoice">
-      <!-- Header -->
-      <div class="inv-header">
-        <div class="logo-block">${LOGO_SVG}</div>
-        <div class="invoice-type">
-          <div class="label">FACTURE N°</div>
-          <div class="number">${sale.invoice_number}</div>
-        </div>
-      </div>
+    var html =
+    '<div class="invoice">' +
 
-      <!-- Company info -->
-      <div class="company-block">
-        <strong>Arbre Bio Côte d'Ivoire</strong>
-        01 BP 6664 ABJ 01<br/>
-        RCCM: CI-ABJ-03-2023-B13-12469<br/>
-        NCC: 2305213D – RSI<br/>
-        Email: farms@arbrebio.com<br/>
-        Tél: (+225) 27 22 34 54 67 / 21 21 80 69 50
-      </div>
+      /* ── Top green band ── */
+      '<div class="inv-topband">' +
+        '<div class="logo-area">' + LOGO +
+          '<div class="brand-text">' +
+            '<div class="name">ARBRE BIO</div>' +
+            '<div class="tagline">Africa · Farmer Seed</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="inv-title-area">' +
+          '<div class="inv-label">Facture N°</div>' +
+          '<div class="inv-num">' + (sale.invoice_number || '—') + '</div>' +
+        '</div>' +
+      '</div>' +
 
-      <!-- Meta row -->
-      <div class="meta-row">
-        <div class="sale-date">${saleDate}</div>
-        <div class="client-block">
-          <div>Client: <span class="client-name">${clientCompany}</span></div>
-          ${clientAddr ? '<div>Adresse: ' + clientAddr + '</div>' : ''}
-          ${clientPhone ? '<div>Tél: ' + clientPhone + '</div>' : ''}
-          ${clientCity ? '<div>VILLE: <span class="city-label">' + clientCity.toUpperCase() + '</span></div>' : ''}
-        </div>
-      </div>
+      /* ── Company + Client ── */
+      '<div class="inv-info-row">' +
+        '<div class="inv-company">' +
+          '<div class="co-name">Arbre Bio Côte d\'Ivoire</div>' +
+          '01 BP 6664 ABJ 01<br/>' +
+          'RCCM: CI-ABJ-03-2023-B13-12469<br/>' +
+          'NCC: 2305213D – RSI<br/>' +
+          'Email: farms@arbrebio.com<br/>' +
+          'Tél: (+225) 27 22 34 54 67 / 21 21 80 69 50' +
+        '</div>' +
+        '<div class="inv-client-box">' +
+          '<div class="box-label">Facturé à</div>' +
+          '<div class="client-name-main">' + clientCompany + '</div>' +
+          '<div class="client-detail">' +
+            (clientAddr    ? clientAddr + '<br/>' : '') +
+            (clientCity    ? clientCity + (clientCountry ? ', ' + clientCountry : '') + '<br/>' : '') +
+            (clientPhone   ? 'Tél: ' + clientPhone + '<br/>' : '') +
+            (clientEmail   ? 'Email: ' + clientEmail : '') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
 
-      <div class="divider"></div>
+      /* ── Date ── */
+      '<div class="inv-date-row">Date: <span>' + date + '</span></div>' +
 
-      <!-- Items table with watermark -->
-      <div class="table-wrap">
-        <div class="table-watermark">${CIRCLE_LOGO}</div>
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>Désignation</th>
-              <th>Qté</th>
-              <th>Unité</th>
-              <th>P.U. HT</th>
-              <th>Total HT</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
-        ${sale.notes ? '<div class="validity-note">' + sale.notes + '</div>' : ''}
-        <div class="pickup-note">Arbre Bio Africa — Cocody, Abidjan Côte d'Ivoire</div>
-      </div>
+      /* ── Divider ── */
+      '<div class="inv-divider"></div>' +
 
-      <!-- Totals -->
-      <div class="totals-section">
-        <div class="totals-row">
-          <span class="label">Montant devise: <strong>Francs CFA</strong></span>
-          <span>Montant Total HT: <span class="value">${fmt(total)}</span></span>
-        </div>
-        <div class="totals-row">
-          <span class="label">18% TVA appliquée: <strong>NON-APPLICABLE</strong></span>
-          <span>Montant net à payer TTC: <span class="value big">${fmt(total)}</span></span>
-        </div>
-      </div>
+      /* ── Items table ── */
+      '<div class="table-outer">' +
+        '<div class="table-watermark">' + WATERMARK + '</div>' +
+        '<table class="items">' +
+          '<thead><tr>' +
+            '<th style="width:38%">Désignation</th>' +
+            '<th style="width:10%">Qté</th>' +
+            '<th style="width:10%">Unité</th>' +
+            '<th style="width:18%">Prix Unitaire</th>' +
+            '<th style="width:18%">Total HT</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+      '</div>' +
 
-      <!-- Amount in words -->
-      <div class="amount-words">
-        Arrêtée la présente facture à la somme de: <strong>${numberToWords(total)} FCFA</strong>
-      </div>
+      /* ── Notes ── */
+      (sale.notes ? '<div class="note-row">' + sale.notes + '</div>' : '') +
+      '<div class="pickup-row">Arbre Bio Africa — Cocody, Abidjan, Côte d\'Ivoire</div>' +
 
-      <!-- Center logo -->
-      <div class="center-logo">${CIRCLE_LOGO}</div>
+      /* ── Totals ── */
+      '<div class="totals-wrap">' +
+        '<div class="totals-row">' +
+          '<span class="t-label">Montant devise: <strong>Francs CFA (XOF)</strong></span>' +
+          '<span class="t-value">Montant Total HT: ' + fmt(total) + ' FCFA</span>' +
+        '</div>' +
+        '<div class="totals-row">' +
+          '<span class="t-label">TVA: <strong>NON APPLICABLE</strong></span>' +
+          '<span class="t-value">Montant Net TTC: ' + fmt(total) + ' FCFA</span>' +
+        '</div>' +
+        '<div class="totals-row">' +
+          '<span class="t-label">Montant Net à Payer</span>' +
+          '<span class="t-value">' + fmt(total) + ' FCFA</span>' +
+        '</div>' +
+      '</div>' +
 
-      <!-- Payment info -->
-      <div class="payment-info">
-        Méthode de paiement: ${PAYMENT_LABELS[sale.payment_method] || sale.payment_method}
-        ${sale.transaction_reference ? ' — Réf: ' + sale.transaction_reference : ''}
-        <br/>Compte bancaire: BNI Banque — CI092 01021 000115840024 78
-      </div>
+      /* ── Amount in words ── */
+      '<div class="amount-words">' +
+        'Arrêtée la présente facture à la somme de: ' +
+        '<strong>' + numberToWords(total) + ' Francs CFA</strong>' +
+      '</div>' +
 
-      <!-- Terms -->
-      <div class="terms">
-        <p>• Conditions générales de livraison: Pour toutes les commandes passées chez Arbre Bio, il est impératif de verser 100% du montant net à payer par virement après réception de la facture.</p>
-        <p>La livraison est effectuée entre 2 à 25 jours ouvrables après réception du paiement dans son intégralité et selon la disponibilité des produits.</p>
-        <p>Toutes les ventes sont définitives, nous ne retournons ni n'échangeons aucun produit. Merci de vérifier que la livraison est conforme, nous n'accepterons aucun remboursement après la livraison.</p>
-      </div>
+      /* ── Logo separator ── */
+      '<div class="center-logo-row">' +
+        '<div class="cline"></div>' + SEAL + '<div class="cline"></div>' +
+      '</div>' +
 
-      <!-- Footer bar -->
-      <div class="inv-footer">
-        <span>📍 Cocody, Abidjan Côte d'Ivoire</span>
-        <span>📘 @arbrebio</span>
-        <span>🌐 www.arbrebio.com</span>
-      </div>
-    </div>`;
+      /* ── Payment ── */
+      '<div class="payment-section">' +
+        '<div class="pay-label">Informations de paiement</div>' +
+        '<div class="pay-grid">' +
+          '<span class="pk">Mode de paiement:</span><span class="pv">' + (PAY[sale.payment_method] || sale.payment_method) + '</span>' +
+          (sale.transaction_reference ? '<span class="pk">Référence:</span><span class="pv">' + sale.transaction_reference + '</span>' : '') +
+          '<span class="pk">Banque:</span><span class="pv">BNI Banque</span>' +
+          '<span class="pk">IBAN / Compte:</span><span class="pv">CI092 01021 000115840024 78</span>' +
+          '<span class="pk">Agent commercial:</span><span class="pv">' + (sale.agent_name || '—') + (sale.worker_id ? ' (' + sale.worker_id + ')' : '') + '</span>' +
+        '</div>' +
+      '</div>' +
+
+      /* ── Terms ── */
+      '<div class="terms-section">' +
+        '<div class="t-label-title">Conditions générales</div>' +
+        '<p>• Pour toutes les commandes passées chez Arbre Bio, il est impératif de verser 100% du montant net à payer par virement après réception de la facture.</p>' +
+        '<p>• La livraison est effectuée entre 2 à 25 jours ouvrables après réception du paiement dans son intégralité et selon la disponibilité des produits.</p>' +
+        '<p>• Toutes les ventes sont définitives. Nous ne retournons ni n\'échangeons aucun produit. Merci de vérifier que la livraison est conforme — aucun remboursement ne sera accepté après livraison.</p>' +
+      '</div>' +
+
+      /* ── Footer ── */
+      '<div class="inv-footer">' +
+        '<span>📍 Cocody, Abidjan, Côte d\'Ivoire</span>' +
+        '<span>📘 @arbrebio</span>' +
+        '<span>🌐 www.arbrebio.com</span>' +
+        '<span>✉️ farms@arbrebio.com</span>' +
+      '</div>' +
+
+    '</div>'; /* .invoice */
 
     return { html, clientPhone, clientEmail, total, invoiceNumber: sale.invoice_number, clientName: sale.client_name };
   }
 
-  // ── Build WhatsApp & Email links ──────────────────────────────
-  function buildShareLinks(info) {
-    var invoiceUrl = window.location.href;
-    var waMsg = encodeURIComponent(
+  /* ── Share links ─────────────────────────────────────────────── */
+  function shareLinks(info) {
+    var url = window.location.href;
+    var wa = encodeURIComponent(
       'Bonjour ' + info.clientName + ',\n\n' +
       '✅ Votre vente a été validée par Arbre Bio Africa.\n' +
-      'Veuillez trouver ci-dessous votre facture N° ' + info.invoiceNumber + '.\n\n' +
+      'Facture N° ' + info.invoiceNumber + '\n' +
       'Montant: ' + new Intl.NumberFormat('fr-FR').format(info.total) + ' FCFA\n\n' +
-      '🔗 Accédez à votre facture: ' + invoiceUrl + '\n\n' +
-      'Merci pour votre confiance.\n— Arbre Bio Africa'
+      '🔗 ' + url + '\n\nMerci pour votre confiance.\n— Arbre Bio Africa'
     );
-    var emailSubject = encodeURIComponent('Facture ' + info.invoiceNumber + ' — Arbre Bio Africa');
-    var emailBody = encodeURIComponent(
+    var subj = encodeURIComponent('Facture ' + info.invoiceNumber + ' — Arbre Bio Africa');
+    var body = encodeURIComponent(
       'Bonjour ' + info.clientName + ',\n\n' +
-      'Votre vente a été validée. Veuillez trouver votre facture N° ' + info.invoiceNumber + '.\n\n' +
-      'Montant total: ' + new Intl.NumberFormat('fr-FR').format(info.total) + ' FCFA\n\n' +
-      'Lien de la facture: ' + invoiceUrl + '\n\n' +
+      'Veuillez trouver ci-joint votre facture N° ' + info.invoiceNumber + '.\n\n' +
+      'Montant total: ' + new Intl.NumberFormat('fr-FR').format(info.total) + ' FCFA\n' +
+      'Lien facture: ' + url + '\n\n' +
       'Cordialement,\nArbre Bio Africa\nfarms@arbrebio.com\n(+225) 27 22 34 54 67'
     );
-
-    var waLink = info.clientPhone
-      ? 'https://wa.me/' + info.clientPhone.replace(/\D/g, '') + '?text=' + waMsg
-      : 'https://wa.me/?text=' + waMsg;
-    var emailLink = info.clientEmail
-      ? 'mailto:' + info.clientEmail + '?subject=' + emailSubject + '&body=' + emailBody
-      : 'mailto:?subject=' + emailSubject + '&body=' + emailBody;
-
-    document.getElementById('btn-whatsapp').href = waLink;
-    document.getElementById('btn-email').href = emailLink;
+    document.getElementById('btn-whatsapp').href =
+      info.clientPhone
+        ? 'https://wa.me/' + info.clientPhone.replace(/\D/g,'') + '?text=' + wa
+        : 'https://wa.me/?text=' + wa;
+    document.getElementById('btn-email').href =
+      info.clientEmail
+        ? 'mailto:' + info.clientEmail + '?subject=' + subj + '&body=' + body
+        : 'mailto:?subject=' + subj + '&body=' + body;
   }
 
-  // ── Load invoice data ─────────────────────────────────────────
+  /* ── Fetch & render ──────────────────────────────────────────── */
   fetch('/api/sales-agent/invoice?id=' + saleId, {
     headers: { Authorization: 'Bearer ' + token }
   })
@@ -427,18 +475,17 @@ export const prerender = false;
   .then(function(data) {
     if (!data) return;
     document.getElementById('loading').style.display = 'none';
-
     if (data.error) {
       document.getElementById('error-text').textContent = data.error;
       document.getElementById('error-msg').style.display = 'block';
       return;
     }
-
-    var rendered = renderInvoice(data);
-    document.getElementById('invoice-content').innerHTML = rendered.html;
-    document.getElementById('invoice-content').style.display = 'block';
-    buildShareLinks(rendered);
-    document.title = 'Facture ' + data.sale.invoice_number + ' — Arbre Bio';
+    var info = render(data);
+    var el = document.getElementById('invoice-content');
+    el.innerHTML = info.html;
+    el.style.display = 'block';
+    shareLinks(info);
+    document.title = 'Facture ' + (data.sale.invoice_number || '') + ' — Arbre Bio';
   })
   .catch(function(err) {
     document.getElementById('loading').style.display = 'none';

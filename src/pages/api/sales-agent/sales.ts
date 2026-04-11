@@ -191,13 +191,24 @@ export const POST: APIRoute = async ({ request }) => {
       fullProofUrl = signedData?.signedUrl ?? proof_url;
     }
 
-    // Insert sale (without product columns, now stored in line_items)
+    // Build summary fields for backward-compat display in admin panel
+    // (first item used as representative; line_items table holds full detail)
+    const firstItem = items[0];
+    const productNameSummary = items.length === 1
+      ? firstItem.product_name.trim()
+      : items.map(i => i.product_name.trim()).join(', ');
+
+    // Insert sale — keep legacy columns populated so admin panel renders correctly
     const { data: sale, error: insertErr } = await supabase
       .from('sales_records')
       .insert({
         agent_id:             user.id,
         agent_name:           agent.full_name,
         worker_id:            agent.worker_id,
+        product_id:           firstItem.product_id || null,
+        product_name:         productNameSummary,
+        quantity:             items.reduce((s, i) => s + i.quantity, 0),
+        unit_price:           firstItem.unit_price,
         total_amount:         total,
         client_name:          client_name.trim(),
         payment_method,
@@ -249,7 +260,7 @@ export const POST: APIRoute = async ({ request }) => {
     }).catch(() => {});
 
     // 2. WhatsApp notification to super admin (+225 05 00 55 25 25)
-    const superAdminWhatsApp = '+22505005525 25';
+    const superAdminWhatsApp = '+2250500552525';
     const itemsText = items.map((item) => `  • ${item.product_name} (${item.quantity} × ${item.unit_price} FCFA)`).join('\n');
     const messageText =
       `🔔 *Nouvelle vente à valider*\n\n` +

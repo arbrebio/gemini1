@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS sales_line_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sale_id UUID NOT NULL REFERENCES sales_records(id) ON DELETE CASCADE,
-  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  product_id UUID REFERENCES admin_products(id) ON DELETE SET NULL,
   product_name TEXT NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL CHECK (quantity > 0),
   unit_price NUMERIC(12, 2) NOT NULL CHECK (unit_price >= 0),
