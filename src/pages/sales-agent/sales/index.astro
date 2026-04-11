@@ -31,6 +31,52 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     </div>
   </div>
 
+  <!-- Add Line Item Modal -->
+  <div id="line-item-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/50" style="padding-bottom:72px">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
+        <h2 class="font-bold text-gray-800" data-i18n="addLineItem">Ajouter un article</h2>
+        <button id="close-line-item" class="text-gray-400 text-xl p-1"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="line-item-form" class="p-4 space-y-3">
+        <!-- Product search -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="product">Produit</label>
+          <div class="relative">
+            <input id="modal-product-search" type="text" autocomplete="off" placeholder="Chercher le produit…"
+              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white" />
+            <input id="modal-product-id" type="hidden" />
+            <div id="modal-product-dropdown" class="hidden absolute z-20 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-1 max-h-40 overflow-y-auto"></div>
+          </div>
+        </div>
+        <!-- Quantity -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="quantity">Quantité</label>
+          <input id="modal-quantity" type="number" inputmode="decimal" min="0.01" step="0.01" value="1"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <!-- Unit Price -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="unitPrice">Prix unitaire (FCFA)</label>
+          <input id="modal-unit-price" type="number" inputmode="decimal" min="0" step="1"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <!-- Line Total (display only) -->
+        <div class="bg-gray-50 rounded-xl p-3 flex items-center justify-between">
+          <span class="text-xs font-medium text-gray-600" data-i18n="lineTotal">Total ligne</span>
+          <span id="modal-line-total" class="text-sm font-bold text-[#194642]">0 FCFA</span>
+        </div>
+        <!-- Buttons -->
+        <div class="flex gap-2 pt-2">
+          <button type="button" id="cancel-line-item" class="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600" data-i18n="cancel">Annuler</button>
+          <button type="submit" id="add-line-item" class="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#194642">
+            <i class="fas fa-plus mr-1"></i><span data-i18n="addToCart">Ajouter</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toast" class="hidden fixed top-16 left-4 right-4 z-50 px-4 py-3 rounded-xl text-sm font-medium shadow-lg"></div>
 
@@ -51,29 +97,31 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     <div id="panel-register">
       <form id="sale-form" class="space-y-3" novalidate>
 
-        <!-- Product -->
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="product">Produit</label>
-          <div class="relative">
-            <input id="product-search" type="text" autocomplete="off" placeholder="Chercher ou saisir le nom du produit…"
-              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642] bg-white" />
-            <input id="product-id" type="hidden" />
-            <div id="product-dropdown" class="hidden absolute z-20 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto"></div>
-          </div>
+        <!-- Line Items Header -->
+        <div class="flex items-center justify-between">
+          <label class="block text-xs font-semibold text-gray-600" data-i18n="products">Articles</label>
+          <button type="button" id="btn-add-product" class="text-xs px-2 py-1 rounded-lg text-white font-medium" style="background:#194642">
+            <i class="fas fa-plus text-xs mr-1"></i><span data-i18n="addProduct">Ajouter</span>
+          </button>
         </div>
 
-        <!-- Quantity & Unit Price -->
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="quantity">Quantité</label>
-            <input id="quantity" type="number" inputmode="decimal" min="0.01" step="0.01" required value="1"
-              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="unitPrice">Prix unitaire (FCFA)</label>
-            <input id="unit-price" type="number" inputmode="decimal" min="0" step="1" required
-              class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
-          </div>
+        <!-- Line Items Table -->
+        <div id="line-items-container" class="border border-gray-200 rounded-xl overflow-hidden">
+          <table class="w-full text-xs">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold text-gray-600">Produit</th>
+                <th class="px-3 py-2 text-right font-semibold text-gray-600 w-20">Qté</th>
+                <th class="px-3 py-2 text-right font-semibold text-gray-600 w-28">P. Unit.</th>
+                <th class="px-3 py-2 text-right font-semibold text-gray-600 w-28">Total</th>
+                <th class="px-3 py-2 text-center font-semibold text-gray-600 w-8"></th>
+              </tr>
+            </thead>
+            <tbody id="line-items-tbody" class="divide-y divide-gray-100">
+              <!-- Items will be inserted here -->
+            </tbody>
+          </table>
+          <div id="line-items-empty" class="px-3 py-6 text-center text-xs text-gray-400">Aucun article. Cliquez sur "Ajouter" pour en ajouter un.</div>
         </div>
 
         <!-- Total (auto-calculated) -->
@@ -81,6 +129,13 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
           <span class="text-sm font-medium text-gray-600" data-i18n="totalAmount">Montant total</span>
           <span id="total-display" class="text-lg font-bold text-[#194642]">0 FCFA</span>
         </div>
+
+        <!-- Hidden inputs for autocomplete (will be reused) -->
+        <input id="product-search" type="hidden" />
+        <input id="product-id" type="hidden" />
+        <input id="quantity" type="hidden" />
+        <input id="unit-price" type="hidden" />
+        <div id="product-dropdown" class="hidden absolute z-20 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto"></div>
 
         <!-- Client -->
         <div>
@@ -269,19 +324,27 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     // Load cached products FIRST (synchronously) so search works immediately
     var cached = localStorage.getItem('agentProducts');
     products = cached ? JSON.parse(cached) : [];
+    var isLoadingProducts = false; // Track if API is currently fetching
 
     // Then fetch fresh products from API (without awaiting, in background)
     async function loadProductsFromAPI() {
+      isLoadingProducts = true;
       try {
         var res = await fetch('/api/sales-agent/inventory?limit=200&in_stock=true', { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
         var freshProducts = (data.products || []).filter(function(p) { return p.stock_quantity > 0; });
         products = freshProducts;  // Update global products array
         localStorage.setItem('agentProducts', JSON.stringify(freshProducts));
+        // Re-render dropdown if user is actively typing
+        if (productSearch && productSearch.value) {
+          triggerProductSearch();
+        }
         if (freshProducts.length === 0) console.warn('No products in stock available');
       } catch (err) {
         console.error('Failed to load products:', err);
         // If fetch fails, keep using cached products
+      } finally {
+        isLoadingProducts = false;
       }
     }
     loadProductsFromAPI(); // Fire and forget - doesn't block the UI
@@ -290,13 +353,28 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     var productSearch = document.getElementById('product-search');
     var productDropdown = document.getElementById('product-dropdown');
 
-    productSearch.addEventListener('input', function() {
+    function triggerProductSearch() {
       var q = productSearch.value.toLowerCase().trim();
-      document.getElementById('product-id').value = '';
-      updateCommissionPreview();
       if (!q) { productDropdown.classList.add('hidden'); return; }
+      // If still loading and no products yet, show loading message
+      if (isLoadingProducts && !products.length) {
+        productDropdown.innerHTML = '<div class="px-3 py-4 text-center text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i>Chargement des produits…</div>';
+        productDropdown.classList.remove('hidden');
+        return;
+      }
       var matches = products.filter(function(p) { return (p.name || '').toLowerCase().includes(q); }).slice(0, 8);
-      if (!matches.length) { productDropdown.classList.add('hidden'); return; }
+      if (!matches.length) {
+        if (!products.length) {
+          // No products available at all
+          productDropdown.innerHTML = '<div class="px-3 py-4 text-center text-xs text-gray-500">Aucun produit disponible</div>';
+        } else {
+          // Products exist but no match
+          productDropdown.classList.add('hidden');
+        }
+        if (products.length) return;
+        productDropdown.classList.remove('hidden');
+        return;
+      }
       productDropdown.innerHTML = matches.map(function(p) {
         var price = new Intl.NumberFormat('fr-FR').format(Number(p.unit_price));
         var stock = Number(p.stock_quantity) || 0;
@@ -321,24 +399,171 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
           calcTotal();
         });
       });
+    }
+
+    productSearch.addEventListener('input', function() {
+      document.getElementById('product-id').value = '';
+      updateCommissionPreview();
+      triggerProductSearch();
     });
 
     document.addEventListener('click', function(e) {
       if (!productSearch.contains(e.target)) productDropdown.classList.add('hidden');
     });
 
+    // ── Line Items Management ────────────────────────────────────────────
+    var lineItems = []; // Array of { product_name, product_id?, quantity, unit_price }
+    var lineItemIdCounter = 0;
+
+    var modalProductSearch = document.getElementById('modal-product-search');
+    var modalProductDropdown = document.getElementById('modal-product-dropdown');
+    var lineItemModal = document.getElementById('line-item-modal');
+
+    // Product search in modal
+    function triggerModalProductSearch() {
+      var q = modalProductSearch.value.toLowerCase().trim();
+      if (!q) { modalProductDropdown.classList.add('hidden'); return; }
+      if (isLoadingProducts && !products.length) {
+        modalProductDropdown.innerHTML = '<div class="px-3 py-4 text-center text-xs text-gray-500"><i class="fas fa-spinner fa-spin mr-1"></i>Chargement…</div>';
+        modalProductDropdown.classList.remove('hidden');
+        return;
+      }
+      var matches = products.filter(function(p) { return (p.name || '').toLowerCase().includes(q); }).slice(0, 8);
+      if (!matches.length) {
+        if (!products.length) {
+          modalProductDropdown.innerHTML = '<div class="px-3 py-4 text-center text-xs text-gray-500">Aucun produit</div>';
+          modalProductDropdown.classList.remove('hidden');
+        } else {
+          modalProductDropdown.classList.add('hidden');
+        }
+        return;
+      }
+      modalProductDropdown.innerHTML = matches.map(function(p) {
+        var price = new Intl.NumberFormat('fr-FR').format(Number(p.unit_price));
+        var stock = Number(p.stock_quantity) || 0;
+        var stockColor = stock > 10 ? 'text-green-600' : stock > 0 ? 'text-orange-600' : 'text-red-600';
+        return '<div class="modal-product-option px-3 py-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-50 last:border-0" data-id="' + p.id + '" data-name="' + p.name + '" data-price="' + p.unit_price + '">' +
+          '<p class="text-sm font-medium text-gray-800">' + p.name + '</p>' +
+          '<p class="text-xs text-gray-400">' + price + ' FCFA</p>' +
+        '</div>';
+      }).join('');
+      modalProductDropdown.classList.remove('hidden');
+
+      modalProductDropdown.querySelectorAll('.modal-product-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          modalProductSearch.value = opt.getAttribute('data-name');
+          document.getElementById('modal-product-id').value = opt.getAttribute('data-id');
+          document.getElementById('modal-unit-price').value = opt.getAttribute('data-price');
+          modalProductDropdown.classList.add('hidden');
+          updateModalLineTotal();
+        });
+      });
+    }
+
+    modalProductSearch.addEventListener('input', function() {
+      document.getElementById('modal-product-id').value = '';
+      triggerModalProductSearch();
+    });
+
+    document.getElementById('modal-quantity').addEventListener('input', updateModalLineTotal);
+    document.getElementById('modal-unit-price').addEventListener('input', updateModalLineTotal);
+
+    function updateModalLineTotal() {
+      var qty = parseFloat(document.getElementById('modal-quantity').value) || 0;
+      var price = parseFloat(document.getElementById('modal-unit-price').value) || 0;
+      var total = qty * price;
+      document.getElementById('modal-line-total').textContent = new Intl.NumberFormat('fr-FR').format(total) + ' FCFA';
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!modalProductSearch.contains(e.target)) modalProductDropdown.classList.add('hidden');
+    });
+
+    // Open line item modal
+    document.getElementById('btn-add-product').addEventListener('click', function() {
+      document.getElementById('modal-product-search').value = '';
+      document.getElementById('modal-product-id').value = '';
+      document.getElementById('modal-quantity').value = '1';
+      document.getElementById('modal-unit-price').value = '';
+      document.getElementById('modal-line-total').textContent = '0 FCFA';
+      modalProductDropdown.classList.add('hidden');
+      lineItemModal.classList.remove('hidden');
+    });
+
+    document.getElementById('close-line-item').addEventListener('click', function() {
+      lineItemModal.classList.add('hidden');
+    });
+
+    document.getElementById('cancel-line-item').addEventListener('click', function() {
+      lineItemModal.classList.add('hidden');
+    });
+
+    // Add item to lineItems array and render
+    document.getElementById('line-item-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var productName = document.getElementById('modal-product-search').value.trim();
+      var qty = parseFloat(document.getElementById('modal-quantity').value);
+      var price = parseFloat(document.getElementById('modal-unit-price').value);
+      var productId = document.getElementById('modal-product-id').value;
+
+      if (!productName) { showToast('Veuillez sélectionner un produit.', true); return; }
+      if (!qty || qty <= 0) { showToast('Quantité invalide.', true); return; }
+      if (isNaN(price) || price < 0) { showToast('Prix invalide.', true); return; }
+
+      lineItems.push({
+        id: ++lineItemIdCounter,
+        product_name: productName,
+        product_id: productId || undefined,
+        quantity: qty,
+        unit_price: price,
+      });
+
+      renderLineItems();
+      calcTotal();
+      lineItemModal.classList.add('hidden');
+    });
+
+    function renderLineItems() {
+      var tbody = document.getElementById('line-items-tbody');
+      var empty = document.getElementById('line-items-empty');
+
+      if (!lineItems.length) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      tbody.innerHTML = lineItems.map(function(item) {
+        var lineTotal = item.quantity * item.unit_price;
+        return '<tr>' +
+          '<td class="px-3 py-2 text-gray-800">' + item.product_name + '</td>' +
+          '<td class="px-3 py-2 text-right text-gray-600">' + new Intl.NumberFormat('fr-FR').format(item.quantity) + '</td>' +
+          '<td class="px-3 py-2 text-right text-gray-600">' + new Intl.NumberFormat('fr-FR').format(item.unit_price) + '</td>' +
+          '<td class="px-3 py-2 text-right font-semibold text-gray-800">' + new Intl.NumberFormat('fr-FR').format(lineTotal) + '</td>' +
+          '<td class="px-3 py-2 text-center"><button type="button" class="btn-remove-item text-red-400 hover:text-red-600 text-sm" data-item-id="' + item.id + '"><i class="fas fa-trash"></i></button></td>' +
+        '</tr>';
+      }).join('');
+
+      // Add remove listeners
+      tbody.querySelectorAll('.btn-remove-item').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var itemId = parseInt(btn.getAttribute('data-item-id'));
+          lineItems = lineItems.filter(function(item) { return item.id !== itemId; });
+          renderLineItems();
+          calcTotal();
+        });
+      });
+    }
+
     // ── Total calculation ────────────────────────────────────────────────
     function calcTotal() {
-      var qty = parseFloat(document.getElementById('quantity').value) || 0;
-      var price = parseFloat(document.getElementById('unit-price').value) || 0;
-      var total = qty * price;
+      var total = lineItems.reduce(function(sum, item) {
+        return sum + (item.quantity * item.unit_price);
+      }, 0);
       document.getElementById('total-display').textContent = new Intl.NumberFormat('fr-FR').format(total) + ' FCFA';
       updateCommissionPreview(total);
       return total;
     }
-
-    document.getElementById('quantity').addEventListener('input', calcTotal);
-    document.getElementById('unit-price').addEventListener('input', calcTotal);
 
     // ── Commission preview ───────────────────────────────────────────────
     function updateCommissionPreview(total) {
@@ -414,35 +639,35 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     // ── Form submit → show confirm modal ─────────────────────────────────
     document.getElementById('sale-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      var productName = document.getElementById('product-search').value.trim();
       var clientName = document.getElementById('client-name').value.trim();
       var method = document.getElementById('payment-method').value;
-      var qty = parseFloat(document.getElementById('quantity').value);
-      var price = parseFloat(document.getElementById('unit-price').value);
-      var productId = document.getElementById('product-id').value;
 
-      if (!productName) { showToast('Veuillez indiquer le produit.', true); return; }
+      if (lineItems.length === 0) { showToast('Veuillez ajouter au moins un article.', true); return; }
       if (!clientName) { showToast('Veuillez indiquer le nom du client.', true); return; }
       if (!method) { showToast('Veuillez choisir le mode de paiement.', true); return; }
-      if (!qty || qty <= 0) { showToast('Quantité invalide.', true); return; }
-      if (isNaN(price) || price < 0) { showToast('Prix invalide.', true); return; }
 
       // Check stock availability
-      if (productId) {
-        var product = products.find(function(p) { return p.id === productId; });
-        if (product && qty > product.stock_quantity) {
-          showToast('Quantité dépasse le stock disponible (' + product.stock_quantity + ' unités).', true);
-          return;
+      for (var i = 0; i < lineItems.length; i++) {
+        var item = lineItems[i];
+        if (item.product_id) {
+          var product = products.find(function(p) { return p.id === item.product_id; });
+          if (product && item.quantity > product.stock_quantity) {
+            showToast('Quantité dépasse le stock pour ' + item.product_name + ' (' + product.stock_quantity + ' unités).', true);
+            return;
+          }
         }
       }
 
-      var total = qty * price;
+      var total = calcTotal();
       pendingFormData = {
-        product_name: productName,
-        product_id: document.getElementById('product-id').value || undefined,
-        quantity: qty,
-        unit_price: price,
-        total_amount: total,
+        items: lineItems.map(function(item) {
+          return {
+            product_name: item.product_name,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+          };
+        }),
         client_name: clientName,
         payment_method: method,
         transaction_reference: document.getElementById('transaction-ref').value.trim() || undefined,
@@ -452,8 +677,11 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       };
 
       // Show confirm summary
+      var itemsSummary = lineItems.map(function(item) {
+        return '<p>• ' + item.product_name + ' (' + new Intl.NumberFormat('fr-FR').format(item.quantity) + ' × ' + new Intl.NumberFormat('fr-FR').format(item.unit_price) + ' FCFA)</p>';
+      }).join('');
       document.getElementById('confirm-summary').innerHTML =
-        '<p><strong>Produit:</strong> ' + productName + '</p>' +
+        '<p><strong>Articles:</strong></p>' + itemsSummary +
         '<p><strong>Client:</strong> ' + clientName + '</p>' +
         '<p><strong>Montant:</strong> <strong>' + new Intl.NumberFormat('fr-FR').format(total) + ' FCFA</strong></p>' +
         '<p><strong>Paiement:</strong> ' + (PAYMENT_LABELS[method] || method) + '</p>' +
@@ -506,14 +734,18 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
 
     function resetForm() {
       document.getElementById('sale-form').reset();
-      document.getElementById('quantity').value = '1';
-      document.getElementById('product-id').value = '';
-      document.getElementById('total-display').textContent = '0 FCFA';
+      lineItems = [];
+      lineItemIdCounter = 0;
+      renderLineItems();
+      calcTotal();
       pendingProof = null;
       pendingFormData = null;
       document.getElementById('proof-preview').classList.add('hidden');
       document.getElementById('commission-preview').classList.add('hidden');
     }
+
+    // Initial render of empty line items table
+    renderLineItems();
 
     // ── History ──────────────────────────────────────────────────────────
     async function loadHistory() {

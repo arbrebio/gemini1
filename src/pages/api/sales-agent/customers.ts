@@ -62,7 +62,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     let query = supabase
       .from('admin_customers')
-      .select('id, full_name, email, phone, company_name, address, city, country, customer_type, notes, created_at')
+      .select('id, full_name, email, phone, company_name, address, city, country, customer_type, notes, created_at, created_by, created_by_name')
       .order('full_name', { ascending: true })
       .range(offset, offset + limit - 1);
 
@@ -95,6 +95,13 @@ export const POST: APIRoute = async ({ request }) => {
     const VALID_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'];
     const finalCustomerType = customer_type && VALID_TYPES.includes(customer_type) ? customer_type : 'Farmer';
 
+    // Get agent's full name for tracking
+    const { data: agentData } = await supabase
+      .from('sales_agent_profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
     const { data, error } = await supabase
       .from('admin_customers')
       .insert({
@@ -107,6 +114,8 @@ export const POST: APIRoute = async ({ request }) => {
         country: country?.trim() || 'Côte d\'Ivoire',
         customer_type: finalCustomerType,
         notes: notes?.trim() || null,
+        created_by: user.id,
+        created_by_name: agentData?.full_name || null,
       })
       .select()
       .single();

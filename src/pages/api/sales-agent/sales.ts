@@ -95,18 +95,27 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 /**
  * POST /api/sales-agent/sales
- * Registers a new sale.
+ * Registers a new sale with one or more line items.
  *
- * Body:
+ * Body (New format with items array):
+ *   items                 — array of { product_name, product_id?, quantity, unit_price }
+ *   client_name           — required
+ *   payment_method        — required (wire_transfer | orange_money | mtn_money | moov_money | wave | cash)
+ *   transaction_reference — optional
+ *   proof_url             — optional (storage path from upload-proof API)
+ *   proof_file_name       — optional
+ *   notes                 — optional
+ *
+ * Body (Legacy format with single product, for backward compatibility):
  *   product_name          — required
  *   product_id            — optional (UUID of admin_products)
  *   quantity              — required (> 0)
  *   unit_price            — required (>= 0)
  *   total_amount          — required (>= 0)
  *   client_name           — required
- *   payment_method        — required (wire_transfer | orange_money | mtn_money | moov_money | wave | cash)
+ *   payment_method        — required
  *   transaction_reference — optional
- *   proof_url             — optional (storage path from upload-proof API)
+ *   proof_url             — optional
  *   proof_file_name       — optional
  *   notes                 — optional
  */
@@ -130,22 +139,43 @@ export const POST: APIRoute = async ({ request }) => {
     if (!agent.is_active) return json({ error: 'Account suspended' }, 403);
 
     const body = await request.json();
-    const {
-      product_name, product_id, quantity, unit_price, total_amount,
-      client_name, payment_method, transaction_reference, proof_url, proof_file_name, notes,
-    } = body;
+    const { client_name, payment_method, transaction_reference, proof_url, proof_file_name, notes } = body;
 
     // Validation
-    if (!product_name?.trim()) return json({ error: 'product_name is required' }, 400);
     if (!client_name?.trim()) return json({ error: 'client_name is required' }, 400);
     const VALID_METHODS = ['wire_transfer', 'orange_money', 'mtn_money', 'moov_money', 'wave', 'cash'];
     if (!VALID_METHODS.includes(payment_method)) return json({ error: 'Invalid payment_method' }, 400);
-    const qty = Number(quantity);
-    const uprice = Number(unit_price);
-    const total = Number(total_amount);
-    if (!qty || qty <= 0) return json({ error: 'quantity must be > 0' }, 400);
-    if (isNaN(uprice) || uprice < 0) return json({ error: 'unit_price must be >= 0' }, 400);
-    if (isNaN(total) || total < 0) return json({ error: 'total_amount must be >= 0' }, 400);
+
+    // Convert single-product format to items array (backward compatibility)
+    let items: Array<{ product_name: string; product_id?: string; quantity: number; unit_price: number }> = [];
+    let total = 0;
+
+    if (body.items && Array.isArray(body.items) && body.items.length > 0) {
+      // New format: items array
+      items = body.items;
+      // Validate and calculate total
+      for (const item of items) {
+        if (!item.product_name?.trim()) return json({ error: 'Each item must have product_name' }, 400);
+        const qty = Number(item.quantity);
+        const uprice = Number(item.unit_price);
+        if (!qty || qty <= 0) return json({ error: 'Each item quantity must be > 0' }, 400);
+        if (isNaN(uprice) || uprice < 0) return json({ error: 'Each item unit_price must be >= 0' }, 400);
+        total += qty * uprice;
+      }
+    } else {
+      // Legacy format: single product fields
+      const { product_name, product_id, quantity, unit_price, total_amount } = body;
+      if (!product_name?.trim()) return json({ error: 'product_name is required' }, 400);
+      const qty = Number(quantity);
+      const uprice = Number(unit_price);
+      total = Number(total_amount);
+      if (!qty || qty <= 0) return json({ error: 'quantity must be > 0' }, 400);
+      if (isNaN(uprice) || uprice < 0) return json({ error: 'unit_price must be >= 0' }, 400);
+      if (isNaN(total) || total < 0) return json({ error: 'total_amount must be >= 0' }, 400);
+      items = [{ product_name, product_id, quantity: qty, unit_price: uprice }];
+    }
+
+    if (total <= 0) return json({ error: 'total_amount must be > 0' }, 400);
 
     // Commission calculation — locked at creation time
     const hiredAt = (agent.career_employees as any)?.hired_at ?? null;
@@ -161,17 +191,13 @@ export const POST: APIRoute = async ({ request }) => {
       fullProofUrl = signedData?.signedUrl ?? proof_url;
     }
 
-    // Insert sale
+    // Insert sale (without product columns, now stored in line_items)
     const { data: sale, error: insertErr } = await supabase
       .from('sales_records')
       .insert({
         agent_id:             user.id,
         agent_name:           agent.full_name,
         worker_id:            agent.worker_id,
-        product_id:           product_id || null,
-        product_name:         product_name.trim(),
-        quantity:             qty,
-        unit_price:           uprice,
         total_amount:         total,
         client_name:          client_name.trim(),
         payment_method,
@@ -187,6 +213,21 @@ export const POST: APIRoute = async ({ request }) => {
       .single();
 
     if (insertErr) throw insertErr;
+
+    // Insert line items
+    const lineItemsData = items.map((item) => ({
+      sale_id: sale.id,
+      product_id: item.product_id || null,
+      product_name: item.product_name.trim(),
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+    }));
+
+    const { error: lineItemsErr } = await supabase
+      .from('sales_line_items')
+      .insert(lineItemsData);
+
+    if (lineItemsErr) throw lineItemsErr;
 
     // ── Non-blocking side effects ─────────────────────────────────────────
 
@@ -209,10 +250,11 @@ export const POST: APIRoute = async ({ request }) => {
 
     // 2. WhatsApp notification to super admin (+225 05 00 55 25 25)
     const superAdminWhatsApp = '+22505005525 25';
+    const itemsText = items.map((item) => `  • ${item.product_name} (${item.quantity} × ${item.unit_price} FCFA)`).join('\n');
     const messageText =
       `🔔 *Nouvelle vente à valider*\n\n` +
       `👤 Agent: *${agent.full_name}* (${agent.worker_id || 'N/A'})\n` +
-      `🛒 Produit: ${product_name}\n` +
+      `🛒 Articles:\n${itemsText}\n` +
       `👨‍💼 Client: *${client_name}*\n` +
       `💰 Montant: *${amountFormatted} FCFA*\n` +
       `💳 Paiement: ${PAYMENT_LABEL[payment_method] || payment_method}\n` +
