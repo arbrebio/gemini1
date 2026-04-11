@@ -1,0 +1,451 @@
+---
+export const prerender = false;
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facture — Arbre Bio</title>
+  <style>
+    /* ── Reset ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #f0f0f0; }
+
+    /* ── Action bar (hidden when printing) ─────────────────────── */
+    #action-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: #194642; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    #action-bar h1 { color: #fff; font-size: 15px; font-weight: 600; }
+    .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; text-decoration: none;
+    }
+    .btn-white  { background: #fff; color: #194642; }
+    .btn-green  { background: #25D366; color: #fff; }
+    .btn-blue   { background: #2563eb; color: #fff; }
+    .btn-orange { background: #ea580c; color: #fff; }
+
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    #page-wrap { padding: 88px 20px 40px; max-width: 860px; margin: 0 auto; }
+
+    /* ── Invoice card ───────────────────────────────────────────── */
+    .invoice {
+      background: #fff;
+      padding: 48px 52px 40px;
+      position: relative;
+      min-height: 1100px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+    .logo-block svg { width: 90px; height: 90px; }
+    .invoice-type { text-align: right; }
+    .invoice-type .label { font-size: 11px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+    .invoice-type .number { font-size: 20px; font-weight: 700; color: #e05c1a; margin-top: 4px; letter-spacing: 1px; }
+
+    /* ── Company info ───────────────────────────────────────────── */
+    .company-block { margin-bottom: 28px; line-height: 1.7; font-size: 12.5px; color: #333; }
+    .company-block strong { display: block; font-size: 13.5px; color: #111; margin-bottom: 2px; }
+
+    /* ── Meta row: date + client ────────────────────────────────── */
+    .meta-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sale-date { font-size: 12.5px; color: #444; }
+    .client-block { text-align: right; font-size: 12.5px; line-height: 1.7; }
+    .client-block .client-name { font-weight: 700; font-size: 13.5px; color: #111; }
+    .client-block .city-label { font-weight: 700; }
+
+    /* ── Divider ────────────────────────────────────────────────── */
+    .divider { height: 2px; background: #c8d5b0; margin-bottom: 0; }
+
+    /* ── Items table ────────────────────────────────────────────── */
+    .items-table {
+      width: 100%; border-collapse: collapse; font-size: 12.5px;
+      position: relative;
+    }
+    .items-table thead tr { background: #f5f5f2; }
+    .items-table th {
+      padding: 10px 12px; text-align: left;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #444; border-bottom: 2px solid #c8d5b0;
+    }
+    .items-table th:not(:first-child) { text-align: right; }
+    .items-table td { padding: 14px 12px; vertical-align: top; border-bottom: 1px solid #eee; }
+    .items-table td:not(:first-child) { text-align: right; }
+    .items-table .product-name { font-weight: 600; color: #111; }
+    .items-table .product-desc { color: #666; font-size: 11.5px; margin-top: 3px; line-height: 1.5; }
+
+    /* Watermark inside table area */
+    .table-wrap { position: relative; }
+    .table-watermark {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      pointer-events: none; z-index: 0; opacity: 0.04;
+    }
+    .table-watermark svg { width: 260px; height: 260px; }
+    .items-table { position: relative; z-index: 1; }
+
+    /* ── Validity note ───────────────────────────────────────────── */
+    .validity-note { text-align: center; padding: 10px; font-size: 11.5px; color: #e05c1a; font-style: italic; }
+    .pickup-note   { text-align: center; padding: 8px; font-size: 11.5px; color: #444; border-top: 1px solid #eee; }
+
+    /* ── Totals ──────────────────────────────────────────────────── */
+    .totals-section { border-top: 2px solid #c8d5b0; border-bottom: 2px solid #c8d5b0; margin-top: 0; }
+    .totals-row { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #eee; }
+    .totals-row:last-child { border-bottom: none; }
+    .totals-row .label { font-size: 12px; color: #444; }
+    .totals-row .label strong { font-weight: 700; color: #111; }
+    .totals-row .value { font-size: 13px; font-weight: 700; color: #111; }
+    .totals-row .value.big { font-size: 16px; }
+
+    /* ── Amount in words ─────────────────────────────────────────── */
+    .amount-words {
+      text-align: center; padding: 14px 20px; font-size: 12px; color: #444; font-style: italic;
+      border-bottom: 2px solid #c8d5b0;
+    }
+
+    /* ── Center logo ─────────────────────────────────────────────── */
+    .center-logo { text-align: center; padding: 20px 0 10px; }
+    .center-logo svg { width: 70px; height: 70px; opacity: 0.9; }
+
+    /* ── Payment info ────────────────────────────────────────────── */
+    .payment-info { text-align: center; font-size: 12px; color: #333; padding: 8px 0 14px; font-weight: 600; }
+
+    /* ── Terms ────────────────────────────────────────────────────── */
+    .terms { font-size: 11px; color: #666; line-height: 1.6; padding: 10px 0; }
+    .terms p { margin-bottom: 4px; }
+
+    /* ── Footer bar ──────────────────────────────────────────────── */
+    .inv-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 2px solid #c8d5b0; padding-top: 14px; margin-top: 10px;
+      font-size: 11.5px; color: #555;
+    }
+    .inv-footer span { display: flex; align-items: center; gap: 5px; }
+
+    /* ── Loading / Error states ──────────────────────────────────── */
+    #loading { text-align: center; padding: 80px 20px; color: #666; }
+    #error-msg { display: none; text-align: center; padding: 40px; color: #dc2626; }
+
+    /* ── Print styles ─────────────────────────────────────────────── */
+    @media print {
+      body { background: #fff; }
+      #action-bar { display: none !important; }
+      #page-wrap { padding: 0; max-width: none; margin: 0; }
+      .invoice { padding: 32px 40px 28px; min-height: auto; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Action bar (hidden on print) -->
+<div id="action-bar">
+  <h1>📄 Facture Arbre Bio</h1>
+  <div class="action-btns">
+    <button class="btn btn-white" onclick="window.print()">⬇️ Télécharger / Imprimer</button>
+    <a id="btn-whatsapp" class="btn btn-green" href="#" target="_blank">💬 WhatsApp</a>
+    <a id="btn-email" class="btn btn-blue" href="#">✉️ Email</a>
+    <button class="btn btn-orange" onclick="history.back()">← Retour</button>
+  </div>
+</div>
+
+<div id="page-wrap">
+  <div id="loading">
+    <p style="font-size:15px;">⏳ Chargement de la facture…</p>
+  </div>
+  <div id="error-msg">
+    <p style="font-size:15px;">❌ <span id="error-text">Erreur de chargement</span></p>
+  </div>
+  <div id="invoice-content" style="display:none;">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  var token = localStorage.getItem('agentToken');
+  var saleId = window.location.pathname.split('/').pop();
+
+  if (!token) { window.location.href = '/sales-agent/login'; return; }
+
+  // ── French number-to-words ────────────────────────────────────────
+  var ONES = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze',
+              'treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  var TENS = ['','','vingt','trente','quarante','cinquante','soixante','soixante','quatre-vingt','quatre-vingt'];
+
+  function hundreds(n) {
+    if (n === 0) return '';
+    var r = '';
+    if (n >= 100) {
+      var h = Math.floor(n / 100);
+      r = (h === 1 ? 'cent' : ONES[h] + '-cent') + (n % 100 === 0 && h > 1 ? 's' : '');
+      n = n % 100;
+      if (n > 0) r += '-';
+    }
+    if (n >= 20) {
+      var t = Math.floor(n / 10), o = n % 10;
+      if (t === 7 || t === 9) {
+        r += TENS[t] + '-' + ONES[10 + o];
+      } else {
+        r += TENS[t];
+        if (t === 8) { if (o === 0) r += 's'; }
+        else if (o === 1) r += '-et-un';
+        else if (o > 0) r += '-' + ONES[o];
+      }
+    } else if (n > 0) {
+      r += ONES[n];
+    }
+    return r;
+  }
+
+  function numberToWords(n) {
+    n = Math.round(Math.abs(n));
+    if (n === 0) return 'zéro';
+    var parts = [];
+    if (n >= 1000000000) {
+      var b = Math.floor(n / 1000000000);
+      parts.push(hundreds(b) + '-milliard' + (b > 1 ? 's' : ''));
+      n %= 1000000000;
+    }
+    if (n >= 1000000) {
+      var m = Math.floor(n / 1000000);
+      parts.push(hundreds(m) + '-million' + (m > 1 ? 's' : ''));
+      n %= 1000000;
+    }
+    if (n >= 1000) {
+      var th = Math.floor(n / 1000);
+      parts.push((th === 1 ? 'mille' : hundreds(th) + '-mille'));
+      n %= 1000;
+    }
+    if (n > 0) parts.push(hundreds(n));
+    // Capitalize first letter
+    var w = parts.join('-');
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }
+
+  function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); }
+  function fmtDate(d) {
+    if (!d) return '';
+    return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  var PAYMENT_LABELS = {
+    wire_transfer:'Virement bancaire', orange_money:'Orange Money',
+    mtn_money:'MTN Money', moov_money:'Moov Money', wave:'WAVE', cash:'Espèces'
+  };
+
+  // ── Arbre Bio logo SVG ─────────────────────────────────────────
+  var LOGO_SVG = `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="#194642" stroke="#194642" stroke-width="1"/>
+    <text x="50" y="35" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold" letter-spacing="2">ARBRE</text>
+    <text x="50" y="45" text-anchor="middle" fill="#a8c880" font-size="7" letter-spacing="1">BIO</text>
+    <path d="M50 55 C50 55 38 45 38 38 C38 31 44 26 50 26 C56 26 62 31 62 38 C62 45 50 55 50 55Z" fill="#a8c880" opacity="0.8"/>
+    <path d="M50 55 L50 75" stroke="#a8c880" stroke-width="2" stroke-linecap="round"/>
+    <path d="M50 65 C50 65 43 60 40 55" stroke="#a8c880" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M50 60 C50 60 57 55 60 50" stroke="#a8c880" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="50" y="88" text-anchor="middle" fill="#a8c880" font-size="5.5" letter-spacing="1.5">FARMER SEED</text>
+  </svg>`;
+
+  var CIRCLE_LOGO = `<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="58" fill="none" stroke="#194642" stroke-width="3"/>
+    <circle cx="60" cy="60" r="50" fill="none" stroke="#a8c880" stroke-width="1"/>
+    <text x="60" y="42" text-anchor="middle" fill="#194642" font-size="9" font-weight="bold" letter-spacing="2">ORGANIC</text>
+    <path d="M60 60 C60 60 46 48 46 40 C46 32 52 26 60 26 C68 26 74 32 74 40 C74 48 60 60 60 60Z" fill="#194642" opacity="0.7"/>
+    <path d="M60 60 L60 84" stroke="#194642" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M60 72 C60 72 51 66 47 60" stroke="#194642" stroke-width="2" stroke-linecap="round"/>
+    <path d="M60 67 C60 67 69 61 73 55" stroke="#194642" stroke-width="2" stroke-linecap="round"/>
+    <text x="60" y="102" text-anchor="middle" fill="#194642" font-size="7" letter-spacing="2">ARBRE BIO</text>
+  </svg>`;
+
+  // ── Render invoice HTML ────────────────────────────────────────
+  function renderInvoice(data) {
+    var sale = data.sale;
+    var items = data.items;
+    var client = data.client;
+    var total = Number(sale.total_amount);
+    var saleDate = fmtDate(sale.validated_at || sale.created_at);
+
+    // Build items rows
+    var itemsHtml = items.map(function(item) {
+      return '<tr>' +
+        '<td><div class="product-name">' + item.product_name + '</div></td>' +
+        '<td>' + fmt(item.quantity) + '</td>' +
+        '<td>' + item.unit + '</td>' +
+        '<td>' + fmt(item.unit_price) + '</td>' +
+        '<td><strong>' + fmt(item.line_total) + '</strong></td>' +
+      '</tr>';
+    }).join('');
+
+    var clientPhone = client?.phone || '';
+    var clientEmail = client?.email || '';
+    var clientAddr  = client?.address || '';
+    var clientCity  = client?.city || '';
+    var clientCompany = client?.company_name || sale.client_name;
+
+    var html = `
+    <div class="invoice">
+      <!-- Header -->
+      <div class="inv-header">
+        <div class="logo-block">${LOGO_SVG}</div>
+        <div class="invoice-type">
+          <div class="label">FACTURE N°</div>
+          <div class="number">${sale.invoice_number}</div>
+        </div>
+      </div>
+
+      <!-- Company info -->
+      <div class="company-block">
+        <strong>Arbre Bio Côte d'Ivoire</strong>
+        01 BP 6664 ABJ 01<br/>
+        RCCM: CI-ABJ-03-2023-B13-12469<br/>
+        NCC: 2305213D – RSI<br/>
+        Email: farms@arbrebio.com<br/>
+        Tél: (+225) 27 22 34 54 67 / 21 21 80 69 50
+      </div>
+
+      <!-- Meta row -->
+      <div class="meta-row">
+        <div class="sale-date">${saleDate}</div>
+        <div class="client-block">
+          <div>Client: <span class="client-name">${clientCompany}</span></div>
+          ${clientAddr ? '<div>Adresse: ' + clientAddr + '</div>' : ''}
+          ${clientPhone ? '<div>Tél: ' + clientPhone + '</div>' : ''}
+          ${clientCity ? '<div>VILLE: <span class="city-label">' + clientCity.toUpperCase() + '</span></div>' : ''}
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Items table with watermark -->
+      <div class="table-wrap">
+        <div class="table-watermark">${CIRCLE_LOGO}</div>
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Désignation</th>
+              <th>Qté</th>
+              <th>Unité</th>
+              <th>P.U. HT</th>
+              <th>Total HT</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+        ${sale.notes ? '<div class="validity-note">' + sale.notes + '</div>' : ''}
+        <div class="pickup-note">Arbre Bio Africa — Cocody, Abidjan Côte d'Ivoire</div>
+      </div>
+
+      <!-- Totals -->
+      <div class="totals-section">
+        <div class="totals-row">
+          <span class="label">Montant devise: <strong>Francs CFA</strong></span>
+          <span>Montant Total HT: <span class="value">${fmt(total)}</span></span>
+        </div>
+        <div class="totals-row">
+          <span class="label">18% TVA appliquée: <strong>NON-APPLICABLE</strong></span>
+          <span>Montant net à payer TTC: <span class="value big">${fmt(total)}</span></span>
+        </div>
+      </div>
+
+      <!-- Amount in words -->
+      <div class="amount-words">
+        Arrêtée la présente facture à la somme de: <strong>${numberToWords(total)} FCFA</strong>
+      </div>
+
+      <!-- Center logo -->
+      <div class="center-logo">${CIRCLE_LOGO}</div>
+
+      <!-- Payment info -->
+      <div class="payment-info">
+        Méthode de paiement: ${PAYMENT_LABELS[sale.payment_method] || sale.payment_method}
+        ${sale.transaction_reference ? ' — Réf: ' + sale.transaction_reference : ''}
+        <br/>Compte bancaire: BNI Banque — CI092 01021 000115840024 78
+      </div>
+
+      <!-- Terms -->
+      <div class="terms">
+        <p>• Conditions générales de livraison: Pour toutes les commandes passées chez Arbre Bio, il est impératif de verser 100% du montant net à payer par virement après réception de la facture.</p>
+        <p>La livraison est effectuée entre 2 à 25 jours ouvrables après réception du paiement dans son intégralité et selon la disponibilité des produits.</p>
+        <p>Toutes les ventes sont définitives, nous ne retournons ni n'échangeons aucun produit. Merci de vérifier que la livraison est conforme, nous n'accepterons aucun remboursement après la livraison.</p>
+      </div>
+
+      <!-- Footer bar -->
+      <div class="inv-footer">
+        <span>📍 Cocody, Abidjan Côte d'Ivoire</span>
+        <span>📘 @arbrebio</span>
+        <span>🌐 www.arbrebio.com</span>
+      </div>
+    </div>`;
+
+    return { html, clientPhone, clientEmail, total, invoiceNumber: sale.invoice_number, clientName: sale.client_name };
+  }
+
+  // ── Build WhatsApp & Email links ──────────────────────────────
+  function buildShareLinks(info) {
+    var invoiceUrl = window.location.href;
+    var waMsg = encodeURIComponent(
+      'Bonjour ' + info.clientName + ',\n\n' +
+      '✅ Votre vente a été validée par Arbre Bio Africa.\n' +
+      'Veuillez trouver ci-dessous votre facture N° ' + info.invoiceNumber + '.\n\n' +
+      'Montant: ' + new Intl.NumberFormat('fr-FR').format(info.total) + ' FCFA\n\n' +
+      '🔗 Accédez à votre facture: ' + invoiceUrl + '\n\n' +
+      'Merci pour votre confiance.\n— Arbre Bio Africa'
+    );
+    var emailSubject = encodeURIComponent('Facture ' + info.invoiceNumber + ' — Arbre Bio Africa');
+    var emailBody = encodeURIComponent(
+      'Bonjour ' + info.clientName + ',\n\n' +
+      'Votre vente a été validée. Veuillez trouver votre facture N° ' + info.invoiceNumber + '.\n\n' +
+      'Montant total: ' + new Intl.NumberFormat('fr-FR').format(info.total) + ' FCFA\n\n' +
+      'Lien de la facture: ' + invoiceUrl + '\n\n' +
+      'Cordialement,\nArbre Bio Africa\nfarms@arbrebio.com\n(+225) 27 22 34 54 67'
+    );
+
+    var waLink = info.clientPhone
+      ? 'https://wa.me/' + info.clientPhone.replace(/\D/g, '') + '?text=' + waMsg
+      : 'https://wa.me/?text=' + waMsg;
+    var emailLink = info.clientEmail
+      ? 'mailto:' + info.clientEmail + '?subject=' + emailSubject + '&body=' + emailBody
+      : 'mailto:?subject=' + emailSubject + '&body=' + emailBody;
+
+    document.getElementById('btn-whatsapp').href = waLink;
+    document.getElementById('btn-email').href = emailLink;
+  }
+
+  // ── Load invoice data ─────────────────────────────────────────
+  fetch('/api/sales-agent/invoice?id=' + saleId, {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+  .then(function(r) {
+    if (r.status === 401) { window.location.href = '/sales-agent/login'; return null; }
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data) return;
+    document.getElementById('loading').style.display = 'none';
+
+    if (data.error) {
+      document.getElementById('error-text').textContent = data.error;
+      document.getElementById('error-msg').style.display = 'block';
+      return;
+    }
+
+    var rendered = renderInvoice(data);
+    document.getElementById('invoice-content').innerHTML = rendered.html;
+    document.getElementById('invoice-content').style.display = 'block';
+    buildShareLinks(rendered);
+    document.title = 'Facture ' + data.sale.invoice_number + ' — Arbre Bio';
+  })
+  .catch(function(err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-text').textContent = err.message;
+    document.getElementById('error-msg').style.display = 'block';
+  });
+})();
+</script>
+</body>
+</html>

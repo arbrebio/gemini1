@@ -97,26 +97,36 @@ export const POST: APIRoute = async ({ request }) => {
       .eq('id', user.id)
       .single();
 
-    const { data, error } = await supabase
+    const baseRecord = {
+      full_name:     full_name.trim(),
+      email:         email.trim(),
+      phone:         phone?.trim() || null,
+      company_name:  company_name?.trim() || null,
+      address:       address?.trim() || null,
+      city:          city?.trim() || null,
+      country:       country?.trim() || "Côte d'Ivoire",
+      customer_type: sanitizeCustomerType(customer_type),
+      notes:         notes?.trim() || null,
+    };
+
+    // Try with agent tracking columns first; fall back if migration not yet applied
+    let insertResult = await supabase
       .from('admin_customers')
-      .insert({
-        full_name:        full_name.trim(),
-        email:            email.trim(),
-        phone:            phone?.trim() || null,
-        company_name:     company_name?.trim() || null,
-        address:          address?.trim() || null,
-        city:             city?.trim() || null,
-        country:          country?.trim() || "Côte d'Ivoire",
-        customer_type:    sanitizeCustomerType(customer_type),   // always valid
-        notes:            notes?.trim() || null,
-        created_by:       user.id,
-        created_by_name:  agentData?.full_name || null,
-      })
+      .insert({ ...baseRecord, created_by: user.id, created_by_name: agentData?.full_name || null })
       .select()
       .single();
 
-    if (error) throw error;
-    return json({ customer: data }, 201);
+    if (insertResult.error?.message?.includes('created_by')) {
+      // Migration not applied yet — insert without tracking columns
+      insertResult = await supabase
+        .from('admin_customers')
+        .insert(baseRecord)
+        .select()
+        .single();
+    }
+
+    if (insertResult.error) throw insertResult.error;
+    return json({ customer: insertResult.data }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);
   }

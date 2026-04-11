@@ -148,6 +148,17 @@ export const PUT: APIRoute = async ({ request }) => {
       update.rejection_reason = rejection_reason.trim();
     }
 
+    // Generate invoice number when validating
+    if (action === 'validate') {
+      const year = new Date().getFullYear();
+      const { count } = await supabase
+        .from('sales_records')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'validated');
+      const seq = String((count ?? 0) + 1).padStart(4, '0');
+      update.invoice_number = `AB-${year}-${seq}`;
+    }
+
     const { data: sale, error } = await supabase
       .from('sales_records')
       .update(update)
