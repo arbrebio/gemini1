@@ -166,6 +166,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       document.getElementById('cf-id').value = '';
       document.getElementById('customer-form').reset();
       document.getElementById('cf-country').value = "Côte d'Ivoire";
+      document.getElementById('cf-type').value = 'Farmer';  // Explicitly set default to capitalized value
       document.getElementById('customer-modal').classList.remove('hidden');
     }
 
@@ -179,7 +180,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       document.getElementById('cf-company').value = c.company_name || '';
       document.getElementById('cf-city').value = c.city || '';
       document.getElementById('cf-country').value = c.country || "Côte d'Ivoire";
-      document.getElementById('cf-type').value = c.customer_type || 'farmer';
+      document.getElementById('cf-type').value = c.customer_type || 'Farmer';  // Fixed: was lowercase 'farmer', now capitalized 'Farmer'
       document.getElementById('customer-modal').classList.remove('hidden');
     }
 
