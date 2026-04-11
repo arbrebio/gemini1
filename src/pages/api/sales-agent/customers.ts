@@ -35,19 +35,17 @@ async function verifyAgent(token: string, supabase: ReturnType<typeof getSupabas
   return user;
 }
 
-/**
- * GET /api/sales-agent/customers
- *   ?search=   ?limit=   ?offset=
- *
- * POST /api/sales-agent/customers
- *   Body: { full_name, email?, phone?, company_name?, address?, city?, country?, customer_type?, notes? }
- *
- * PUT /api/sales-agent/customers
- *   Body: { id, ...fields }
- *
- * DELETE /api/sales-agent/customers
- *   Body: { id }
- */
+// Single source of truth for valid customer types — must match DB constraint exactly
+const VALID_CUSTOMER_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'] as const;
+type CustomerType = typeof VALID_CUSTOMER_TYPES[number];
+
+function sanitizeCustomerType(value: any): CustomerType {
+  if (typeof value === 'string' && VALID_CUSTOMER_TYPES.includes(value as CustomerType)) {
+    return value as CustomerType;
+  }
+  return 'Farmer'; // safe default
+}
+
 export const GET: APIRoute = async ({ request, url }) => {
   try {
     const token = extractToken(request);
@@ -92,9 +90,6 @@ export const POST: APIRoute = async ({ request }) => {
     if (!full_name?.trim()) return json({ error: 'full_name is required' }, 400);
     if (!email?.trim()) return json({ error: 'email is required' }, 400);
 
-    const VALID_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'];
-    const finalCustomerType = customer_type && VALID_TYPES.includes(customer_type) ? customer_type : 'Farmer';
-
     // Get agent's full name for tracking
     const { data: agentData } = await supabase
       .from('sales_agent_profiles')
@@ -105,17 +100,17 @@ export const POST: APIRoute = async ({ request }) => {
     const { data, error } = await supabase
       .from('admin_customers')
       .insert({
-        full_name: full_name.trim(),
-        email: email.trim(),
-        phone: phone?.trim() || null,
-        company_name: company_name?.trim() || null,
-        address: address?.trim() || null,
-        city: city?.trim() || null,
-        country: country?.trim() || 'Côte d\'Ivoire',
-        customer_type: finalCustomerType,
-        notes: notes?.trim() || null,
-        created_by: user.id,
-        created_by_name: agentData?.full_name || null,
+        full_name:        full_name.trim(),
+        email:            email.trim(),
+        phone:            phone?.trim() || null,
+        company_name:     company_name?.trim() || null,
+        address:          address?.trim() || null,
+        city:             city?.trim() || null,
+        country:          country?.trim() || "Côte d'Ivoire",
+        customer_type:    sanitizeCustomerType(customer_type),   // always valid
+        notes:            notes?.trim() || null,
+        created_by:       user.id,
+        created_by_name:  agentData?.full_name || null,
       })
       .select()
       .single();
@@ -142,7 +137,14 @@ export const PUT: APIRoute = async ({ request }) => {
     const allowed = ['full_name', 'email', 'phone', 'company_name', 'address', 'city', 'country', 'customer_type', 'notes'];
     const safe: Record<string, any> = {};
     for (const k of allowed) {
-      if (k in updates) safe[k] = updates[k];
+      if (k in updates) {
+        // Validate customer_type before passing to DB
+        if (k === 'customer_type') {
+          safe[k] = sanitizeCustomerType(updates[k]);
+        } else {
+          safe[k] = updates[k];
+        }
+      }
     }
 
     const { data, error } = await supabase

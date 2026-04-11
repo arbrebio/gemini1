@@ -17,6 +17,17 @@ function json(data: any, status = 200) {
   });
 }
 
+// Single source of truth — must match DB constraint exactly
+const VALID_CUSTOMER_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'] as const;
+type CustomerType = typeof VALID_CUSTOMER_TYPES[number];
+
+function sanitizeCustomerType(value: any): CustomerType | null {
+  if (typeof value === 'string' && VALID_CUSTOMER_TYPES.includes(value as CustomerType)) {
+    return value as CustomerType;
+  }
+  return null; // Admin form allows null (no type set)
+}
+
 // ── GET ──────────────────────────────────────────────────────────────────────
 export const GET: APIRoute = async ({ url }) => {
   try {
@@ -26,7 +37,6 @@ export const GET: APIRoute = async ({ url }) => {
     const page    = Math.max(1, parseInt(url.searchParams.get('page') ?? '1'));
     const limit   = Math.min(200, Math.max(1, parseInt(url.searchParams.get('limit') ?? '50')));
 
-    // Single customer
     if (id) {
       const { data, error } = await supabase
         .from('admin_customers')
@@ -39,7 +49,6 @@ export const GET: APIRoute = async ({ url }) => {
 
     const customer_type = url.searchParams.get('customer_type') ?? '';
 
-    // List with optional search + pagination
     let q = supabase
       .from('admin_customers')
       .select('*', { count: 'exact' })
@@ -70,18 +79,8 @@ export const POST: APIRoute = async ({ request }) => {
     const supabase = sb();
     const body = await request.json();
     const {
-      full_name,
-      email,
-      phone,
-      company_name,
-      address,
-      city,
-      region,
-      country,
-      farm_size_hectares,
-      primary_crops,
-      customer_type,
-      notes,
+      full_name, email, phone, company_name, address, city,
+      region, country, farm_size_hectares, primary_crops, customer_type, notes,
     } = body;
 
     if (!full_name || !email) {
@@ -93,24 +92,24 @@ export const POST: APIRoute = async ({ request }) => {
       .insert({
         full_name,
         email,
-        phone: phone ?? null,
-        company_name: company_name ?? null,
-        address: address ?? null,
-        city: city ?? null,
-        region: region ?? null,
-        country: country ?? null,
+        phone:              phone ?? null,
+        company_name:       company_name ?? null,
+        address:            address ?? null,
+        city:               city ?? null,
+        region:             region ?? null,
+        country:            country ?? null,
         farm_size_hectares: farm_size_hectares ?? null,
-        primary_crops: primary_crops ?? null,
-        customer_type: customer_type ?? null,
-        notes: notes ?? null,
+        primary_crops:      primary_crops ?? null,
+        customer_type:      sanitizeCustomerType(customer_type),  // always valid or null
+        notes:              notes ?? null,
       })
       .select()
       .single();
 
     if (error) throw error;
-    // Log notification (fire-and-forget)
     supabase.from('admin_notifications').insert({
-      type: 'customer', message: `New customer added: ${full_name}`, entity_id: data.id, entity_type: 'customer', is_read: false,
+      type: 'customer', message: `New customer added: ${full_name}`,
+      entity_id: data.id, entity_type: 'customer', is_read: false,
     }).then(() => {});
     return json({ customer: data }, 201);
   } catch (e: any) {
@@ -123,9 +122,23 @@ export const PUT: APIRoute = async ({ request }) => {
   try {
     const supabase = sb();
     const body = await request.json();
-    const { id, ...updates } = body;
+    const { id, ...rawUpdates } = body;
 
     if (!id) return json({ error: 'id is required' }, 400);
+
+    // Only allow known fields; validate customer_type specifically
+    const allowed = [
+      'full_name', 'email', 'phone', 'company_name', 'address', 'city',
+      'region', 'country', 'farm_size_hectares', 'primary_crops', 'customer_type', 'notes',
+    ];
+    const updates: Record<string, any> = {};
+    for (const k of allowed) {
+      if (k in rawUpdates) {
+        updates[k] = k === 'customer_type'
+          ? sanitizeCustomerType(rawUpdates[k])
+          : rawUpdates[k];
+      }
+    }
 
     const { data, error } = await supabase
       .from('admin_customers')
