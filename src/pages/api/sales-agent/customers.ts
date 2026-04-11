@@ -90,12 +90,13 @@ export const POST: APIRoute = async ({ request }) => {
     const { full_name, email, phone, company_name, address, city, country, customer_type, notes } = body;
 
     if (!full_name?.trim()) return json({ error: 'full_name is required' }, 400);
+    if (!email?.trim()) return json({ error: 'email is required' }, 400);
 
     const { data, error } = await supabase
       .from('admin_customers')
       .insert({
         full_name: full_name.trim(),
-        email: email?.trim() || null,
+        email: email.trim(),
         phone: phone?.trim() || null,
         company_name: company_name?.trim() || null,
         address: address?.trim() || null,
