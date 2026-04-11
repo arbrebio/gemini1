@@ -92,6 +92,9 @@ export const POST: APIRoute = async ({ request }) => {
     if (!full_name?.trim()) return json({ error: 'full_name is required' }, 400);
     if (!email?.trim()) return json({ error: 'email is required' }, 400);
 
+    const VALID_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'];
+    const finalCustomerType = customer_type && VALID_TYPES.includes(customer_type) ? customer_type : 'Farmer';
+
     const { data, error } = await supabase
       .from('admin_customers')
       .insert({
@@ -102,7 +105,7 @@ export const POST: APIRoute = async ({ request }) => {
         address: address?.trim() || null,
         city: city?.trim() || null,
         country: country?.trim() || 'Côte d\'Ivoire',
-        customer_type: customer_type || 'farmer',
+        customer_type: finalCustomerType,
         notes: notes?.trim() || null,
       })
       .select()

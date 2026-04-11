@@ -48,10 +48,10 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
         <div>
           <label class="block text-xs font-semibold text-gray-600 mb-1" data-i18n="customerType">Type de client</label>
           <select id="cf-type" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
-            <option value="farmer" data-i18n="farmer">Agriculteur</option>
-            <option value="cooperative" data-i18n="cooperative">Coopérative</option>
-            <option value="enterprise" data-i18n="enterprise">Entreprise</option>
-            <option value="government" data-i18n="government">Gouvernement</option>
+            <option value="Farmer" data-i18n="farmer">Agriculteur</option>
+            <option value="Cooperative" data-i18n="cooperative">Coopérative</option>
+            <option value="Enterprise" data-i18n="enterprise">Entreprise</option>
+            <option value="Government" data-i18n="government">Gouvernement</option>
           </select>
         </div>
         <button type="submit" id="submit-btn" class="w-full py-3 rounded-xl text-white font-semibold text-sm transition-opacity hover:opacity-90" style="background:#194642">
@@ -124,7 +124,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       }
     }
 
-    var TYPE_LABELS = { farmer:'Agriculteur', cooperative:'Coopérative', enterprise:'Entreprise', government:'Gouvernement' };
+    var TYPE_LABELS = { Farmer:'Agriculteur', Cooperative:'Coopérative', Enterprise:'Entreprise', Government:'Gouvernement' };
 
     function render() {
       var el = document.getElementById('customers-list');
