@@ -196,6 +196,23 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     document.getElementById('customer-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       var id = document.getElementById('cf-id').value;
+      var cfTypeElement = document.getElementById('cf-type');
+      var customerTypeValue = cfTypeElement.value;
+
+      // DEBUG: Log the actual customer_type value being sent
+      console.log('Customer Type Value:', customerTypeValue);
+      console.log('Select Element Value:', cfTypeElement.value);
+      console.log('Select Element Options:', Array.from(cfTypeElement.options).map(o => ({ value: o.value, text: o.text })));
+
+      // VALIDATION: Ensure customer_type is one of the valid capitalized values
+      var VALID_CUSTOMER_TYPES = ['Farmer', 'Cooperative', 'Enterprise', 'Government'];
+      var sanitizedCustomerType = customerTypeValue;
+
+      if (!VALID_CUSTOMER_TYPES.includes(sanitizedCustomerType)) {
+        console.error('Invalid customer type:', sanitizedCustomerType, '- using default Farmer');
+        sanitizedCustomerType = 'Farmer';
+      }
+
       var body = {
         full_name: document.getElementById('cf-name').value.trim(),
         email: document.getElementById('cf-email').value.trim(),
@@ -203,10 +220,12 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
         company_name: document.getElementById('cf-company').value.trim() || null,
         city: document.getElementById('cf-city').value.trim() || null,
         country: document.getElementById('cf-country').value.trim() || "Côte d'Ivoire",
-        customer_type: document.getElementById('cf-type').value,
+        customer_type: sanitizedCustomerType,
       };
       var method = id ? 'PUT' : 'POST';
       if (id) body['id'] = id;
+
+      console.log('Full body being sent:', body);
 
       var res = await fetch('/api/sales-agent/customers', { method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
       var data = await res.json();
