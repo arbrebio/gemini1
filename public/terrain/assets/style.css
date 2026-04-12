@@ -767,4 +767,45 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--ink-200); border-radius: 3px; }
+
+/* ── Profile Page ─────────────────────────────────── */
+.profile-page { max-width: 520px; margin: 0 auto; padding: 32px 16px; }
+.profile-avatar-wrap {
+  position: relative;
+  width: 110px; height: 110px;
+  margin: 0 auto 28px;
+  cursor: pointer;
+}
+.profile-avatar-circle {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: var(--green-600);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 700; color: #fff;
+  overflow: hidden;
+  border: 3px solid var(--green-200);
+  transition: filter .2s;
+}
+.profile-avatar-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profile-avatar-overlay {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,.42);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity .2s;
+  color: #fff; font-size: 1.5rem;
+}
+.profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 1; }
+.profile-avatar-wrap:hover .profile-avatar-circle { filter: brightness(.75); }
+.profile-section-title { font-size: 0.7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-400); margin-bottom: 12px; }
+.profile-readonly {
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink-400);
+  font-size: 0.9rem;
+}
+.profile-hint { font-size: 0.75rem; color: var(--ink-400); text-align: center; margin-top: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-300); }

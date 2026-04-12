@@ -70,14 +70,25 @@ const UI = {
     if (!session) return;
     const user = DB.getUserById(session.userId);
     if (!user) return;
-    const nameEl = document.getElementById('sb-user-name');
-    const roleEl = document.getElementById('sb-user-role');
-    const avEl   = document.getElementById('sb-user-av');
+    const nameEl  = document.getElementById('sb-user-name');
+    const roleEl  = document.getElementById('sb-user-role');
+    const avEl    = document.getElementById('sb-user-av');
     const badgeEl = document.getElementById('sb-role-badge');
-    if (nameEl) nameEl.textContent = user.name;
-    if (roleEl) roleEl.textContent = DB.roleLabel(user.role);
-    if (avEl)   avEl.textContent = user.avatar || user.name.slice(0,2).toUpperCase();
+    if (nameEl)  nameEl.textContent  = user.name;
+    if (roleEl)  roleEl.textContent  = DB.roleLabel(user.role);
+    if (avEl) {
+      if (user.avatarPhoto) {
+        avEl.innerHTML = `<img src="${user.avatarPhoto}" alt="${DB.esc(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`;
+      } else {
+        avEl.textContent = user.avatar || user.name.slice(0,2).toUpperCase();
+      }
+    }
     if (badgeEl) badgeEl.textContent = DB.roleLabel(user.role);
+
+    // Make avatar + name clickable → profile page (same directory)
+    if (avEl) { avEl.style.cursor = 'pointer'; avEl.title = 'Mon profil'; avEl.onclick = (e) => { e.stopPropagation(); window.location.href = 'profile.html'; }; }
+    const infoEl = document.querySelector('.user-info');
+    if (infoEl) { infoEl.style.cursor = 'pointer'; infoEl.title = 'Mon profil'; infoEl.onclick = (e) => { e.stopPropagation(); window.location.href = 'profile.html'; }; }
   },
 
   // ── Active nav item ───────────────────────────────

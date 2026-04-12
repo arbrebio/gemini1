@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Profil — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Administration</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Administration</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="users.html"><span class="nav-icon">👥</span>Utilisateurs</a>
+      <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span>Tous les projets</a>
+      <div class="nav-section-label" style="margin-top:16px">Compte</div>
+      <a class="nav-item active" href="profile.html"><span class="nav-icon">👤</span>Mon profil</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">AA</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">Admin</div>
+          <div class="user-role" id="sb-user-role">Super Admin</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title">Mon Profil</div>
+        <div class="page-subtitle">Gérez vos informations personnelles</div>
+      </div>
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn btn-secondary">← Retour</a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="profile-page">
+        <div class="card" style="padding:32px">
+
+          <!-- Avatar upload -->
+          <div class="profile-avatar-wrap" onclick="document.getElementById('avatar-input').click()">
+            <div class="profile-avatar-circle" id="avatar-circle">AA</div>
+            <div class="profile-avatar-overlay">📷</div>
+          </div>
+          <p class="profile-hint">Cliquer sur l'avatar pour changer la photo</p>
+          <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="handleAvatarChange(this)">
+
+          <div style="height:28px"></div>
+
+          <!-- Name fields (admin-only) -->
+          <div class="profile-section-title">Informations personnelles</div>
+          <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Prénom *</label>
+              <input class="form-input" type="text" id="field-first" placeholder="Prénom" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom *</label>
+              <input class="form-input" type="text" id="field-last" placeholder="Nom de famille" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label">Email</label>
+            <div class="profile-readonly" id="field-email">—</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:28px">
+            <label class="form-label">Rôle</label>
+            <div class="profile-readonly" id="field-role">—</div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveProfile()">
+            ✓ Enregistrer les modifications
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['super_admin']);
+  let currentUser = null;
+  let pendingAvatarPhoto = null;
+
+  if (session) {
+    UI.renderSidebar(session);
+    currentUser = DB.getUserById(session.userId);
+    loadProfile();
+  }
+
+  function loadProfile() {
+    if (!currentUser) return;
+    const nameParts = currentUser.name.trim().split(' ');
+    const firstName = nameParts.slice(0, -1).join(' ') || nameParts[0];
+    const lastName  = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+    document.getElementById('field-first').value = firstName;
+    document.getElementById('field-last').value  = lastName;
+    document.getElementById('field-email').textContent = currentUser.email || '—';
+    document.getElementById('field-role').textContent  = DB.roleLabel(currentUser.role);
+    renderAvatarCircle();
+  }
+
+  function renderAvatarCircle() {
+    const circle = document.getElementById('avatar-circle');
+    const photo = pendingAvatarPhoto || currentUser.avatarPhoto;
+    if (photo) {
+      circle.innerHTML = `<img src="${photo}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`;
+    } else {
+      circle.textContent = currentUser.avatar || currentUser.name.slice(0,2).toUpperCase();
+    }
+  }
+
+  async function handleAvatarChange(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) { UI.toast('Image trop grande (max 3 Mo)', 'error'); return; }
+    try {
+      pendingAvatarPhoto = await UI.fileToDataURL(file);
+      renderAvatarCircle();
+      UI.toast('Photo prête — cliquez Enregistrer pour sauvegarder', 'default');
+    } catch(e) { UI.toast('Erreur lecture image', 'error'); }
+  }
+
+  function saveProfile() {
+    const first = document.getElementById('field-first').value.trim();
+    const last  = document.getElementById('field-last').value.trim();
+    if (!first) { UI.toast('Le prénom est requis', 'error'); return; }
+    const fullName = last ? `${first} ${last}` : first;
+    const updates = { name: fullName };
+    if (pendingAvatarPhoto !== null) updates.avatarPhoto = pendingAvatarPhoto;
+    const result = DB.updateUserProfile(session.userId, updates);
+    if (result.ok) {
+      currentUser = result.user;
+      pendingAvatarPhoto = null;
+      UI.renderSidebar(session);
+      renderAvatarCircle();
+      UI.toast('Profil mis à jour avec succès', 'success');
+    } else {
+      UI.toast(result.error, 'error');
+    }
+  }
+</script>
+</body>
+</html>

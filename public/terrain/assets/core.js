@@ -140,6 +140,18 @@ const DB = {
     localStorage.setItem(this.KEYS.USERS, JSON.stringify(users));
   },
 
+  updateUserProfile(userId, { name, avatarPhoto }) {
+    const user = this.getUserById(userId);
+    if (!user) return { ok: false, error: 'Utilisateur introuvable.' };
+    if (name !== undefined && name.trim()) {
+      user.name = name.trim();
+      user.avatar = name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+    if (avatarPhoto !== undefined) user.avatarPhoto = avatarPhoto;
+    this.saveUser(user);
+    return { ok: true, user };
+  },
+
   toggleUserActive(id) {
     const users = this.getUsers();
     const u = users.find(u => u.id === id);
