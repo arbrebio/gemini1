@@ -190,7 +190,7 @@
       return `<tr>
         <td>
           <div style="display:flex;align-items:center;gap:10px">
-            <div class="user-avatar" style="background:var(--green-${u.role==='engineer'?'700':'500'})">${u.avatar}</div>
+            <div class="user-avatar" style="background:var(--green-${u.role==='engineer'?'700':'500'})">${u.avatarPhoto ? `<img src="${u.avatarPhoto}" alt="${DB.esc(u.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">` : DB.esc(u.avatar)}</div>
             <div class="fw-600">${u.name}</div>
           </div>
         </td>

@@ -91,6 +91,17 @@ const UI = {
     if (infoEl) { infoEl.style.cursor = 'pointer'; infoEl.title = 'Mon profil'; infoEl.onclick = (e) => { e.stopPropagation(); window.location.href = 'profile.html'; }; }
   },
 
+  // ── User avatar HTML (photo or initials) ─────────
+  // Returns an innerHTML string for any avatar container.
+  // size: CSS size string e.g. '32px' (default) or '28px'
+  userAvatarInner(user, size = '32px') {
+    if (!user) return '?';
+    if (user.avatarPhoto) {
+      return `<img src="${user.avatarPhoto}" alt="${DB.esc(user.name)}" style="width:${size};height:${size};object-fit:cover;border-radius:50%;display:block;">`;
+    }
+    return DB.esc(user.avatar || user.name.slice(0, 2).toUpperCase());
+  },
+
   // ── Active nav item ───────────────────────────────
   setActiveNav(href) {
     document.querySelectorAll('.nav-item').forEach(el => {

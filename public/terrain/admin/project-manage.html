@@ -844,8 +844,7 @@
     const extra = assigneeIds.length - 4;
     let html = '<div class="assignee-stack">';
     users.forEach(u => {
-      const initials = (u.avatar || u.name.slice(0,2)).toUpperCase();
-      html += `<div class="assignee-bubble" title="${DB.esc(u.name)}">${DB.esc(initials)}</div>`;
+      html += `<div class="assignee-bubble" title="${DB.esc(u.name)}" style="overflow:hidden;padding:0">${UI.userAvatarInner(u, '100%')}</div>`;
     });
     if (extra > 0) {
       html += `<div class="assignee-bubble" style="background:var(--ink-400)">+${extra}</div>`;
@@ -1027,7 +1026,7 @@
     const users = assigneeIds.map(id => DB.getUserById(id)).filter(Boolean);
     display.innerHTML = users.map(u => `
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div class="assignee-bubble" style="width:28px;height:28px;font-size:0.7rem">${DB.esc(u.avatar || u.name.slice(0,2).toUpperCase())}</div>
+        <div class="assignee-bubble" style="width:28px;height:28px;font-size:0.7rem;overflow:hidden;padding:0">${UI.userAvatarInner(u, '28px')}</div>
         <div>
           <div style="font-size:0.82rem;font-weight:600">${DB.esc(u.name)}</div>
           <div style="font-size:0.7rem;color:var(--ink-400)">${DB.esc(DB.roleLabel(u.role))}</div>
@@ -1066,9 +1065,8 @@
     empty.style.display = 'none';
     list.innerHTML = comments.map(c => {
       const author = DB.getUserById(c.authorId);
-      const initials = author ? (author.avatar || author.name.slice(0,2)).toUpperCase() : '?';
       return `<div class="comment-item">
-        <div class="comment-av">${DB.esc(initials)}</div>
+        <div class="comment-av" style="overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center">${UI.userAvatarInner(author, '32px')}</div>
         <div class="comment-content">
           <div class="comment-meta">${author ? DB.esc(author.name) : 'Inconnu'} · ${DB.esc(DB.formatDateTime(c.createdAt))}</div>
           <div class="comment-text">${DB.esc(c.text)}</div>
@@ -1110,7 +1108,7 @@
     list.innerHTML = users.map(u => `
       <label class="assignee-check-item">
         <input type="checkbox" name="panel-assignee" value="${DB.esc(u.id)}" ${assignees.includes(u.id) ? 'checked' : ''}>
-        <div class="assignee-bubble" style="width:24px;height:24px;font-size:0.62rem;flex-shrink:0">${DB.esc(u.avatar || u.name.slice(0,2).toUpperCase())}</div>
+        <div class="assignee-bubble" style="width:24px;height:24px;font-size:0.62rem;flex-shrink:0;overflow:hidden;padding:0">${UI.userAvatarInner(u, '24px')}</div>
         <div>
           <div style="font-size:0.82rem;font-weight:500">${DB.esc(u.name)}</div>
           <div style="font-size:0.7rem;color:var(--ink-400)">${DB.esc(DB.roleLabel(u.role))}</div>
@@ -1225,7 +1223,7 @@
     list.innerHTML = users.map(u => `
       <label class="assignee-check-item">
         <input type="checkbox" name="modal-assignee" value="${DB.esc(u.id)}" ${selectedIds.includes(u.id) ? 'checked' : ''}>
-        <div class="assignee-bubble" style="width:24px;height:24px;font-size:0.62rem;flex-shrink:0">${DB.esc(u.avatar || u.name.slice(0,2).toUpperCase())}</div>
+        <div class="assignee-bubble" style="width:24px;height:24px;font-size:0.62rem;flex-shrink:0;overflow:hidden;padding:0">${UI.userAvatarInner(u, '24px')}</div>
         <span>${DB.esc(u.name)} <span style="color:var(--ink-400);font-size:0.72rem">(${DB.esc(DB.roleLabel(u.role))})</span></span>
       </label>`).join('');
   }
