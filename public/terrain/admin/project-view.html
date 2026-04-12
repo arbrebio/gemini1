@@ -171,7 +171,45 @@
     const recommendations = visit.recommendations || '';
     const nextSteps = visit.nextSteps || '';
 
-    let html = `
+    const isAdmin = session.role === 'super_admin';
+    let actionBar = '';
+    if (isAdmin && visit.status === 'submitted') {
+      actionBar = `<div style="background:#fff;border:1px solid var(--ink-100);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-sm)">
+        <div>
+          <div style="font-weight:600;color:var(--ink)">⏳ Visite en attente de validation</div>
+          <div class="text-sm text-muted mt-4">Vérifiez les informations ci-dessous et confirmez la visite pour générer le rapport.</div>
+        </div>
+        <button class="btn btn-primary" onclick="confirmVisit('${DB.esc(visit.id)}')">✓ Confirmer la visite</button>
+      </div>`;
+    } else if (visit.status === 'confirmed') {
+      actionBar = `<div style="background:#fff;border:2px solid var(--green-300);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;box-shadow:var(--shadow-sm)">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="font-weight:600;color:var(--green-700)">✅ Visite confirmée ${DB.formatDate(visit.confirmedAt)}</div>
+            <div class="text-sm text-muted mt-4">Le rapport est prêt. Le client peut le valider avant le démarrage des travaux.</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-secondary" onclick="printReport('${DB.esc(visit.id)}')">🖨️ Imprimer le rapport</button>
+            ${isAdmin ? `<button class="btn btn-primary" onclick="startProject('${DB.esc(visit.id)}')">🚀 Démarrer le projet</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+    } else if (visit.status === 'in_progress') {
+      actionBar = `<div style="background:#fff;border:2px solid var(--green-500);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;box-shadow:var(--shadow-sm)">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="font-weight:600;color:var(--green-800)">🏗️ Projet en cours de réalisation</div>
+            <div class="text-sm text-muted mt-4">Démarré le ${DB.formatDate(visit.startedAt)}. Suivez l'avancement dans la section Gestion de Projet.</div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-secondary" onclick="printReport('${DB.esc(visit.id)}')">🖨️ Rapport</button>
+            <a href="project-manage.html?projectId=${visit.projectId ? DB.esc(visit.projectId) : ''}" class="btn btn-primary">📋 Gérer le projet</a>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    let html = actionBar + `
       <!-- Project link -->
       ${project ? `<div class="alert alert-info mb-16"><span>📁</span><span>Projet : <a href="project-view.html?projectId=${DB.esc(project.id)}" style="font-weight:600;color:inherit">${DB.esc(project.clientName)}</a></span></div>` : ''}
 
@@ -319,6 +357,35 @@
     `;
 
     document.getElementById('page-body').innerHTML = html;
+  }
+
+  function confirmVisit(visitId) {
+    if (!UI.confirm('Confirmer cette visite ? Elle sera marquée comme validée.')) return;
+    const result = DB.confirmVisit(visitId);
+    if (result.ok) {
+      UI.toast('Visite confirmée avec succès !', 'success');
+      setTimeout(() => location.reload(), 800);
+    } else {
+      UI.toast(result.error, 'error');
+    }
+  }
+
+  function startProject(visitId) {
+    if (!UI.confirm('Démarrer le projet ? Il sera transféré en gestion de projet.')) return;
+    const result = DB.startProject(visitId);
+    if (result.ok) {
+      UI.toast('Projet démarré !', 'success');
+      setTimeout(() => {
+        window.location.href = 'project-manage.html?projectId=' + DB.esc(result.visit.projectId);
+      }, 800);
+    } else {
+      UI.toast(result.error, 'error');
+    }
+  }
+
+  function printReport(visitId) {
+    window.open('project-view.html?visitId=' + visitId + '&print=1', '_blank');
+    setTimeout(() => window.print && window.print(), 500);
   }
 </script>
 </body>

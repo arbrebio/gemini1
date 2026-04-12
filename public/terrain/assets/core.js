@@ -9,6 +9,8 @@ const DB = {
     PROJECTS: 'ab_projects',
     VISITS: 'ab_visits',
     SESSION: 'ab_session',
+    TASKS: 'ab_tasks',
+    REPORTS: 'ab_reports',
   },
 
   // ── Init seed data ────────────────────────────────
@@ -33,6 +35,9 @@ const DB = {
     }
     if (!localStorage.getItem(this.KEYS.VISITS)) {
       localStorage.setItem(this.KEYS.VISITS, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(this.KEYS.TASKS)) {
+      localStorage.setItem(this.KEYS.TASKS, JSON.stringify([]));
     }
   },
 
@@ -116,7 +121,7 @@ const DB = {
     if (users.find(u => u.email === email)) return { ok: false, error: 'Email déjà utilisé.' };
     const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     const user = {
-      id: 'usr_' + Date.now(),
+      id: 'usr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
       name, email,
       password: this._hash(password),
       role,
@@ -162,7 +167,7 @@ const DB = {
 
   createProject(data) {
     const project = {
-      id: 'prj_' + Date.now(),
+      id: 'prj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
       ...data,
       createdAt: new Date().toISOString(),
       status: 'active',
@@ -267,6 +272,121 @@ const DB = {
     crops: 'Installation cultures',
     consulting: 'Consulting agronomique',
     equipment: 'Équipements agricoles',
+  },
+
+  // ── Visit Confirmation ────────────────────────────
+  confirmVisit(visitId) {
+    const visit = this.getVisitById(visitId);
+    if (!visit) return { ok: false, error: 'Visite introuvable.' };
+    visit.status = 'confirmed';
+    visit.confirmedAt = new Date().toISOString();
+    this.saveVisit(visit);
+    // update project status too
+    if (visit.projectId) {
+      const project = this.getProjectById(visit.projectId);
+      if (project) { project.status = 'confirmed'; this.saveProject(project); }
+    }
+    return { ok: true, visit };
+  },
+
+  startProject(visitId) {
+    const visit = this.getVisitById(visitId);
+    if (!visit) return { ok: false, error: 'Visite introuvable.' };
+    visit.status = 'in_progress';
+    visit.startedAt = new Date().toISOString();
+    this.saveVisit(visit);
+    if (visit.projectId) {
+      const project = this.getProjectById(visit.projectId);
+      if (project) { project.status = 'in_progress'; project.startedAt = new Date().toISOString(); this.saveProject(project); }
+    }
+    return { ok: true, visit };
+  },
+
+  // ── Tasks ─────────────────────────────────────────
+  getTasks() {
+    return JSON.parse(localStorage.getItem(this.KEYS.TASKS) || '[]');
+  },
+
+  getTaskById(id) {
+    return this.getTasks().find(t => t.id === id) || null;
+  },
+
+  getTasksByProject(projectId) {
+    return this.getTasks().filter(t => t.projectId === projectId);
+  },
+
+  createTask(data) {
+    const task = {
+      id: 'tsk_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+      ...data,
+      status: data.status || 'todo',
+      assignees: data.assignees || [],
+      proofPhotos: [],
+      comments: [],
+      createdAt: new Date().toISOString(),
+      completedBy: null,
+      completedAt: null,
+    };
+    const tasks = this.getTasks();
+    tasks.push(task);
+    localStorage.setItem(this.KEYS.TASKS, JSON.stringify(tasks));
+    return task;
+  },
+
+  saveTask(task) {
+    const tasks = this.getTasks();
+    const idx = tasks.findIndex(t => t.id === task.id);
+    if (idx >= 0) tasks[idx] = task;
+    else tasks.push(task);
+    localStorage.setItem(this.KEYS.TASKS, JSON.stringify(tasks));
+    return task;
+  },
+
+  deleteTask(id) {
+    let tasks = this.getTasks();
+    tasks = tasks.filter(t => t.id !== id);
+    localStorage.setItem(this.KEYS.TASKS, JSON.stringify(tasks));
+  },
+
+  addTaskComment(taskId, { authorId, text }) {
+    const task = this.getTaskById(taskId);
+    if (!task) return null;
+    const comment = { id: 'cmt_' + Date.now(), authorId, text, createdAt: new Date().toISOString() };
+    task.comments = task.comments || [];
+    task.comments.push(comment);
+    this.saveTask(task);
+    return comment;
+  },
+
+  addTaskProof(taskId, { dataURL, label, uploadedBy }) {
+    const task = this.getTaskById(taskId);
+    if (!task) return null;
+    const photo = { id: 'prf_' + Date.now(), dataURL, label, uploadedBy, uploadedAt: new Date().toISOString() };
+    task.proofPhotos = task.proofPhotos || [];
+    task.proofPhotos.push(photo);
+    if (task.status === 'todo' || task.status === 'in_progress') {
+      task.status = 'review';
+    }
+    this.saveTask(task);
+    return photo;
+  },
+
+  completeTask(taskId, userId) {
+    const task = this.getTaskById(taskId);
+    if (!task) return null;
+    task.status = 'done';
+    task.completedBy = userId;
+    task.completedAt = new Date().toISOString();
+    this.saveTask(task);
+    return task;
+  },
+
+  taskStatusLabel(status) {
+    return { todo: 'À faire', in_progress: 'En cours', review: 'En révision', done: 'Terminé' }[status] || status;
+  },
+
+  taskPriorityLabel(priority) {
+    return { high: 'Haute', medium: 'Moyenne', low: 'Basse' }[priority] || priority;
   },
 };
 
