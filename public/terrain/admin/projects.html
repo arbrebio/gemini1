@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projets — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Plateforme Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Super Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Administration</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="users.html"><span class="nav-icon">👥</span>Utilisateurs</a>
+      <a class="nav-item active" href="projects.html"><span class="nav-icon">📁</span>Tous les projets</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">AA</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">Admin</div>
+          <div class="user-role" id="sb-user-role">Super Admin</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title">Tous les Projets</div>
+        <div class="page-subtitle">Historique complet des visites et projets terrain</div>
+      </div>
+      <div class="header-actions">
+        <input class="form-control" id="search-projects" placeholder="Rechercher client, zone…" style="width:220px" oninput="renderProjects()">
+        <select class="form-control" id="filter-type" style="width:160px" onchange="renderProjects()">
+          <option value="">Tous les types</option>
+          <option value="greenhouse">Serre</option>
+          <option value="irrigation">Irrigation</option>
+          <option value="substrate">Substrat coco</option>
+          <option value="crops">Cultures</option>
+          <option value="consulting">Consulting</option>
+          <option value="equipment">Équipements</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" id="projects-count">Projets</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Zone / Localisation</th>
+                <th>Type(s) d'activité</th>
+                <th>Ingénieur assigné</th>
+                <th>Visites</th>
+                <th>Dernière visite</th>
+                <th>Statut</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="projects-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['super_admin']);
+  if (session) {
+    UI.renderSidebar(session);
+    renderProjects();
+  }
+
+  function renderProjects() {
+    const q = (document.getElementById('search-projects').value || '').toLowerCase();
+    const typeFilter = document.getElementById('filter-type').value;
+
+    let projects = DB.getProjects().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (q) {
+      projects = projects.filter(p =>
+        p.clientName.toLowerCase().includes(q) ||
+        (p.zone || '').toLowerCase().includes(q) ||
+        (p.location || '').toLowerCase().includes(q)
+      );
+    }
+
+    if (typeFilter) {
+      projects = projects.filter(p => {
+        const visits = DB.getVisitsByProject(p.id);
+        return visits.some(v => (v.projectTypes || []).includes(typeFilter));
+      });
+    }
+
+    document.getElementById('projects-count').textContent = `${projects.length} projet${projects.length !== 1 ? 's' : ''}`;
+
+    const tbody = document.getElementById('projects-tbody');
+    if (!projects.length) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <div class="empty-title">Aucun projet trouvé</div>
+        <div class="empty-desc">Les projets sont générés automatiquement lors de la soumission d'une fiche de visite.</div>
+      </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = projects.map(p => {
+      const visits = DB.getVisitsByProject(p.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const lastVisit = visits[0];
+      const user = DB.getUserById(p.assignedTo);
+      const types = visits.reduce((acc, v) => {
+        (v.projectTypes || []).forEach(t => { if (!acc.includes(t)) acc.push(t); });
+        return acc;
+      }, []);
+      return `<tr onclick="window.location.href='project-view.html?projectId=${DB.esc(p.id)}'" style="cursor:pointer">
+        <td>
+          <div class="fw-600">${DB.esc(p.clientName)}</div>
+          <div class="text-xs text-muted">${DB.esc(p.clientPhone) || ''}</div>
+        </td>
+        <td>${DB.esc(p.zone || p.location) || '—'}</td>
+        <td style="max-width:200px">${UI.projectTypeBadges(types)}</td>
+        <td>${user ? `<div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:26px;height:26px;font-size:0.65rem">${DB.esc(user.avatar)}</div>${DB.esc(user.name)}</div>` : '—'}</td>
+        <td><span class="badge badge-gray">${visits.length}</span></td>
+        <td class="text-muted">${lastVisit ? DB.formatDate(lastVisit.createdAt) : '—'}</td>
+        <td>${UI.statusBadge(p.status)}</td>
+        <td><a href="project-view.html?projectId=${DB.esc(p.id)}" class="btn btn-sm btn-secondary" onclick="event.stopPropagation()">Ouvrir</a></td>
+      </tr>`;
+    }).join('');
+  }
+</script>
+</body>
+</html>

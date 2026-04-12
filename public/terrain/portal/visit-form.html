@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouvelle Fiche de Visite — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .step-note {
+      background: var(--amber-50);
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: var(--amber-600);
+      margin-bottom: 20px;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .crops-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .crop-tag {
+      display: flex; align-items: center; gap: 4px;
+      padding: 4px 10px;
+      background: var(--green-100);
+      color: var(--green-800);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .crop-tag button { background: none; border: none; cursor: pointer; color: var(--green-600); font-size: 0.9rem; line-height: 1; padding: 0; }
+    .sub-section {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--ink-100);
+    }
+    .sub-section:last-child { border-bottom: none; }
+    .sub-section-title {
+      font-size: 0.8rem; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--green-700);
+      margin-bottom: 16px;
+    }
+    .photo-add-btn {
+      aspect-ratio: 4/3;
+      border: 2px dashed var(--green-300);
+      border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; cursor: pointer; background: var(--green-50);
+      color: var(--green-600); font-size: 0.82rem; font-weight: 500;
+      transition: all .15s;
+    }
+    .photo-add-btn:hover { background: var(--green-100); border-color: var(--green-500); }
+    .photo-add-btn .add-icon { font-size: 1.8rem; }
+    #photo-file-input { display: none; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Portail Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Portail</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Mon Espace</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item active" href="visit-form.html"><span class="nav-icon">📋</span>Nouvelle visite</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">—</div>
+          <div class="user-role" id="sb-user-role">—</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title">Fiche de Visite de Site</div>
+        <div class="page-subtitle" id="form-progress-label">Étape 1 sur 10</div>
+      </div>
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn btn-secondary">← Annuler</a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="step-wizard">
+
+        <!-- Step Header -->
+        <div class="step-header">
+          <div class="step-header-title" id="step-title">Identification du client</div>
+          <div class="step-header-sub" id="step-sub">Informations de base sur le client et le site visité</div>
+          <div class="step-progress" id="step-progress"></div>
+        </div>
+
+        <!-- Step Body -->
+        <div class="step-body">
+
+          <!-- ══════════════════════════════════════════
+               STEP 1 — Client & Site Identification
+          ══════════════════════════════════════════ -->
+          <div class="step-section active" id="step-1">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="clientName">Nom du client <span class="required">*</span></label>
+                <input class="form-control" type="text" id="clientName" placeholder="Ex: SAPH, M. Konan Yves…" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="clientPhone">Téléphone</label>
+                <input class="form-control" type="tel" id="clientPhone" placeholder="+225 07 XX XX XX XX">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="clientEmail">Email</label>
+                <input class="form-control" type="email" id="clientEmail" placeholder="client@email.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="zone">Zone / Région <span class="required">*</span></label>
+                <select class="form-control" id="zone" required>
+                  <option value="">-- Sélectionner --</option>
+                  <optgroup label="Zones principales">
+                    <option>Abidjan</option>
+                    <option>Yamoussoukro</option>
+                    <option>Bouaké</option>
+                    <option>San Pedro</option>
+                    <option>Daloa</option>
+                    <option>Korhogo</option>
+                    <option>Man</option>
+                    <option>Abengourou</option>
+                    <option>Divo</option>
+                    <option>Gagnoa</option>
+                  </optgroup>
+                  <optgroup label="Autres zones">
+                    <option>Adzopé</option>
+                    <option>Agboville</option>
+                    <option>Bondoukou</option>
+                    <option>Bongouanou</option>
+                    <option>Dimbokro</option>
+                    <option>Ferkessédougou</option>
+                    <option>Grand-Bassam</option>
+                    <option>Guiglo</option>
+                    <option>Issia</option>
+                    <option>Odienné</option>
+                    <option>Sassandra</option>
+                    <option>Soubré</option>
+                    <option>Tiassalé</option>
+                    <option>Toumodi</option>
+                    <option>Autre</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="siteAddress">Adresse / Localisation du site <span class="required">*</span></label>
+                <input class="form-control" type="text" id="siteAddress" placeholder="Ex: Village Koffikro, route de Yamoussoukro, km 12…" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="siteGPS">Coordonnées GPS <span class="hint">(si disponible)</span></label>
+                <input class="form-control" type="text" id="siteGPS" placeholder="Ex: 5.3600, -4.0083" pattern="[0-9.,\-\s]+">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="visitDate">Date de visite <span class="required">*</span></label>
+                <input class="form-control" type="date" id="visitDate" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="landArea">Superficie totale du terrain (m²)</label>
+                <div class="input-unit">
+                  <input class="form-control" type="number" id="landArea" placeholder="Ex: 5000" min="0">
+                  <span class="unit-label">m²</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="landTenure">Titre foncier</label>
+                <select class="form-control" id="landTenure">
+                  <option value="">-- Sélectionner --</option>
+                  <option value="Propriété personnelle">Propriété personnelle</option>
+                  <option value="Location / Bail">Location / Bail</option>
+                  <option value="Terrain familial">Terrain familial</option>
+                  <option value="Terre coutumière">Terre coutumière</option>
+                  <option value="Emphytéose">Emphytéose</option>
+                  <option value="Non précisé">Non précisé</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label" for="clientExperience">Expérience agricole du client</label>
+                <select class="form-control" id="clientExperience">
+                  <option value="">-- Sélectionner --</option>
+                  <option value="Aucune expérience">Aucune expérience</option>
+                  <option value="Agriculture plein champ (conventionnel)">Agriculture plein champ (conventionnel)</option>
+                  <option value="Agriculture plein champ (biologique)">Agriculture plein champ (biologique)</option>
+                  <option value="Serre — débutant">Serre — débutant</option>
+                  <option value="Serre — expérimenté">Serre — expérimenté</option>
+                  <option value="Professionnel agronome">Professionnel agronome</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 2 — Project Types
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-2">
+            <div class="step-note"><span>ℹ</span><span>Sélectionnez tous les services/types d'activités concernés par ce projet. Les sections correspondantes seront affichées dans les étapes suivantes.</span></div>
+
+            <label class="form-label">Types d'activité / Services Arbre Bio <span class="required">*</span></label>
+            <div class="check-group" id="project-types-group">
+              <label class="check-item" id="lbl-greenhouse">
+                <input type="checkbox" name="projectTypes" value="greenhouse"> 🏡 Serre Tropicale
+              </label>
+              <label class="check-item" id="lbl-irrigation">
+                <input type="checkbox" name="projectTypes" value="irrigation"> 💧 Irrigation
+              </label>
+              <label class="check-item" id="lbl-substrate">
+                <input type="checkbox" name="projectTypes" value="substrate"> 🥥 Substrat Coco / Fibres
+              </label>
+              <label class="check-item" id="lbl-crops">
+                <input type="checkbox" name="projectTypes" value="crops"> 🌾 Installation Cultures
+              </label>
+              <label class="check-item" id="lbl-consulting">
+                <input type="checkbox" name="projectTypes" value="consulting"> 📊 Consulting Agronomique
+              </label>
+              <label class="check-item" id="lbl-equipment">
+                <input type="checkbox" name="projectTypes" value="equipment"> 🔧 Équipements Agricoles
+              </label>
+            </div>
+
+            <div class="form-group mt-24">
+              <label class="form-label" for="projectObjective">Objectif principal du projet <span class="required">*</span></label>
+              <select class="form-control" id="projectObjective" required>
+                <option value="">-- Sélectionner --</option>
+                <option value="Consommation personnelle / familiale">Consommation personnelle / familiale</option>
+                <option value="Marché local (vente directe)">Marché local (vente directe)</option>
+                <option value="Approvisionnement supermarchés / hôtels">Approvisionnement supermarchés / hôtels</option>
+                <option value="Export sous-régional">Export sous-régional</option>
+                <option value="Export international">Export international</option>
+                <option value="Agrotourisme / démonstration">Agrotourisme / démonstration</option>
+                <option value="Recherche / expérimentation">Recherche / expérimentation</option>
+                <option value="Non défini">Non défini</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="organicCert">Certification biologique souhaitée ?</label>
+              <select class="form-control" id="organicCert">
+                <option value="">-- Sélectionner --</option>
+                <option value="Oui — certification visée">Oui — certification visée</option>
+                <option value="Non — production conventionnelle">Non — production conventionnelle</option>
+                <option value="Pratiques biologiques sans certification">Pratiques biologiques sans certification</option>
+                <option value="Non défini">Non défini</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="projectBudgetRange">Enveloppe budgétaire globale (FCFA)</label>
+              <select class="form-control" id="projectBudgetRange">
+                <option value="">-- Sélectionner --</option>
+                <option value="Moins de 5 millions">Moins de 5 millions FCFA</option>
+                <option value="5 à 15 millions">5 à 15 millions FCFA</option>
+                <option value="15 à 30 millions">15 à 30 millions FCFA</option>
+                <option value="30 à 60 millions">30 à 60 millions FCFA</option>
+                <option value="60 à 100 millions">60 à 100 millions FCFA</option>
+                <option value="Plus de 100 millions">Plus de 100 millions FCFA</option>
+                <option value="Non défini">Non défini</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 3 — Greenhouse
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-3">
+            <div class="sub-section">
+              <div class="sub-section-title">Dimensionnement</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="ghCount">Nombre de serres</label>
+                  <input class="form-control" type="number" id="ghCount" min="1" placeholder="Ex: 2">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghSizeEach">Surface unitaire (m²)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="ghSizeEach" min="0" placeholder="Ex: 500">
+                    <span class="unit-label">m²</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghLength">Longueur (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="ghLength" min="0" placeholder="Ex: 50">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghWidth">Largeur (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="ghWidth" min="0" placeholder="Ex: 10">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghGutterHeight">Hauteur gouttière (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="ghGutterHeight" min="0" step="0.1" placeholder="Ex: 4.0">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghRidgeHeight">Hauteur faîtage (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="ghRidgeHeight" min="0" step="0.1" placeholder="Ex: 5.5">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Structure & Couverture</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="ghOrientation">Orientation du faîtage</label>
+                  <select class="form-control" id="ghOrientation">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Nord–Sud (recommandé)">Nord–Sud (recommandé)</option>
+                    <option value="Est–Ouest">Est–Ouest</option>
+                    <option value="À déterminer selon site">À déterminer selon site</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghStructureType">Type de structure</label>
+                  <select class="form-control" id="ghStructureType">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Tunnel simple">Tunnel simple</option>
+                    <option value="Multi-chapelle acier galvanisé">Multi-chapelle acier galvanisé</option>
+                    <option value="Serre verre">Serre verre</option>
+                    <option value="Serre ombragée (shade house)">Serre ombragée (shade house)</option>
+                    <option value="Serre insect-proof">Serre insect-proof</option>
+                    <option value="Serre Venlo">Serre Venlo</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghCoverType">Couverture</label>
+                  <select class="form-control" id="ghCoverType">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Polyéthylène simple paroi">Polyéthylène simple paroi</option>
+                    <option value="Polyéthylène double paroi gonflée">Polyéthylène double paroi gonflée</option>
+                    <option value="Polycarbonate">Polycarbonate</option>
+                    <option value="Verre horticole">Verre horticole</option>
+                    <option value="Filet ombrant 30%">Filet ombrant 30%</option>
+                    <option value="Filet ombrant 50%">Filet ombrant 50%</option>
+                    <option value="Filet insect-proof 50 mesh">Filet insect-proof 50 mesh</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghVentilation">Ventilation</label>
+                  <select class="form-control" id="ghVentilation">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Naturelle (faîtière + jalousies)">Naturelle (faîtière + jalousies)</option>
+                    <option value="Forcée (pad & fan)">Forcée (pad & fan)</option>
+                    <option value="Hybride naturelle + forcée">Hybride naturelle + forcée</option>
+                    <option value="Climatisation">Climatisation</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ghAutomation">Niveau d'automatisation</label>
+                  <select class="form-control" id="ghAutomation">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Manuel">Manuel</option>
+                    <option value="Semi-automatique">Semi-automatique</option>
+                    <option value="Automatique (capteurs + contrôleur)">Automatique (capteurs + contrôleur)</option>
+                    <option value="Full IoT / connecté">Full IoT / connecté</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Notes complémentaires serre</div>
+              <div class="form-group">
+                <textarea class="form-control" id="ghNotes" rows="3" placeholder="Obstacles d'ombrage, contraintes spécifiques, demandes particulières du client…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 4 — Irrigation
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-4">
+            <div class="sub-section">
+              <div class="sub-section-title">Source & Qualité de l'Eau</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="waterSource">Source d'eau <span class="required">*</span></label>
+                  <select class="form-control" id="waterSource">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Forage">Forage (puits artésien)</option>
+                    <option value="Puits traditionnel">Puits traditionnel</option>
+                    <option value="Fleuve / rivière">Fleuve / rivière</option>
+                    <option value="Réseau SODECI / municipal">Réseau SODECI / municipal</option>
+                    <option value="Eau de pluie (collecte)">Eau de pluie (collecte)</option>
+                    <option value="Mare / retenue">Mare / retenue d'eau</option>
+                    <option value="Combiné">Combiné</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="waterFlowRate">Débit estimé (L/heure)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="waterFlowRate" min="0" placeholder="Ex: 2000">
+                    <span class="unit-label">L/h</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="waterQualityPH">pH eau mesuré</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="waterQualityPH" min="0" max="14" step="0.1" placeholder="Ex: 6.8">
+                    <span class="unit-label">pH</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="waterQualityEC">EC eau mesurée</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="waterQualityEC" min="0" step="0.01" placeholder="Ex: 0.45">
+                    <span class="unit-label">mS/cm</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="waterSourceDistance">Distance source → serre (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="waterSourceDistance" min="0" placeholder="Ex: 80">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="waterElevationDiff">Dénivelé source / serre (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="waterElevationDiff" step="0.1" placeholder="+ = source en hauteur">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label" for="waterQualityNotes">Observations qualité eau (fer, calcaire, chlore…)</label>
+                  <textarea class="form-control" id="waterQualityNotes" rows="2" placeholder="Ex: Eau calcaire, légère odeur, analyse labo recommandée…"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Pompe & Stockage</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="pumpExists">Pompe existante sur site ?</label>
+                  <select class="form-control" id="pumpExists">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Oui — en bon état">Oui — en bon état</option>
+                    <option value="Oui — vétuste / à remplacer">Oui — vétuste / à remplacer</option>
+                    <option value="Non — à installer">Non — à installer</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pumpBrand">Marque / Modèle pompe</label>
+                  <input class="form-control" type="text" id="pumpBrand" placeholder="Ex: Grundfos CM5, Pedrollo JCR…">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pumpPower">Puissance pompe (kW)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="pumpPower" min="0" step="0.1" placeholder="Ex: 1.5">
+                    <span class="unit-label">kW</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="storageCapacity">Capacité stockage eau (L)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="storageCapacity" min="0" placeholder="Ex: 10000">
+                    <span class="unit-label">L</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Système d'Irrigation</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="irrigationType">Type d'irrigation</label>
+                  <select class="form-control" id="irrigationType">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Goutte-à-goutte (drip)">Goutte-à-goutte (drip)</option>
+                    <option value="Micro-aspersion">Micro-aspersion</option>
+                    <option value="Aspersion (sprinkler)">Aspersion (sprinkler)</option>
+                    <option value="NFT (film nutritif)">NFT (film nutritif)</option>
+                    <option value="DWC (culture flottante)">DWC (culture flottante)</option>
+                    <option value="Irrigation gravitaire">Irrigation gravitaire</option>
+                    <option value="Hybride">Hybride</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="irrigationZones">Nombre de zones d'irrigation</label>
+                  <input class="form-control" type="number" id="irrigationZones" min="1" placeholder="Ex: 4">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="irrigationController">Contrôleur / Programmateur</label>
+                  <select class="form-control" id="irrigationController">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Manuel">Manuel</option>
+                    <option value="Programmateur simple">Programmateur simple</option>
+                    <option value="Contrôleur multi-zones">Contrôleur multi-zones</option>
+                    <option value="Système connecté / IoT">Système connecté / IoT</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="fertigation">Ferti-irrigation (fertigation) ?</label>
+                  <select class="form-control" id="fertigation">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Oui — injecteur Venturi">Oui — injecteur Venturi</option>
+                    <option value="Oui — pompe doseuse">Oui — pompe doseuse</option>
+                    <option value="Oui — bac de dilution">Oui — bac de dilution</option>
+                    <option value="Non">Non</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="filtrationSystem">Système de filtration</label>
+                  <select class="form-control" id="filtrationSystem">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Filtre à disques">Filtre à disques</option>
+                    <option value="Filtre à sable">Filtre à sable</option>
+                    <option value="Filtre à tamis">Filtre à tamis</option>
+                    <option value="Osmose inverse partielle">Osmose inverse partielle</option>
+                    <option value="Combiné">Combiné</option>
+                    <option value="Aucun">Aucun</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 5 — Substrate & Coco
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-5">
+            <div class="step-note"><span>🥥</span><span>Arbre Bio Africa distribue les fibres et la poudre de coco (coco peat) pour substrats hors-sol. Renseignez les besoins exacts du client.</span></div>
+            <div class="sub-section">
+              <div class="sub-section-title">Type & Volume de Substrat</div>
+              <div class="form-group">
+                <label class="form-label">Type de substrat <span class="required">*</span></label>
+                <div class="check-group">
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Coco peat (poudre de coco)"> Coco peat (poudre)</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Coco fiber (fibres longues)"> Coco fiber (fibres)</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Coco chips (copeaux)"> Coco chips</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Laine de roche">  Laine de roche</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Perlite"> Perlite</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Terreau organique"> Terreau org.</label>
+                  <label class="check-item"><input type="checkbox" name="substrateTypes" value="Mix personnalisé"> Mix personnalisé</label>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="substrateVolume">Volume de substrat requis (m³)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="substrateVolume" min="0" step="0.1" placeholder="Ex: 12.5">
+                    <span class="unit-label">m³</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="substrateBags">Nombre de sacs / blocs estimé</label>
+                  <input class="form-control" type="number" id="substrateBags" min="0" placeholder="Ex: 250">
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Spécifications Coco</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="cocoSource">Origine / Source coco</label>
+                  <select class="form-control" id="cocoSource">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="SAPH (Côte d'Ivoire)">SAPH (Côte d'Ivoire)</option>
+                    <option value="Producteur local CI">Producteur local CI</option>
+                    <option value="Import Sri Lanka">Import Sri Lanka</option>
+                    <option value="Import Inde">Import Inde</option>
+                    <option value="Import Philippines">Import Philippines</option>
+                    <option value="Non défini">Non défini</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cocoGrade">Grade / Qualité coco</label>
+                  <select class="form-control" id="cocoGrade">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Premium (faible EC, lavé)">Premium (faible EC, lavé)</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Brut (non lavé)">Brut (non lavé)</option>
+                    <option value="Non précisé">Non précisé</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="bagSize">Format de conditionnement</label>
+                  <select class="form-control" id="bagSize">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Sacs de 5 kg">Sacs de 5 kg</option>
+                    <option value="Sacs de 10 kg">Sacs de 10 kg</option>
+                    <option value="Sacs de 25 kg">Sacs de 25 kg</option>
+                    <option value="Blocs compressés (brick)">Blocs compressés (brick)</option>
+                    <option value="Grow bags pré-remplis">Grow bags pré-remplis</option>
+                    <option value="Vrac (tonne)">Vrac (tonne)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="substrateTreatment">Traitement prévu avant utilisation</label>
+                  <select class="form-control" id="substrateTreatment">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Réhydratation simple">Réhydratation simple</option>
+                    <option value="Rinçage + correction pH">Rinçage + correction pH</option>
+                    <option value="Stérilisation à la vapeur">Stérilisation à la vapeur</option>
+                    <option value="Inoculation mycorhize">Inoculation mycorhize</option>
+                    <option value="Aucun traitement">Aucun traitement</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="substrateNotes">Notes substrat / coco</label>
+                <textarea class="form-control" id="substrateNotes" rows="2" placeholder="Besoins spécifiques, historique, contraintes…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 6 — Crops & Culture
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-6">
+            <div class="sub-section">
+              <div class="sub-section-title">Cultures Prévues</div>
+              <div class="form-group">
+                <label class="form-label">Sélectionner les cultures <span class="hint">(cliquez pour ajouter)</span></label>
+                <div class="check-group">
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Tomate"> 🍅 Tomate</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Poivron"> 🫑 Poivron</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Concombre"> 🥒 Concombre</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Laitue"> 🥬 Laitue</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Épinard"> 🌿 Épinard</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Basilic"> 🌱 Basilic</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Coriandre"> 🌿 Coriandre</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Fraise"> 🍓 Fraise</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Aubergine"> 🍆 Aubergine</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Piment"> 🌶️ Piment</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Haricot vert"> 🫘 Haricot vert</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Courgette"> 🥦 Courgette</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Melon"> 🍈 Melon</label>
+                  <label class="check-item"><input type="checkbox" name="cropsList" value="Pastèque"> 🍉 Pastèque</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cropCustom">Autre culture <span class="hint">(saisir manuellement)</span></label>
+                <div style="display:flex;gap:8px">
+                  <input class="form-control" type="text" id="cropCustom" placeholder="Ex: Persil, Menthe, Gombo…" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomCrop();}">
+                  <button type="button" class="btn btn-secondary" onclick="addCustomCrop()">Ajouter</button>
+                </div>
+                <div class="crops-tags mt-8" id="custom-crops-tags"></div>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="sub-section-title">Système de Culture & Gestion</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="cropSystem">Système de culture</label>
+                  <select class="form-control" id="cropSystem">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Hors-sol hydroponie (substrat)">Hors-sol hydroponie (substrat)</option>
+                    <option value="NFT (film nutritif)">NFT (film nutritif)</option>
+                    <option value="DWC (eau profonde)">DWC (eau profonde)</option>
+                    <option value="Aquaponie">Aquaponie</option>
+                    <option value="Pleine terre">Pleine terre</option>
+                    <option value="Bacs hors-sol">Bacs hors-sol</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cropCycle">Cycle cultural (jours)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="cropCycle" min="0" placeholder="Ex: 90">
+                    <span class="unit-label">jours</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cropDensity">Densité plantation (plants/m²)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="cropDensity" min="0" step="0.1" placeholder="Ex: 2.5">
+                    <span class="unit-label">pl/m²</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cropMarket">Marché / Débouché identifié</label>
+                  <input class="form-control" type="text" id="cropMarket" placeholder="Ex: Marché Cocody, Carrefour Abidjan…">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="organicTarget">Objectif biologique</label>
+                  <select class="form-control" id="organicTarget">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Oui — 100% biologique">Oui — 100% biologique</option>
+                    <option value="Partiellement biologique">Partiellement biologique</option>
+                    <option value="Non — intrants conventionnels">Non — intrants conventionnels</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cropNotes">Notes cultures</label>
+                <textarea class="form-control" id="cropNotes" rows="2" placeholder="Variétés préférées, historique phytosanitaire, contraintes…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 7 — Equipment (only if selected)
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-7">
+            <div class="sub-section">
+              <div class="sub-section-title">Équipements Demandés</div>
+              <div class="form-group">
+                <label class="form-label">Sélectionner les équipements</label>
+                <div class="check-group">
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Pompe d'irrigation"> Pompe irrigation</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Motopompe"> Motopompe</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Groupe électrogène"> Groupe électrogène</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Panneaux solaires"> Panneaux solaires</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Château d'eau"> Château d'eau</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Système de filtration"> Filtre</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Contrôleur pH/EC"> Contrôleur pH/EC</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Station météo"> Station météo</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Chambre froide"> Chambre froide</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="Outils manuels"> Outils manuels</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="pH-mètre portable"> pH-mètre</label>
+                  <label class="check-item"><input type="checkbox" name="equipmentList" value="EC-mètre portable"> EC-mètre</label>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="equipmentBrand">Marque préférée / spécification</label>
+                  <input class="form-control" type="text" id="equipmentBrand" placeholder="Ex: Grundfos, Hortalan, Irritec…">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="equipmentBudget">Budget équipements (FCFA)</label>
+                  <input class="form-control" type="number" id="equipmentBudget" placeholder="Ex: 2500000" min="0">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="equipmentNotes">Notes équipements</label>
+                <textarea class="form-control" id="equipmentNotes" rows="2" placeholder="Contraintes, état existant, besoins spécifiques…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 8 — Site Observations
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-8">
+            <div class="sub-section">
+              <div class="sub-section-title">Données Physiques du Site</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="sunOrientation">Orientation solaire du site</label>
+                  <select class="form-control" id="sunOrientation">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Nord–Sud (optimal)">Nord–Sud (optimal)</option>
+                    <option value="Est–Ouest">Est–Ouest</option>
+                    <option value="Sud-Est">Sud-Est</option>
+                    <option value="Sud-Ouest">Sud-Ouest</option>
+                    <option value="Ombré partiel">Ombré partiel</option>
+                    <option value="Très ombré (problématique)">Très ombré (problématique)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="slopePercent">Pente estimée du terrain (%)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="slopePercent" min="0" step="0.5" placeholder="Ex: 1.5">
+                    <span class="unit-label">%</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="drainageRisk">Risque de drainage / inondation</label>
+                  <select class="form-control" id="drainageRisk">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Faible — bien drainé">Faible — bien drainé</option>
+                    <option value="Modéré — à surveiller">Modéré — à surveiller</option>
+                    <option value="Élevé — travaux nécessaires">Élevé — travaux nécessaires</option>
+                    <option value="Très élevé — engorgement fréquent">Très élevé — engorgement fréquent</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="windExposure">Exposition au vent</label>
+                  <select class="form-control" id="windExposure">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Protégé (brise-vent naturel)">Protégé (brise-vent naturel)</option>
+                    <option value="Faible exposition">Faible exposition</option>
+                    <option value="Exposition modérée">Exposition modérée</option>
+                    <option value="Forte exposition (vent >50km/h fréquent)">Forte exposition</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="shadeObstacles">Obstacles d'ombrage identifiés</label>
+                  <input class="form-control" type="text" id="shadeObstacles" placeholder="Ex: Manguiers à 10m au nord, bâtiment côté est…">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="soilType">Type de sol observé</label>
+                  <select class="form-control" id="soilType">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Latéritique (rouge)">Latéritique (rouge)</option>
+                    <option value="Sableux">Sableux</option>
+                    <option value="Argileux">Argileux</option>
+                    <option value="Limono-argileux">Limono-argileux</option>
+                    <option value="Humifère (noir)">Humifère (noir)</option>
+                    <option value="Sablo-limoneux">Sablo-limoneux</option>
+                    <option value="Gravillonnaire">Gravillonnaire</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="soilPH">pH sol mesuré</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="soilPH" min="0" max="14" step="0.1" placeholder="Ex: 6.2">
+                    <span class="unit-label">pH</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="soilEC">EC sol mesurée</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="soilEC" min="0" step="0.01" placeholder="Ex: 0.8">
+                    <span class="unit-label">mS/cm</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Infrastructure & Accès</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="electricityAvailable">Électricité disponible ?</label>
+                  <select class="form-control" id="electricityAvailable">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Oui — stable">Oui — stable (CIE/SODECI)</option>
+                    <option value="Oui — délestages fréquents">Oui — délestages fréquents</option>
+                    <option value="Non — groupe requis">Non — groupe électrogène requis</option>
+                    <option value="Solaire uniquement">Solaire uniquement</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="electricityType">Type de courant</label>
+                  <select class="form-control" id="electricityType">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Monophasé 220V">Monophasé 220V</option>
+                    <option value="Triphasé 380V">Triphasé 380V</option>
+                    <option value="Non connu">Non connu</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="accessRoadWidth">Largeur voie d'accès (m)</label>
+                  <div class="input-unit">
+                    <input class="form-control" type="number" id="accessRoadWidth" min="0" step="0.5" placeholder="Ex: 4.0">
+                    <span class="unit-label">m</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="nearbyHazards">Risques / Nuisances identifiés</label>
+                  <input class="form-control" type="text" id="nearbyHazards" placeholder="Ex: Piste latéritique poussiéreuse, élevage voisin…">
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-section">
+              <div class="sub-section-title">Observations Générales du Technicien</div>
+              <div class="form-group">
+                <textarea class="form-control" id="observations" rows="5" placeholder="Résumez vos observations terrain : état général du site, points d'attention, recommandations préliminaires d'implantation, anomalies observées…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 9 — Photos
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-9">
+            <div class="step-note"><span>📸</span><span>Ajoutez jusqu'à 20 photos du site. Chaque photo doit être étiquetée pour faciliter l'identification dans le rapport.</span></div>
+
+            <input type="file" id="photo-file-input" accept="image/*" multiple onchange="handlePhotoFiles(this.files)">
+
+            <div style="display:flex;gap:12px;margin-bottom:20px">
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('photo-file-input').click()">
+                📸 Ajouter des photos
+              </button>
+              <span class="text-muted text-sm" style="line-height:2.2" id="photo-count-label">0 photo(s) ajoutée(s)</span>
+            </div>
+
+            <div style="margin-bottom:16px">
+              <label class="form-label">Étiquettes rapides <span class="hint">(cliquez pour pré-étiqueter)</span></label>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Vue générale du site')">Vue générale</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Source d\'eau / Forage')">Source eau</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Pompe existante')">Pompe</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Sol / Texture du sol')">Sol</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Accès / Portail')">Accès</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Obstacle ombrage')">Ombrage</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Zone d\'implantation prévue')">Implantation</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Tableau électrique')">Électricité</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Zone d\'engorgement')">Drainage</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setNextPhotoLabel('Croquis / Plan')">Croquis</button>
+              </div>
+            </div>
+
+            <div class="photo-grid" id="photo-grid">
+              <div class="photo-add-btn" onclick="document.getElementById('photo-file-input').click()">
+                <span class="add-icon">+</span>
+                <span>Ajouter une photo</span>
+              </div>
+            </div>
+
+            <div class="form-group mt-24">
+              <label class="form-label" for="photoNotes">Commentaires photos</label>
+              <textarea class="form-control" id="photoNotes" rows="2" placeholder="Notes complémentaires sur les photos prises…"></textarea>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               STEP 10 — Summary & Recommendations
+          ══════════════════════════════════════════ -->
+          <div class="step-section" id="step-10">
+            <div class="sub-section">
+              <div class="sub-section-title">Points Bloquants Identifiés</div>
+              <div class="form-group">
+                <textarea class="form-control" id="blockingIssues" rows="4" placeholder="Listez les contraintes majeures identifiées lors de la visite qui nécessitent une action avant installation…
+
+Ex: Eau non disponible sur site — forage à prévoir
+Ex: Sol hydromorphe sur 30cm — drainage obligatoire
+Ex: Piste d'accès impraticable pour camion livraison"></textarea>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="sub-section-title">Recommandations Préliminaires</div>
+              <div class="form-group">
+                <textarea class="form-control" id="recommendations" rows="5" placeholder="Vos recommandations techniques en tant qu'ingénieur / technicien terrain…
+
+Ex: Serre recommandée : tunnel polyéthylène 2 × 500m² orientation N-S
+Ex: Irrigation goutte-à-goutte avec fertigation Venturi
+Ex: Substrat coco peat SAPH — 250 sacs de 10 kg
+Ex: Traitement eau préalable recommandé (pH 7.8 mesuré)"></textarea>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="sub-section-title">Prochaines Étapes</div>
+              <div class="form-group">
+                <textarea class="form-control" id="nextSteps" rows="3" placeholder="Ex: Analyse eau laboratoire
+Ex: Devis détaillé à transmettre sous 7 jours
+Ex: Visite forage avec technicien hydraulique"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="estimatedBudget">Estimation budgétaire globale (FCFA)</label>
+              <div class="input-unit">
+                <input class="form-control" type="number" id="estimatedBudget" placeholder="Ex: 18500000" min="0">
+                <span class="unit-label">FCFA</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.step-body -->
+
+        <!-- Step Footer -->
+        <div class="step-footer">
+          <button type="button" class="btn btn-secondary" id="btn-prev" onclick="goStep(-1)" style="display:none">
+            ← Précédent
+          </button>
+          <div style="font-size:0.82rem;color:var(--ink-400)" id="step-counter">Étape 1 / 10</div>
+          <button type="button" class="btn btn-primary" id="btn-next" onclick="goStep(1)">
+            Suivant →
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-submit" onclick="submitVisit()" style="display:none">
+            ✓ Soumettre la fiche
+          </button>
+        </div>
+
+      </div><!-- /.step-wizard -->
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['engineer', 'technician']);
+  if (session) UI.renderSidebar(session);
+
+  // ── State ────────────────────────────────────────
+  const TOTAL_STEPS = 10;
+  let currentStep = 1;
+  let photos = [];
+  let nextPhotoLabel = '';
+  let customCrops = [];
+
+  const stepMeta = [
+    { title: 'Identification client', sub: 'Informations de base sur le client et le site visité', short: 'Client' },
+    { title: 'Types d\'activité', sub: 'Services Arbre Bio concernés par ce projet', short: 'Activités' },
+    { title: 'Serre Tropicale', sub: 'Dimensionnement, structure et couverture', short: 'Serre' },
+    { title: 'Irrigation', sub: 'Eau, pompe, stockage et système d\'irrigation', short: 'Irrigation' },
+    { title: 'Substrat & Coco', sub: 'Fibres de coco, coco peat et substrats hors-sol', short: 'Substrat' },
+    { title: 'Cultures', sub: 'Espèces cultivées et système de production', short: 'Cultures' },
+    { title: 'Équipements', sub: 'Matériels et équipements agricoles requis', short: 'Équipements' },
+    { title: 'Observations Terrain', sub: 'Données physiques, sol, eau, énergie et accès', short: 'Terrain' },
+    { title: 'Photos du Site', sub: 'Documentation photographique du site', short: 'Photos' },
+    { title: 'Synthèse & Recommandations', sub: 'Points bloquants, recommandations et prochaines étapes', short: 'Synthèse' },
+  ];
+
+  // ── Init ─────────────────────────────────────────
+  document.getElementById('visitDate').valueAsDate = new Date();
+  renderProgress();
+  setupCheckboxGroups();
+
+  function setupCheckboxGroups() {
+    // Project types toggle selected class
+    document.querySelectorAll('.check-item input[type=checkbox], .check-item input[type=radio]').forEach(input => {
+      input.addEventListener('change', function() {
+        this.closest('.check-item').classList.toggle('selected', this.checked);
+      });
+    });
+  }
+
+  // ── Progress Bar ─────────────────────────────────
+  function renderProgress() {
+    const container = document.getElementById('step-progress');
+    container.innerHTML = stepMeta.map((s, i) => {
+      const n = i + 1;
+      const cls = n < currentStep ? 'done' : n === currentStep ? 'active' : '';
+      const icon = n < currentStep ? '✓' : n;
+      return `<div class="step-dot ${cls}">
+        <div class="step-num">${icon}</div>
+        <div class="step-label">${s.short}</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('step-title').textContent = stepMeta[currentStep - 1].title;
+    document.getElementById('step-sub').textContent = stepMeta[currentStep - 1].sub;
+    document.getElementById('step-counter').textContent = `Étape ${currentStep} / ${TOTAL_STEPS}`;
+    document.getElementById('form-progress-label').textContent = `Étape ${currentStep} sur ${TOTAL_STEPS}`;
+
+    // Show/hide prev/next/submit
+    document.getElementById('btn-prev').style.display = currentStep > 1 ? '' : 'none';
+    document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS ? '' : 'none';
+    document.getElementById('btn-submit').style.display = currentStep === TOTAL_STEPS ? '' : 'none';
+
+    // Show correct step section
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+      el.classList.toggle('active', i + 1 === currentStep);
+    });
+  }
+
+  // ── Navigation ────────────────────────────────────
+  function goStep(dir) {
+    if (dir > 0 && !validateCurrentStep()) return;
+    currentStep = Math.max(1, Math.min(TOTAL_STEPS, currentStep + dir));
+    renderProgress();
+    UI.scrollToTop();
+  }
+
+  function validateCurrentStep() {
+    if (currentStep === 1) {
+      const clientName = document.getElementById('clientName').value.trim();
+      const zone = document.getElementById('zone').value;
+      const siteAddress = document.getElementById('siteAddress').value.trim();
+      const visitDate = document.getElementById('visitDate').value;
+      if (!clientName || !zone || !siteAddress || !visitDate) {
+        UI.toast('Remplissez les champs obligatoires (Client, Zone, Adresse, Date).', 'error');
+        return false;
+      }
+    }
+    if (currentStep === 2) {
+      const types = UI.getCheckedValues('projectTypes');
+      if (!types.length) {
+        UI.toast('Sélectionnez au moins un type d\'activité.', 'error');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ── Photos ────────────────────────────────────────
+  async function handlePhotoFiles(files) {
+    if (photos.length + files.length > 20) {
+      UI.toast('Maximum 20 photos par visite.', 'error');
+      return;
+    }
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try {
+        const dataURL = await UI.fileToDataURL(file);
+        const label = nextPhotoLabel || file.name.replace(/\.[^.]+$/, '');
+        photos.push({ id: 'ph_' + Date.now() + Math.random().toString(36).slice(2), label, dataURL, takenAt: new Date().toISOString() });
+        nextPhotoLabel = '';
+      } catch (e) {
+        UI.toast('Erreur lecture photo: ' + file.name, 'error');
+      }
+    }
+    renderPhotoGrid();
+    document.getElementById('photo-file-input').value = '';
+  }
+
+  function renderPhotoGrid() {
+    const grid = document.getElementById('photo-grid');
+    document.getElementById('photo-count-label').textContent = `${photos.length} photo(s) ajoutée(s)`;
+    grid.innerHTML = photos.map((p, i) => `
+      <div class="photo-slot">
+        <img src="${p.dataURL}" alt="${p.label}">
+        <div class="photo-overlay">
+          <button class="photo-remove" onclick="removePhoto(${i})">✕ Supprimer</button>
+        </div>
+        <input type="text" value="${p.label}" onchange="photos[${i}].label=this.value"
+          style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;border:none;padding:5px 8px;font-size:0.72rem;z-index:2"
+          placeholder="Étiquette photo…">
+      </div>`).join('') +
+      (photos.length < 20 ? `<div class="photo-add-btn" onclick="document.getElementById('photo-file-input').click()"><span class="add-icon">+</span><span>Ajouter</span></div>` : '');
+  }
+
+  function removePhoto(i) {
+    photos.splice(i, 1);
+    renderPhotoGrid();
+  }
+
+  function setNextPhotoLabel(label) {
+    nextPhotoLabel = label;
+    UI.toast(`Prochaine photo : "${label}"`, 'default', 2000);
+    document.getElementById('photo-file-input').click();
+  }
+
+  // ── Custom Crops ──────────────────────────────────
+  function addCustomCrop() {
+    const input = document.getElementById('cropCustom');
+    const val = input.value.trim();
+    if (!val) return;
+    customCrops.push(val);
+    input.value = '';
+    renderCustomCropTags();
+  }
+
+  function removeCustomCrop(i) {
+    customCrops.splice(i, 1);
+    renderCustomCropTags();
+  }
+
+  function renderCustomCropTags() {
+    const container = document.getElementById('custom-crops-tags');
+    if (!container) return;
+    container.innerHTML = customCrops.map((c, i) =>
+      `<span class="crop-tag">${DB.esc(c)}<button type="button" onclick="removeCustomCrop(${i})" title="Retirer">×</button></span>`
+    ).join('');
+  }
+
+  // ── Submit ────────────────────────────────────────
+  function submitVisit() {
+    const clientName = document.getElementById('clientName').value.trim();
+    if (!clientName) { UI.toast('Nom client manquant.', 'error'); currentStep = 1; renderProgress(); return; }
+
+    const types = UI.getCheckedValues('projectTypes');
+    if (!types.length) { UI.toast('Aucun type d\'activité sélectionné.', 'error'); currentStep = 2; renderProgress(); return; }
+
+    const checkedCrops = UI.getCheckedValues('cropsList');
+    const allCrops = [...checkedCrops, ...customCrops];
+    const substrateTypes = UI.getCheckedValues('substrateTypes');
+    const equipmentList = UI.getCheckedValues('equipmentList');
+
+    const visitData = {
+      visitedBy: session.userId,
+      // S1
+      clientName,
+      clientPhone: document.getElementById('clientPhone').value.trim(),
+      clientEmail: document.getElementById('clientEmail').value.trim(),
+      zone: document.getElementById('zone').value,
+      siteAddress: document.getElementById('siteAddress').value.trim(),
+      siteGPS: document.getElementById('siteGPS').value.trim(),
+      visitDate: document.getElementById('visitDate').value,
+      landArea: document.getElementById('landArea').value,
+      landTenure: document.getElementById('landTenure').value,
+      clientExperience: document.getElementById('clientExperience').value,
+      // S2
+      projectTypes: types,
+      projectObjective: document.getElementById('projectObjective').value,
+      organicCert: document.getElementById('organicCert').value,
+      projectBudgetRange: document.getElementById('projectBudgetRange').value,
+      // S3 — Greenhouse
+      ghCount: document.getElementById('ghCount').value,
+      ghSizeEach: document.getElementById('ghSizeEach').value,
+      ghLength: document.getElementById('ghLength').value,
+      ghWidth: document.getElementById('ghWidth').value,
+      ghGutterHeight: document.getElementById('ghGutterHeight').value,
+      ghRidgeHeight: document.getElementById('ghRidgeHeight').value,
+      ghOrientation: document.getElementById('ghOrientation').value,
+      ghStructureType: document.getElementById('ghStructureType').value,
+      ghCoverType: document.getElementById('ghCoverType').value,
+      ghVentilation: document.getElementById('ghVentilation').value,
+      ghAutomation: document.getElementById('ghAutomation').value,
+      ghNotes: document.getElementById('ghNotes').value,
+      // S4 — Irrigation
+      waterSource: document.getElementById('waterSource').value,
+      waterFlowRate: document.getElementById('waterFlowRate').value,
+      waterQualityPH: document.getElementById('waterQualityPH').value,
+      waterQualityEC: document.getElementById('waterQualityEC').value,
+      waterSourceDistance: document.getElementById('waterSourceDistance').value,
+      waterElevationDiff: document.getElementById('waterElevationDiff').value,
+      waterQualityNotes: document.getElementById('waterQualityNotes').value,
+      pumpExists: document.getElementById('pumpExists').value,
+      pumpBrand: document.getElementById('pumpBrand').value,
+      pumpPower: document.getElementById('pumpPower').value,
+      storageCapacity: document.getElementById('storageCapacity').value,
+      irrigationType: document.getElementById('irrigationType').value,
+      irrigationZones: document.getElementById('irrigationZones').value,
+      irrigationController: document.getElementById('irrigationController').value,
+      fertigation: document.getElementById('fertigation').value,
+      filtrationSystem: document.getElementById('filtrationSystem').value,
+      // S5 — Substrate
+      substrateType: substrateTypes.join(', '),
+      substrateVolume: document.getElementById('substrateVolume').value,
+      substrateBags: document.getElementById('substrateBags').value,
+      cocoSource: document.getElementById('cocoSource').value,
+      cocoGrade: document.getElementById('cocoGrade').value,
+      bagSize: document.getElementById('bagSize').value,
+      substrateTreatment: document.getElementById('substrateTreatment').value,
+      substrateNotes: document.getElementById('substrateNotes').value,
+      // S6 — Crops
+      crops: allCrops,
+      cropSystem: document.getElementById('cropSystem').value,
+      cropCycle: document.getElementById('cropCycle').value,
+      cropDensity: document.getElementById('cropDensity').value,
+      cropMarket: document.getElementById('cropMarket').value,
+      organicTarget: document.getElementById('organicTarget').value,
+      cropNotes: document.getElementById('cropNotes').value,
+      // S7 — Equipment
+      equipmentList,
+      equipmentBrand: document.getElementById('equipmentBrand').value,
+      equipmentBudget: document.getElementById('equipmentBudget').value,
+      equipmentNotes: document.getElementById('equipmentNotes').value,
+      // S8 — Site
+      sunOrientation: document.getElementById('sunOrientation').value,
+      slopePercent: document.getElementById('slopePercent').value,
+      drainageRisk: document.getElementById('drainageRisk').value,
+      windExposure: document.getElementById('windExposure').value,
+      shadeObstacles: document.getElementById('shadeObstacles').value,
+      soilType: document.getElementById('soilType').value,
+      soilPH: document.getElementById('soilPH').value,
+      soilEC: document.getElementById('soilEC').value,
+      electricityAvailable: document.getElementById('electricityAvailable').value,
+      electricityType: document.getElementById('electricityType').value,
+      accessRoadWidth: document.getElementById('accessRoadWidth').value,
+      nearbyHazards: document.getElementById('nearbyHazards').value,
+      observations: document.getElementById('observations').value,
+      // S9 — Photos
+      photos,
+      photoNotes: document.getElementById('photoNotes').value,
+      // S10 — Summary
+      blockingIssues: document.getElementById('blockingIssues').value,
+      recommendations: document.getElementById('recommendations').value,
+      nextSteps: document.getElementById('nextSteps').value,
+      estimatedBudget: document.getElementById('estimatedBudget').value,
+    };
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Soumission en cours…';
+
+    try {
+      const visit = DB.createVisit(visitData);
+      UI.toast('Fiche de visite soumise avec succès !', 'success');
+      setTimeout(() => {
+        window.location.href = `../admin/project-view.html?visitId=${visit.id}`;
+      }, 1200);
+    } catch (e) {
+      UI.toast('Erreur lors de la soumission: ' + e.message, 'error');
+      btn.disabled = false;
+      btn.textContent = '✓ Soumettre la fiche';
+    }
+  }
+</script>
+</body>
+</html>

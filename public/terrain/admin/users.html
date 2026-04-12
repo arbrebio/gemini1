@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion Utilisateurs — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Plateforme Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Super Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Administration</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item active" href="users.html"><span class="nav-icon">👥</span>Utilisateurs</a>
+      <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span>Tous les projets</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">AA</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">Admin</div>
+          <div class="user-role" id="sb-user-role">Super Admin</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title">Gestion des Utilisateurs</div>
+        <div class="page-subtitle">Ingénieurs agronomes et techniciens terrain</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="UI.openModal('modal-add-user')">
+          <span>+</span> Nouvel utilisateur
+        </button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Équipe terrain</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="form-control" id="search-users" placeholder="Rechercher…" style="width:200px" oninput="renderUsers()">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Visites</th>
+                <th>Créé le</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Aucun utilisateur encore</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add User -->
+<div class="modal-backdrop" id="modal-add-user">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Ajouter un utilisateur</div>
+      <button class="modal-close" onclick="UI.closeModal('modal-add-user')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="add-user-error" class="alert alert-error" style="display:none">
+        <span>⚠</span><span id="add-user-error-msg"></span>
+      </div>
+      <form id="add-user-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="u-name">Nom complet <span class="required">*</span></label>
+          <input class="form-control" type="text" id="u-name" name="name" placeholder="Ex: Kouassi Jean-Marie" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="u-email">Email professionnel <span class="required">*</span></label>
+          <input class="form-control" type="email" id="u-email" name="email" placeholder="jean@arbrebio.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="u-role">Rôle <span class="required">*</span></label>
+          <select class="form-control" id="u-role" name="role" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="engineer">Ingénieur Agronome</option>
+            <option value="technician">Technicien Terrain</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="u-password">Mot de passe initial <span class="required">*</span></label>
+          <input class="form-control" type="password" id="u-password" name="password" placeholder="Min. 6 caractères" required minlength="6">
+          <div class="form-error">Le mot de passe doit faire au moins 6 caractères.</div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="UI.closeModal('modal-add-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="submitAddUser()">Créer l'utilisateur</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit User -->
+<div class="modal-backdrop" id="modal-edit-user">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Modifier l'utilisateur</div>
+      <button class="modal-close" onclick="UI.closeModal('modal-edit-user')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-user-form" novalidate>
+        <input type="hidden" id="eu-id">
+        <div class="form-group">
+          <label class="form-label" for="eu-name">Nom complet <span class="required">*</span></label>
+          <input class="form-control" type="text" id="eu-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="eu-email">Email <span class="required">*</span></label>
+          <input class="form-control" type="email" id="eu-email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="eu-role">Rôle <span class="required">*</span></label>
+          <select class="form-control" id="eu-role" required>
+            <option value="engineer">Ingénieur Agronome</option>
+            <option value="technician">Technicien Terrain</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="eu-password">Nouveau mot de passe <span class="hint">(laisser vide = inchangé)</span></label>
+          <input class="form-control" type="password" id="eu-password" placeholder="Nouveau mot de passe…">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="UI.closeModal('modal-edit-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="submitEditUser()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['super_admin']);
+  if (session) {
+    UI.renderSidebar(session);
+    renderUsers();
+  }
+
+  function renderUsers() {
+    const q = (document.getElementById('search-users').value || '').toLowerCase();
+    const users = DB.getUsers()
+      .filter(u => u.role !== 'super_admin')
+      .filter(u => !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    const tbody = document.getElementById('users-table-body');
+
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Aucun utilisateur trouvé</div><div class="empty-desc">Cliquez sur "Nouvel utilisateur" pour commencer.</div></div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = users.map(u => {
+      const visits = DB.getVisitsByUser(u.id).length;
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="user-avatar" style="background:var(--green-${u.role==='engineer'?'700':'500'})">${u.avatar}</div>
+            <div class="fw-600">${u.name}</div>
+          </div>
+        </td>
+        <td class="text-muted">${u.email}</td>
+        <td>${UI.roleBadge(u.role)}</td>
+        <td><span class="badge badge-gray">${visits} visite${visits !== 1 ? 's' : ''}</span></td>
+        <td class="text-muted">${DB.formatDate(u.createdAt)}</td>
+        <td>
+          <span class="badge ${u.active ? 'badge-green' : 'badge-gray'}">${u.active ? 'Actif' : 'Inactif'}</span>
+        </td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-secondary" onclick="openEdit('${u.id}')">Modifier</button>
+            <button class="btn btn-sm ${u.active ? 'btn-danger' : 'btn-secondary'}" onclick="toggleActive('${u.id}')">
+              ${u.active ? 'Désactiver' : 'Activer'}
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function submitAddUser() {
+    const form = document.getElementById('add-user-form');
+    const name = document.getElementById('u-name').value.trim();
+    const email = document.getElementById('u-email').value.trim();
+    const role = document.getElementById('u-role').value;
+    const password = document.getElementById('u-password').value;
+    const errDiv = document.getElementById('add-user-error');
+    const errMsg = document.getElementById('add-user-error-msg');
+
+    if (!name || !email || !role || !password) {
+      errDiv.style.display = 'flex'; errMsg.textContent = 'Tous les champs sont requis.'; return;
+    }
+    if (password.length < 6) {
+      errDiv.style.display = 'flex'; errMsg.textContent = 'Mot de passe trop court (min. 6 caractères).'; return;
+    }
+
+    const result = DB.createUser({ name, email, password, role });
+    if (result.ok) {
+      UI.closeModal('modal-add-user');
+      form.reset();
+      errDiv.style.display = 'none';
+      renderUsers();
+      UI.toast(`Utilisateur ${name} créé avec succès.`, 'success');
+    } else {
+      errDiv.style.display = 'flex'; errMsg.textContent = result.error;
+    }
+  }
+
+  function openEdit(id) {
+    const user = DB.getUserById(id);
+    if (!user) return;
+    document.getElementById('eu-id').value = user.id;
+    document.getElementById('eu-name').value = user.name;
+    document.getElementById('eu-email').value = user.email;
+    document.getElementById('eu-role').value = user.role;
+    document.getElementById('eu-password').value = '';
+    UI.openModal('modal-edit-user');
+  }
+
+  function submitEditUser() {
+    const id = document.getElementById('eu-id').value;
+    const name = document.getElementById('eu-name').value.trim();
+    const email = document.getElementById('eu-email').value.trim();
+    const role = document.getElementById('eu-role').value;
+    const password = document.getElementById('eu-password').value;
+
+    if (!name || !email || !role) { UI.toast('Champs requis manquants.', 'error'); return; }
+
+    const user = DB.getUserById(id);
+    if (!user) return;
+    user.name = name;
+    user.email = email;
+    user.role = role;
+    user.avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    if (password.length >= 6) {
+      user.password = DB._hash(password);
+    }
+    DB.saveUser(user);
+    UI.closeModal('modal-edit-user');
+    renderUsers();
+    UI.toast('Utilisateur mis à jour.', 'success');
+  }
+
+  function toggleActive(id) {
+    const user = DB.getUserById(id);
+    const action = user.active ? 'désactiver' : 'activer';
+    if (!UI.confirm(`Voulez-vous ${action} ${user.name} ?`)) return;
+    DB.toggleUserActive(id);
+    renderUsers();
+    UI.toast(`Compte ${action === 'désactiver' ? 'désactivé' : 'activé'}.`, 'success');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Espace — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Portail Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Portail</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Mon Espace</div>
+      <a class="nav-item active" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="visit-form.html"><span class="nav-icon">📋</span>Nouvelle visite</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">—</div>
+          <div class="user-role" id="sb-user-role">—</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title" id="welcome-title">Bonjour —</div>
+        <div class="page-subtitle">Portail terrain Arbre Bio Africa</div>
+      </div>
+      <div class="header-actions">
+        <a href="visit-form.html" class="btn btn-primary">
+          <span>+</span> Nouvelle fiche de visite
+        </a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card" data-icon="📋">
+          <div class="stat-label">Mes visites</div>
+          <div class="stat-value" id="my-visits">0</div>
+          <div class="stat-sub" id="my-visits-sub">—</div>
+        </div>
+        <div class="stat-card" data-icon="📁">
+          <div class="stat-label">Projets suivis</div>
+          <div class="stat-value" id="my-projects">0</div>
+          <div class="stat-sub">Clients uniques</div>
+        </div>
+        <div class="stat-card" data-icon="📸">
+          <div class="stat-label">Photos soumises</div>
+          <div class="stat-value" id="my-photos">0</div>
+          <div class="stat-sub">Toutes visites</div>
+        </div>
+        <div class="stat-card" data-icon="📅">
+          <div class="stat-label">Ce mois-ci</div>
+          <div class="stat-value" id="my-month">0</div>
+          <div class="stat-sub">Visites soumises</div>
+        </div>
+      </div>
+
+      <!-- CTA if no visits -->
+      <div id="cta-block" style="display:none">
+        <div class="card" style="text-align:center;padding:48px 24px">
+          <div style="font-size:3rem;margin-bottom:16px">🌱</div>
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--green-800);margin-bottom:8px">
+            Bienvenue sur la plateforme terrain
+          </div>
+          <div style="font-size:0.9rem;color:var(--ink-400);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto">
+            Commencez par créer votre première fiche de visite de site. Toutes vos données terrain seront sauvegardées et accessibles à l'équipe.
+          </div>
+          <a href="visit-form.html" class="btn btn-primary" style="padding:12px 28px">
+            + Créer ma première visite
+          </a>
+        </div>
+      </div>
+
+      <!-- My recent visits -->
+      <div class="card" id="visits-card">
+        <div class="card-header">
+          <span class="card-title">Mes visites récentes</span>
+        </div>
+        <div id="visits-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['engineer', 'technician']);
+  if (session) {
+    UI.renderSidebar(session);
+    const user = DB.getUserById(session.userId);
+    if (user) document.getElementById('welcome-title').textContent = `Bonjour, ${user.name.split(' ')[0]} 👋`;
+    renderPortal();
+  }
+
+  function renderPortal() {
+    const visits = DB.getVisitsByUser(session.userId).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const now = new Date();
+    const thisMonth = visits.filter(v => {
+      const d = new Date(v.createdAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+    const totalPhotos = visits.reduce((s, v) => s + (v.photos || []).length, 0);
+    const uniqueClients = new Set(visits.map(v => v.clientName)).size;
+
+    document.getElementById('my-visits').textContent = visits.length;
+    document.getElementById('my-visits-sub').textContent = `${thisMonth} ce mois-ci`;
+    document.getElementById('my-projects').textContent = uniqueClients;
+    document.getElementById('my-photos').textContent = totalPhotos;
+    document.getElementById('my-month').textContent = thisMonth;
+
+    if (!visits.length) {
+      document.getElementById('cta-block').style.display = 'block';
+      document.getElementById('visits-card').style.display = 'none';
+      return;
+    }
+
+    const listEl = document.getElementById('visits-list');
+    listEl.innerHTML = visits.slice(0, 20).map(v => {
+      const types = (v.projectTypes || []).map(t => DB.projectTypeLabels[t] || t).join(', ');
+      const photoCount = (v.photos || []).length;
+      return `<div class="visit-card" onclick="viewVisit('${DB.esc(v.id)}')" style="cursor:pointer;margin:0 4px">
+        <div style="display:flex;align-items:center;gap:14px;width:100%">
+          <div style="width:44px;height:44px;background:var(--green-100);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🏡</div>
+          <div style="flex:1;min-width:0">
+            <div class="fw-600">${DB.esc(v.clientName) || '—'}</div>
+            <div class="text-xs text-muted mt-4">${DB.esc(types) || 'Type non précisé'}</div>
+            <div class="text-xs text-muted mt-4">${DB.esc(v.zone || v.siteAddress) || '—'}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="text-xs text-muted">${DB.formatDate(v.createdAt)}</div>
+            <div class="text-xs text-muted mt-4">${photoCount} photo${photoCount!==1?'s':''}</div>
+            ${UI.statusBadge(v.status)}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function viewVisit(id) {
+    window.location.href = `../admin/project-view.html?visitId=${encodeURIComponent(id)}`;
+  }
+</script>
+</body>
+</html>

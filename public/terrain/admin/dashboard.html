@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord Admin — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Plateforme Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Super Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Administration</div>
+      <a class="nav-item active" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="users.html"><span class="nav-icon">👥</span>Utilisateurs</a>
+      <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span>Tous les projets</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">AA</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">Admin</div>
+          <div class="user-role" id="sb-user-role">Super Admin</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title">Tableau de bord</div>
+        <div class="page-subtitle">Vue d'ensemble de la plateforme</div>
+      </div>
+      <div class="header-actions">
+        <a href="users.html" class="btn btn-primary">
+          <span>+</span> Ajouter un utilisateur
+        </a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Stats -->
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card" data-icon="👥">
+          <div class="stat-label">Utilisateurs actifs</div>
+          <div class="stat-value" id="stat-users">0</div>
+          <div class="stat-sub" id="stat-users-sub">—</div>
+        </div>
+        <div class="stat-card" data-icon="📁">
+          <div class="stat-label">Projets total</div>
+          <div class="stat-value" id="stat-projects">0</div>
+          <div class="stat-sub">Tous statuts</div>
+        </div>
+        <div class="stat-card" data-icon="📋">
+          <div class="stat-label">Visites total</div>
+          <div class="stat-value" id="stat-visits">0</div>
+          <div class="stat-sub" id="stat-visits-month">—</div>
+        </div>
+        <div class="stat-card" data-icon="🌿">
+          <div class="stat-label">Ingénieurs</div>
+          <div class="stat-value" id="stat-engineers">0</div>
+          <div class="stat-sub" id="stat-techs-sub">—</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+
+        <!-- Recent Visits -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Visites récentes</span>
+            <a href="projects.html" class="btn btn-sm btn-secondary">Voir tout</a>
+          </div>
+          <div id="recent-visits">
+            <div class="empty-state">
+              <div class="empty-icon">📋</div>
+              <div class="empty-title">Aucune visite encore</div>
+              <div class="empty-desc">Les visites terrain apparaîtront ici.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Équipe terrain</span>
+            <a href="users.html" class="btn btn-sm btn-secondary">Gérer</a>
+          </div>
+          <div id="team-list">
+            <div class="empty-state">
+              <div class="empty-icon">👥</div>
+              <div class="empty-title">Aucun agent encore</div>
+              <div class="empty-desc">Ajoutez ingénieurs et techniciens.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- All Projects Table -->
+      <div class="card mt-24">
+        <div class="card-header">
+          <span class="card-title">Projets récents</span>
+          <a href="projects.html" class="btn btn-sm btn-secondary">Voir tout</a>
+        </div>
+        <div class="table-wrap" id="projects-table">
+          <div class="empty-state">
+            <div class="empty-icon">📁</div>
+            <div class="empty-title">Aucun projet encore</div>
+            <div class="empty-desc">Les projets sont créés automatiquement à la soumission d'une visite.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['super_admin']);
+  if (session) {
+    UI.renderSidebar(session);
+    renderDashboard();
+  }
+
+  function renderDashboard() {
+    const stats = DB.getStats();
+    document.getElementById('stat-users').textContent = stats.totalUsers;
+    document.getElementById('stat-users-sub').textContent = `${stats.engineers} ing. · ${stats.technicians} tech.`;
+    document.getElementById('stat-projects').textContent = stats.totalProjects;
+    document.getElementById('stat-visits').textContent = stats.totalVisits;
+    document.getElementById('stat-visits-month').textContent = `${stats.thisMonth} ce mois-ci`;
+    document.getElementById('stat-engineers').textContent = stats.engineers;
+    document.getElementById('stat-techs-sub').textContent = `${stats.technicians} technicien(s)`;
+
+    // Recent visits
+    const visits = DB.getVisits().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
+    if (visits.length) {
+      document.getElementById('recent-visits').innerHTML = visits.map(v => {
+        const user = DB.getUserById(v.visitedBy);
+        return `<div class="visit-card" onclick="window.location.href='project-view.html?visitId=${DB.esc(v.id)}'" style="cursor:pointer">
+          <div>
+            <div class="fw-600 text-sm">${DB.esc(v.clientName) || '—'}</div>
+            <div class="text-xs text-muted mt-4">${DB.esc(v.zone || v.siteAddress) || '—'} · ${DB.formatDate(v.createdAt)}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="text-xs text-muted">${user ? DB.esc(user.name) : '—'}</div>
+            ${UI.statusBadge(v.status)}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Team list
+    const users = DB.getUsers().filter(u => u.role !== 'super_admin').slice(0, 8);
+    if (users.length) {
+      document.getElementById('team-list').innerHTML = `<div style="padding:0 4px">` + users.map(u => `
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--ink-100)">
+          <div class="user-avatar" style="background:var(--green-${u.role==='engineer'?'700':'500'})">${DB.esc(u.avatar)}</div>
+          <div style="flex:1">
+            <div class="fw-600 text-sm">${DB.esc(u.name)}</div>
+            <div class="text-xs text-muted">${DB.esc(u.email)}</div>
+          </div>
+          ${UI.roleBadge(u.role)}
+          <span class="badge ${u.active ? 'badge-green' : 'badge-gray'}">${u.active ? 'Actif' : 'Inactif'}</span>
+        </div>`).join('') + `</div>`;
+    }
+
+    // Projects table
+    const projects = DB.getProjects().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
+    if (projects.length) {
+      document.getElementById('projects-table').innerHTML = `
+        <table>
+          <thead><tr>
+            <th>Client</th><th>Zone</th><th>Type(s)</th><th>Assigné à</th><th>Date</th><th>Statut</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${projects.map(p => {
+              const visits = DB.getVisitsByProject(p.id);
+              const lastVisit = visits.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt))[0];
+              const user = DB.getUserById(p.assignedTo);
+              const types = lastVisit ? (lastVisit.projectTypes || []) : [];
+              return `<tr onclick="window.location.href='project-view.html?projectId=${DB.esc(p.id)}'" style="cursor:pointer">
+                <td><div class="fw-600">${DB.esc(p.clientName)}</div><div class="text-xs text-muted">${DB.esc(p.clientPhone) || ''}</div></td>
+                <td>${DB.esc(p.zone || p.location) || '—'}</td>
+                <td style="max-width:180px">${UI.projectTypeBadges(types)}</td>
+                <td>${user ? DB.esc(user.name) : '—'}</td>
+                <td class="text-muted">${DB.formatDate(p.createdAt)}</td>
+                <td>${UI.statusBadge(p.status)}</td>
+                <td><a href="project-view.html?projectId=${DB.esc(p.id)}" class="btn btn-sm btn-secondary" onclick="event.stopPropagation()">Voir</a></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>`;
+    }
+  }
+</script>
+</body>
+</html>

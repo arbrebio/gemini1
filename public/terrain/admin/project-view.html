@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détail Projet — Arbre Bio Africa</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .photo-view-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+    .photo-view-item { border-radius:10px; overflow:hidden; border:1px solid var(--ink-100); }
+    .photo-view-item img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+    .photo-view-label { font-size:0.75rem; padding:6px 10px; background:var(--ivory); color:var(--ink-500); }
+    .section-block { background:#fff; border:1px solid var(--ink-100); border-radius:var(--radius-lg); padding:24px; margin-bottom:20px; }
+    .section-block-title { font-size:0.72rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-400); font-weight:600; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--ink-100); }
+    .kv-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:16px; }
+    .kv-item .kv-label { font-size:0.72rem; color:var(--ink-400); margin-bottom:3px; }
+    .kv-item .kv-value { font-size:0.9rem; color:var(--ink); font-weight:500; }
+    .kv-item .kv-value.mono { font-family:var(--font-mono); font-size:0.85rem; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Plateforme Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sb-role-badge">Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Administration</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="users.html"><span class="nav-icon">👥</span>Utilisateurs</a>
+      <a class="nav-item active" href="projects.html"><span class="nav-icon">📁</span>Tous les projets</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-user-av">AA</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-user-name">Admin</div>
+          <div class="user-role" id="sb-user-role">Admin</div>
+        </div>
+        <button class="btn-logout" onclick="DB.logout(); window.location.href='../login.html'">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div>
+        <div class="page-title" id="page-title">Chargement…</div>
+        <div class="page-subtitle" id="page-sub"></div>
+      </div>
+      <div class="header-actions">
+        <a href="projects.html" class="btn btn-secondary">← Retour</a>
+      </div>
+    </header>
+
+    <div class="page-body" id="page-body">
+      <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement du projet…</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/core.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+  const session = DB.requireAuth(['super_admin', 'engineer', 'technician']);
+
+  // Sidebar for all roles
+  function buildSidebar(role) {
+    const sb = document.querySelector('.sidebar-nav');
+    if (role === 'super_admin') return;
+    sb.innerHTML = `
+      <div class="nav-section-label">Mon Espace</div>
+      <a class="nav-item" href="../portal/dashboard.html"><span class="nav-icon">📊</span>Tableau de bord</a>
+      <a class="nav-item" href="../portal/visit-form.html"><span class="nav-icon">📋</span>Nouvelle visite</a>`;
+    document.querySelector('.sidebar-role-badge').textContent = DB.roleLabel(role);
+  }
+
+  if (session) {
+    UI.renderSidebar(session);
+    buildSidebar(session.role);
+
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('projectId');
+    const visitId = params.get('visitId');
+
+    if (visitId) {
+      const visit = DB.getVisitById(visitId);
+      if (visit) renderVisitDetail(visit);
+      else renderError('Visite introuvable.');
+    } else if (projectId) {
+      const project = DB.getProjectById(projectId);
+      if (project) renderProjectDetail(project);
+      else renderError('Projet introuvable.');
+    } else {
+      renderError('Aucun projet ou visite spécifié.');
+    }
+  }
+
+  function renderError(msg) {
+    document.getElementById('page-title').textContent = 'Erreur';
+    document.getElementById('page-body').innerHTML = `<div class="alert alert-error"><span>⚠</span><span>${msg}</span></div>`;
+  }
+
+  function kv(label, value, mono = false) {
+    const display = (value === null || value === undefined || value === '') ? '—' : DB.esc(String(value));
+    return `<div class="kv-item"><div class="kv-label">${label}</div><div class="kv-value${mono?' mono':''}">${display}</div></div>`;
+  }
+
+  function renderProjectDetail(project) {
+    document.getElementById('page-title').textContent = `Projet — ${project.clientName}`;
+    document.getElementById('page-sub').textContent = `${project.zone || project.location || ''} · Créé le ${DB.formatDate(project.createdAt)}`;
+
+    const visits = DB.getVisitsByProject(project.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const user = DB.getUserById(project.assignedTo);
+
+    let html = `
+      <div class="section-block">
+        <div class="section-block-title">Informations projet</div>
+        <div class="kv-grid">
+          ${kv('Client', project.clientName)}
+          ${kv('Téléphone', project.clientPhone)}
+          ${kv('Zone / Localisation', project.zone || project.location)}
+          ${kv('Ingénieur assigné', user ? user.name : '—')}
+          ${kv('Statut', project.status)}
+          ${kv('Date création', DB.formatDate(project.createdAt))}
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-block-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Visites terrain (${visits.length})</span>
+        </div>
+        ${visits.length ? visits.map(v => {
+          const vUser = DB.getUserById(v.visitedBy);
+          const types = (v.projectTypes || []).map(t => DB.projectTypeLabels[t] || t).join(', ');
+          const photoCount = (v.photos || []).length;
+          return `<div class="visit-card" onclick="window.location.href='project-view.html?visitId=${DB.esc(v.id)}'" style="cursor:pointer">
+            <div>
+              <div class="fw-600 text-sm">${DB.formatDateTime(v.createdAt)}</div>
+              <div class="text-xs text-muted mt-4">${DB.esc(types) || 'Activités non précisées'} · ${photoCount} photo${photoCount!==1?'s':''}</div>
+              ${v.recommendations ? `<div class="text-xs text-muted mt-4" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">📝 ${DB.esc(v.recommendations)}</div>` : ''}
+            </div>
+            <div style="text-align:right">
+              <div class="text-xs text-muted">${vUser ? DB.esc(vUser.name) : '—'}</div>
+              ${UI.statusBadge(v.status)}
+            </div>
+          </div>`;
+        }).join('') : `<div class="empty-state" style="padding:30px 0"><div class="empty-icon">📋</div><div class="empty-title">Aucune visite encore</div></div>`}
+      </div>
+    `;
+    document.getElementById('page-body').innerHTML = html;
+  }
+
+  function renderVisitDetail(visit) {
+    const project = visit.projectId ? DB.getProjectById(visit.projectId) : null;
+    const user = DB.getUserById(visit.visitedBy);
+    document.getElementById('page-title').textContent = `Fiche de Visite — ${visit.clientName || '—'}`;
+    document.getElementById('page-sub').textContent = `${DB.formatDateTime(visit.createdAt)} · ${user ? user.name : '—'}`;
+
+    const types = visit.projectTypes || [];
+    const photos = visit.photos || [];
+
+    const blockingIssues = visit.blockingIssues || '';
+    const recommendations = visit.recommendations || '';
+    const nextSteps = visit.nextSteps || '';
+
+    let html = `
+      <!-- Project link -->
+      ${project ? `<div class="alert alert-info mb-16"><span>📁</span><span>Projet : <a href="project-view.html?projectId=${DB.esc(project.id)}" style="font-weight:600;color:inherit">${DB.esc(project.clientName)}</a></span></div>` : ''}
+
+      <!-- S1: Identification -->
+      <div class="section-block">
+        <div class="section-block-title">1 — Identification du client et du site</div>
+        <div class="kv-grid">
+          ${kv('Nom du client', visit.clientName)}
+          ${kv('Téléphone', visit.clientPhone)}
+          ${kv('Email', visit.clientEmail)}
+          ${kv('Zone / Région', visit.zone)}
+          ${kv('Adresse site', visit.siteAddress)}
+          ${kv('GPS', visit.siteGPS, true)}
+          ${kv('Superficie totale (m²)', visit.landArea)}
+          ${kv('Tenure foncière', visit.landTenure)}
+        </div>
+      </div>
+
+      <!-- S2: Project types -->
+      <div class="section-block">
+        <div class="section-block-title">2 — Types d'activité / Services</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">${UI.projectTypeBadges(types)}</div>
+      </div>
+
+      <!-- S3: Greenhouse -->
+      ${types.includes('greenhouse') ? `<div class="section-block">
+        <div class="section-block-title">3 — Installation Serre Tropicale</div>
+        <div class="kv-grid">
+          ${kv('Nombre de serres', visit.ghCount)}
+          ${kv('Surface unitaire (m²)', visit.ghSizeEach)}
+          ${kv('Surface totale (m²)', visit.ghCount && visit.ghSizeEach ? visit.ghCount * visit.ghSizeEach : '—')}
+          ${kv('Orientation faîtage', visit.ghOrientation)}
+          ${kv('Type de structure', visit.ghStructureType)}
+          ${kv('Type de couverture', visit.ghCoverType)}
+          ${kv('Ventilation', visit.ghVentilation)}
+          ${kv('Automatisation', visit.ghAutomation)}
+          ${kv('Hauteur gouttière (m)', visit.ghGutterHeight)}
+          ${kv('Hauteur faîtage (m)', visit.ghRidgeHeight)}
+          ${kv('Longueur serre (m)', visit.ghLength)}
+          ${kv('Largeur serre (m)', visit.ghWidth)}
+        </div>
+        ${visit.ghNotes ? `<div class="mt-16"><div class="kv-label">Notes serre</div><div class="kv-value">${DB.esc(visit.ghNotes)}</div></div>` : ''}
+      </div>` : ''}
+
+      <!-- S4: Irrigation -->
+      ${types.includes('irrigation') ? `<div class="section-block">
+        <div class="section-block-title">4 — Système d'Irrigation</div>
+        <div class="kv-grid">
+          ${kv('Source d\'eau', visit.waterSource)}
+          ${kv('Débit estimé (L/h)', visit.waterFlowRate)}
+          ${kv('pH eau', visit.waterQualityPH, true)}
+          ${kv('EC eau (mS/cm)', visit.waterQualityEC, true)}
+          ${kv('Pompe existante', visit.pumpExists)}
+          ${kv('Marque pompe', visit.pumpBrand)}
+          ${kv('Puissance pompe (kW)', visit.pumpPower)}
+          ${kv('Capacité stockage (L)', visit.storageCapacity)}
+          ${kv('Type d\'irrigation', visit.irrigationType)}
+          ${kv('Nombre de zones', visit.irrigationZones)}
+          ${kv('Distance source-serre (m)', visit.waterSourceDistance)}
+          ${kv('Dénivelé (m)', visit.waterElevationDiff)}
+        </div>
+        ${visit.waterQualityNotes ? `<div class="mt-16"><div class="kv-label">Notes qualité eau</div><div class="kv-value">${DB.esc(visit.waterQualityNotes)}</div></div>` : ''}
+      </div>` : ''}
+
+      <!-- S5: Substrate -->
+      ${types.includes('substrate') ? `<div class="section-block">
+        <div class="section-block-title">5 — Substrat & Fibres de Coco</div>
+        <div class="kv-grid">
+          ${kv('Type de substrat', visit.substrateType)}
+          ${kv('Volume requis (m³)', visit.substrateVolume)}
+          ${kv('Source / Fournisseur', visit.cocoSource)}
+          ${kv('Grade coco', visit.cocoGrade)}
+          ${kv('Format conditionnement', visit.bagSize)}
+          ${kv('Traitement prévu', visit.substrateTreatment)}
+        </div>
+        ${visit.substrateNotes ? `<div class="mt-16"><div class="kv-label">Notes substrat</div><div class="kv-value">${DB.esc(visit.substrateNotes)}</div></div>` : ''}
+      </div>` : ''}
+
+      <!-- S6: Crops -->
+      ${types.includes('crops') ? `<div class="section-block">
+        <div class="section-block-title">6 — Installation des Cultures</div>
+        <div class="kv-grid">
+          ${kv('Cultures prévues', (visit.crops || []).join(', ') || '—')}
+          ${kv('Système de culture', visit.cropSystem)}
+          ${kv('Cycle cultural (jours)', visit.cropCycle)}
+          ${kv('Objectif biologique', visit.organicTarget)}
+          ${kv('Densité plantation', visit.cropDensity)}
+          ${kv('Marché cible', visit.cropMarket)}
+        </div>
+        ${visit.cropNotes ? `<div class="mt-16"><div class="kv-label">Notes cultures</div><div class="kv-value">${DB.esc(visit.cropNotes)}</div></div>` : ''}
+      </div>` : ''}
+
+      <!-- S7: Equipment -->
+      ${types.includes('equipment') ? `<div class="section-block">
+        <div class="section-block-title">7 — Équipements Agricoles</div>
+        <div class="kv-grid">
+          ${kv('Équipements demandés', (visit.equipmentList || []).join(', ') || '—')}
+          ${kv('Marque préférée', visit.equipmentBrand)}
+          ${kv('Budget équipements', visit.equipmentBudget)}
+        </div>
+        ${visit.equipmentNotes ? `<div class="mt-16"><div class="kv-label">Notes équipements</div><div class="kv-value">${DB.esc(visit.equipmentNotes)}</div></div>` : ''}
+      </div>` : ''}
+
+      <!-- S8: Site observations -->
+      <div class="section-block">
+        <div class="section-block-title">8 — Observations & Données Terrain</div>
+        <div class="kv-grid">
+          ${kv('Orientation solaire site', visit.sunOrientation)}
+          ${kv('Pente estimée (%)', visit.slopePercent)}
+          ${kv('Risque drainage / inondation', visit.drainageRisk)}
+          ${kv('Exposition au vent', visit.windExposure)}
+          ${kv('Obstacles d\'ombrage', visit.shadeObstacles)}
+          ${kv('Type de sol', visit.soilType)}
+          ${kv('pH sol', visit.soilPH, true)}
+          ${kv('EC sol (mS/cm)', visit.soilEC, true)}
+          ${kv('Électricité disponible', visit.electricityAvailable)}
+          ${kv('Type électricité', visit.electricityType)}
+          ${kv('Largeur accès route (m)', visit.accessRoadWidth)}
+          ${kv('Risques / Nuisances', visit.nearbyHazards)}
+        </div>
+        ${visit.observations ? `<div class="mt-16"><div class="kv-label">Observations générales</div><div class="kv-value" style="white-space:pre-wrap;line-height:1.6">${DB.esc(visit.observations)}</div></div>` : ''}
+      </div>
+
+      <!-- S9: Summary -->
+      <div class="section-block">
+        <div class="section-block-title">9 — Synthèse & Recommandations</div>
+        <div class="kv-grid" style="grid-template-columns:1fr">
+          ${blockingIssues ? `<div class="kv-item"><div class="kv-label">Points bloquants identifiés</div><div class="kv-value" style="white-space:pre-wrap;line-height:1.6;color:var(--red-600)">${DB.esc(blockingIssues)}</div></div>` : ''}
+          ${recommendations ? `<div class="kv-item"><div class="kv-label">Recommandations préliminaires</div><div class="kv-value" style="white-space:pre-wrap;line-height:1.6">${DB.esc(recommendations)}</div></div>` : ''}
+          ${nextSteps ? `<div class="kv-item"><div class="kv-label">Prochaines étapes</div><div class="kv-value" style="white-space:pre-wrap;line-height:1.6">${DB.esc(nextSteps)}</div></div>` : ''}
+          ${kv('Budget estimé (FCFA)', visit.estimatedBudget ? Number(visit.estimatedBudget).toLocaleString('fr-FR') + ' FCFA' : '—')}
+        </div>
+      </div>
+
+      <!-- S10: Photos -->
+      <div class="section-block">
+        <div class="section-block-title">10 — Photos du Site (${photos.length})</div>
+        ${photos.length ? `<div class="photo-view-grid">
+          ${photos.map(p => `<div class="photo-view-item">
+            <img src="${DB.esc(p.dataURL)}" alt="${DB.esc(p.label)}" loading="lazy" onclick="window.open(this.src,'_blank');" style="cursor:zoom-in">
+            <div class="photo-view-label">${DB.esc(p.label) || 'Photo'}</div>
+          </div>`).join('')}
+        </div>` : `<div class="text-muted text-sm">Aucune photo soumise lors de cette visite.</div>`}
+      </div>
+    `;
+
+    document.getElementById('page-body').innerHTML = html;
+  }
+</script>
+</body>
+</html>
