@@ -10,6 +10,33 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 
+// Category label translations
+const categoryLabels: Record<string, Record<string, string>> = {
+  fr: {
+    'irrigation':     'Irrigation',
+    'greenhouse':     'Serre',
+    'substrates':     'Substrats',
+    'farming-tips':   'Conseils Agricoles',
+    'digital-farming':'Agriculture Numérique',
+  },
+  es: {
+    'irrigation':     'Riego',
+    'greenhouse':     'Invernadero',
+    'substrates':     'Sustratos',
+    'farming-tips':   'Consejos Agrícolas',
+    'digital-farming':'Agricultura Digital',
+  },
+  af: {
+    'irrigation':     'Besproeiing',
+    'greenhouse':     'Kweekhuis',
+    'substrates':     'Substrate',
+    'farming-tips':   'Boerdery Wenke',
+    'digital-farming':'Digitale Boerdery',
+  },
+};
+const translateCategory = (cat: string) =>
+  (categoryLabels[lang]?.[cat]) ?? cat.replace('-', ' ');
+
 const allPosts = await getCollection('blog');
 
 // Use posts for this language; fall back to English when no translation exists
@@ -67,7 +94,7 @@ const formatDate = (date: Date) =>
                 <div class="flex items-center mb-4">
                   <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
                   <span class="mx-2">•</span>
-                  <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+                  <span class="text-sm text-primary capitalize">{translateCategory(post.data.category)}</span>
                 </div>
                 <h3 class="text-xl font-bold mb-2 hover:text-primary">
                   <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>
@@ -99,7 +126,7 @@ const formatDate = (date: Date) =>
               <div class="flex items-center mb-4">
                 <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
                 <span class="mx-2">•</span>
-                <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+                <span class="text-sm text-primary capitalize">{translateCategory(post.data.category)}</span>
               </div>
               <h3 class="text-xl font-bold mb-2 hover:text-primary">
                 <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>

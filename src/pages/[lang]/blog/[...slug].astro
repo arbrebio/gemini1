@@ -42,6 +42,33 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 // Labels with inline fallbacks for the back-button and more-articles link
+// Category label translations
+const categoryLabels: Record<string, Record<string, string>> = {
+  fr: {
+    'irrigation':     'Irrigation',
+    'greenhouse':     'Serre',
+    'substrates':     'Substrats',
+    'farming-tips':   'Conseils Agricoles',
+    'digital-farming':'Agriculture Numérique',
+  },
+  es: {
+    'irrigation':     'Riego',
+    'greenhouse':     'Invernadero',
+    'substrates':     'Sustratos',
+    'farming-tips':   'Consejos Agrícolas',
+    'digital-farming':'Agricultura Digital',
+  },
+  af: {
+    'irrigation':     'Besproeiing',
+    'greenhouse':     'Kweekhuis',
+    'substrates':     'Substrate',
+    'farming-tips':   'Boerdery Wenke',
+    'digital-farming':'Digitale Boerdery',
+  },
+};
+const translateCategory = (cat: string) =>
+  (categoryLabels[lang]?.[cat]) ?? cat.replace('-', ' ');
+
 const backLabel =
   lang === 'fr' ? 'Retour au Blog' :
   lang === 'es' ? 'Volver al Blog' :
@@ -73,7 +100,7 @@ const formatDate = (date: Date) =>
     <div class="container mx-auto px-4 relative z-10">
       <div class="max-w-3xl">
         <div class="flex items-center gap-3 mb-4">
-          <span class="bg-primary text-white text-sm px-3 py-1 rounded-full capitalize">{post.data.category.replace('-', ' ')}</span>
+          <span class="bg-primary text-white text-sm px-3 py-1 rounded-full capitalize">{translateCategory(post.data.category)}</span>
           <span class="text-white/80 text-sm">{formatDate(post.data.pubDate)}</span>
         </div>
         <h1 class="text-3xl md:text-5xl font-bold text-white mb-2">{post.data.title}</h1>
