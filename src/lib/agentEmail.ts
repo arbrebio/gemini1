@@ -47,7 +47,7 @@ function emailWrapper(bodyHtml: string): string {
 <body>
 <div class="wrap">
   <div class="header">
-    <img src="${SITE_URL}/logo.svg" alt="Arbre Bio Africa"/>
+    <img src="${SITE_URL}/logo.png" alt="Arbre Bio Africa"/>
     <h1>Arbre Bio Africa — Portail Agent Commercial</h1>
   </div>
   <div class="body">${bodyHtml}</div>

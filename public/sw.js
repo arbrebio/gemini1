@@ -13,7 +13,7 @@ const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   'https://rsms.me/inter/inter.css',
-  'https://i.imgur.com/79cS79J.png',
+  '/logo.png',
 ];
 
 // Agent portal shell pages (cached for offline use)

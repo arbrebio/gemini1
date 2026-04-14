@@ -48,6 +48,6 @@ export const config = {
     employees: '50+',
     projectsCompleted: '500+',
     countriesServed: 12,
-    logo: '/logo.svg'
+    logo: '/logo.png'
   }
 };
