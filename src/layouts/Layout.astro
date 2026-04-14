@@ -126,11 +126,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     
-    <!-- Security headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    
     <!-- Favicon: actual Arbre Bio logo -->
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="icon" href="/favicon.png" sizes="32x32" type="image/png" />
@@ -200,9 +195,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           { name: "apple-mobile-web-app-capable", content: "yes" },
           { name: "apple-mobile-web-app-status-bar-style", content: "default" }
         ],
-        link: [
-          { rel: "sitemap", href: "/sitemap-index.xml" }
-        ]
+        link: []
       }}
     />
 
@@ -212,16 +205,11 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Apple Touch Icon (180x180 required for iOS home screen) -->
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Arbre Bio Africa" />
-    
-  
-  
-    <meta property="og:description" content={description || "Solutions d'agriculture de précision en Côte d'Ivoire et en Afrique — Serres, irrigation, substrats fibre de coco, fertilisants | Arbre Bio Africa"} />
-  
+
     {/* Hreflang - Multilingual SEO */}
     {(() => {
       const base = "https://www.arbrebio.com";
@@ -283,12 +271,12 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <!-- Company Info -->
           <div>
-            <img 
-              src="https://i.imgur.com/79cS79J.png" 
-              alt="Arbre Bio" 
-             class="h-32 w-auto mb-6 brightness-0 invert"
-              width="300"
-              height="300"
+            <img
+              src="/logo-white.svg"
+              alt="Arbre Bio Africa"
+              class="h-20 w-auto mb-6"
+              width="200"
+              height="80"
               loading="lazy"
             />
             <p class="text-gray-300">{t('footer.description')}</p>

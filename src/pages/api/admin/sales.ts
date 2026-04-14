@@ -2,12 +2,13 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
   const key = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Supabase service role not configured');
-  return createClient(url, key);
+  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
 function json(body: any, status = 200) {
@@ -34,7 +35,9 @@ function json(body: any, status = 200) {
  *   { id }  — removes a sale record (admin only)
  */
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
 
@@ -127,6 +130,8 @@ export const GET: APIRoute = async ({ url }) => {
 };
 
 export const PUT: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();
@@ -148,15 +153,14 @@ export const PUT: APIRoute = async ({ request }) => {
       update.rejection_reason = rejection_reason.trim();
     }
 
-    // Generate invoice number when validating
+    // Generate a collision-resistant invoice number when validating.
+    // Using timestamp + random suffix avoids the COUNT→INSERT race condition
+    // that occurred with a SELECT count() + 1 approach under concurrent requests.
     if (action === 'validate') {
       const year = new Date().getFullYear();
-      const { count } = await supabase
-        .from('sales_records')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'validated');
-      const seq = String((count ?? 0) + 1).padStart(4, '0');
-      update.invoice_number = `AB-${year}-${seq}`;
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      update.invoice_number = `AB-${year}-${ts}${rnd}`;
     }
 
     const { data: sale, error } = await supabase
@@ -193,7 +197,7 @@ export const PUT: APIRoute = async ({ request }) => {
     const statusLabel = action === 'validate' ? '✅ Vente validée' : '❌ Vente rejetée';
     const agentName = (sale.sales_agent_profiles as any)?.full_name || 'Agent';
 
-    fetch(`${import.meta.env.SITE || ''}/api/admin/notifications`, {
+    fetch(`${import.meta.env.SITE || 'https://www.arbrebio.com'}/api/admin/notifications`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -211,6 +215,8 @@ export const PUT: APIRoute = async ({ request }) => {
 };
 
 export const DELETE: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();

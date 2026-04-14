@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createClient } from '@supabase/supabase-js';
 
 function sb() {
@@ -33,7 +34,9 @@ const DEFAULT_SETTINGS: Record<string, string> = {
 };
 
 // ── GET ──────────────────────────────────────────────────────────────────────
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
 

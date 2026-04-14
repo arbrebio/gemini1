@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createClient } from '@supabase/supabase-js';
 
 function sb() {
@@ -18,7 +19,9 @@ function json(data: any, status = 200) {
 }
 
 // ── GET ──────────────────────────────────────────────────────────────────────
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
     const action       = url.searchParams.get('action') ?? '';
@@ -80,6 +83,8 @@ export const GET: APIRoute = async ({ url }) => {
 
 // ── POST ─────────────────────────────────────────────────────────────────────
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
     const body = await request.json();
@@ -167,6 +172,8 @@ export const POST: APIRoute = async ({ request }) => {
 
 // ── PUT ──────────────────────────────────────────────────────────────────────
 export const PUT: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
     const body = await request.json();
@@ -202,6 +209,8 @@ export const PUT: APIRoute = async ({ request }) => {
 
 // ── DELETE ───────────────────────────────────────────────────────────────────
 export const DELETE: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
     const { id, _target } = await request.json();

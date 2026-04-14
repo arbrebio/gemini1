@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
@@ -27,6 +28,8 @@ function json(body: any, status: number) {
  * Returns: { url: string }
  */
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;

@@ -48,7 +48,7 @@ const { title } = Astro.props;
             </div>
         </div>
 
-        <!-- Auth Check Script -->
+        <!-- Auth Check + Auto-attach Bearer token to all /api/admin/ fetch calls -->
         <script>
             import { supabase } from "../lib/supabase";
 
@@ -66,6 +66,29 @@ const { title } = Astro.props;
                 }
             };
             checkAuth();
+
+            // Patch the global fetch so every call to /api/admin/* automatically
+            // carries the Supabase access token. This avoids touching every page.
+            const _originalFetch = window.fetch.bind(window);
+            window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+                const url = typeof input === 'string' ? input
+                    : input instanceof URL ? input.toString()
+                    : (input as Request).url;
+
+                if (url.startsWith('/api/admin/') || url.startsWith('/api/sales-agent/')) {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.access_token) {
+                        init = init ?? {};
+                        const headers = new Headers(init.headers as HeadersInit | undefined);
+                        if (!headers.has('Authorization')) {
+                            headers.set('Authorization', `Bearer ${session.access_token}`);
+                        }
+                        init = { ...init, headers };
+                    }
+                }
+
+                return _originalFetch(input, init);
+            };
 
             // Show Return button on all admin sub-pages (not on /admin dashboard)
             const backBar = document.getElementById('admin-back-bar');

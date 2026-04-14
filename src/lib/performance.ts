@@ -6,10 +6,14 @@ export interface PerformanceMetrics {
   ttfb?: number;
 }
 
+const MAX_METRIC_SAMPLES = 50; // prevent unbounded growth
+
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: Map<string, number[]> = new Map();
   private marks: Map<string, number> = new Map();
+  // Keep references so observers can be disconnected if needed
+  private observers: PerformanceObserver[] = [];
 
   private constructor() {
     if (typeof window !== 'undefined') {
@@ -28,10 +32,24 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
+  destroy(): void {
+    this.observers.forEach(o => o.disconnect());
+    this.observers = [];
+    this.metrics.clear();
+    this.marks.clear();
+  }
+
+  private makeObserver(cb: PerformanceObserverCallback): PerformanceObserver {
+    const obs = new PerformanceObserver(cb);
+    this.observers.push(obs);
+    return obs;
+  }
+
   private observePageLoad() {
     window.addEventListener('load', () => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-
+      const entries = performance.getEntriesByType('navigation');
+      if (!entries.length) return;
+      const navigation = entries[0] as PerformanceNavigationTiming;
       this.recordMetric('DNS', navigation.domainLookupEnd - navigation.domainLookupStart);
       this.recordMetric('TCP', navigation.connectEnd - navigation.connectStart);
       this.recordMetric('TTFB', navigation.responseStart - navigation.requestStart);
@@ -42,73 +60,69 @@ export class PerformanceMonitor {
   }
 
   private observeLCP() {
-    if (typeof PerformanceObserver !== 'undefined') {
-      new PerformanceObserver((entryList) => {
+    if (typeof PerformanceObserver === 'undefined') return;
+    try {
+      this.makeObserver((entryList) => {
         const entries = entryList.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        this.recordMetric('LCP', lastEntry.startTime);
-      }).observe({ entryTypes: ['largest-contentful-paint'] });
-    }
+        if (entries.length) {
+          this.recordMetric('LCP', entries[entries.length - 1].startTime);
+        }
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch {}
   }
 
   private observeFID() {
-    if (typeof PerformanceObserver !== 'undefined') {
-      new PerformanceObserver((entryList) => {
-        const entries = entryList.getEntries();
-        entries.forEach(entry => {
-          if (entry instanceof PerformanceEventTiming) {
-            this.recordMetric('FID', entry.processingStart - entry.startTime);
+    if (typeof PerformanceObserver === 'undefined') return;
+    try {
+      this.makeObserver((entryList) => {
+        entryList.getEntries().forEach(entry => {
+          if ('processingStart' in entry) {
+            this.recordMetric('FID', (entry as any).processingStart - entry.startTime);
           }
         });
-      }).observe({ entryTypes: ['first-input'] });
-    }
+      }).observe({ type: 'first-input', buffered: true });
+    } catch {}
   }
 
   private observeCLS() {
-    if (typeof PerformanceObserver !== 'undefined') {
+    if (typeof PerformanceObserver === 'undefined') return;
+    try {
       let clsValue = 0;
-      new PerformanceObserver((entryList) => {
+      this.makeObserver((entryList) => {
         for (const entry of entryList.getEntries()) {
-          if ('hadRecentInput' in entry && 'value' in entry) {
-            const hadRecentInput = entry.hadRecentInput as boolean;
-            const value = entry.value as number;
-
-            if (hadRecentInput === false) {
-              clsValue += value || 0;
-            }
+          if ('hadRecentInput' in entry && !(entry as any).hadRecentInput) {
+            clsValue += (entry as any).value ?? 0;
           }
         }
         this.recordMetric('CLS', clsValue);
-      }).observe({ entryTypes: ['layout-shift'] });
-    }
+      }).observe({ type: 'layout-shift', buffered: true });
+    } catch {}
   }
 
   private observeINP() {
-    if (typeof PerformanceObserver !== 'undefined') {
-      new PerformanceObserver((entryList) => {
-        const entries = entryList.getEntries();
-        entries.forEach((entry) => {
-          if ('processingEnd' in entry && 'startTime' in entry) {
-            const processingEnd = entry.processingEnd as number;
-            const startTime = entry.startTime;
-            const inp = processingEnd - startTime;
-            this.recordMetric('INP', inp);
+    if (typeof PerformanceObserver === 'undefined') return;
+    try {
+      this.makeObserver((entryList) => {
+        entryList.getEntries().forEach(entry => {
+          if ('processingEnd' in entry) {
+            this.recordMetric('INP', (entry as any).processingEnd - entry.startTime);
           }
         });
-      }).observe({ entryTypes: ['event'] });
-    }
+      }).observe({ type: 'event', buffered: true } as PerformanceObserverInit);
+    } catch {}
   }
 
   private getFCP(): number {
-    const fcpEntry = performance.getEntriesByName('first-contentful-paint')[0];
-    return fcpEntry ? fcpEntry.startTime : 0;
+    const entries = performance.getEntriesByName('first-contentful-paint');
+    return entries.length ? entries[0].startTime : 0;
   }
 
   private recordMetric(name: string, value: number) {
-    if (!this.metrics.has(name)) {
-      this.metrics.set(name, []);
-    }
-    this.metrics.get(name)?.push(value);
+    if (!this.metrics.has(name)) this.metrics.set(name, []);
+    const arr = this.metrics.get(name)!;
+    arr.push(value);
+    // Cap sample size to prevent unbounded memory growth
+    if (arr.length > MAX_METRIC_SAMPLES) arr.shift();
   }
 
   startMeasure(name: string) {
@@ -117,7 +131,7 @@ export class PerformanceMonitor {
 
   endMeasure(name: string): number | undefined {
     const startTime = this.marks.get(name);
-    if (startTime) {
+    if (startTime !== undefined) {
       const duration = performance.now() - startTime;
       this.recordMetric(name, duration);
       this.marks.delete(name);
@@ -128,22 +142,21 @@ export class PerformanceMonitor {
 
   getMetrics(): Record<string, { avg: number; min: number; max: number }> {
     const result: Record<string, { avg: number; min: number; max: number }> = {};
-
     this.metrics.forEach((values, name) => {
-      if (values.length > 0) {
-        result[name] = {
-          avg: values.reduce((a, b) => a + b) / values.length,
-          min: Math.min(...values),
-          max: Math.max(...values)
-        };
-      }
+      if (!values.length) return;
+      const sum = values.reduce((a, b) => a + b, 0);
+      result[name] = {
+        avg: sum / values.length,
+        min: Math.min(...values),
+        max: Math.max(...values),
+      };
     });
-
     return result;
   }
 
   reportToAnalytics() {
-    const metrics = this.getMetrics();
+    // No-op until an analytics provider is wired up.
+    // Metrics are available via getMetrics() for debugging.
   }
 }
 
@@ -158,9 +171,7 @@ export function optimizeImages() {
     });
   } else {
     if (!('IntersectionObserver' in window)) {
-      import('intersection-observer').then(() => {
-        setupImageObserver();
-      });
+      import('intersection-observer').then(() => setupImageObserver());
     } else {
       setupImageObserver();
     }
@@ -177,10 +188,7 @@ export function optimizeImages() {
             }
           }
         });
-      }, {
-        rootMargin: '50px 0px',
-        threshold: 0.01
-      });
+      }, { rootMargin: '50px 0px', threshold: 0.01 });
 
       document.querySelectorAll('img[loading="lazy"]').forEach(img => {
         imageObserver.observe(img);
@@ -190,22 +198,7 @@ export function optimizeImages() {
 }
 
 export function preloadCriticalResources(): void {
-  if (typeof document === 'undefined') return;
-
-  const criticalResources = [
-    { href: 'https://i.imgur.com/79cS79J.png', as: 'image' },
-  ];
-
-  criticalResources.forEach(resource => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.href = resource.href;
-    link.as = resource.as;
-    if (resource.as === 'image') {
-      link.crossOrigin = 'anonymous';
-    }
-    document.head.appendChild(link);
-  });
+  // Preload any above-the-fold resources here as needed.
 }
 
 export function registerServiceWorker(): void {
@@ -214,31 +207,12 @@ export function registerServiceWorker(): void {
   }
 }
 
-export function deferNonCriticalResources(): void {
-  if (typeof document === 'undefined') return;
-
-  const fontAwesome = document.createElement('link');
-  fontAwesome.rel = 'stylesheet';
-  fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
-  fontAwesome.crossOrigin = 'anonymous';
-  fontAwesome.media = 'print';
-  fontAwesome.addEventListener('load', () => {
-    fontAwesome.media = 'all';
-  });
-  document.head.appendChild(fontAwesome);
-}
-
 export function initializePerformanceOptimizations(): void {
   if (typeof window === 'undefined') return;
 
   window.addEventListener('load', () => {
     optimizeImages();
     registerServiceWorker();
-    deferNonCriticalResources();
-
-    const monitor = PerformanceMonitor.getInstance();
-    setTimeout(() => {
-      monitor.reportToAnalytics();
-    }, 5000);
+    PerformanceMonitor.getInstance();
   }, { passive: true });
 }

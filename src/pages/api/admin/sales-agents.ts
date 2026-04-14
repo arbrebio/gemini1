@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createClient } from '@supabase/supabase-js';
 import { sendWelcomeEmail, sendPasswordResetEmail } from '../../../lib/agentEmail';
 
@@ -37,7 +38,9 @@ function json(body: any, status = 200) {
  *   Deletes the Supabase auth user (profile cascades).
  */
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
 
@@ -92,6 +95,8 @@ export const GET: APIRoute = async () => {
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();
@@ -162,6 +167,8 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 export const PUT: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();
@@ -251,6 +258,8 @@ export const PUT: APIRoute = async ({ request }) => {
 };
 
 export const DELETE: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();

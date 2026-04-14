@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { requireAdminAuth } from '../../../lib/adminAuth';
 
 function json(body: any, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -22,6 +23,8 @@ function json(body: any, status = 200) {
  *   due_date      — ISO date string (optional)
  */
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const body = await request.json();
     const { to, employee_name, task_title, project_name, priority, due_date } = body;

@@ -3,7 +3,7 @@ export const config = {
   // Site information
   site: {
     name: 'Arbre Bio Africa',
-    url: 'https://arbrebio.com',
+    url: 'https://www.arbrebio.com',
     description: 'Leading provider of precision farming solutions in Africa'
   },
   
@@ -48,6 +48,6 @@ export const config = {
     employees: '50+',
     projectsCompleted: '500+',
     countriesServed: 12,
-    logo: 'https://i.imgur.com/79cS79J.png'
+    logo: '/logo.svg'
   }
 };

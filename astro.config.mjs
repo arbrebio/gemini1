@@ -21,9 +21,11 @@ export default defineConfig({
         !page.includes('/404') &&
         !page.includes('/500') &&
         !page.includes('/api/') &&
-        !page.includes('/admin/'),
+        !page.includes('/admin/') &&
+        !page.includes('/sales-agent/') &&
+        !page.includes('/terrain/'),
       changefreq: 'weekly',
-      lastmod: new Date().toISOString(),
+      lastmod: new Date(),
       serialize: (item) => {
         if (item.url.includes('/blog/')) {
           item.changefreq = 'monthly';
