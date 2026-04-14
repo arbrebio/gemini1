@@ -10,13 +10,36 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 
-const posts = await getCollection('blog');
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const featuredPosts = sortedPosts.filter(post => post.data.featured);
-const regularPosts = sortedPosts.filter(post => !post.data.featured);
+const allPosts = await getCollection('blog');
+
+// Use posts for this language; fall back to English when no translation exists
+const langPosts = allPosts.filter(post => post.slug.startsWith(`${lang}/`));
+const enPosts   = allPosts.filter(post => post.slug.startsWith('en/'));
+
+// Build a map of base-slug → translated post (or English fallback)
+const baseSlugMap = new Map<string, (typeof allPosts)[number]>();
+enPosts.forEach(post => {
+  const base = post.slug.replace(/^en\//, '');
+  baseSlugMap.set(base, post); // default: English
+});
+langPosts.forEach(post => {
+  const base = post.slug.replace(new RegExp(`^${lang}/`), '');
+  baseSlugMap.set(base, post); // override with translation if available
+});
+
+const posts = [...baseSlugMap.values()].sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const featuredPosts = posts.filter(post => post.data.featured);
+const regularPosts  = posts.filter(post => !post.data.featured);
+
+// URL slug always uses the base slug (without language prefix)
+const urlSlug = (post: (typeof allPosts)[number]) =>
+  post.slug.replace(new RegExp(`^(en|fr|es|af)/`), '');
 
 const localeMap: Record<string, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA', en: 'en-US' };
-const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat(localeMap[lang] || 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
 ---
 
 <Layout title={`${T.blogTitle} | Arbre Bio Africa`} description={T.blogSubtitle}>
@@ -47,12 +70,12 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
                   <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
                 </div>
                 <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                  <a href={`/${lang}/blog/${post.slug}`}>{post.data.title}</a>
+                  <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>
                 </h3>
                 <p class="text-gray-600 mb-4">{post.data.description}</p>
                 <div class="flex items-center justify-between">
                   <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                  <a href={`/${lang}/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                  <a href={`${p}/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
                     {T.readMore}
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                   </a>
@@ -79,12 +102,12 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
                 <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
               </div>
               <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                <a href={`/${lang}/blog/${post.slug}`}>{post.data.title}</a>
+                <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>
               </h3>
               <p class="text-gray-600 mb-4">{post.data.description}</p>
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                <a href={`/${lang}/blog/${post.slug}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                <a href={`${p}/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
                   {T.readMore}
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>

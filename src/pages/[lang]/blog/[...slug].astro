@@ -4,16 +4,35 @@ import Layout from "../../../layouts/Layout.astro";
 import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
-// Generate paths for all blog posts in all 3 languages
+// Generate paths for all blog posts in all 3 non-English languages.
+// Each route tries to serve the translated post; falls back to English.
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  const langs = ['fr', 'es', 'af'];
-  return posts.flatMap(post =>
-    langs.map(lang => ({
-      params: { lang, slug: post.slug },
-      props: { post },
-    }))
-  );
+  const allPosts = await getCollection('blog');
+  const langs = ['fr', 'es', 'af'] as const;
+
+  // Build base-slug → English post map
+  const enMap = new Map<string, (typeof allPosts)[number]>();
+  allPosts
+    .filter(p => p.slug.startsWith('en/'))
+    .forEach(p => enMap.set(p.slug.replace(/^en\//, ''), p));
+
+  // Build lang/base-slug → translated post map
+  const transMap = new Map<string, (typeof allPosts)[number]>();
+  allPosts
+    .filter(p => !p.slug.startsWith('en/'))
+    .forEach(p => transMap.set(p.slug, p));
+
+  const paths = [];
+  for (const lang of langs) {
+    for (const [baseSlug, enPost] of enMap) {
+      const translatedPost = transMap.get(`${lang}/${baseSlug}`);
+      paths.push({
+        params: { lang, slug: baseSlug },
+        props: { post: translatedPost ?? enPost },
+      });
+    }
+  }
+  return paths;
 }
 
 const { lang } = Astro.params as { lang: Language };
@@ -22,10 +41,25 @@ const { Content } = await post.render();
 const T = useT(lang as any);
 const p = `/${lang}`;
 
+// Labels with inline fallbacks for the back-button and more-articles link
+const backLabel =
+  lang === 'fr' ? 'Retour au Blog' :
+  lang === 'es' ? 'Volver al Blog' :
+  lang === 'af' ? 'Terug na Blog' : 'Back to Blog';
+
+const moreLabel =
+  lang === 'fr' ? "Plus d'articles" :
+  lang === 'es' ? 'Más artículos' :
+  lang === 'af' ? 'Meer artikels' : 'More articles';
+
+const shareLabel =
+  lang === 'fr' ? 'Partager cet article' :
+  lang === 'es' ? 'Compartir este artículo' :
+  lang === 'af' ? 'Deel hierdie artikel' : 'Share This Article';
+
 const localeMap: Record<string, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA', en: 'en-US' };
-const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'en-US', {
-  year: 'numeric', month: 'long', day: 'numeric'
-}).format(date);
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat(localeMap[lang] || 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
 ---
 
 <Layout title={post.data.title} description={post.data.description} image={post.data.image}>
@@ -53,10 +87,10 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
 
-        <!-- Navigation back to blog -->
+        <!-- Back to blog -->
         <a href={`${p}/blog`} class="inline-flex items-center text-primary hover:text-primary-600 font-semibold mb-8 transition-colors">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-          {lang === 'fr' ? 'Retour au Blog' : lang === 'es' ? 'Volver al Blog' : 'Terug na Blog'}
+          {backLabel}
         </a>
 
         <!-- Article body -->
@@ -66,7 +100,7 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
 
         <!-- Author & Share -->
         <div class="mt-12 pt-8 border-t border-gray-200">
-          <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <span class="text-primary font-bold text-sm">{post.data.author.charAt(0)}</span>
@@ -77,7 +111,27 @@ const formatDate = (date: Date) => new Intl.DateTimeFormat(localeMap[lang] || 'e
               </div>
             </div>
             <a href={`${p}/blog`} class="inline-flex items-center bg-primary text-white px-5 py-2.5 rounded-full hover:bg-primary-600 transition-colors text-sm font-medium">
-              {lang === 'fr' ? 'Plus d\'articles' : lang === 'es' ? 'Más artículos' : 'Meer artikels'}
+              {moreLabel}
+            </a>
+          </div>
+
+          <!-- Social sharing -->
+          <h3 class="text-lg font-bold mb-4">{shareLabel}</h3>
+          <div class="flex flex-wrap gap-3">
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1877F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f mr-2"></i>Facebook
+            </a>
+            <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(post.data.title)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1DA1F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center" aria-label="Twitter">
+              <i class="fa-brands fa-twitter mr-2"></i>Twitter
+            </a>
+            <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.url.href)}&title=${encodeURIComponent(post.data.title)}&summary=${encodeURIComponent(post.data.description)}`} target="_blank" rel="noopener noreferrer" class="bg-[#0A66C2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in mr-2"></i>LinkedIn
+            </a>
+            <a href={`https://wa.me/?text=${encodeURIComponent(`${post.data.title} - ${Astro.url.href}`)}`} target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp mr-2"></i>WhatsApp
+            </a>
+            <a href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${encodeURIComponent(`${Astro.url.href}`)}`} class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center" aria-label="Email">
+              <i class="fa-solid fa-envelope mr-2"></i>Email
             </a>
           </div>
         </div>
