@@ -244,7 +244,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
             localStorage.setItem('agentToken', token);
             localStorage.setItem('agentProfile', JSON.stringify(profileData.profile));
-            window.location.href = '/sales-agent/';
+            // First login: admin-generated password must be replaced
+            if (profileData.profile.must_change_password) {
+              window.location.href = '/sales-agent/change-password';
+            } else {
+              window.location.href = '/sales-agent/';
+            }
           } catch (err) {
             document.getElementById('error-text').textContent = t.loginError;
             errorMsg.classList.add('show');

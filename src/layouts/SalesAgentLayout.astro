@@ -6,7 +6,7 @@ export const prerender = false;
 
 interface Props {
   title: string;
-  activeTab?: 'sales' | 'inventory' | 'customers' | 'categories' | 'dashboard';
+  activeTab?: 'sales' | 'inventory' | 'customers' | 'categories' | 'dashboard' | 'account';
 }
 
 const { title, activeTab = 'dashboard' } = Astro.props;
@@ -141,6 +141,10 @@ const { title, activeTab = 'dashboard' } = Astro.props;
         <i class="fas fa-tags"></i>
         <span data-i18n="categories">Catégories</span>
       </a>
+      <a href="/sales-agent/change-password" class:list={['bottom-nav-item', activeTab === 'account' && 'active']} id="nav-account">
+        <i class="fas fa-user-gear"></i>
+        <span data-i18n="account">Compte</span>
+      </a>
     </nav>
 
     <!-- Language Picker Modal -->
@@ -158,10 +162,10 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <script>
       // ── Translations (embedded for offline use) ──────────────────────────
       const TRANSLATIONS = {
-        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
-        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
-        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
-        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
+        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',account:'Account',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
+        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',account:'Compte',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
+        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',account:'Cuenta',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
+        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',account:'Rekening',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
       };
 
       const LANG_LABELS = { en: 'EN', fr: 'FR', es: 'ES', af: 'AF' };
@@ -249,6 +253,17 @@ const { title, activeTab = 'dashboard' } = Astro.props;
           }
           // Cache profile for offline use
           localStorage.setItem('agentProfile', JSON.stringify(data.profile));
+          // Show red dot on Account nav item if password change is required
+          if (data.profile.must_change_password) {
+            const navAccount = document.getElementById('nav-account');
+            if (navAccount && !navAccount.querySelector('.pw-badge')) {
+              const badge = document.createElement('span');
+              badge.className = 'pw-badge';
+              badge.style.cssText = 'position:absolute;top:4px;right:calc(50% - 18px);width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid white;';
+              navAccount.style.position = 'relative';
+              navAccount.appendChild(badge);
+            }
+          }
         } catch {
           // Network error — check if we have a cached profile
           const cached = localStorage.getItem('agentProfile');

@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { sendWelcomeEmail, sendPasswordResetEmail } from '../../../lib/agentEmail';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -45,6 +46,7 @@ export const GET: APIRoute = async () => {
       .select(`
         id, full_name, email, worker_id, phone, is_active,
         suspended_at, suspended_reason, created_at,
+        must_change_password, temp_password,
         career_employees(first_name, last_name, job_title, department, hired_at)
       `)
       .order('created_at', { ascending: false });
@@ -134,6 +136,8 @@ export const POST: APIRoute = async ({ request }) => {
         phone: phone?.trim() || null,
         worker_id,
         is_active: true,
+        must_change_password: true,
+        temp_password: password, // stored until agent sets their own password
       })
       .select()
       .single();
@@ -143,6 +147,13 @@ export const POST: APIRoute = async ({ request }) => {
       await supabase.auth.admin.deleteUser(userId);
       throw profileErr;
     }
+
+    // Send welcome email with credentials (non-blocking)
+    sendWelcomeEmail({
+      to: email.trim().toLowerCase(),
+      full_name: full_name.trim(),
+      temp_password: password,
+    }).catch((e) => console.error('[agentEmail] welcome email failed:', e));
 
     return json({ profile }, 201);
   } catch (e: any) {
@@ -180,6 +191,38 @@ export const PUT: APIRoute = async ({ request }) => {
 
       if (error) throw error;
       return json({ profile: data });
+    }
+
+    // Reset password — admin generates a new temp password
+    if (action === 'reset-password') {
+      const { new_password } = body as { new_password?: string };
+      if (!new_password || new_password.length < 8) {
+        return json({ error: 'new_password must be at least 8 characters' }, 400);
+      }
+
+      // Update Supabase Auth password
+      const { error: pwErr } = await supabase.auth.admin.updateUserById(id, {
+        password: new_password,
+      });
+      if (pwErr) throw pwErr;
+
+      // Store temp_password + flag must_change_password
+      const { data, error: profileErr } = await supabase
+        .from('sales_agent_profiles')
+        .update({ must_change_password: true, temp_password: new_password })
+        .eq('id', id)
+        .select('email, full_name')
+        .single();
+      if (profileErr) throw profileErr;
+
+      // Email agent their new credentials
+      sendPasswordResetEmail({
+        to: data.email,
+        full_name: data.full_name,
+        temp_password: new_password,
+      }).catch((e) => console.error('[agentEmail] reset email failed:', e));
+
+      return json({ success: true });
     }
 
     // General profile field update

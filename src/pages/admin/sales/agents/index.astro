@@ -102,6 +102,43 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     </div>
   </div>
 
+  <!-- Reset Password Modal -->
+  <div id="reset-pw-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800">Réinitialiser le mot de passe</h2>
+          <p id="reset-pw-agent-name" class="text-sm text-gray-500 mt-0.5"></p>
+        </div>
+        <button id="close-reset-pw-modal" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-700">
+          <i class="fas fa-info-circle mr-1"></i>
+          L'agent devra changer ce mot de passe à sa prochaine connexion. Un email lui sera envoyé automatiquement.
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe temporaire <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input id="reset-pw-input" type="text" minlength="8" placeholder="Min. 8 caractères"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            </div>
+            <button id="btn-generate-pw" type="button" class="px-3 py-2 text-xs font-medium border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 whitespace-nowrap">
+              <i class="fas fa-dice mr-1"></i> Générer
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 p-5 border-t border-gray-100">
+        <button id="cancel-reset-pw" class="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Annuler</button>
+        <button id="confirm-reset-pw" class="px-4 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90" style="background:#194642">
+          <i class="fas fa-key mr-1"></i> Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Page Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
@@ -140,6 +177,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           <tr>
             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Agent</th>
             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mot de passe</th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Sales (YTD)</th>
             <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Commission (YTD)</th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
@@ -147,7 +185,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           </tr>
         </thead>
         <tbody id="agents-table-body" class="divide-y divide-gray-50">
-          <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Loading…</td></tr>
+          <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -188,12 +226,21 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
     const tbody = document.getElementById('agents-table-body')!;
     if (!agents.length) {
-      tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">No sales agents created yet. Click "Create Agent" to get started.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">No sales agents created yet. Click "Create Agent" to get started.</td></tr>';
       return;
     }
     tbody.innerHTML = agents.map(a => {
       const ytd = a.sales_ytd || {};
       const emp = a.career_employees;
+      // Password column: show temp password if still set, otherwise show status
+      const pwCell = a.temp_password
+        ? `<div class="flex items-center gap-1">
+             <span class="font-mono text-xs bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded select-all" id="pw-${a.id}">${a.temp_password}</span>
+             <button class="btn-copy-pw text-gray-400 hover:text-gray-600" data-pw="${a.temp_password}" title="Copy"><i class="fas fa-copy text-xs"></i></button>
+           </div>
+           <div class="text-xs text-amber-600 mt-0.5 flex items-center gap-1"><i class="fas fa-clock text-xs"></i> En attente de changement</div>`
+        : `<div class="flex items-center gap-1 text-xs text-green-600"><i class="fas fa-check-circle"></i> Modifié par l'agent</div>`;
+
       return `<tr class="hover:bg-gray-50 transition-colors" data-id="${a.id}">
         <td class="px-4 py-3">
           <div class="font-medium text-gray-800">${a.full_name}</div>
@@ -204,6 +251,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           <div>${a.email}</div>
           ${a.phone ? `<div class="text-xs text-gray-400">${a.phone}</div>` : ''}
         </td>
+        <td class="px-4 py-3">${pwCell}</td>
         <td class="px-4 py-3 text-center">
           <div class="text-gray-800 font-medium">${ytd.total || 0} total</div>
           <div class="text-xs text-green-600">${ytd.validated || 0} validated</div>
@@ -217,11 +265,12 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           ${!a.is_active && a.suspended_reason ? `<div class="text-xs text-gray-400 mt-0.5 max-w-24 truncate" title="${a.suspended_reason}">${a.suspended_reason}</div>` : ''}
         </td>
         <td class="px-4 py-3 text-center">
-          <div class="flex items-center justify-center gap-2">
+          <div class="flex items-center justify-center gap-2 flex-wrap">
             ${a.is_active
-              ? `<button class="btn-suspend px-2 py-1 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50" data-id="${a.id}"><i class="fas fa-ban mr-1"></i>Suspend</button>`
-              : `<button class="btn-activate px-2 py-1 text-xs font-medium border border-green-200 text-green-600 rounded-lg hover:bg-green-50" data-id="${a.id}"><i class="fas fa-check mr-1"></i>Activate</button>`
+              ? `<button class="btn-suspend px-2 py-1 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50" data-id="${a.id}"><i class="fas fa-ban mr-1"></i>Suspendre</button>`
+              : `<button class="btn-activate px-2 py-1 text-xs font-medium border border-green-200 text-green-600 rounded-lg hover:bg-green-50" data-id="${a.id}"><i class="fas fa-check mr-1"></i>Activer</button>`
             }
+            <button class="btn-reset-pw px-2 py-1 text-xs font-medium border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50" data-id="${a.id}" data-name="${a.full_name}"><i class="fas fa-key mr-1"></i>Réinitialiser MDP</button>
             <button class="btn-delete px-2 py-1 text-xs font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50" data-id="${a.id}"><i class="fas fa-trash"></i></button>
           </div>
         </td>
@@ -236,6 +285,14 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     });
     document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', () => openDeleteModal(btn.getAttribute('data-id')!));
+    });
+    document.querySelectorAll('.btn-reset-pw').forEach(btn => {
+      btn.addEventListener('click', () => openResetPwModal(btn.getAttribute('data-id')!, btn.getAttribute('data-name')!));
+    });
+    document.querySelectorAll('.btn-copy-pw').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.getAttribute('data-pw')!).then(() => showToast('Mot de passe copié !', 'success'));
+      });
     });
   }
   loadAgents();
@@ -361,6 +418,54 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const data = await res.json();
     if (data.error) { showToast(data.error, 'error'); return; }
     showToast('Agent deleted.', 'success');
+    loadAgents();
+  });
+
+  // ── Reset Password ────────────────────────────────────────────────────
+  function openResetPwModal(id: string, name: string) {
+    selectedAgentId = id;
+    document.getElementById('reset-pw-agent-name')!.textContent = name;
+    (document.getElementById('reset-pw-input') as HTMLInputElement).value = '';
+    document.getElementById('reset-pw-modal')!.classList.remove('hidden');
+  }
+
+  document.getElementById('close-reset-pw-modal')?.addEventListener('click', () => {
+    document.getElementById('reset-pw-modal')!.classList.add('hidden');
+  });
+  document.getElementById('cancel-reset-pw')?.addEventListener('click', () => {
+    document.getElementById('reset-pw-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('btn-generate-pw')?.addEventListener('click', () => {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#';
+    let pw = '';
+    for (let i = 0; i < 12; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+    (document.getElementById('reset-pw-input') as HTMLInputElement).value = pw;
+  });
+
+  document.getElementById('confirm-reset-pw')?.addEventListener('click', async () => {
+    const newPassword = (document.getElementById('reset-pw-input') as HTMLInputElement).value.trim();
+    if (!newPassword || newPassword.length < 8) {
+      showToast('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+      return;
+    }
+    const btn = document.getElementById('confirm-reset-pw') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Réinitialisation…';
+
+    const res = await fetch('/api/admin/sales-agents', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: selectedAgentId, action: 'reset-password', new_password: newPassword }),
+    });
+    const data = await res.json();
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-key mr-1"></i> Réinitialiser';
+
+    if (data.error) { showToast(data.error, 'error'); return; }
+    showToast('Mot de passe réinitialisé. Un email a été envoyé à l\'agent.', 'success');
+    document.getElementById('reset-pw-modal')!.classList.add('hidden');
     loadAgents();
   });
 

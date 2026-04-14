@@ -47,7 +47,7 @@ export const GET: APIRoute = async ({ request }) => {
     // Fetch agent profile
     const { data: profile, error: profileErr } = await supabase
       .from('sales_agent_profiles')
-      .select('*, career_employees(hired_at, job_title, department)')
+      .select('*, career_employees(hired_at, job_title, department), must_change_password')
       .eq('id', user.id)
       .single();
 
@@ -91,6 +91,7 @@ export const GET: APIRoute = async ({ request }) => {
         worker_id: profile.worker_id,
         phone: profile.phone,
         is_active: profile.is_active,
+        must_change_password: profile.must_change_password ?? false,
         hired_at: profile.career_employees?.hired_at ?? null,
         job_title: profile.career_employees?.job_title ?? null,
       },
