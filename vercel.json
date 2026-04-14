@@ -40,11 +40,6 @@
   ],
   "redirects": [
     {
-      "source": "/fr/blog/:slug",
-      "destination": "/blog/:slug",
-      "permanent": true
-    },
-    {
       "source": "/en/:path*",
       "destination": "/:path*",
       "permanent": true

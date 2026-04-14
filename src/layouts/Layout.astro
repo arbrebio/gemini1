@@ -31,6 +31,8 @@ const {
 
 const lang = (Astro.params.lang ?? defaultLang) as typeof defaultLang;
 const t = useTranslations(lang);
+// Language-aware path prefix (empty for English, /fr /es /af for others)
+const lp = lang && lang !== 'en' ? `/${lang}` : '';
 
 // Optimize meta content
 const optimizedTitle = generateMetaTitle(title);
@@ -344,10 +346,10 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           <div>
             <h3 class="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul class="space-y-2">
-              <li><a href="/about" class="text-gray-300 hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
-              <li><a href="/solutions" class="text-gray-300 hover:text-white transition-colors">{t('footer.solutions')}</a></li>
-              <li><a href="/blog" class="text-gray-300 hover:text-white transition-colors">Blog</a></li>
-              <li><a href="/contact" class="text-gray-300 hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
+              <li><a href={`${lp}/about`} class="text-gray-300 hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
+              <li><a href={`${lp}/solutions`} class="text-gray-300 hover:text-white transition-colors">{t('footer.solutions')}</a></li>
+              <li><a href={`${lp}/blog`} class="text-gray-300 hover:text-white transition-colors">{t('footer.blog')}</a></li>
+              <li><a href={`${lp}/contact`} class="text-gray-300 hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
             </ul>
           </div>
 

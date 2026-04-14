@@ -12,6 +12,134 @@ export async function getStaticPaths() { return getAllLangPaths(); }
 const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
+
+// ── Translated strings passed to client-side script via data attributes ──────
+const successMsgStr = (({
+  fr: 'Merci pour votre message\u00a0! Nous vous répondrons dans les 24 à 48 heures.',
+  es: '¡Gracias por su mensaje! Le responderemos en 24 a 48 horas.',
+  af: 'Dankie vir jou boodskap! Ons sal jou binne 24 tot 48 uur antwoord.',
+  en: 'Thank you for your message! We will respond within 24 to 48 hours.',
+} as Record<string,string>)[lang]) ?? 'Thank you for your message!';
+
+const errorMsgStr = (({
+  fr: 'Une erreur est survenue. Veuillez réessayer.',
+  es: 'Se produjo un error. Por favor, inténtelo de nuevo.',
+  af: "'n Fout het voorgekom. Probeer asseblief weer.",
+  en: 'An error occurred. Please try again.',
+} as Record<string,string>)[lang]) ?? 'An error occurred.';
+
+// ── Why Contact Section ───────────────────────────────────────────────────────
+const whyContact = (({
+  fr: {
+    heading: "Démarrez votre Projet d'Agriculture de Précision en Afrique",
+    subtitle: "Que vous souhaitiez installer une serre agricole, un système d'irrigation goutte-à-goutte, des substrats de culture (fibre de coco, tourbe de coco) ou un programme complet de fertilisation — Arbre Bio Africa vous accompagne de A à Z en Côte d'Ivoire et en Afrique de l'Ouest.",
+    card1Title: 'Consultation Agronomique Gratuite',
+    card1Text: "Évaluation de votre projet, analyse du sol, recommandation de cultures adaptées à votre région. Entièrement gratuit pour tout projet d'agriculture de précision.",
+    card2Title: 'Étude Technique & Devis',
+    card2Text: "Plan d'implantation de serre, dimensionnement du système d'irrigation, choix du substrat (coco peat, tourbe de coco, perlite) et programme de fertilisation personnalisé.",
+    card3Title: 'Suivi Projet & Formation',
+    card3Text: "Installation clés en main, formation technique de vos équipes, suivi agronomique post-installation et optimisation continue des rendements et de la qualité.",
+    bannerTitle: "Partenaire Hortalan en Côte d'Ivoire",
+    bannerText: "Arbre Bio Africa est en cours d'établissement d'une joint-venture avec <strong>Hortalan</strong>, leader européen des solutions horticoles et d'agriculture de précision. Ce partenariat vous donnera accès aux technologies agricoles les plus avancées directement depuis la Côte d'Ivoire.",
+  },
+  es: {
+    heading: 'Inicie su Proyecto de Agricultura de Precisión en África',
+    subtitle: 'Ya sea que desee instalar un invernadero agrícola, un sistema de riego por goteo, sustratos de cultivo (fibra de coco, turba de coco) o un programa completo de fertilización — Arbre Bio Africa le acompaña de principio a fin en Costa de Marfil y África Occidental.',
+    card1Title: 'Consulta Agronómica Gratuita',
+    card1Text: 'Evaluación de su proyecto, análisis del suelo, recomendación de cultivos adaptados a su región. Completamente gratuito para todo proyecto de agricultura de precisión.',
+    card2Title: 'Estudio Técnico y Presupuesto',
+    card2Text: 'Plan de instalación de invernadero, dimensionamiento del sistema de riego, selección del sustrato (coco peat, turba de coco, perlita) y programa de fertilización personalizado.',
+    card3Title: 'Seguimiento del Proyecto y Formación',
+    card3Text: 'Instalación llave en mano, formación técnica de su equipo, seguimiento agronómico post-instalación y optimización continua del rendimiento y la calidad.',
+    bannerTitle: 'Socio Hortalan en Costa de Marfil',
+    bannerText: 'Arbre Bio Africa está estableciendo una joint-venture con <strong>Hortalan</strong>, líder europeo en soluciones hortícolas y de agricultura de precisión. Esta asociación le dará acceso a las tecnologías agrícolas más avanzadas directamente desde Costa de Marfil.',
+  },
+  af: {
+    heading: 'Begin u Presisielandbouprojek in Afrika',
+    subtitle: "Of u nou 'n landboukas wil installeer, 'n drupbesproeiingstelsel, groeimediums (kokusvesels, kokusturwe) of 'n volledige bemestingsprogram — Arbre Bio Africa begelei u van begin tot einde in Ivoorkus en Wes-Afrika.",
+    card1Title: 'Gratis Agrariese Konsultasie',
+    card1Text: "Evaluering van u projek, grondanalise, aanbeveling van gewasse wat by u streek pas. Heeltemal gratis vir enige presisielandbouprojek.",
+    card2Title: 'Tegniese Studie & Kwotasie',
+    card2Text: "Kweekhuis-installasieplan, besproeiingstelselontwerp, keuse van substraat (kokus peat, kokusturwe, perliete) en gepersonaliseerde bemestingsprogram.",
+    card3Title: 'Projekopvolging & Opleiding',
+    card3Text: "Sleutelklaar installasie, tegniese opleiding vir u spanne, agrariese opvolging na installasie en deurlopende optimalisering van opbrengste en kwaliteit.",
+    bannerTitle: 'Hortalan-vennoot in Ivoorkus',
+    bannerText: "Arbre Bio Africa is besig om 'n gesamentlike onderneming met <strong>Hortalan</strong> te vestig, die Europese leier in tuinbou- en presisielandbouoplossings. Hierdie vennootskap sal u toegang gee tot die mees gevorderde landboutegnologieë direk vanuit Ivoorkus.",
+  },
+  en: {
+    heading: 'Start Your Precision Agriculture Project in Africa',
+    subtitle: 'Whether you want to install an agricultural greenhouse, a drip irrigation system, growing substrates (coconut fiber, coco peat) or a complete fertilization program — Arbre Bio Africa guides you every step of the way in Ivory Coast and West Africa.',
+    card1Title: 'Free Agronomic Consultation',
+    card1Text: 'Assessment of your project, soil analysis, and recommendation of crops suited to your region. Completely free for any precision agriculture project.',
+    card2Title: 'Technical Study & Quote',
+    card2Text: 'Greenhouse installation plan, irrigation system sizing, substrate selection (coco peat, coco peat, perlite) and personalized fertilization program.',
+    card3Title: 'Project Follow-up & Training',
+    card3Text: 'Turnkey installation, technical training for your teams, post-installation agronomic follow-up and continuous optimization of yields and quality.',
+    bannerTitle: 'Hortalan Partner in Ivory Coast',
+    bannerText: 'Arbre Bio Africa is establishing a joint venture with <strong>Hortalan</strong>, the European leader in horticultural and precision agriculture solutions. This partnership will give you access to the most advanced agricultural technologies directly from Ivory Coast.',
+  },
+} as Record<string, {
+  heading: string; subtitle: string;
+  card1Title: string; card1Text: string;
+  card2Title: string; card2Text: string;
+  card3Title: string; card3Text: string;
+  bannerTitle: string; bannerText: string;
+}>)[lang]) ?? {
+  heading: 'Start Your Precision Agriculture Project in Africa',
+  subtitle: 'Arbre Bio Africa guides you every step of the way.',
+  card1Title: 'Free Agronomic Consultation', card1Text: 'Project assessment, soil analysis, and crop recommendations.',
+  card2Title: 'Technical Study & Quote', card2Text: 'Greenhouse plan, irrigation sizing, substrate selection.',
+  card3Title: 'Project Follow-up & Training', card3Text: 'Turnkey installation, training, and yield optimization.',
+  bannerTitle: 'Hortalan Partner in Ivory Coast',
+  bannerText: 'Arbre Bio Africa is establishing a joint venture with <strong>Hortalan</strong>, the European leader in horticultural solutions.',
+};
+
+// ── FAQ Section ───────────────────────────────────────────────────────────────
+const faqHeading = (({
+  fr: 'Questions Fréquentes — Démarrer avec Arbre Bio Africa',
+  es: 'Preguntas Frecuentes — Comenzar con Arbre Bio Africa',
+  af: 'Gereelde Vrae — Begin met Arbre Bio Africa',
+  en: 'Frequently Asked Questions — Getting Started with Arbre Bio Africa',
+} as Record<string,string>)[lang]) ?? 'Frequently Asked Questions';
+
+const faqSubtitle = (({
+  fr: "Tout ce que vous devez savoir avant de lancer votre projet d'agriculture de précision en Afrique.",
+  es: 'Todo lo que necesita saber antes de lanzar su proyecto de agricultura de precisión en África.',
+  af: 'Alles wat u moet weet voordat u u presisielandbouprojek in Afrika loods.',
+  en: 'Everything you need to know before launching your precision agriculture project in Africa.',
+} as Record<string,string>)[lang]) ?? '';
+
+type Faq = { q: string; a: string };
+const faqs: Faq[] = (({
+  fr: [
+    { q: "Comment démarrer un projet avec Arbre Bio Africa ?", a: "La première étape est simple\u00a0: remplissez le formulaire ci-dessus ou contactez-nous directement par WhatsApp (+225 05 00 55 25 25). Nous organisons une consultation gratuite pour comprendre vos besoins, analyser votre site et définir le meilleur projet — serre agricole, irrigation goutte-à-goutte, substrats de culture ou programme complet. Sous 48 heures, vous recevrez un premier retour et une proposition d'étude technique." },
+    { q: "Arbre Bio Africa livre-t-il les substrats (fibre de coco, tourbe de coco, perlite) dans toute l'Afrique ?", a: "Oui. Nous livrons nos substrats de culture — fibre de coco (coco peat), tourbe de coco, perlite, substrats mixtes — dans toute l'Afrique subsaharienne et de l'Ouest\u00a0: Côte d'Ivoire, Sénégal, Ghana, Cameroun, Bénin, Togo, Burkina Faso, Mali. Les engrais hydrosolubles et équipements d'irrigation sont également disponibles à l'export. Contactez-nous pour les conditions et tarifs de livraison dans votre pays." },
+    { q: "Quel budget minimum faut-il prévoir pour un projet de serre avec Arbre Bio Africa ?", a: "Un projet de serre de démarrage (500 à 1\u202f000 m² avec irrigation et substrats) démarre à partir de 3 à 5 millions FCFA. Une installation complète de 2\u202f000 à 5\u202f000 m² avec tout l'équipement (serre, irrigation goutte-à-goutte, substrat fibre de coco, programme de fertilisation) représente un investissement de 15 à 40 millions FCFA selon le niveau d'automatisation. Nous établissons des devis détaillés gratuits sur mesure pour chaque projet." },
+    { q: "Arbre Bio Africa propose-t-il des formations en agriculture de précision ?", a: "Oui, nous proposons des formations pratiques en agriculture de précision adaptées à l'Afrique\u00a0: conduite de culture sous serre, gestion de l'irrigation goutte-à-goutte et de la fertigation, utilisation et réutilisation des substrats fibre de coco et tourbe de coco, programmes de fertilisation et nutrition des plantes, gestion phytosanitaire intégrée. Les formations se déroulent en Côte d'Ivoire ou directement dans votre pays." },
+    { q: "En combien de temps Arbre Bio Africa peut-il répondre à une demande de devis ?", a: "Nous nous engageons à répondre à toute demande de devis ou consultation dans un délai de 24 à 48 heures ouvrées. Pour les demandes urgentes, notre WhatsApp (+225 05 00 55 25 25) est disponible du lundi au samedi de 8h à 18h. Pour les projets complexes (grandes surfaces, exportations de substrats, partenariats institutionnels), nous planifions une réunion technique dans la semaine suivant votre demande." },
+  ],
+  es: [
+    { q: "¿Cómo iniciar un proyecto con Arbre Bio Africa?", a: "El primer paso es sencillo: complete el formulario anterior o contáctenos directamente por WhatsApp (+225 05 00 55 25 25). Organizamos una consulta gratuita para comprender sus necesidades, analizar su sitio y definir el mejor proyecto — invernadero agrícola, riego por goteo, sustratos de cultivo o programa completo. En 48 horas recibirá una primera respuesta y una propuesta de estudio técnico." },
+    { q: "¿Arbre Bio Africa entrega sustratos (fibra de coco, turba de coco, perlita) en toda África?", a: "Sí. Entregamos nuestros sustratos de cultivo — fibra de coco (coco peat), turba de coco, perlita, sustratos mixtos — en toda el África subsahariana y Occidental: Costa de Marfil, Senegal, Ghana, Camerún, Benín, Togo, Burkina Faso, Malí. Los fertilizantes hidrosolubles y equipos de riego también están disponibles para exportación. Contáctenos para conocer las condiciones y tarifas de entrega en su país." },
+    { q: "¿Cuál es el presupuesto mínimo para un proyecto de invernadero con Arbre Bio Africa?", a: "Un proyecto de invernadero inicial (500 a 1.000 m² con riego y sustratos) comienza desde 3 a 5 millones de FCFA. Una instalación completa de 2.000 a 5.000 m² con todo el equipo representa una inversión de 15 a 40 millones de FCFA según el nivel de automatización. Elaboramos presupuestos detallados y gratuitos para cada proyecto." },
+    { q: "¿Arbre Bio Africa ofrece formación en agricultura de precisión?", a: "Sí, ofrecemos formación práctica en agricultura de precisión adaptada a África: gestión de cultivos en invernadero, gestión del riego por goteo y fertirrigación, uso y reutilización de sustratos de fibra de coco y turba de coco, programas de fertilización y nutrición vegetal, gestión fitosanitaria integrada. La formación se realiza en Costa de Marfil o directamente en su país." },
+    { q: "¿En cuánto tiempo puede Arbre Bio Africa responder a una solicitud de presupuesto?", a: "Nos comprometemos a responder a cualquier solicitud de presupuesto o consulta en un plazo de 24 a 48 horas hábiles. Para solicitudes urgentes, nuestro WhatsApp (+225 05 00 55 25 25) está disponible de lunes a sábado de 8h a 18h. Para proyectos complejos, programamos una reunión técnica durante la semana siguiente a su solicitud." },
+  ],
+  af: [
+    { q: "Hoe begin ek 'n projek met Arbre Bio Africa?", a: "Die eerste stap is eenvoudig: vul die bostaande vorm in of kontak ons direk per WhatsApp (+225 05 00 55 25 25). Ons reël 'n gratis konsultasie om u behoeftes te verstaan, u terrein te analiseer en die beste projek te bepaal — landboukas, drupbesproeiing, groeisubstrate of 'n volledige program. Binne 48 uur ontvang u 'n eerste reaksie en 'n tegniese studievoorstel." },
+    { q: "Lewer Arbre Bio Africa substrate (kokusvesels, kokusturwe, perliete) oral in Afrika?", a: "Ja. Ons lewer ons groeisubstrate — kokusvesels (coco peat), kokusturwe, perliete, gemengde substrate — oral in Sub-Sahara en Wes-Afrika: Ivoorkus, Senegal, Ghana, Kameroen, Benin, Togo, Burkina Faso, Mali. Wateroplosbare kunsmis en besproeiingstoerusting is ook beskikbaar vir uitvoer. Kontak ons vir lewering voorwaardes en tariewe na u land." },
+    { q: "Wat is die minimum begroting vir 'n kweekhuisprojek met Arbre Bio Africa?", a: "'n Beginnerskweekhuisprojek (500 tot 1 000 m² met besproeiing en substrate) begin vanaf 3 tot 5 miljoen FCFA. 'n Volledige installasie van 2 000 tot 5 000 m² met alle toerusting verteenwoordig 'n belegging van 15 tot 40 miljoen FCFA afhangende van die outomatiseringsgraad. Ons stel gratis gedetailleerde kwotasies op vir elke projek." },
+    { q: "Bied Arbre Bio Africa opleiding in presisielandbou aan?", a: "Ja, ons bied praktiese opleiding in presisielandbou wat by Afrika aangepas is: gewasbeheer in kweekhuise, bestuur van drupbesproeiing en fertigasie, gebruik en hergebruik van kokusvesels en kokusturwe substrate, bemestingsprogramme en plantvoeding, geïntegreerde fitosanitêre bestuur. Opleiding vind plaas in Ivoorkus of direk in u land." },
+    { q: "Hoe vinnig kan Arbre Bio Africa op 'n kwotasieversoek reageer?", a: "Ons verbind ons daartoe om op enige kwotasieversoek of konsultasie binne 24 tot 48 werkure te reageer. Vir dringende versoeke is ons WhatsApp (+225 05 00 55 25 25) Maandag tot Saterdag van 8h tot 18h beskikbaar. Vir komplekse projekte beplan ons 'n tegniese vergadering binne die week na u versoek." },
+  ],
+  en: [
+    { q: "How do I start a project with Arbre Bio Africa?", a: "The first step is simple: fill out the form above or contact us directly via WhatsApp (+225 05 00 55 25 25). We organize a free consultation to understand your needs, analyze your site and define the best project — agricultural greenhouse, drip irrigation, growing substrates or a complete program. Within 48 hours, you will receive a first response and a technical study proposal." },
+    { q: "Does Arbre Bio Africa deliver substrates (coconut fiber, coco peat, perlite) throughout Africa?", a: "Yes. We deliver our growing substrates — coconut fiber (coco peat), coco peat, perlite, mixed substrates — throughout Sub-Saharan and West Africa: Ivory Coast, Senegal, Ghana, Cameroon, Benin, Togo, Burkina Faso, Mali. Water-soluble fertilizers and irrigation equipment are also available for export. Contact us for delivery terms and rates in your country." },
+    { q: "What is the minimum budget for a greenhouse project with Arbre Bio Africa?", a: "A starter greenhouse project (500 to 1,000 m² with irrigation and substrates) starts from 3 to 5 million FCFA. A complete installation of 2,000 to 5,000 m² with all equipment represents an investment of 15 to 40 million FCFA depending on the level of automation. We provide free detailed quotes tailored to each project." },
+    { q: "Does Arbre Bio Africa offer training in precision agriculture?", a: "Yes, we offer practical training in precision agriculture adapted to Africa: greenhouse crop management, drip irrigation and fertigation management, use and reuse of coconut fiber and coco peat substrates, fertilization programs and plant nutrition, integrated phytosanitary management. Training takes place in Ivory Coast or directly in your country." },
+    { q: "How quickly can Arbre Bio Africa respond to a quote request?", a: "We commit to responding to any quote request or consultation within 24 to 48 business hours. For urgent requests, our WhatsApp (+225 05 00 55 25 25) is available Monday to Saturday from 8am to 6pm. For complex projects, we schedule a technical meeting within the week following your request." },
+  ],
+} as Record<string, Faq[]>)[lang]) ?? [];
 ---
 
 <Layout title={({'fr':'Contactez Arbre Bio Africa | Devis Gratuit','en':'Contact Arbre Bio Africa | Free Quote','es':'Contacta Arbre Bio Africa | Presupuesto Gratis','af':'Kontak Arbre Bio Africa | Gratis Kwotasie'} as Record<string,string>)[lang]||'Contact Arbre Bio Africa | Free Quote'} description={T.contactSubtitle}>
@@ -34,7 +162,12 @@ const p = `/${lang}`;
         <!-- Contact Form -->
         <div class="bg-white p-8 rounded-lg shadow-lg">
           <h2 class="text-3xl font-bold mb-6">{T.sendMessageTitle}</h2>
-          <form class="space-y-6" id="contact-form">
+          <form
+            class="space-y-6"
+            id="contact-form"
+            data-success-msg={successMsgStr}
+            data-error-msg={errorMsgStr}
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">{T.firstName} *</label>
@@ -124,6 +257,9 @@ const p = `/${lang}`;
     const errorMessage = form ? form.querySelector(".error-message") : null;
     const loadingSpinner = form ? form.querySelector(".loading-spinner") : null;
     const submitButton = form ? (form.querySelector('button[type="submit"]') as HTMLButtonElement | null) : null;
+    // Read translated strings from data attributes set at build time
+    const successMsgText = form?.dataset.successMsg ?? 'Thank you for your message!';
+    const errorMsgText = form?.dataset.errorMsg ?? 'An error occurred.';
     if (form) {
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -136,12 +272,12 @@ const p = `/${lang}`;
           const pathLang = window.location.pathname.split('/')[1];
           const data = { firstName: formData.get("firstName"), lastName: formData.get("lastName"), email: formData.get("email"), phone: formData.get("phone"), interest: formData.get("interest"), message: formData.get("message"), lang: ['fr','es','af'].includes(pathLang) ? pathLang : 'en' };
           await handleFormSubmission("/api/contact", data, {
-            successMessage: "Thank you for your message!",
+            successMessage: successMsgText,
             onSuccess: () => { successMessage?.classList.remove("hidden"); (form as HTMLFormElement).reset(); },
             onError: (error) => { if (errorMessage) { (errorMessage as HTMLElement).textContent = error; errorMessage.classList.remove("hidden"); } },
           });
         } catch (error) {
-          if (errorMessage) { (errorMessage as HTMLElement).textContent = error instanceof Error ? error.message : "An error occurred."; errorMessage.classList.remove("hidden"); }
+          if (errorMessage) { (errorMessage as HTMLElement).textContent = error instanceof Error ? error.message : errorMsgText; errorMessage.classList.remove("hidden"); }
         } finally {
           loadingSpinner?.classList.add("hidden");
           if (submitButton) { (submitButton as HTMLButtonElement).disabled = false; submitButton.removeAttribute("aria-busy"); }
@@ -154,28 +290,28 @@ const p = `/${lang}`;
   <!-- Why Contact Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-4">Démarrez votre Projet d'Agriculture de Précision en Afrique</h2>
-      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">Que vous souhaitiez installer une serre agricole, un système d'irrigation goutte-à-goutte, des substrats de culture (fibre de coco, tourbe de coco) ou un programme complet de fertilisation — Arbre Bio Africa vous accompagne de A à Z en Côte d'Ivoire et en Afrique de l'Ouest.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">{whyContact.heading}</h2>
+      <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{whyContact.subtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         <div class="bg-white rounded-xl p-6 shadow-md text-center">
           <div class="text-4xl mb-4"><EmojiIcon id="leaf" size="2rem" /></div>
-          <h3 class="text-lg font-bold mb-2">Consultation Agronomique Gratuite</h3>
-          <p class="text-gray-600">Évaluation de votre projet, analyse du sol, recommandation de cultures adaptées à votre région. Entièrement gratuit pour tout projet d'agriculture de précision.</p>
+          <h3 class="text-lg font-bold mb-2">{whyContact.card1Title}</h3>
+          <p class="text-gray-600">{whyContact.card1Text}</p>
         </div>
         <div class="bg-white rounded-xl p-6 shadow-md text-center">
           <div class="text-4xl mb-4"><EmojiIcon id="wrench" size="2rem" /></div>
-          <h3 class="text-lg font-bold mb-2">Étude Technique &amp; Devis</h3>
-          <p class="text-gray-600">Plan d'implantation de serre, dimensionnement du système d'irrigation, choix du substrat (coco peat, tourbe de coco, perlite) et programme de fertilisation personnalisé.</p>
+          <h3 class="text-lg font-bold mb-2">{whyContact.card2Title}</h3>
+          <p class="text-gray-600">{whyContact.card2Text}</p>
         </div>
         <div class="bg-white rounded-xl p-6 shadow-md text-center">
           <div class="text-4xl mb-4"><EmojiIcon id="handshake" size="2rem" /></div>
-          <h3 class="text-lg font-bold mb-2">Suivi Projet &amp; Formation</h3>
-          <p class="text-gray-600">Installation clés en main, formation technique de vos équipes, suivi agronomique post-installation et optimisation continue des rendements et de la qualité.</p>
+          <h3 class="text-lg font-bold mb-2">{whyContact.card3Title}</h3>
+          <p class="text-gray-600">{whyContact.card3Text}</p>
         </div>
       </div>
       <div class="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-        <h3 class="text-2xl font-bold mb-3 text-green-800">Partenaire Hortalan en Côte d'Ivoire</h3>
-        <p class="text-gray-700 max-w-2xl mx-auto">Arbre Bio Africa est en cours d'établissement d'une joint-venture avec <strong>Hortalan</strong>, leader européen des solutions horticoles et d'agriculture de précision. Ce partenariat vous donnera accès aux technologies agricoles les plus avancées directement depuis la Côte d'Ivoire.</p>
+        <h3 class="text-2xl font-bold mb-3 text-green-800">{whyContact.bannerTitle}</h3>
+        <p class="text-gray-700 max-w-2xl mx-auto" set:html={whyContact.bannerText}></p>
       </div>
     </div>
   </section>
@@ -183,45 +319,27 @@ const p = `/${lang}`;
   <!-- FAQ Section -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4 max-w-4xl">
-      <h2 class="text-3xl font-bold text-center mb-4">Questions Fréquentes — Démarrer avec Arbre Bio Africa</h2>
-      <p class="text-gray-600 text-center mb-12">Tout ce que vous devez savoir avant de lancer votre projet d'agriculture de précision en Afrique.</p>
+      <h2 class="text-3xl font-bold text-center mb-4">{faqHeading}</h2>
+      <p class="text-gray-600 text-center mb-12">{faqSubtitle}</p>
       <div class="space-y-4">
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Comment démarrer un projet avec Arbre Bio Africa ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">La première étape est simple : remplissez le formulaire ci-dessus ou contactez-nous directement par WhatsApp (+225 05 00 55 25 25). Nous organiseons une consultation gratuite pour comprendre vos besoins, analyser votre site et définir le meilleur projet — serre agricole, irrigation goutte-à-goutte, substrats de culture ou programme complet. Sous 48 heures, vous recevrez un premier retour et une proposition d'étude technique.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa livre-t-il les substrats (fibre de coco, tourbe de coco, perlite) dans toute l'Afrique ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui. Nous livrons nos substrats de culture — fibre de coco (coco peat), tourbe de coco, perlite, substrats mixtes — dans toute l'Afrique subsaharienne et de l'Ouest : Côte d'Ivoire, Sénégal, Ghana, Cameroun, Bénin, Togo, Burkina Faso, Mali. Les engrais hydrosolubles et équipements d'irrigation sont également disponibles à l'export. Contactez-nous pour les conditions et tarifs de livraison dans votre pays.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Quel budget minimum faut-il prévoir pour un projet de serre avec Arbre Bio Africa ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Un projet de serre de démarrage (500 à 1 000 m² avec irrigation et substrats) démarre à partir de 3 à 5 millions FCFA. Une installation complète de 2 000 à 5 000 m² avec tout l'équipement (serre, irrigation goutte-à-goutte, substrat fibre de coco, programme de fertilisation) représente un investissement de 15 à 40 millions FCFA selon le niveau d'automatisation. Nous établissons des devis détaillés gratuits sur mesure pour chaque projet.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">Arbre Bio Africa propose-t-il des formations en agriculture de précision ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Oui, nous proposons des formations pratiques en agriculture de précision adaptées à l'Afrique : conduite de culture sous serre, gestion de l'irrigation goutte-à-goutte et de la fertigation, utilisation et réutilisation des substrats fibre de coco et tourbe de coco, programmes de fertilisation et nutrition des plantes, gestion phytosanitaire intégrée. Les formations se déroulent en Côte d'Ivoire ou directement dans votre pays.</div>
-        </details>
-        <details class="border border-gray-200 rounded-lg overflow-hidden">
-          <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">En combien de temps Arbre Bio Africa peut-il répondre à une demande de devis ?</summary>
-          <div class="px-6 pb-6 text-gray-600 leading-relaxed">Nous nous engageons à répondre à toute demande de devis ou consultation dans un délai de 24 à 48 heures ouvrées. Pour les demandes urgentes, notre WhatsApp (+225 05 00 55 25 25) est disponible du lundi au samedi de 8h à 18h. Pour les projets complexes (grandes surfaces, exportations de substrats, partenariats institutionnels), nous planifions une réunion technique dans la semaine suivant votre demande.</div>
-        </details>
+        {faqs.map((faq) => (
+          <details class="border border-gray-200 rounded-lg overflow-hidden">
+            <summary class="p-6 font-semibold cursor-pointer hover:bg-gray-50">{faq.q}</summary>
+            <div class="px-6 pb-6 text-gray-600 leading-relaxed">{faq.a}</div>
+          </details>
+        ))}
       </div>
     </div>
   </section>
 
-  <script is:inline type="application/ld+json">
-  {
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"Comment démarrer un projet avec Arbre Bio Africa ?","acceptedAnswer":{"@type":"Answer","text":"Remplissez le formulaire ou contactez-nous par WhatsApp (+225 05 00 55 25 25). Consultation gratuite sous 48h pour définir votre projet serre, irrigation, substrats ou programme complet."}},
-      {"@type":"Question","name":"Arbre Bio Africa livre-t-il les substrats (fibre de coco, tourbe de coco, perlite) dans toute l'Afrique ?","acceptedAnswer":{"@type":"Answer","text":"Oui, nous livrons en Côte d'Ivoire, Sénégal, Ghana, Cameroun, Bénin, Togo, Burkina Faso, Mali. Substrats, engrais et équipements d'irrigation disponibles à l'export."}},
-      {"@type":"Question","name":"Quel budget minimum pour un projet de serre avec Arbre Bio Africa ?","acceptedAnswer":{"@type":"Answer","text":"Un projet de démarrage (500-1000 m²) part de 3 à 5 millions FCFA. Une installation complète (2000-5000 m²) représente 15 à 40 millions FCFA. Devis gratuit sur mesure."}},
-      {"@type":"Question","name":"Arbre Bio Africa propose-t-il des formations en agriculture de précision ?","acceptedAnswer":{"@type":"Answer","text":"Oui : formations pratiques serre, irrigation goutte-à-goutte, substrats fibre de coco, fertilisation, phytosanitaire. En Côte d'Ivoire ou dans votre pays."}},
-      {"@type":"Question","name":"En combien de temps Arbre Bio Africa répond-il à une demande de devis ?","acceptedAnswer":{"@type":"Answer","text":"Réponse sous 24 à 48h ouvrées. WhatsApp disponible lundi-samedi 8h-18h pour les urgences. Réunion technique planifiée dans la semaine pour les projets complexes."}}
-    ]
-  }
-  </script>
+    "mainEntity": faqs.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  })}></script>
 
 </Layout>

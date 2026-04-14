@@ -14,6 +14,8 @@ export default defineConfig({
         locales: {
           en: 'en',
           fr: 'fr',
+          es: 'es',
+          af: 'af',
         }
       },
       filter: (page) =>
