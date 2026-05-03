@@ -79,6 +79,48 @@ const LINKS_LABEL: Record<Lang, string> = {
   af: 'Nuttige skakels',
 };
 
+const LIKE_LABEL: Record<Lang, string> = {
+  en: 'Like this article',
+  fr: 'J\'aime cet article',
+  es: 'Me gusta este artículo',
+  af: 'Hou van hierdie artikel',
+};
+
+const COMMENT_TITLE: Record<Lang, string> = {
+  en: 'Comments & Thoughts',
+  fr: 'Commentaires & Réflexions',
+  es: 'Comentarios y Reflexiones',
+  af: 'Kommentaar & Gedagtes',
+};
+
+const COMMENT_PLACEHOLDER: Record<Lang, string> = {
+  en: 'Share your thoughts, questions or feedback…',
+  fr: 'Partagez vos réflexions, questions ou commentaires…',
+  es: 'Comparte tus reflexiones, preguntas o comentarios…',
+  af: 'Deel jou gedagtes, vrae of terugvoer…',
+};
+
+const NAME_PLACEHOLDER: Record<Lang, string> = {
+  en: 'Your name',
+  fr: 'Votre nom',
+  es: 'Tu nombre',
+  af: 'Jou naam',
+};
+
+const SUBMIT_LABEL: Record<Lang, string> = {
+  en: 'Post Comment',
+  fr: 'Publier le commentaire',
+  es: 'Publicar comentario',
+  af: 'Plaas kommentaar',
+};
+
+const NO_COMMENTS_LABEL: Record<Lang, string> = {
+  en: 'Be the first to share your thoughts!',
+  fr: 'Soyez le premier à partager vos réflexions !',
+  es: '¡Sé el primero en compartir tus reflexiones!',
+  af: 'Wees die eerste om jou gedagtes te deel!',
+};
+
 const CTA_TITLE: Record<Lang, string> = {
   en: 'Need Expert Advice?',
   fr: 'Besoin de conseils d\'experts ?',
@@ -402,6 +444,219 @@ const articleJsonLd = scriptOpen + JSON.stringify({
 
     </div>
   </div>
+
+  <!-- ── Likes & Comments ────────────────────────────────────────────────────── -->
+  <div class="bg-gray-50 border-t border-gray-100">
+    <div class="max-w-4xl mx-auto px-4 py-14">
+
+      <!-- Like button -->
+      <div class="flex items-center justify-center mb-12">
+        <button
+          id="like-btn"
+          data-post-id={post.id}
+          class="group flex flex-col items-center gap-2 focus:outline-none"
+          aria-label={LIKE_LABEL[lang]}
+        >
+          <div id="like-icon-wrap" class="w-16 h-16 rounded-full border-2 border-[#194642] flex items-center justify-center transition-all duration-300 group-hover:bg-[#194642] group-hover:scale-110">
+            <i id="like-icon" class="fas fa-heart text-2xl text-[#194642] group-hover:text-white transition-colors"></i>
+          </div>
+          <span id="like-count" class="text-sm font-semibold text-gray-600">…</span>
+          <span class="text-xs text-gray-400">{LIKE_LABEL[lang]}</span>
+        </button>
+      </div>
+
+      <!-- Comments section -->
+      <div class="border-t border-gray-200 pt-10">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+          <i class="fas fa-comments text-[#194642]"></i>
+          {COMMENT_TITLE[lang]}
+          <span id="comment-count-badge" class="ml-1 text-sm font-normal text-gray-400"></span>
+        </h2>
+
+        <!-- Comment form -->
+        <form id="comment-form" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-10">
+          <div class="grid grid-cols-1 gap-4">
+            <input
+              id="comment-name"
+              type="text"
+              placeholder={NAME_PLACEHOLDER[lang]}
+              maxlength="80"
+              required
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#194642]/30 focus:border-[#194642] text-sm transition"
+            />
+            <textarea
+              id="comment-content"
+              placeholder={COMMENT_PLACEHOLDER[lang]}
+              rows="4"
+              maxlength="2000"
+              required
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#194642]/30 focus:border-[#194642] text-sm resize-none transition"
+            ></textarea>
+            <div class="flex items-center justify-between">
+              <span id="comment-status" class="text-sm"></span>
+              <button
+                type="submit"
+                id="comment-submit"
+                class="bg-[#194642] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#1f5550] transition-colors inline-flex items-center gap-2"
+              >
+                <i class="fas fa-paper-plane text-xs"></i>
+                {SUBMIT_LABEL[lang]}
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Comment list -->
+        <div id="comments-list" class="space-y-5">
+          <p class="text-gray-400 text-sm text-center py-6 italic" id="no-comments-msg">{NO_COMMENTS_LABEL[lang]}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script define:vars={{ postId: post.id }}>
+    // ── Fingerprint ──────────────────────────────────────────────────────────────
+    function getFingerprint() {
+      let fp = localStorage.getItem('_blog_fp');
+      if (!fp) {
+        fp = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now();
+        localStorage.setItem('_blog_fp', fp);
+      }
+      return fp;
+    }
+
+    // ── Likes ────────────────────────────────────────────────────────────────────
+    const likeBtn      = document.getElementById('like-btn');
+    const likeCount    = document.getElementById('like-count');
+    const likeIconWrap = document.getElementById('like-icon-wrap');
+    const likeIcon     = document.getElementById('like-icon');
+    const fp           = getFingerprint();
+    const likeKey      = `_liked_${postId}`;
+    let   liked        = localStorage.getItem(likeKey) === '1';
+
+    function applyLikedState(isLiked) {
+      liked = isLiked;
+      localStorage.setItem(likeKey, isLiked ? '1' : '0');
+      if (isLiked) {
+        likeIconWrap.classList.add('bg-[#194642]', 'scale-110');
+        likeIconWrap.classList.remove('border-[#194642]');
+        likeIcon.classList.add('text-white');
+        likeIcon.classList.remove('text-[#194642]');
+      } else {
+        likeIconWrap.classList.remove('bg-[#194642]', 'scale-110');
+        likeIconWrap.classList.add('border-[#194642]');
+        likeIcon.classList.remove('text-white');
+        likeIcon.classList.add('text-[#194642]');
+      }
+    }
+
+    async function fetchLikes() {
+      try {
+        const res = await fetch(`/api/blog/likes?post_id=${postId}`);
+        const { count } = await res.json();
+        likeCount.textContent = count === 1 ? '1 like' : `${count} likes`;
+        applyLikedState(liked);
+      } catch { likeCount.textContent = ''; }
+    }
+
+    likeBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/blog/likes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ post_id: postId, fingerprint: fp }),
+        });
+        const { liked: newLiked, count } = await res.json();
+        likeCount.textContent = count === 1 ? '1 like' : `${count} likes`;
+        applyLikedState(newLiked);
+      } catch {}
+    });
+
+    fetchLikes();
+
+    // ── Comments ─────────────────────────────────────────────────────────────────
+    const commentsList  = document.getElementById('comments-list');
+    const noCommentsMsg = document.getElementById('no-comments-msg');
+    const commentBadge  = document.getElementById('comment-count-badge');
+    const commentStatus = document.getElementById('comment-status');
+    const commentForm   = document.getElementById('comment-form');
+    const commentSubmit = document.getElementById('comment-submit');
+
+    function formatDate(iso) {
+      try { return new Intl.DateTimeFormat(navigator.language, { year:'numeric', month:'short', day:'numeric' }).format(new Date(iso)); }
+      catch { return iso.slice(0,10); }
+    }
+
+    function renderComment(c) {
+      const el = document.createElement('div');
+      el.className = 'bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex gap-4 animate-fade-in';
+      const initial = (c.author_name[0] || '?').toUpperCase();
+      el.innerHTML = `
+        <div class="w-10 h-10 rounded-full bg-[#194642] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">${initial}</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-semibold text-gray-900 text-sm">${c.author_name}</span>
+            <span class="text-gray-400 text-xs">${formatDate(c.created_at)}</span>
+          </div>
+          <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">${c.content}</p>
+        </div>`;
+      return el;
+    }
+
+    async function fetchComments() {
+      try {
+        const res = await fetch(`/api/blog/comments?post_id=${postId}`);
+        const { comments } = await res.json();
+        if (!Array.isArray(comments)) return;
+        commentBadge.textContent = comments.length ? `(${comments.length})` : '';
+        if (comments.length === 0) {
+          noCommentsMsg.style.display = '';
+          return;
+        }
+        noCommentsMsg.style.display = 'none';
+        commentsList.innerHTML = '';
+        commentsList.appendChild(noCommentsMsg);
+        comments.forEach(c => commentsList.insertBefore(renderComment(c), noCommentsMsg));
+      } catch {}
+    }
+
+    commentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name    = document.getElementById('comment-name').value.trim();
+      const content = document.getElementById('comment-content').value.trim();
+      if (!name || !content) return;
+
+      commentSubmit.disabled = true;
+      commentStatus.textContent = '…';
+      commentStatus.style.color = '#6b7280';
+
+      try {
+        const res = await fetch('/api/blog/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ post_id: postId, author_name: name, content }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        noCommentsMsg.style.display = 'none';
+        commentsList.insertBefore(renderComment(data.comment), commentsList.firstChild);
+        const count = commentsList.querySelectorAll('.bg-white').length;
+        commentBadge.textContent = `(${count})`;
+        commentForm.reset();
+        commentStatus.textContent = '✓ Comment posted!';
+        commentStatus.style.color = '#16a34a';
+        setTimeout(() => { commentStatus.textContent = ''; }, 3000);
+      } catch (err) {
+        commentStatus.textContent = err.message;
+        commentStatus.style.color = '#dc2626';
+      } finally {
+        commentSubmit.disabled = false;
+      }
+    });
+
+    fetchComments();
+  </script>
 
   <!-- ── CTA ──────────────────────────────────────────────────────────────────── -->
   <section class="bg-primary py-16">
