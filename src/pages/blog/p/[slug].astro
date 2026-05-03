@@ -6,7 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect('/blog');
 
-// Detect preferred language from URL query (?lang=fr) or Accept-Language header
 const LANGS = ['en', 'fr', 'es', 'af'] as const;
 type Lang = typeof LANGS[number];
 
@@ -16,7 +15,6 @@ const lang: Lang = (queryLang && LANGS.includes(queryLang))
   ? queryLang
   : (LANGS.includes(headerLang) ? headerLang : 'en');
 
-// Fetch published post from Supabase (anon key — RLS allows public reads of published posts)
 const supabase = createClient(
   import.meta.env.PUBLIC_SUPABASE_URL,
   import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
@@ -32,7 +30,6 @@ const { data: post, error } = await supabase
 
 if (error || !post) return Astro.redirect('/blog');
 
-// Resolve text for the detected language, fall back to English, then any available language
 function resolve(obj: Record<string, string> | null | undefined): string {
   if (!obj) return '';
   return obj[lang] || obj['en'] || Object.values(obj).find(v => v) || '';
@@ -50,187 +47,320 @@ const CATEGORY_LABELS: Record<string, string> = {
   'digital-farming':'Digital Farming',
 };
 
+const LANG_LABELS: Record<Lang, string> = {
+  en: 'EN', fr: 'FR', es: 'ES', af: 'AF',
+};
+
+const BACK_LABEL: Record<Lang, string> = {
+  en: 'Back to Blog',
+  fr: 'Retour au Blog',
+  es: 'Volver al Blog',
+  af: 'Terug na Blog',
+};
+
+const SHARE_LABEL: Record<Lang, string> = {
+  en: 'Share This Article',
+  fr: 'Partager cet article',
+  es: 'Compartir este artículo',
+  af: 'Deel hierdie artikel',
+};
+
+const VIDEO_LABEL: Record<Lang, string> = {
+  en: 'Watch Video',
+  fr: 'Regarder la vidéo',
+  es: 'Ver el vídeo',
+  af: 'Kyk video',
+};
+
+const LINKS_LABEL: Record<Lang, string> = {
+  en: 'Useful Links',
+  fr: 'Liens utiles',
+  es: 'Enlaces útiles',
+  af: 'Nuttige skakels',
+};
+
+const CTA_TITLE: Record<Lang, string> = {
+  en: 'Need Expert Advice?',
+  fr: 'Besoin de conseils d\'experts ?',
+  es: '¿Necesita asesoramiento experto?',
+  af: 'Deskundige advies nodig?',
+};
+
+const CTA_BODY: Record<Lang, string> = {
+  en: 'Our team is here to help you implement these solutions on your farm.',
+  fr: 'Notre équipe est là pour vous aider à mettre en œuvre ces solutions sur votre exploitation.',
+  es: 'Nuestro equipo está aquí para ayudarle a implementar estas soluciones en su granja.',
+  af: 'Ons span is hier om u te help om hierdie oplossings op u plaas te implementeer.',
+};
+
+const CONTACT_LABEL: Record<Lang, string> = {
+  en: 'Contact Us', fr: 'Nous contacter', es: 'Contáctenos', af: 'Kontak ons',
+};
+
+const FEATURED_LABEL: Record<Lang, string> = {
+  en: 'Featured', fr: 'En vedette', es: 'Destacado', af: 'Uitgestald',
+};
+
+const BY_LABEL: Record<Lang, string> = {
+  en: 'By', fr: 'Par', es: 'Por', af: 'Deur',
+};
+
+const localeMap: Record<Lang, string> = {
+  en: 'en-US', fr: 'fr-FR', es: 'es-ES', af: 'af-ZA',
+};
 const formatDate = (d: string) =>
-  new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(d));
+  new Intl.DateTimeFormat(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(d));
 
 const pubDate = post.published_at || post.created_at;
 
-// Build video embed or direct URL
 function buildVideoEmbed(url: string): string | null {
   if (!url) return null;
-  // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  // Vimeo
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1`;
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   return null;
 }
 
-const videoEmbed = post.video_url ? buildVideoEmbed(post.video_url) : null;
+const videoEmbed  = post.video_url ? buildVideoEmbed(post.video_url) : null;
 const videoDirect = post.video_url && !videoEmbed ? post.video_url : null;
+const hasVideo    = Boolean(videoEmbed || videoDirect);
 
 const links: Array<{ label: string; url: string }> = Array.isArray(post.links) ? post.links : [];
 
-// Language switcher URLs
 const langSwitcher = LANGS.map(l => ({
   code: l,
-  label: { en: '🇬🇧 EN', fr: '🇫🇷 FR', es: '🇪🇸 ES', af: '🇿🇦 AF' }[l],
+  label: LANG_LABELS[l],
   url: `/blog/p/${slug}?lang=${l}`,
   hasContent: Boolean((post.title as Record<string, string>)?.[l]),
 }));
+
+// Canonical blog-index path for "back" link
+const backHref = lang === 'en' ? '/blog' : `/${lang}/blog`;
 ---
 
 <Layout title={title || 'Blog'} description={description} image={post.image_url ?? undefined}>
-  <article class="max-w-4xl mx-auto px-4 py-16">
 
-    <!-- Language switcher -->
-    {langSwitcher.some(l => l.hasContent) && (
-      <div class="flex gap-2 mb-6 flex-wrap">
-        {langSwitcher.filter(l => l.hasContent).map(l => (
-          <a
-            href={l.url}
-            class:list={[
-              "px-3 py-1.5 text-xs font-medium rounded-full border transition-colors",
-              l.code === lang
-                ? "border-[#194642] bg-[#194642] text-white"
-                : "border-gray-300 text-gray-600 hover:border-[#194642] hover:text-[#194642]",
-            ]}
-          >
-            {l.label}
-          </a>
-        ))}
-      </div>
-    )}
+  <!-- ── Hero ────────────────────────────────────────────────────────────────── -->
+  <section class="relative min-h-[50vh] flex items-end">
+    <!-- Background: image or gradient fallback -->
+    <div class="absolute inset-0 z-0">
+      {post.image_url ? (
+        <img
+          src={post.image_url}
+          alt={title}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      ) : (
+        <div class="w-full h-full bg-gradient-to-br from-[#194642] via-[#1f5550] to-[#2a6659]"></div>
+      )}
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20"></div>
+    </div>
 
-    <!-- Cover image -->
-    {post.image_url && (
-      <img
-        src={post.image_url}
-        alt={title}
-        class="w-full h-[400px] object-cover rounded-xl mb-8"
-        loading="eager"
-      />
-    )}
+    <div class="container mx-auto px-4 relative z-10 pb-10 pt-24">
+      <!-- Language switcher -->
+      {langSwitcher.some(l => l.hasContent) && (
+        <div class="flex gap-2 mb-5 flex-wrap">
+          {langSwitcher.filter(l => l.hasContent).map(l => (
+            <a
+              href={l.url}
+              class:list={[
+                "px-3 py-1 text-xs font-semibold rounded-full border transition-colors",
+                l.code === lang
+                  ? "border-white bg-white text-[#194642]"
+                  : "border-white/50 text-white hover:border-white hover:bg-white/10",
+              ]}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+      )}
 
-    <!-- Meta -->
-    <div class="prose prose-lg max-w-none">
-      <div class="flex flex-wrap items-center gap-2 mb-6 text-sm text-gray-500">
-        <span>{formatDate(pubDate)}</span>
-        <span>•</span>
-        <span class="text-primary capitalize">{CATEGORY_LABELS[post.category] ?? post.category}</span>
-        <span>•</span>
-        <span>By {post.author}</span>
+      <!-- Category + date -->
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class="bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+          {CATEGORY_LABELS[post.category] ?? post.category}
+        </span>
+        <span class="text-white/70 text-sm">{formatDate(pubDate)}</span>
         {post.featured && (
-          <>
-            <span>•</span>
-            <span class="inline-flex items-center gap-1 text-yellow-500 font-medium">
-              <i class="fas fa-star text-xs"></i>Featured
-            </span>
-          </>
+          <span class="inline-flex items-center gap-1 text-yellow-400 text-sm font-medium">
+            <i class="fas fa-star text-xs"></i>{FEATURED_LABEL[lang]}
+          </span>
         )}
       </div>
 
-      <h1 class="text-4xl font-bold mb-6">{title}</h1>
+      <!-- Title -->
+      <h1 class="text-3xl md:text-5xl font-bold text-white max-w-4xl leading-tight mb-3">
+        {title}
+      </h1>
 
+      <!-- Author -->
+      <p class="text-white/70 text-sm">{BY_LABEL[lang]} <span class="text-white font-medium">{post.author}</span></p>
+    </div>
+  </section>
+
+  <!-- ── Article body ─────────────────────────────────────────────────────────── -->
+  <div class="bg-white">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+
+      <!-- Back link -->
+      <a
+        href={backHref}
+        class="inline-flex items-center text-[#194642] hover:text-primary font-medium text-sm mb-10 transition-colors"
+      >
+        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        {BACK_LABEL[lang]}
+      </a>
+
+      <!-- Description lead -->
       {description && (
-        <p class="text-xl text-gray-600 mb-8 leading-relaxed">{description}</p>
+        <p class="text-xl text-gray-600 leading-relaxed mb-10 pb-10 border-b border-gray-100">
+          {description}
+        </p>
       )}
 
       <!-- Content -->
       {content ? (
-        <div class="prose-content" set:html={content} />
+        <div class="prose prose-lg max-w-none
+          prose-headings:font-bold prose-headings:text-gray-900
+          prose-p:text-gray-700 prose-p:leading-relaxed
+          prose-a:text-[#194642] prose-a:underline
+          prose-img:rounded-xl prose-img:shadow-md
+          prose-ul:text-gray-700 prose-ol:text-gray-700
+          prose-strong:text-gray-900"
+          set:html={content}
+        />
       ) : (
-        <p class="text-gray-500 italic">Content not available in this language.</p>
+        <p class="text-gray-400 italic py-8 text-center">
+          Content not available in this language.
+        </p>
       )}
-    </div>
 
-    <!-- Embedded video -->
-    {videoEmbed && (
-      <div class="mt-10">
-        <h3 class="text-xl font-bold mb-4">Video</h3>
-        <div class="relative w-full rounded-xl overflow-hidden" style="padding-bottom:56.25%;">
-          <iframe
-            src={videoEmbed}
-            title="Video"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full"
-            loading="lazy"
-          ></iframe>
+      <!-- ── Video section ─────────────────────────────────────────────────── -->
+      {hasVideo && (
+        <div class="mt-14">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-full bg-[#194642] flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-play text-white text-xs ml-0.5"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900">{VIDEO_LABEL[lang]}</h2>
+          </div>
+
+          <div class="rounded-2xl overflow-hidden shadow-xl bg-gray-900">
+            {videoEmbed ? (
+              <div class="relative w-full" style="padding-bottom:56.25%;">
+                <iframe
+                  src={videoEmbed}
+                  title={title}
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            ) : (
+              <video
+                controls
+                preload="metadata"
+                class="w-full max-h-[520px] object-contain"
+                style="background:#000"
+              >
+                <source src={videoDirect!} />
+              </video>
+            )}
+          </div>
+        </div>
+      )}
+
+      <!-- ── External links ────────────────────────────────────────────────── -->
+      {links.length > 0 && (
+        <div class="mt-12 p-6 bg-[#f0f7f6] rounded-2xl border border-[#194642]/10">
+          <h3 class="text-base font-bold text-[#194642] mb-4 flex items-center gap-2">
+            <i class="fas fa-link text-sm"></i>
+            {LINKS_LABEL[lang]}
+          </h3>
+          <ul class="space-y-2">
+            {links.map(link => (
+              <li>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 text-[#194642] hover:underline font-medium text-sm"
+                >
+                  <i class="fas fa-arrow-right text-xs opacity-60"></i>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <!-- ── Share buttons ─────────────────────────────────────────────────── -->
+      <div class="mt-12 pt-8 border-t border-gray-100">
+        <h3 class="text-base font-bold text-gray-700 mb-4">{SHARE_LABEL[lang]}</h3>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`}
+            target="_blank" rel="noopener noreferrer"
+            class="bg-[#1877F2] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center text-sm font-medium gap-2"
+          >
+            <i class="fa-brands fa-facebook-f"></i>Facebook
+          </a>
+          <a
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(title)}`}
+            target="_blank" rel="noopener noreferrer"
+            class="bg-[#1DA1F2] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center text-sm font-medium gap-2"
+          >
+            <i class="fa-brands fa-twitter"></i>Twitter
+          </a>
+          <a
+            href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.url.href)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`}
+            target="_blank" rel="noopener noreferrer"
+            class="bg-[#0A66C2] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center text-sm font-medium gap-2"
+          >
+            <i class="fa-brands fa-linkedin-in"></i>LinkedIn
+          </a>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(`${title} – ${Astro.url.href}`)}`}
+            target="_blank" rel="noopener noreferrer"
+            class="bg-[#25D366] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center text-sm font-medium gap-2"
+          >
+            <i class="fa-brands fa-whatsapp"></i>WhatsApp
+          </a>
+          <a
+            href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url.href}`)}`}
+            class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center text-sm font-medium gap-2"
+          >
+            <i class="fa-solid fa-envelope"></i>Email
+          </a>
         </div>
       </div>
-    )}
 
-    <!-- Direct video -->
-    {videoDirect && (
-      <div class="mt-10">
-        <h3 class="text-xl font-bold mb-4">Video</h3>
-        <video controls class="w-full rounded-xl" preload="metadata">
-          <source src={videoDirect} />
-          Your browser does not support the video element.
-        </video>
-      </div>
-    )}
-
-    <!-- External links -->
-    {links.length > 0 && (
-      <div class="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-200">
-        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-          <i class="fas fa-external-link-alt text-[#194642] text-sm"></i>
-          Useful Links
-        </h3>
-        <ul class="space-y-2">
-          {links.map(link => (
-            <li>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-[#194642] hover:underline font-medium"
-              >
-                <i class="fas fa-arrow-right text-xs"></i>
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-
-    <!-- Share buttons -->
-    <div class="mt-12 pt-8 border-t border-gray-200">
-      <h3 class="text-xl font-bold mb-4">Share This Article</h3>
-      <div class="flex flex-wrap gap-4">
-        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1877F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
-          <i class="fa-brands fa-facebook-f mr-2"></i>Facebook
-        </a>
-        <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1DA1F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
-          <i class="fa-brands fa-twitter mr-2"></i>Twitter
-        </a>
-        <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.url.href)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`} target="_blank" rel="noopener noreferrer" class="bg-[#0A66C2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
-          <i class="fa-brands fa-linkedin-in mr-2"></i>LinkedIn
-        </a>
-        <a href={`https://wa.me/?text=${encodeURIComponent(`${title} - ${Astro.url.href}`)}`} target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
-          <i class="fa-brands fa-whatsapp mr-2"></i>WhatsApp
-        </a>
-        <a href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url.href}`)}`} class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
-          <i class="fa-solid fa-envelope mr-2"></i>Email
-        </a>
-      </div>
     </div>
-  </article>
+  </div>
 
-  <!-- CTA Section -->
+  <!-- ── CTA ──────────────────────────────────────────────────────────────────── -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
-      <p class="text-xl text-white mb-8">Our team is here to help you implement these solutions on your farm.</p>
-      <a href="/contact" class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
-        Contact Us
-        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      <h2 class="text-3xl font-bold text-white mb-4">{CTA_TITLE[lang]}</h2>
+      <p class="text-xl text-white/80 mb-8 max-w-xl mx-auto">{CTA_BODY[lang]}</p>
+      <a
+        href="/contact"
+        class="bg-white text-primary px-8 py-3 rounded-full text-base font-semibold hover:bg-opacity-90 inline-flex items-center gap-2"
+      >
+        {CONTACT_LABEL[lang]}
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
       </a>
     </div>
   </section>
+
 </Layout>

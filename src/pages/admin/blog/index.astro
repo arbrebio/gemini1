@@ -829,10 +829,13 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       // Step 2: Upload directly to Supabase Storage
       const uploadRes = await fetch(signed_url, {
         method: 'PUT',
-        headers: { 'Content-Type': file.type },
+        headers: { 'Content-Type': file.type, 'x-upsert': 'true' },
         body: file,
       });
-      if (!uploadRes.ok) throw new Error('Upload failed');
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text().catch(() => '');
+        throw new Error(`Upload failed (${uploadRes.status})${errText ? ': ' + errText : ''}`);
+      }
 
       // Step 3: Store path and URL
       currentImagePath = file_path;
@@ -840,7 +843,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       (document.getElementById('form-image-path') as HTMLInputElement).value = file_path;
       (document.getElementById('form-image-url') as HTMLInputElement).value  = public_url;
       showImagePreview(public_url);
-      uploadStatus.textContent = 'Uploaded ✓';
+      uploadStatus.textContent = '✓ Uploaded';
       uploadStatus.style.color = '#16a34a';
     } catch (e: any) {
       uploadStatus.textContent = e.message;

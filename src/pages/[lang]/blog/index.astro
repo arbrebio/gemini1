@@ -1,17 +1,23 @@
 ---
+export const prerender = false;
 import { getCollection } from 'astro:content';
 import Layout from "../../../layouts/Layout.astro";
-import { getAllLangPaths } from "../../../lib/langPaths";
 import { useT } from "../../../lib/translations";
-import type { Language } from "../../../lib/i18n";
+import { createClient } from '@supabase/supabase-js';
 
-export async function getStaticPaths() { return getAllLangPaths(); }
-const { lang } = Astro.params as { lang: Language };
-const T = useT(lang as any);
-const p = `/${lang}`;
+const SUPPORTED = ['fr', 'es', 'af'] as const;
+type SupportedLang = typeof SUPPORTED[number];
 
-// Category label translations
-const categoryLabels: Record<string, Record<string, string>> = {
+const { lang } = Astro.params as { lang: string };
+if (!SUPPORTED.includes(lang as SupportedLang)) {
+  return Astro.redirect('/blog');
+}
+
+const currentLang = lang as SupportedLang;
+const T = useT(currentLang as any);
+const p = `/${currentLang}`;
+
+const CATEGORY_LABELS: Record<SupportedLang, Record<string, string>> = {
   fr: {
     'irrigation':     'Irrigation',
     'greenhouse':     'Serre',
@@ -35,45 +41,95 @@ const categoryLabels: Record<string, Record<string, string>> = {
   },
 };
 const translateCategory = (cat: string) =>
-  (categoryLabels[lang]?.[cat]) ?? cat.replace('-', ' ');
+  (CATEGORY_LABELS[currentLang]?.[cat]) ?? cat.replace(/-/g, ' ');
 
-const allPosts = await getCollection('blog');
+// ── Unified post type ──────────────────────────────────────────────────────────
+type UnifiedPost = {
+  source: 'mdx' | 'db';
+  title: string;
+  description: string;
+  date: Date;
+  image: string;
+  category: string;
+  featured: boolean;
+  author: string;
+  href: string;
+};
 
-// Use posts for this language; fall back to English when no translation exists
-const langPosts = allPosts.filter(post => post.slug.startsWith(`${lang}/`));
-const enPosts   = allPosts.filter(post => post.slug.startsWith('en/'));
+// ── MDX posts (Content Collections) ───────────────────────────────────────────
+const allMdx = await getCollection('blog');
+const langMdx = allMdx.filter(p => p.slug.startsWith(`${currentLang}/`));
+const enMdx   = allMdx.filter(p => p.slug.startsWith('en/'));
 
-// Build a map of base-slug → translated post (or English fallback)
-const baseSlugMap = new Map<string, (typeof allPosts)[number]>();
-enPosts.forEach(post => {
-  const base = post.slug.replace(/^en\//, '');
-  baseSlugMap.set(base, post); // default: English
-});
-langPosts.forEach(post => {
-  const base = post.slug.replace(new RegExp(`^${lang}/`), '');
-  baseSlugMap.set(base, post); // override with translation if available
-});
+const baseMap = new Map<string, (typeof allMdx)[number]>();
+enMdx.forEach(post => baseMap.set(post.slug.replace(/^en\//, ''), post));
+langMdx.forEach(post => baseMap.set(post.slug.replace(new RegExp(`^${currentLang}/`), ''), post));
 
-const posts = [...baseSlugMap.values()].sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-const featuredPosts = posts.filter(post => post.data.featured);
-const regularPosts  = posts.filter(post => !post.data.featured);
+const urlSlug = (post: (typeof allMdx)[number]) =>
+  post.slug.replace(/^(en|fr|es|af)\//, '');
 
-// URL slug always uses the base slug (without language prefix)
-const urlSlug = (post: (typeof allPosts)[number]) =>
-  post.slug.replace(new RegExp(`^(en|fr|es|af)/`), '');
+const mdxPosts: UnifiedPost[] = [...baseMap.values()].map(post => ({
+  source:      'mdx',
+  title:       post.data.title,
+  description: post.data.description,
+  date:        post.data.pubDate,
+  image:       post.data.image,
+  category:    post.data.category,
+  featured:    post.data.featured ?? false,
+  author:      post.data.author,
+  href:        `${p}/blog/${urlSlug(post)}`,
+}));
 
-const localeMap: Record<string, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA', en: 'en-US' };
+// ── DB posts from Supabase (published only) ────────────────────────────────────
+function resolveField(obj: Record<string, string> | null | undefined): string {
+  if (!obj) return '';
+  return obj[currentLang] || obj['en'] || Object.values(obj).find(v => v) || '';
+}
+
+let dbPosts: UnifiedPost[] = [];
+try {
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+  const { data } = await supabase
+    .from('admin_blog_posts')
+    .select('slug, title, description, image_url, category, featured, author, published_at, created_at')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false, nullsFirst: false });
+
+  dbPosts = (data ?? []).map(post => ({
+    source:      'db' as const,
+    title:       resolveField(post.title),
+    description: resolveField(post.description),
+    date:        new Date(post.published_at ?? post.created_at),
+    image:       post.image_url ?? '',
+    category:    post.category ?? 'farming-tips',
+    featured:    Boolean(post.featured),
+    author:      post.author ?? 'Arbre Bio Africa Team',
+    href:        `/blog/p/${post.slug}?lang=${currentLang}`,
+  }));
+} catch {
+  // Supabase unavailable — show MDX posts only
+}
+
+// ── Merge & sort ───────────────────────────────────────────────────────────────
+const allPosts     = [...mdxPosts, ...dbPosts].sort((a, b) => b.date.valueOf() - a.date.valueOf());
+const featuredPosts = allPosts.filter(p => p.featured);
+const regularPosts  = allPosts.filter(p => !p.featured);
+
+const LOCALE: Record<SupportedLang, string> = { fr: 'fr-FR', es: 'es-ES', af: 'af-ZA' };
 const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat(localeMap[lang] || 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+  new Intl.DateTimeFormat(LOCALE[currentLang], { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
 ---
 
 <Layout title={`${T.blogTitle} | Arbre Bio Africa`} description={T.blogSubtitle}>
 
+  <!-- Hero -->
   <section class="relative h-[40vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="https://imgur.com/zyqmr7i.jpg" alt="Modern Agriculture" class="w-full h-full object-cover"/>
+      <img src="https://imgur.com/zyqmr7i.jpg" alt="Modern Agriculture" class="w-full h-full object-cover" loading="eager"/>
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
@@ -82,6 +138,7 @@ const formatDate = (date: Date) =>
     </div>
   </section>
 
+  <!-- Featured posts -->
   {featuredPosts.length > 0 && (
     <section class="py-16">
       <div class="container mx-auto px-4">
@@ -89,22 +146,28 @@ const formatDate = (date: Date) =>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPosts.map(post => (
             <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
-              <div class="p-6">
-                <div class="flex items-center mb-4">
-                  <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
-                  <span class="mx-2">•</span>
-                  <span class="text-sm text-primary capitalize">{translateCategory(post.data.category)}</span>
+              {post.image ? (
+                <img src={post.image} alt={post.title} class="w-full h-48 object-cover" loading="lazy"/>
+              ) : (
+                <div class="w-full h-48 bg-gradient-to-br from-[#194642] to-[#2a6659] flex items-center justify-center">
+                  <i class="fas fa-newspaper text-5xl text-white/30"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                  <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>
+              )}
+              <div class="p-6">
+                <div class="flex items-center mb-3">
+                  <span class="text-sm text-gray-500">{formatDate(post.date)}</span>
+                  <span class="mx-2">•</span>
+                  <span class="text-sm text-primary capitalize">{translateCategory(post.category)}</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 hover:text-primary line-clamp-2">
+                  <a href={post.href}>{post.title}</a>
                 </h3>
-                <p class="text-gray-600 mb-4">{post.data.description}</p>
+                <p class="text-gray-600 mb-4 line-clamp-3">{post.description}</p>
                 <div class="flex items-center justify-between">
-                  <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                  <a href={`${p}/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                  <span class="text-sm text-gray-500">{T.byAuthor} {post.author}</span>
+                  <a href={post.href} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center text-sm">
                     {T.readMore}
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                   </a>
                 </div>
               </div>
@@ -115,37 +178,52 @@ const formatDate = (date: Date) =>
     </section>
   )}
 
+  <!-- Latest posts -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold mb-8">{T.latestArticles}</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {regularPosts.map(post => (
-          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-            <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
-            <div class="p-6">
-              <div class="flex items-center mb-4">
-                <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
-                <span class="mx-2">•</span>
-                <span class="text-sm text-primary capitalize">{translateCategory(post.data.category)}</span>
+      {regularPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {regularPosts.map(post => (
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              {post.image ? (
+                <img src={post.image} alt={post.title} class="w-full h-48 object-cover" loading="lazy"/>
+              ) : (
+                <div class="w-full h-48 bg-gradient-to-br from-[#194642] to-[#2a6659] flex items-center justify-center">
+                  <i class="fas fa-newspaper text-5xl text-white/30"></i>
+                </div>
+              )}
+              <div class="p-6">
+                <div class="flex items-center mb-3">
+                  <span class="text-sm text-gray-500">{formatDate(post.date)}</span>
+                  <span class="mx-2">•</span>
+                  <span class="text-sm text-primary capitalize">{translateCategory(post.category)}</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 hover:text-primary line-clamp-2">
+                  <a href={post.href}>{post.title}</a>
+                </h3>
+                <p class="text-gray-600 mb-4 line-clamp-3">{post.description}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-500">{T.byAuthor} {post.author}</span>
+                  <a href={post.href} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center text-sm">
+                    {T.readMore}
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                  </a>
+                </div>
               </div>
-              <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                <a href={`${p}/blog/${urlSlug(post)}`}>{post.data.title}</a>
-              </h3>
-              <p class="text-gray-600 mb-4">{post.data.description}</p>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-500">{T.byAuthor} {post.data.author}</span>
-                <a href={`${p}/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
-                  {T.readMore}
-                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 text-gray-400">
+          <i class="fas fa-newspaper text-5xl mb-4 block"></i>
+          <p class="text-lg">No articles available yet. Check back soon!</p>
+        </div>
+      )}
     </div>
   </section>
 
+  <!-- Newsletter -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-6">{T.stayUpdated}</h2>

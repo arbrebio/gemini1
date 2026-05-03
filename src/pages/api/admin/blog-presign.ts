@@ -64,8 +64,10 @@ export const POST: APIRoute = async ({ request }) => {
       throw new Error(signErr?.message ?? 'Failed to generate upload URL');
     }
 
-    // Build the public URL for the uploaded file
-    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
+    // Build the public URL — construct it explicitly so it's always correct
+    // Format: {SUPABASE_URL}/storage/v1/object/public/{bucket}/{path}
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL.replace(/\/$/, '');
+    const publicUrl = `${supabaseUrl}/storage/v1/object/public/${BUCKET}/${filePath}`;
 
     return json({
       signed_url: data.signedUrl,
