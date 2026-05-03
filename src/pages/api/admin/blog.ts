@@ -77,10 +77,12 @@ export const GET: APIRoute = async ({ request }) => {
     const supabase = getSupabase();
     let q = supabase
       .from('admin_blog_posts')
-      .select('id, slug, title, description, author, category, featured, status, image_url, video_url, links, tags, published_at, created_at, updated_at', { count: 'exact' });
+      .select('id, slug, title, description, content, author, category, featured, status, image_url, image_path, video_url, links, tags, published_at, created_at, updated_at', { count: 'exact' });
 
     if (status && VALID_STATUSES.includes(status as any))   q = q.eq('status', status);
     if (category && VALID_CATEGORIES.includes(category as any)) q = q.eq('category', category);
+    const featuredParam = url.searchParams.get('featured');
+    if (featuredParam === 'true') q = q.eq('featured', true);
     if (search) {
       // Full-text search across English title (jsonb ->> 'en')
       q = q.ilike('title->>en', `%${search}%`);

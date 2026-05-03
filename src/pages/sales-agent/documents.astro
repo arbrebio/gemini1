@@ -1,0 +1,548 @@
+---
+export const prerender = false;
+import SalesAgentLayout from '../../layouts/SalesAgentLayout.astro';
+---
+
+<SalesAgentLayout title="Documents" activeTab="documents">
+  <div class="p-4 max-w-2xl mx-auto">
+
+    <!-- Page Header -->
+    <div class="mb-5">
+      <h1 class="text-xl font-bold text-gray-800">
+        <i class="fas fa-folder-open text-[#194642] mr-2"></i>
+        <span data-i18n-doc="title">Mes Documents</span>
+      </h1>
+      <p class="text-sm text-gray-500 mt-0.5" data-i18n-doc="subtitle">Ressources mises à votre disposition par l'administration</p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex gap-2 mb-5 overflow-x-auto pb-1">
+      <button id="tab-all"       class="doc-tab active-tab" data-cat="all">
+        <i class="fas fa-th-large mr-1"></i> <span data-i18n-doc="all">Tous</span>
+      </button>
+      <button id="tab-learning"  class="doc-tab" data-cat="learning">
+        <i class="fas fa-graduation-cap mr-1"></i> <span data-i18n-doc="learning">Formation</span>
+      </button>
+      <button id="tab-catalog"   class="doc-tab" data-cat="catalog">
+        <i class="fas fa-book-open mr-1"></i> <span data-i18n-doc="catalog">Catalogue</span>
+      </button>
+      <button id="tab-pricing"   class="doc-tab" data-cat="pricing">
+        <i class="fas fa-tags mr-1"></i> <span data-i18n-doc="pricing">Tarifs</span>
+      </button>
+    </div>
+
+    <!-- Document List -->
+    <div id="doc-list" class="space-y-3">
+      <div class="text-center py-12 text-gray-400">
+        <i class="fas fa-spinner fa-spin text-2xl"></i>
+        <p class="mt-2 text-sm" data-i18n-doc="loading">Chargement…</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Viewer Modal ─────────────────────────────────────────────────── -->
+  <div id="viewer-modal" class="hidden fixed inset-0 z-[200] flex flex-col bg-black/90">
+    <!-- Viewer Header -->
+    <div class="flex items-center justify-between px-4 py-3 bg-[#194642] text-white flex-shrink-0">
+      <div class="flex items-center gap-3 min-w-0">
+        <i id="viewer-icon" class="fas fa-file-pdf text-xl text-red-300"></i>
+        <div class="min-w-0">
+          <p id="viewer-title" class="font-semibold text-sm truncate">Document</p>
+          <p id="viewer-category" class="text-xs text-white/60 capitalize">—</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <!-- Download button — only for catalog -->
+        <a id="viewer-download-btn"
+           href="#" target="_blank" rel="noopener"
+           class="hidden px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white text-xs font-medium flex items-center gap-1.5">
+          <i class="fas fa-download"></i>
+          <span data-i18n-doc="download">Télécharger</span>
+        </a>
+        <button id="viewer-close"
+          class="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Viewer Body -->
+    <div class="flex-1 relative overflow-hidden bg-gray-900">
+
+      <!-- Loading spinner (shown while iframe loads) -->
+      <div id="viewer-loading"
+        class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center text-white gap-3 bg-gray-900">
+        <i class="fas fa-spinner fa-spin text-3xl text-white/60"></i>
+        <p class="text-sm text-white/50">Chargement du document…</p>
+      </div>
+
+      <!-- PDF / Office iframe — NO sandbox so browser can render natively -->
+      <iframe id="viewer-iframe"
+        src=""
+        class="w-full h-full border-0 bg-white hidden"
+        allow="fullscreen"
+        title="Document viewer">
+      </iframe>
+
+      <!-- Image viewer — scrollable container, right-click blocked on img itself -->
+      <div id="viewer-img-wrap"
+        class="hidden absolute inset-0 overflow-auto p-4"
+        style="display:none;">
+        <div class="min-h-full flex items-center justify-center">
+          <img id="viewer-img" src="" alt="Document"
+            class="max-w-full object-contain rounded shadow-xl select-none"
+            draggable="false"
+            style="-webkit-touch-callout:none;" />
+        </div>
+      </div>
+
+      <!-- Cannot preview fallback (Office files when viewer fails, or no URL) -->
+      <div id="viewer-unsupported"
+        class="hidden absolute inset-0 flex flex-col items-center justify-center text-white gap-5 px-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+          <i id="viewer-fallback-icon" class="fas fa-file-alt text-3xl text-white/60"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-white mb-1">Prévisualisation indisponible</p>
+          <p class="text-sm text-white/60" id="viewer-unsupported-msg">Ce type de fichier ne peut pas être affiché directement dans le navigateur.</p>
+        </div>
+        <a id="viewer-open-btn" href="#" target="_blank" rel="noopener"
+          class="px-5 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 text-sm font-medium transition-colors flex items-center gap-2">
+          <i class="fas fa-external-link-alt text-xs"></i>
+          <span id="viewer-open-btn-label">Ouvrir dans une nouvelle fenêtre</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</SalesAgentLayout>
+
+<style>
+  .doc-tab {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .doc-tab:hover { border-color: #194642; color: #194642; }
+  .doc-tab.active-tab { background: #194642; color: white; border-color: #194642; }
+
+  .doc-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .doc-card:hover { border-color: #194642; box-shadow: 0 2px 8px rgba(25,70,66,0.1); }
+
+  .doc-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .doc-icon.pdf  { background: #fee2e2; color: #ef4444; }
+  .doc-icon.img  { background: #dbeafe; color: #3b82f6; }
+  .doc-icon.word { background: #dbeafe; color: #2563eb; }
+  .doc-icon.excel{ background: #d1fae5; color: #059669; }
+  .doc-icon.ppt  { background: #ffedd5; color: #ea580c; }
+  .doc-icon.other{ background: #f3f4f6; color: #6b7280; }
+
+  .cat-badge {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cat-learning { background: #dbeafe; color: #1d4ed8; }
+  .cat-catalog  { background: #d1fae5; color: #065f46; }
+  .cat-pricing  { background: #fef3c7; color: #92400e; }
+
+  /* Image viewer: full scrollable area so tall images can be panned */
+  #viewer-img-wrap {
+    display: none;
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    padding: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  #viewer-img-wrap > div {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* PDF / Office iframe: fills the full viewer body */
+  #viewer-iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+  }
+  #viewer-iframe.hidden { display: none !important; }
+</style>
+
+<script>
+  // ── i18n for document page ────────────────────────────────────────────────
+  const DOC_I18N: Record<string, Record<string, string>> = {
+    fr: {
+      title: 'Mes Documents', subtitle: "Ressources mises à votre disposition par l'administration",
+      all: 'Tous', learning: 'Formation', catalog: 'Catalogue', pricing: 'Tarifs',
+      loading: 'Chargement…', empty: 'Aucun document disponible dans cette catégorie.',
+      emptyAll: 'Aucun document disponible.', download: 'Télécharger',
+      unsupported: 'Ce type de fichier ne peut pas être prévisualisé.',
+      viewOnly: 'Consultation uniquement', downloadable: 'Téléchargeable',
+    },
+    en: {
+      title: 'My Documents', subtitle: 'Resources made available to you by the administration',
+      all: 'All', learning: 'Training', catalog: 'Catalog', pricing: 'Pricing',
+      loading: 'Loading…', empty: 'No documents available in this category.',
+      emptyAll: 'No documents available.', download: 'Download',
+      unsupported: 'This file type cannot be previewed.',
+      viewOnly: 'View only', downloadable: 'Downloadable',
+    },
+    es: {
+      title: 'Mis Documentos', subtitle: 'Recursos puestos a tu disposición por la administración',
+      all: 'Todos', learning: 'Formación', catalog: 'Catálogo', pricing: 'Precios',
+      loading: 'Cargando…', empty: 'No hay documentos disponibles en esta categoría.',
+      emptyAll: 'No hay documentos disponibles.', download: 'Descargar',
+      unsupported: 'Este tipo de archivo no se puede previsualizar.',
+      viewOnly: 'Solo lectura', downloadable: 'Descargable',
+    },
+    af: {
+      title: 'My Dokumente', subtitle: 'Hulpbronne beskikbaar gestel deur die administrasie',
+      all: 'Alles', learning: 'Opleiding', catalog: 'Katalogus', pricing: 'Pryse',
+      loading: 'Laai tans…', empty: 'Geen dokumente beskikbaar in hierdie kategorie.',
+      emptyAll: 'Geen dokumente beskikbaar.', download: 'Aflaai',
+      unsupported: 'Hierdie lêertipe kan nie voorsien word nie.',
+      viewOnly: 'Slegs bekyk', downloadable: 'Aflaaibaar',
+    },
+  };
+
+  function t(key: string): string {
+    const lang = localStorage.getItem('agentLang') || 'fr';
+    return (DOC_I18N[lang] ?? DOC_I18N.fr)[key] ?? key;
+  }
+
+  // Apply translations to static elements
+  document.querySelectorAll('[data-i18n-doc]').forEach(el => {
+    const key = el.getAttribute('data-i18n-doc')!;
+    el.textContent = t(key);
+  });
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  let allDocs: any[] = [];
+  let activeCategory = 'all';
+
+  // ── Load documents ────────────────────────────────────────────────────────
+  async function loadDocuments() {
+    const token = localStorage.getItem('agentToken');
+    if (!token) return;
+
+    const list = document.getElementById('doc-list')!;
+    list.innerHTML = `<div class="text-center py-12 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="mt-2 text-sm">${t('loading')}</p></div>`;
+
+    try {
+      const res = await fetch('/api/sales-agent/documents', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to load documents');
+      const data = await res.json();
+      allDocs = data.documents || [];
+      renderDocs();
+    } catch {
+      list.innerHTML = `<div class="text-center py-12 text-gray-400"><i class="fas fa-exclamation-circle text-2xl"></i><p class="mt-2 text-sm">Erreur de chargement.</p></div>`;
+    }
+  }
+
+  // ── Render filtered docs ──────────────────────────────────────────────────
+  function renderDocs() {
+    const list = document.getElementById('doc-list')!;
+    const filtered = activeCategory === 'all'
+      ? allDocs
+      : allDocs.filter(d => d.category === activeCategory);
+
+    if (!filtered.length) {
+      const msg = activeCategory === 'all' ? t('emptyAll') : t('empty');
+      list.innerHTML = `<div class="text-center py-12 text-gray-400"><i class="fas fa-folder-open text-3xl"></i><p class="mt-3 text-sm">${msg}</p></div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(doc => {
+      const icon = getFileIcon(doc.file_type);
+      const size = formatSize(doc.file_size);
+      const isDownloadable = doc.category === 'catalog';
+      const tipIcon = isDownloadable
+        ? '<i class="fas fa-download text-green-500 ml-1" title="' + t('downloadable') + '"></i>'
+        : '<i class="fas fa-eye text-gray-400 ml-1" title="' + t('viewOnly') + '"></i>';
+
+      return `
+        <div class="doc-card" data-id="${doc.id}" data-url="${escapeHtml(doc.signed_url || '')}"
+             data-title="${escapeHtml(doc.title)}" data-type="${doc.file_type}"
+             data-cat="${doc.category}" data-filename="${escapeHtml(doc.file_name)}">
+          <div class="doc-icon ${icon.cls}"><i class="fas ${icon.fa}"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-800 text-sm truncate">${escapeHtml(doc.title)}</p>
+            <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+              <span class="cat-badge cat-${doc.category}">${getCatLabel(doc.category)}</span>
+              <span class="text-xs text-gray-400">${escapeHtml(doc.file_name)}</span>
+              <span class="text-xs text-gray-300">·</span>
+              <span class="text-xs text-gray-400">${size}</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end gap-1 flex-shrink-0">
+            ${tipIcon}
+            <i class="fas fa-chevron-right text-gray-300 text-xs mt-1"></i>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Attach click handlers
+    document.querySelectorAll('.doc-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const url = card.getAttribute('data-url') || '';
+        const title = card.getAttribute('data-title') || '';
+        const type = card.getAttribute('data-type') || '';
+        const cat = card.getAttribute('data-cat') || '';
+        const filename = card.getAttribute('data-filename') || '';
+        openViewer(url, title, type, cat, filename);
+      });
+    });
+  }
+
+  // ── Viewer ────────────────────────────────────────────────────────────────
+  let viewerLoadTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function showViewerLoading() {
+    document.getElementById('viewer-loading')!.classList.remove('hidden');
+  }
+  function hideViewerLoading() {
+    document.getElementById('viewer-loading')!.classList.add('hidden');
+    if (viewerLoadTimeout) { clearTimeout(viewerLoadTimeout); viewerLoadTimeout = null; }
+  }
+
+  function showUnsupported(url: string, mimeType: string) {
+    hideViewerLoading();
+    const unsupported  = document.getElementById('viewer-unsupported')!;
+    const openBtn      = document.getElementById('viewer-open-btn') as HTMLAnchorElement;
+    const openBtnLabel = document.getElementById('viewer-open-btn-label')!;
+    const fallbackIcon = document.getElementById('viewer-fallback-icon')!;
+    const unsupportedMsg = document.getElementById('viewer-unsupported-msg')!;
+
+    fallbackIcon.className = `fas ${getFileIcon(mimeType).fa} text-3xl text-white/60`;
+
+    if (!url) {
+      unsupportedMsg.textContent = 'Le lien du document est indisponible. Veuillez contacter votre administrateur.';
+      openBtn.classList.add('hidden');
+    } else {
+      const isOffice = mimeType.includes('word') || mimeType.includes('sheet') ||
+        mimeType.includes('excel') || mimeType.includes('presentation') || mimeType.includes('powerpoint');
+      unsupportedMsg.textContent = isOffice
+        ? "Ce fichier Office ne peut pas être affiché ici. Ouvrez-le avec votre application."
+        : "Ce fichier ne peut pas être prévisualisé dans le navigateur.";
+      openBtnLabel.textContent = isOffice ? 'Ouvrir avec une application' : 'Ouvrir dans un nouvel onglet';
+      openBtn.href = url;
+      openBtn.target = '_blank';
+      openBtn.classList.remove('hidden');
+    }
+    unsupported.classList.remove('hidden');
+  }
+
+  function openViewer(url: string, title: string, mimeType: string, category: string, filename: string) {
+    const modal    = document.getElementById('viewer-modal')!;
+    const iframe   = document.getElementById('viewer-iframe') as HTMLIFrameElement;
+    const imgWrap  = document.getElementById('viewer-img-wrap')! as HTMLElement;
+    const img      = document.getElementById('viewer-img') as HTMLImageElement;
+    const loading  = document.getElementById('viewer-loading')!;
+    const titleEl  = document.getElementById('viewer-title')!;
+    const catEl    = document.getElementById('viewer-category')!;
+    const iconEl   = document.getElementById('viewer-icon')!;
+    const downloadBtn = document.getElementById('viewer-download-btn') as HTMLAnchorElement;
+
+    // ── Clear previous state ──────────────────────────────────────────────
+    if (viewerLoadTimeout) { clearTimeout(viewerLoadTimeout); viewerLoadTimeout = null; }
+    iframe.onload = null;
+    iframe.onerror = null;
+    iframe.src = '';
+    img.src = '';
+    iframe.classList.add('hidden');
+    imgWrap.style.display = 'none';
+    document.getElementById('viewer-unsupported')!.classList.add('hidden');
+    loading.classList.add('hidden');
+
+    // ── Header ────────────────────────────────────────────────────────────
+    titleEl.textContent = title;
+    catEl.textContent = getCatLabel(category);
+    const icon = getFileIcon(mimeType);
+    iconEl.className = `fas ${icon.fa} text-xl`;
+
+    // ── Download button — catalog only ────────────────────────────────────
+    if (category === 'catalog' && url) {
+      downloadBtn.href = url;
+      downloadBtn.setAttribute('download', filename);
+      downloadBtn.classList.remove('hidden');
+    } else {
+      downloadBtn.removeAttribute('href');
+      downloadBtn.classList.add('hidden');
+    }
+
+    // ── Open modal ────────────────────────────────────────────────────────
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    if (!url) { showUnsupported('', mimeType); return; }
+
+    // ── IMAGE ─────────────────────────────────────────────────────────────
+    // Rendered directly — full scrollable container, no shield over it.
+    // Right-click is blocked on the img element itself (not via overlay).
+    if (mimeType.startsWith('image/')) {
+      img.src = url;
+      imgWrap.style.display = 'flex';  // flex so the inner div centers the image
+      // Block right-click / long-press save on non-catalog images
+      if (category !== 'catalog') {
+        img.oncontextmenu = (e) => { e.preventDefault(); return false; };
+      } else {
+        img.oncontextmenu = null;
+      }
+      return;
+    }
+
+    // ── PDF ───────────────────────────────────────────────────────────────
+    // Chrome / Safari / Firefox render PDFs natively inside iframes.
+    // #toolbar=0 hides the built-in toolbar (including the download button).
+    // NO overlay is placed on top — the user can scroll freely through pages.
+    if (mimeType === 'application/pdf') {
+      showViewerLoading();
+      iframe.classList.remove('hidden');
+
+      iframe.onload = () => { hideViewerLoading(); };
+      iframe.onerror = () => {
+        iframe.classList.add('hidden');
+        showUnsupported(url, mimeType);
+      };
+      viewerLoadTimeout = setTimeout(() => {
+        // If still showing spinner after 15 s, something went wrong
+        if (!loading.classList.contains('hidden')) {
+          hideViewerLoading();
+          iframe.classList.add('hidden');
+          showUnsupported(url, mimeType);
+        }
+      }, 15000);
+
+      // Append #toolbar=0 to hide Chrome's PDF toolbar (download button).
+      // The viewer itself stays fully scrollable and interactive.
+      iframe.src = `${url}#toolbar=0&navpanes=0`;
+      return;
+    }
+
+    // ── OFFICE FILES (Word / Excel / PowerPoint) ──────────────────────────
+    // Microsoft Office Online embed — handles its own scrolling internally.
+    // No overlay. The embed viewer doesn't show a download button.
+    const isOffice =
+      mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      mimeType === 'application/vnd.ms-powerpoint' ||
+      mimeType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+
+    if (isOffice) {
+      showViewerLoading();
+      iframe.classList.remove('hidden');
+
+      iframe.onload = () => { hideViewerLoading(); };
+      iframe.onerror = () => {
+        iframe.classList.add('hidden');
+        showUnsupported(url, mimeType);
+      };
+      viewerLoadTimeout = setTimeout(() => {
+        if (!loading.classList.contains('hidden')) {
+          hideViewerLoading();
+          iframe.classList.add('hidden');
+          showUnsupported(url, mimeType);
+        }
+      }, 25000);
+
+      iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+      return;
+    }
+
+    // ── Unknown type ──────────────────────────────────────────────────────
+    showUnsupported(url, mimeType);
+  }
+
+  function closeViewer() {
+    if (viewerLoadTimeout) { clearTimeout(viewerLoadTimeout); viewerLoadTimeout = null; }
+    const iframe = document.getElementById('viewer-iframe') as HTMLIFrameElement;
+    const img    = document.getElementById('viewer-img') as HTMLImageElement;
+    iframe.onload = null;
+    iframe.onerror = null;
+    iframe.src = '';
+    img.src = '';
+    img.oncontextmenu = null;
+    (document.getElementById('viewer-img-wrap') as HTMLElement).style.display = 'none';
+    document.getElementById('viewer-modal')!.classList.add('hidden');
+    document.getElementById('viewer-loading')!.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('viewer-close')?.addEventListener('click', closeViewer);
+  document.getElementById('viewer-modal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeViewer();
+  });
+
+  // ── Tab switching ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.doc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active-tab'));
+      tab.classList.add('active-tab');
+      activeCategory = tab.getAttribute('data-cat') || 'all';
+      renderDocs();
+    });
+  });
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function getFileIcon(mimeType: string): { fa: string; cls: string } {
+    if (mimeType === 'application/pdf') return { fa: 'fa-file-pdf', cls: 'pdf' };
+    if (mimeType.startsWith('image/')) return { fa: 'fa-file-image', cls: 'img' };
+    if (mimeType.includes('word')) return { fa: 'fa-file-word', cls: 'word' };
+    if (mimeType.includes('sheet') || mimeType.includes('excel')) return { fa: 'fa-file-excel', cls: 'excel' };
+    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return { fa: 'fa-file-powerpoint', cls: 'ppt' };
+    return { fa: 'fa-file-alt', cls: 'other' };
+  }
+
+  function getCatLabel(cat: string): string {
+    const labels: Record<string, string> = { learning: t('learning'), catalog: t('catalog'), pricing: t('pricing') };
+    return labels[cat] ?? cat;
+  }
+
+  function formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadDocuments();
+</script>
