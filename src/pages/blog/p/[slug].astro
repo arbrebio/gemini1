@@ -138,9 +138,66 @@ const langSwitcher = LANGS.map(l => ({
 
 // Canonical blog-index path for "back" link
 const backHref = lang === 'en' ? '/blog' : `/${lang}/blog`;
+
+// SEO: canonical URL (no ?lang= param — hreflang handles alternate versions)
+const canonicalUrl = `https://www.arbrebio.com/blog/p/${slug}`;
+const pageImage    = post.image_url ?? undefined;
+
+// SEO keywords: post tags + category + West Africa farming terms
+const seoKeywords: string[] = [
+  ...(Array.isArray(post.tags) ? post.tags as string[] : []),
+  CATEGORY_LABELS[post.category] ?? post.category,
+  'agriculture Afrique de l\'Ouest',
+  'agriculture Côte d\'Ivoire',
+  'agriculture de précision Afrique',
+  'precision farming West Africa',
+  'maraîchage Côte d\'Ivoire',
+  'serre agricole',
+  'Arbre Bio Africa',
+].filter(Boolean);
+
+// Article JSON-LD for Google rich results
+const scriptOpen  = '<' + 'script type="application/ld+json">';
+const scriptClose = '<' + '/script>';
+const articleJsonLd = scriptOpen + JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "image": pageImage ? [pageImage] : undefined,
+  "author": {
+    "@type": "Person",
+    "name": post.author || "Arbre Bio Africa Team"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Arbre Bio Africa",
+    "@id": "https://www.arbrebio.com/#organization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.arbrebio.com/logo.png"
+    }
+  },
+  "datePublished": post.published_at || post.created_at,
+  "dateModified":  post.published_at || post.created_at,
+  "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl },
+  "articleSection": CATEGORY_LABELS[post.category] ?? post.category,
+  "keywords": seoKeywords.join(', '),
+  "inLanguage": lang,
+  "url": canonicalUrl,
+}) + scriptClose;
 ---
 
-<Layout title={title || 'Blog'} description={description} image={post.image_url ?? undefined}>
+<Layout
+  title={title || 'Blog'}
+  description={description}
+  image={pageImage}
+  type="article"
+  author={post.author || undefined}
+  publishedTime={post.published_at || post.created_at}
+  keywords={seoKeywords}
+>
+  <Fragment slot="head" set:html={articleJsonLd} />
 
   <!-- ── Hero ────────────────────────────────────────────────────────────────── -->
   <section class="relative min-h-[50vh] flex items-end">

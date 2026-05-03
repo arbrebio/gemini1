@@ -188,16 +188,31 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         meta: [
           { name: "theme-color", content: "#194642" },
           { name: "robots", content: noIndex ? "noindex, nofollow" : "index, follow" },
-          { name: "author", content: "Arbre Bio Africa" },
+          { name: "author", content: author || "Arbre Bio Africa" },
           { name: "geo.region", content: "CI" },
           { name: "geo.placename", content: "Abidjan" },
           ...(keywords.length > 0 ? [{ name: "keywords", content: keywords.join(', ') }] : []),
           { name: "format-detection", content: "telephone=no" },
           { name: "mobile-web-app-capable", content: "yes" },
           { name: "apple-mobile-web-app-capable", content: "yes" },
-          { name: "apple-mobile-web-app-status-bar-style", content: "default" }
+          { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+          // Explicit OG tags that astro-seo doesn't emit on its own
+          { property: "og:url",               content: canonicalURL },
+          { property: "og:image:secure_url",  content: image || "https://i.imgur.com/79cS79J.png" },
+          { property: "og:image:width",       content: "1200" },
+          { property: "og:image:height",      content: "630" },
+          { property: "og:image:alt",         content: optimizedTitle },
+          // Explicit Twitter image so cards render on every client
+          { name: "twitter:image",            content: image || "https://i.imgur.com/79cS79J.png" },
+          { name: "twitter:title",            content: optimizedTitle },
+          { name: "twitter:description",      content: optimizedDescription },
+          // Article-specific OG tags (ignored by non-article pages)
+          ...(publishedTime ? [{ property: "article:published_time", content: publishedTime }] : []),
+          ...(author        ? [{ property: "article:author",         content: author }] : []),
         ],
-        link: []
+        link: [
+          { rel: "canonical", href: canonicalURL },
+        ]
       }}
     />
 
@@ -242,6 +257,9 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
 
   <!-- WebSite structured data with SearchAction -->
   <Fragment set:html={jsonLdWebsite} />
+
+  <!-- Page-specific head content (e.g. Article JSON-LD) -->
+  <slot name="head" />
 </head>
   <body class="bg-white antialiased">
     <!-- Skip to main content for accessibility -->
