@@ -1,0 +1,967 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Blog">
+  <!-- Toast -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Blog Posts</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Create and manage multilingual blog content</p>
+    </div>
+    <button
+      id="btn-add-post"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity hover:opacity-90"
+      style="background-color:#194642;"
+    >
+      <i class="fas fa-plus text-xs"></i>
+      New Post
+    </button>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Total</p>
+      <p id="stat-total" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Published</p>
+      <p id="stat-published" class="text-2xl font-bold text-green-700">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Drafts</p>
+      <p id="stat-drafts" class="text-2xl font-bold text-yellow-600">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Featured</p>
+      <p id="stat-featured" class="text-2xl font-bold text-purple-700">—</p>
+    </div>
+  </div>
+
+  <!-- Search & filters -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-3">
+    <div class="relative flex-1">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search by English title…"
+        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+      />
+    </div>
+    <select id="status-filter" class="w-full md:w-40 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]">
+      <option value="">All Statuses</option>
+      <option value="published">Published</option>
+      <option value="draft">Draft</option>
+    </select>
+    <select id="category-filter" class="w-full md:w-48 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]">
+      <option value="">All Categories</option>
+      <option value="irrigation">Irrigation</option>
+      <option value="greenhouse">Greenhouse</option>
+      <option value="substrates">Substrates</option>
+      <option value="farming-tips">Farming Tips</option>
+      <option value="digital-farming">Digital Farming</option>
+    </select>
+  </div>
+
+  <!-- Table card -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+    <div id="table-loading" class="flex items-center justify-center py-20">
+      <i class="fas fa-circle-notch fa-spin text-2xl" style="color:#194642;"></i>
+    </div>
+    <div id="table-empty" class="hidden flex-col items-center justify-center py-20 text-center">
+      <i class="fas fa-newspaper text-4xl text-gray-300 mb-3"></i>
+      <p class="text-gray-500 font-medium">No posts found</p>
+      <p class="text-gray-400 text-sm mt-1">Create your first post or adjust the filters</p>
+    </div>
+    <div id="table-wrapper" class="hidden overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-100 text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-16">Cover</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Title (EN)</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Featured</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Languages</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+            <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="posts-tbody" class="divide-y divide-gray-50 bg-white"></tbody>
+      </table>
+    </div>
+    <div id="pagination-bar" class="hidden items-center justify-between px-4 py-3 border-t border-gray-100">
+      <p id="pagination-info" class="text-sm text-gray-500"></p>
+      <div class="flex items-center gap-2">
+        <button id="btn-prev" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+          <i class="fas fa-chevron-left text-xs mr-1"></i>Prev
+        </button>
+        <button id="btn-next" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+          Next<i class="fas fa-chevron-right text-xs ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Create / Edit Modal ───────────────────────────────────────────────── -->
+  <div id="post-modal" class="fixed inset-0 z-40 hidden">
+    <div id="modal-backdrop" class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="absolute inset-0 flex items-start justify-center overflow-y-auto py-6 px-4">
+      <div class="relative bg-white w-full max-w-4xl rounded-xl shadow-2xl">
+
+        <!-- Modal header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white rounded-t-xl z-10">
+          <h2 id="modal-title" class="text-lg font-semibold text-gray-800">New Post</h2>
+          <button id="modal-close" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <i class="fas fa-times text-lg"></i>
+          </button>
+        </div>
+
+        <form id="post-form" class="px-6 py-5 space-y-6">
+          <input type="hidden" id="form-id" />
+          <input type="hidden" id="form-image-path" />
+          <input type="hidden" id="form-image-url-stored" />
+
+          <!-- ── Language tabs ── -->
+          <div>
+            <div class="flex gap-1 mb-4 border-b border-gray-200">
+              {['en','fr','es','af'].map((lang, i) => (
+                <button
+                  type="button"
+                  data-lang-tab={lang}
+                  class:list={[
+                    "lang-tab px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors",
+                    i === 0
+                      ? "border-[#194642] text-[#194642]"
+                      : "border-transparent text-gray-500 hover:text-gray-700",
+                  ]}
+                >
+                  {lang === 'en' ? '🇬🇧 EN' : lang === 'fr' ? '🇫🇷 FR' : lang === 'es' ? '🇪🇸 ES' : '🇿🇦 AF'}
+                </button>
+              ))}
+            </div>
+
+            {['en','fr','es','af'].map((lang) => (
+              <div id={`tab-${lang}`} class:list={["lang-panel space-y-4", lang !== 'en' && "hidden"]}>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Title {lang === 'en' && <span class="text-red-500">*</span>}
+                    <span class="ml-1 text-xs text-gray-400 font-normal uppercase">{lang}</span>
+                  </label>
+                  <input
+                    id={`form-title-${lang}`}
+                    type="text"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+                    placeholder={lang === 'en' ? 'e.g. 10 Proven Strategies for Higher Yields' : 'Translation…'}
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                    <span class="ml-1 text-xs text-gray-400 font-normal uppercase">{lang}</span>
+                  </label>
+                  <textarea
+                    id={`form-desc-${lang}`}
+                    rows="2"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642] resize-none"
+                    placeholder="Short summary shown on the blog listing…"
+                  ></textarea>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Content <span class="text-xs text-gray-400 font-normal">(HTML supported)</span>
+                    <span class="ml-1 text-xs text-gray-400 font-normal uppercase">{lang}</span>
+                  </label>
+                  <!-- Mini toolbar -->
+                  <div class="flex gap-1 mb-1.5 flex-wrap" data-toolbar={lang}>
+                    {[
+                      { label: 'B', tag: 'strong', title: 'Bold' },
+                      { label: 'I', tag: 'em', title: 'Italic' },
+                      { label: 'H2', tag: 'h2', title: 'Heading 2', block: true },
+                      { label: 'H3', tag: 'h3', title: 'Heading 3', block: true },
+                      { label: '¶', tag: 'p', title: 'Paragraph', block: true },
+                      { label: 'UL', tag: 'ul', title: 'List', list: true },
+                    ].map(btn => (
+                      <button
+                        type="button"
+                        class="toolbar-btn px-2 py-0.5 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                        data-tag={btn.tag}
+                        data-for-lang={lang}
+                        title={btn.title}
+                      >{btn.label}</button>
+                    ))}
+                  </div>
+                  <textarea
+                    id={`form-content-${lang}`}
+                    rows="12"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642] resize-y font-mono"
+                    placeholder="<p>Write your article content here…</p>"
+                  ></textarea>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- ── Shared metadata ── -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-100 pt-5">
+            <!-- Slug -->
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                URL Slug <span class="text-red-500">*</span>
+                <span class="text-xs text-gray-400 font-normal ml-1">Auto-generated from English title</span>
+              </label>
+              <div class="flex gap-2">
+                <span class="inline-flex items-center px-3 py-2 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">/blog/p/</span>
+                <input
+                  id="form-slug"
+                  type="text"
+                  required
+                  pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                  class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+                  placeholder="my-article-title"
+                />
+              </div>
+            </div>
+
+            <!-- Author -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Author</label>
+              <input
+                id="form-author"
+                type="text"
+                value="Arbre Bio Africa Team"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              />
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Category <span class="text-red-500">*</span></label>
+              <select id="form-category" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]">
+                <option value="farming-tips">Farming Tips</option>
+                <option value="irrigation">Irrigation</option>
+                <option value="greenhouse">Greenhouse</option>
+                <option value="substrates">Substrates</option>
+                <option value="digital-farming">Digital Farming</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select id="form-status" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+
+            <!-- Featured -->
+            <div class="flex items-center gap-3 pt-6">
+              <input id="form-featured" type="checkbox" class="w-4 h-4 text-[#194642] border-gray-300 rounded focus:ring-[#194642]" />
+              <label for="form-featured" class="text-sm font-medium text-gray-700">Featured post</label>
+            </div>
+          </div>
+
+          <!-- ── Media ── -->
+          <div class="border-t border-gray-100 pt-5 space-y-4">
+            <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Media</h3>
+
+            <!-- Cover image -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      id="btn-upload-image"
+                      class="inline-flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <i class="fas fa-upload text-gray-500 text-xs"></i>
+                      Upload Image
+                    </button>
+                    <input id="image-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+                    <span id="upload-status" class="text-xs text-gray-500"></span>
+                  </div>
+                  <input
+                    id="form-image-url"
+                    type="url"
+                    placeholder="Or paste image URL: https://…"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+                  />
+                  <p class="text-xs text-gray-400">JPEG, PNG, WebP, GIF — max 50 MB</p>
+                </div>
+                <div id="image-preview-wrap" class="hidden">
+                  <img id="image-preview" src="" alt="Cover preview" class="h-28 w-44 object-cover rounded-lg border border-gray-200" />
+                  <button type="button" id="btn-remove-image" class="mt-1 text-xs text-red-500 hover:text-red-700 transition-colors">
+                    <i class="fas fa-times mr-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video URL -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Video URL <span class="text-xs text-gray-400 font-normal">(YouTube, Vimeo, or direct .mp4)</span></label>
+              <input
+                id="form-video-url"
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=…"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+              />
+            </div>
+          </div>
+
+          <!-- ── Links ── -->
+          <div class="border-t border-gray-100 pt-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">External Links</h3>
+              <button
+                type="button"
+                id="btn-add-link"
+                class="inline-flex items-center gap-1 text-xs text-[#194642] hover:underline"
+              >
+                <i class="fas fa-plus text-xs"></i> Add Link
+              </button>
+            </div>
+            <div id="links-container" class="space-y-2"></div>
+            <p id="links-empty" class="text-xs text-gray-400 italic">No links added yet.</p>
+          </div>
+
+        </form>
+
+        <!-- Modal footer -->
+        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 sticky bottom-0 bg-white rounded-b-xl">
+          <button id="modal-cancel" type="button" class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button
+            id="modal-submit"
+            type="submit"
+            form="post-form"
+            class="px-5 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90 disabled:opacity-60"
+            style="background-color:#194642;"
+          >
+            <span id="modal-submit-text">Save Post</span>
+            <i id="modal-submit-spinner" class="fas fa-circle-notch fa-spin ml-2 hidden"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from '../../../lib/supabase';
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const container = document.getElementById('toast-container')!;
+    const toast = document.createElement('div');
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg text-white text-sm shadow-lg';
+    toast.style.backgroundColor = type === 'success' ? '#194642' : '#dc2626';
+    toast.style.minWidth = '260px';
+    toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.4s';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
+  function esc(str: string | null | undefined): string {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatDate(d: string | null | undefined): string {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    catch { return '—'; }
+  }
+
+  function slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  function statusBadge(status: string): string {
+    return status === 'published'
+      ? '<span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">Published</span>'
+      : '<span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Draft</span>';
+  }
+
+  function categoryBadge(cat: string): string {
+    const labels: Record<string, string> = {
+      'irrigation': 'Irrigation',
+      'greenhouse': 'Greenhouse',
+      'substrates': 'Substrates',
+      'farming-tips': 'Farming Tips',
+      'digital-farming': 'Digital Farming',
+    };
+    return `<span class="text-xs text-gray-600">${labels[cat] ?? cat}</span>`;
+  }
+
+  function languageDots(post: Post): string {
+    const langs: Record<string, string> = { en: '🇬🇧', fr: '🇫🇷', es: '🇪🇸', af: '🇿🇦' };
+    return Object.entries(langs).map(([lang, flag]) => {
+      const has = post.title?.[lang as keyof typeof post.title];
+      return `<span title="${lang.toUpperCase()}" class="${has ? 'opacity-100' : 'opacity-20'}">${flag}</span>`;
+    }).join(' ');
+  }
+
+  // ── State ──────────────────────────────────────────────────────────────────
+
+  interface Post {
+    id: string;
+    slug: string;
+    title: Record<string, string>;
+    description: Record<string, string>;
+    content?: Record<string, string>;
+    author: string;
+    category: string;
+    featured: boolean;
+    status: string;
+    image_url: string | null;
+    image_path: string | null;
+    video_url: string | null;
+    links: Array<{ label: string; url: string }>;
+    tags: string[];
+    published_at: string | null;
+    created_at: string;
+  }
+
+  let posts: Post[] = [];
+  let total = 0;
+  let currentPage = 1;
+  const PAGE_LIMIT = 20;
+  let searchValue = '';
+  let statusFilter = '';
+  let categoryFilter = '';
+  let confirmDeleteId: string | null = null;
+  let isSubmitting = false;
+  let currentImagePath = '';
+  let currentImageUrl = '';
+  let links: Array<{ label: string; url: string }> = [];
+
+  // ── DOM refs ───────────────────────────────────────────────────────────────
+
+  const tbody          = document.getElementById('posts-tbody') as HTMLTableSectionElement;
+  const tableLoading   = document.getElementById('table-loading')!;
+  const tableEmpty     = document.getElementById('table-empty')!;
+  const tableWrapper   = document.getElementById('table-wrapper')!;
+  const paginationBar  = document.getElementById('pagination-bar')!;
+  const paginationInfo = document.getElementById('pagination-info')!;
+  const btnPrev        = document.getElementById('btn-prev') as HTMLButtonElement;
+  const btnNext        = document.getElementById('btn-next') as HTMLButtonElement;
+  const modal          = document.getElementById('post-modal')!;
+  const formEl         = document.getElementById('post-form') as HTMLFormElement;
+  const modalTitle     = document.getElementById('modal-title')!;
+  const modalSubmitText  = document.getElementById('modal-submit-text')!;
+  const modalSubmitSpinner = document.getElementById('modal-submit-spinner')!;
+  const modalSubmitBtn = document.getElementById('modal-submit') as HTMLButtonElement;
+  const imagePreviewWrap = document.getElementById('image-preview-wrap')!;
+  const imagePreview   = document.getElementById('image-preview') as HTMLImageElement;
+  const uploadStatus   = document.getElementById('upload-status')!;
+  const linksContainer = document.getElementById('links-container')!;
+  const linksEmpty     = document.getElementById('links-empty')!;
+
+  // ── Table state helpers ────────────────────────────────────────────────────
+
+  function setTableState(state: 'loading' | 'empty' | 'data') {
+    tableLoading.classList.toggle('hidden', state !== 'loading');
+    tableEmpty.classList.toggle('hidden', state !== 'empty');
+    tableEmpty.classList.toggle('flex', state === 'empty');
+    tableWrapper.classList.toggle('hidden', state !== 'data');
+    paginationBar.classList.toggle('hidden', state !== 'data');
+    if (state === 'data') paginationBar.classList.add('flex');
+    else paginationBar.classList.remove('flex');
+  }
+
+  // ── Fetch ──────────────────────────────────────────────────────────────────
+
+  async function fetchPosts() {
+    setTableState('loading');
+    const params = new URLSearchParams({ page: String(currentPage), limit: String(PAGE_LIMIT) });
+    if (searchValue)    params.set('search', searchValue);
+    if (statusFilter)   params.set('status', statusFilter);
+    if (categoryFilter) params.set('category', categoryFilter);
+
+    try {
+      const res = await authFetch(`/api/admin/blog?${params}`);
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      posts = data.posts ?? [];
+      total = data.total ?? posts.length;
+      renderTable();
+      renderStats();
+    } catch (e: any) {
+      setTableState('empty');
+      showToast(e.message ?? 'Failed to load posts', 'error');
+    }
+  }
+
+  async function fetchStats() {
+    try {
+      const [pubRes, draftRes, featRes] = await Promise.all([
+        authFetch('/api/admin/blog?status=published&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+        authFetch('/api/admin/blog?status=draft&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+        authFetch('/api/admin/blog?featured=true&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+      ]);
+      document.getElementById('stat-published')!.textContent = String(pubRes.total ?? 0);
+      document.getElementById('stat-drafts')!.textContent    = String(draftRes.total ?? 0);
+      document.getElementById('stat-featured')!.textContent  = String(featRes.total ?? 0);
+    } catch { /* silent */ }
+  }
+
+  // ── Render table ───────────────────────────────────────────────────────────
+
+  function renderTable() {
+    if (!posts.length) { setTableState('empty'); return; }
+    setTableState('data');
+
+    tbody.innerHTML = posts.map(p => {
+      const title = p.title?.en || p.title?.fr || '(no English title)';
+      const thumb = p.image_url
+        ? `<img src="${esc(p.image_url)}" alt="" class="w-12 h-10 object-cover rounded" loading="lazy" />`
+        : `<div class="w-12 h-10 bg-gray-100 rounded flex items-center justify-center"><i class="fas fa-image text-gray-300 text-xs"></i></div>`;
+
+      return `
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-3">${thumb}</td>
+          <td class="px-4 py-3">
+            <p class="font-medium text-gray-800 max-w-xs truncate" title="${esc(title)}">${esc(title)}</p>
+            <p class="text-xs text-gray-400 mt-0.5">/blog/p/${esc(p.slug)}</p>
+          </td>
+          <td class="px-4 py-3">${categoryBadge(p.category)}</td>
+          <td class="px-4 py-3">${statusBadge(p.status)}</td>
+          <td class="px-4 py-3 text-center">
+            ${p.featured ? '<i class="fas fa-star text-yellow-400 text-sm"></i>' : '<i class="far fa-star text-gray-300 text-sm"></i>'}
+          </td>
+          <td class="px-4 py-3 text-sm">${languageDots(p)}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">${formatDate(p.published_at || p.created_at)}</td>
+          <td class="px-4 py-3 text-right">
+            <div id="actions-${p.id}" class="flex items-center justify-end gap-2">
+              <a href="/blog/p/${esc(p.slug)}" target="_blank" class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors rounded" title="View live"><i class="fas fa-external-link-alt text-xs"></i></a>
+              <button data-edit="${esc(p.id)}" class="p-1.5 text-gray-400 hover:text-[#194642] transition-colors rounded" title="Edit"><i class="fas fa-pencil-alt text-xs"></i></button>
+              <button data-delete-init="${esc(p.id)}" class="p-1.5 text-gray-400 hover:text-red-600 transition-colors rounded" title="Delete"><i class="fas fa-trash text-xs"></i></button>
+            </div>
+            <div id="confirm-${p.id}" class="hidden items-center justify-end gap-2">
+              <span class="text-xs text-gray-600 mr-1">Delete?</span>
+              <button data-delete-confirm="${esc(p.id)}" class="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors">Yes</button>
+              <button data-delete-cancel="${esc(p.id)}" class="px-2 py-1 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 transition-colors">No</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+
+    const start = (currentPage - 1) * PAGE_LIMIT + 1;
+    const end   = Math.min(currentPage * PAGE_LIMIT, total);
+    paginationInfo.textContent = `${start}–${end} of ${total}`;
+    btnPrev.disabled = currentPage <= 1;
+    btnNext.disabled = end >= total;
+  }
+
+  function renderStats() {
+    document.getElementById('stat-total')!.textContent = String(total);
+    fetchStats();
+  }
+
+  // ── Table event delegation ─────────────────────────────────────────────────
+
+  tbody.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest('[data-edit],[data-delete-init],[data-delete-confirm],[data-delete-cancel]') as HTMLElement | null;
+    if (!el) return;
+
+    if (el.dataset.edit) {
+      const post = posts.find(p => p.id === el.dataset.edit);
+      if (post) openEditModal(post);
+      return;
+    }
+    if (el.dataset.deleteInit) {
+      const id = el.dataset.deleteInit;
+      if (confirmDeleteId && confirmDeleteId !== id) cancelConfirm(confirmDeleteId);
+      confirmDeleteId = id;
+      document.getElementById(`actions-${id}`)!.classList.add('hidden');
+      const conf = document.getElementById(`confirm-${id}`)!;
+      conf.classList.remove('hidden');
+      conf.classList.add('flex');
+      return;
+    }
+    if (el.dataset.deleteConfirm) { deletePost(el.dataset.deleteConfirm); return; }
+    if (el.dataset.deleteCancel)  { cancelConfirm(el.dataset.deleteCancel); return; }
+  });
+
+  function cancelConfirm(id: string) {
+    confirmDeleteId = null;
+    document.getElementById(`actions-${id}`)?.classList.remove('hidden');
+    const conf = document.getElementById(`confirm-${id}`);
+    conf?.classList.add('hidden');
+    conf?.classList.remove('flex');
+  }
+
+  // ── CRUD ───────────────────────────────────────────────────────────────────
+
+  async function deletePost(id: string) {
+    try {
+      const res = await authFetch('/api/admin/blog', { method: 'DELETE', body: JSON.stringify({ id }) });
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error ?? 'Delete failed'); }
+      showToast('Post deleted successfully');
+      confirmDeleteId = null;
+      fetchPosts();
+    } catch (e: any) {
+      showToast(e.message, 'error');
+    }
+  }
+
+  async function submitPost(e: SubmitEvent) {
+    e.preventDefault();
+    if (isSubmitting) return;
+    isSubmitting = true;
+    modalSubmitBtn.disabled = true;
+    modalSubmitSpinner.classList.remove('hidden');
+
+    const id       = (document.getElementById('form-id') as HTMLInputElement).value.trim();
+    const imgPath  = (document.getElementById('form-image-path') as HTMLInputElement).value.trim();
+    const imgUrl   = currentImageUrl || (document.getElementById('form-image-url') as HTMLInputElement).value.trim();
+
+    const payload: Record<string, unknown> = {
+      slug:        (document.getElementById('form-slug') as HTMLInputElement).value.trim(),
+      author:      (document.getElementById('form-author') as HTMLInputElement).value.trim(),
+      category:    (document.getElementById('form-category') as HTMLSelectElement).value,
+      status:      (document.getElementById('form-status') as HTMLSelectElement).value,
+      featured:    (document.getElementById('form-featured') as HTMLInputElement).checked,
+      image_url:   imgUrl || null,
+      image_path:  imgPath || null,
+      video_url:   (document.getElementById('form-video-url') as HTMLInputElement).value.trim() || null,
+      links,
+      title:       { en: g('form-title-en'), fr: g('form-title-fr'), es: g('form-title-es'), af: g('form-title-af') },
+      description: { en: g('form-desc-en'),  fr: g('form-desc-fr'),  es: g('form-desc-es'),  af: g('form-desc-af') },
+      content:     { en: g('form-content-en'), fr: g('form-content-fr'), es: g('form-content-es'), af: g('form-content-af') },
+    };
+    if (id) payload.id = id;
+
+    function g(elId: string): string {
+      const el = document.getElementById(elId) as HTMLInputElement | HTMLTextAreaElement | null;
+      return el?.value.trim() ?? '';
+    }
+
+    try {
+      const res = await authFetch('/api/admin/blog', {
+        method: id ? 'PUT' : 'POST',
+        body:   JSON.stringify(payload),
+      });
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error ?? 'Save failed'); }
+      showToast(id ? 'Post updated successfully' : 'Post created successfully');
+      closeModal();
+      fetchPosts();
+    } catch (e: any) {
+      showToast(e.message, 'error');
+    } finally {
+      isSubmitting = false;
+      modalSubmitBtn.disabled = false;
+      modalSubmitSpinner.classList.add('hidden');
+    }
+  }
+
+  // ── Modal ──────────────────────────────────────────────────────────────────
+
+  function resetModal() {
+    formEl.reset();
+    links = [];
+    currentImagePath = '';
+    currentImageUrl  = '';
+    renderLinks();
+    hideImagePreview();
+    (document.getElementById('form-id') as HTMLInputElement).value = '';
+    (document.getElementById('form-image-path') as HTMLInputElement).value = '';
+    (document.getElementById('form-author') as HTMLInputElement).value = 'Arbre Bio Africa Team';
+    uploadStatus.textContent = '';
+    // Reset to EN tab
+    switchTab('en');
+  }
+
+  function openAddModal() {
+    resetModal();
+    modalTitle.textContent = 'New Post';
+    modalSubmitText.textContent = 'Save Post';
+    modal.classList.remove('hidden');
+  }
+
+  function openEditModal(post: Post) {
+    resetModal();
+    (document.getElementById('form-id') as HTMLInputElement).value       = post.id;
+    (document.getElementById('form-slug') as HTMLInputElement).value     = post.slug;
+    (document.getElementById('form-author') as HTMLInputElement).value   = post.author ?? 'Arbre Bio Africa Team';
+    (document.getElementById('form-category') as HTMLSelectElement).value = post.category ?? 'farming-tips';
+    (document.getElementById('form-status') as HTMLSelectElement).value  = post.status ?? 'draft';
+    (document.getElementById('form-featured') as HTMLInputElement).checked = Boolean(post.featured);
+    (document.getElementById('form-video-url') as HTMLInputElement).value = post.video_url ?? '';
+
+    // Populate multilingual fields
+    for (const lang of ['en','fr','es','af']) {
+      (document.getElementById(`form-title-${lang}`) as HTMLInputElement).value   = post.title?.[lang] ?? '';
+      (document.getElementById(`form-desc-${lang}`) as HTMLTextAreaElement).value  = post.description?.[lang] ?? '';
+      (document.getElementById(`form-content-${lang}`) as HTMLTextAreaElement).value = post.content?.[lang] ?? '';
+    }
+
+    // Image
+    if (post.image_url) {
+      currentImageUrl = post.image_url;
+      (document.getElementById('form-image-url') as HTMLInputElement).value = post.image_url;
+      showImagePreview(post.image_url);
+    }
+    if (post.image_path) {
+      currentImagePath = post.image_path;
+      (document.getElementById('form-image-path') as HTMLInputElement).value = post.image_path;
+    }
+
+    // Links
+    links = Array.isArray(post.links) ? [...post.links] : [];
+    renderLinks();
+
+    modalTitle.textContent = 'Edit Post';
+    modalSubmitText.textContent = 'Update Post';
+    modal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+  }
+
+  // ── Language tabs ──────────────────────────────────────────────────────────
+
+  function switchTab(lang: string) {
+    document.querySelectorAll('.lang-tab').forEach(btn => {
+      const isActive = (btn as HTMLElement).dataset.langTab === lang;
+      btn.classList.toggle('border-[#194642]', isActive);
+      btn.classList.toggle('text-[#194642]', isActive);
+      btn.classList.toggle('border-transparent', !isActive);
+      btn.classList.toggle('text-gray-500', !isActive);
+    });
+    document.querySelectorAll('.lang-panel').forEach(panel => {
+      panel.classList.toggle('hidden', panel.id !== `tab-${lang}`);
+    });
+  }
+
+  document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchTab((btn as HTMLElement).dataset.langTab!));
+  });
+
+  // ── Content toolbar ────────────────────────────────────────────────────────
+
+  document.querySelectorAll('.toolbar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag  = (btn as HTMLElement).dataset.tag!;
+      const lang = (btn as HTMLElement).dataset.forLang!;
+      const ta   = document.getElementById(`form-content-${lang}`) as HTMLTextAreaElement;
+      if (!ta) return;
+      const { selectionStart: ss, selectionEnd: se, value } = ta;
+      const selected = value.slice(ss, se);
+
+      let inserted: string;
+      if (tag === 'ul') {
+        inserted = `\n<ul>\n  <li>${selected || 'Item 1'}</li>\n  <li>Item 2</li>\n</ul>\n`;
+      } else if (['h2','h3','p'].includes(tag)) {
+        inserted = `<${tag}>${selected || 'Text here'}</${tag}>\n`;
+      } else {
+        inserted = `<${tag}>${selected}</${tag}>`;
+      }
+
+      ta.setRangeText(inserted, ss, se, 'end');
+      ta.focus();
+    });
+  });
+
+  // ── Slug auto-gen from EN title ────────────────────────────────────────────
+
+  const titleEnInput = document.getElementById('form-title-en') as HTMLInputElement;
+  const slugInput    = document.getElementById('form-slug') as HTMLInputElement;
+  let slugManuallyEdited = false;
+
+  titleEnInput.addEventListener('input', () => {
+    if (!slugManuallyEdited) {
+      slugInput.value = slugify(titleEnInput.value);
+    }
+  });
+  slugInput.addEventListener('input', () => {
+    slugManuallyEdited = true;
+  });
+
+  // ── Image upload ───────────────────────────────────────────────────────────
+
+  const imageFileInput = document.getElementById('image-file-input') as HTMLInputElement;
+  document.getElementById('btn-upload-image')!.addEventListener('click', () => imageFileInput.click());
+
+  imageFileInput.addEventListener('change', async () => {
+    const file = imageFileInput.files?.[0];
+    if (!file) return;
+
+    uploadStatus.textContent = 'Uploading…';
+    uploadStatus.style.color = '#194642';
+
+    try {
+      // Step 1: Get presigned URL
+      const presignRes = await authFetch('/api/admin/blog-presign', {
+        method: 'POST',
+        body:   JSON.stringify({ file_name: file.name, file_type: file.type, file_size: file.size }),
+      });
+      if (!presignRes.ok) {
+        const err = await presignRes.json().catch(() => ({}));
+        throw new Error(err.error ?? 'Failed to get upload URL');
+      }
+      const { signed_url, file_path, public_url } = await presignRes.json();
+
+      // Step 2: Upload directly to Supabase Storage
+      const uploadRes = await fetch(signed_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!uploadRes.ok) throw new Error('Upload failed');
+
+      // Step 3: Store path and URL
+      currentImagePath = file_path;
+      currentImageUrl  = public_url;
+      (document.getElementById('form-image-path') as HTMLInputElement).value = file_path;
+      (document.getElementById('form-image-url') as HTMLInputElement).value  = public_url;
+      showImagePreview(public_url);
+      uploadStatus.textContent = 'Uploaded ✓';
+      uploadStatus.style.color = '#16a34a';
+    } catch (e: any) {
+      uploadStatus.textContent = e.message;
+      uploadStatus.style.color = '#dc2626';
+    } finally {
+      imageFileInput.value = '';
+    }
+  });
+
+  // URL input also updates preview
+  (document.getElementById('form-image-url') as HTMLInputElement).addEventListener('change', (e) => {
+    const url = (e.target as HTMLInputElement).value.trim();
+    if (url) { currentImageUrl = url; showImagePreview(url); }
+    else hideImagePreview();
+  });
+
+  document.getElementById('btn-remove-image')!.addEventListener('click', () => {
+    currentImagePath = '';
+    currentImageUrl  = '';
+    (document.getElementById('form-image-path') as HTMLInputElement).value = '';
+    (document.getElementById('form-image-url') as HTMLInputElement).value  = '';
+    hideImagePreview();
+    uploadStatus.textContent = '';
+  });
+
+  function showImagePreview(src: string) {
+    imagePreview.src = src;
+    imagePreviewWrap.classList.remove('hidden');
+  }
+  function hideImagePreview() {
+    imagePreviewWrap.classList.add('hidden');
+    imagePreview.src = '';
+  }
+
+  // ── Links management ───────────────────────────────────────────────────────
+
+  function renderLinks() {
+    linksEmpty.style.display = links.length ? 'none' : 'block';
+    linksContainer.innerHTML = links.map((link, i) => `
+      <div class="flex gap-2 items-start" data-link-index="${i}">
+        <input
+          type="text"
+          placeholder="Label (e.g. Learn More)"
+          value="${esc(link.label)}"
+          class="link-label flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+        />
+        <input
+          type="url"
+          placeholder="https://…"
+          value="${esc(link.url)}"
+          class="link-url flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] focus:border-[#194642]"
+        />
+        <button type="button" class="remove-link p-2 text-gray-400 hover:text-red-500 transition-colors mt-0.5">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+    `).join('');
+
+    linksContainer.querySelectorAll('[data-link-index]').forEach(row => {
+      const i = parseInt((row as HTMLElement).dataset.linkIndex!, 10);
+      row.querySelector<HTMLInputElement>('.link-label')?.addEventListener('input', e => {
+        links[i].label = (e.target as HTMLInputElement).value;
+      });
+      row.querySelector<HTMLInputElement>('.link-url')?.addEventListener('input', e => {
+        links[i].url = (e.target as HTMLInputElement).value;
+      });
+      row.querySelector('.remove-link')?.addEventListener('click', () => {
+        links.splice(i, 1);
+        renderLinks();
+      });
+    });
+  }
+
+  document.getElementById('btn-add-link')!.addEventListener('click', () => {
+    links.push({ label: '', url: '' });
+    renderLinks();
+    // Focus the new label input
+    const inputs = linksContainer.querySelectorAll<HTMLInputElement>('.link-label');
+    inputs[inputs.length - 1]?.focus();
+  });
+
+  // ── Event listeners ────────────────────────────────────────────────────────
+
+  document.getElementById('btn-add-post')!.addEventListener('click', () => {
+    slugManuallyEdited = false;
+    openAddModal();
+  });
+  document.getElementById('modal-close')!.addEventListener('click', closeModal);
+  document.getElementById('modal-cancel')!.addEventListener('click', closeModal);
+  document.getElementById('modal-backdrop')!.addEventListener('click', closeModal);
+  formEl.addEventListener('submit', submitPost);
+
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  (document.getElementById('search-input') as HTMLInputElement).addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      searchValue = (e.target as HTMLInputElement).value.trim();
+      currentPage = 1;
+      fetchPosts();
+    }, 350);
+  });
+
+  (document.getElementById('status-filter') as HTMLSelectElement).addEventListener('change', (e) => {
+    statusFilter = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    fetchPosts();
+  });
+
+  (document.getElementById('category-filter') as HTMLSelectElement).addEventListener('change', (e) => {
+    categoryFilter = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    fetchPosts();
+  });
+
+  btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; fetchPosts(); } });
+  btnNext.addEventListener('click', () => { if (currentPage * PAGE_LIMIT < total) { currentPage++; fetchPosts(); } });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  fetchPosts();
+</script>

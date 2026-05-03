@@ -1,16 +1,82 @@
 ---
+export const prerender = false;
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { createClient } from '@supabase/supabase-js';
 
-// Only English posts (en/ prefix)
-const allPosts = await getCollection('blog');
-const posts = allPosts.filter(post => post.slug.startsWith('en/'));
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const featuredPosts = sortedPosts.filter(post => post.data.featured);
-const regularPosts = sortedPosts.filter(post => !post.data.featured);
+// ── MDX posts from Content Collections ────────────────────────────────────────
+const allCollectionPosts = await getCollection('blog');
+const mdxRaw = allCollectionPosts.filter(post => post.slug.startsWith('en/'));
 
-// URL slug without language prefix
-const urlSlug = (post: (typeof posts)[number]) => post.slug.replace(/^en\//, '');
+// ── DB posts from Supabase (published only) ────────────────────────────────────
+type UnifiedPost = {
+  source:      'mdx' | 'db';
+  title:       string;
+  description: string;
+  date:        Date;
+  image:       string;
+  category:    string;
+  featured:    boolean;
+  author:      string;
+  href:        string;
+};
+
+let dbPosts: UnifiedPost[] = [];
+try {
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+  const { data } = await supabase
+    .from('admin_blog_posts')
+    .select('slug, title, description, image_url, category, featured, author, published_at, created_at')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false, nullsFirst: false });
+
+  dbPosts = (data ?? []).map(p => ({
+    source:      'db' as const,
+    title:       p.title?.en || p.title?.fr || p.title?.es || p.title?.af || 'Untitled',
+    description: p.description?.en || p.description?.fr || '',
+    date:        new Date(p.published_at ?? p.created_at),
+    image:       p.image_url ?? '',
+    category:    p.category ?? 'farming-tips',
+    featured:    Boolean(p.featured),
+    author:      p.author ?? 'Arbre Bio Africa Team',
+    href:        `/blog/p/${p.slug}`,
+  }));
+} catch {
+  // Supabase not configured yet — only MDX posts will show
+}
+
+// ── Merge & sort ───────────────────────────────────────────────────────────────
+const urlSlug = (slug: string) => slug.replace(/^en\//, '');
+
+const mdxPosts: UnifiedPost[] = mdxRaw.map(post => ({
+  source:      'mdx' as const,
+  title:       post.data.title,
+  description: post.data.description,
+  date:        post.data.pubDate,
+  image:       post.data.image,
+  category:    post.data.category,
+  featured:    post.data.featured ?? false,
+  author:      post.data.author,
+  href:        `/blog/${urlSlug(post.slug)}`,
+}));
+
+const allPosts = [...mdxPosts, ...dbPosts]
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
+
+const featuredPosts = allPosts.filter(p => p.featured);
+const regularPosts  = allPosts.filter(p => !p.featured);
+
+const CATEGORY_LABELS: Record<string, string> = {
+  'irrigation':     'Irrigation',
+  'greenhouse':     'Greenhouse',
+  'substrates':     'Substrates',
+  'farming-tips':   'Farming Tips',
+  'digital-farming':'Digital Farming',
+};
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
@@ -23,7 +89,7 @@ const formatDate = (date: Date) =>
   <!-- Hero Section -->
   <section class="relative h-[40vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="https://imgur.com/zyqmr7i.jpg" alt="Modern Agriculture" class="w-full h-full object-cover"/>
+      <img src="https://imgur.com/zyqmr7i.jpg" alt="Modern Agriculture" class="w-full h-full object-cover" loading="eager"/>
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
@@ -40,20 +106,26 @@ const formatDate = (date: Date) =>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPosts.map(post => (
             <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
+              {post.image ? (
+                <img src={post.image} alt={post.title} class="w-full h-48 object-cover" loading="lazy"/>
+              ) : (
+                <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                  <i class="fas fa-newspaper text-4xl text-gray-300"></i>
+                </div>
+              )}
               <div class="p-6">
                 <div class="flex items-center mb-4">
-                  <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
+                  <span class="text-sm text-gray-500">{formatDate(post.date)}</span>
                   <span class="mx-2">•</span>
-                  <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+                  <span class="text-sm text-primary capitalize">{CATEGORY_LABELS[post.category] ?? post.category}</span>
                 </div>
                 <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                  <a href={`/blog/${urlSlug(post)}`}>{post.data.title}</a>
+                  <a href={post.href}>{post.title}</a>
                 </h3>
-                <p class="text-gray-600 mb-4">{post.data.description}</p>
+                <p class="text-gray-600 mb-4 line-clamp-3">{post.description}</p>
                 <div class="flex items-center justify-between">
-                  <span class="text-sm text-gray-500">By {post.data.author}</span>
-                  <a href={`/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                  <span class="text-sm text-gray-500">By {post.author}</span>
+                  <a href={post.href} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
                     Read More
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                   </a>
@@ -70,31 +142,44 @@ const formatDate = (date: Date) =>
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold mb-8">Latest Articles</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {regularPosts.map(post => (
-          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-            <img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover"/>
-            <div class="p-6">
-              <div class="flex items-center mb-4">
-                <span class="text-sm text-gray-500">{formatDate(post.data.pubDate)}</span>
-                <span class="mx-2">•</span>
-                <span class="text-sm text-primary capitalize">{post.data.category.replace('-', ' ')}</span>
+      {regularPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {regularPosts.map(post => (
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              {post.image ? (
+                <img src={post.image} alt={post.title} class="w-full h-48 object-cover" loading="lazy"/>
+              ) : (
+                <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                  <i class="fas fa-newspaper text-4xl text-gray-300"></i>
+                </div>
+              )}
+              <div class="p-6">
+                <div class="flex items-center mb-4">
+                  <span class="text-sm text-gray-500">{formatDate(post.date)}</span>
+                  <span class="mx-2">•</span>
+                  <span class="text-sm text-primary capitalize">{CATEGORY_LABELS[post.category] ?? post.category}</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 hover:text-primary">
+                  <a href={post.href}>{post.title}</a>
+                </h3>
+                <p class="text-gray-600 mb-4 line-clamp-3">{post.description}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-500">By {post.author}</span>
+                  <a href={post.href} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
+                    Read More
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                  </a>
+                </div>
               </div>
-              <h3 class="text-xl font-bold mb-2 hover:text-primary">
-                <a href={`/blog/${urlSlug(post)}`}>{post.data.title}</a>
-              </h3>
-              <p class="text-gray-600 mb-4">{post.data.description}</p>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-500">By {post.data.author}</span>
-                <a href={`/blog/${urlSlug(post)}`} class="text-primary hover:text-primary-dark font-semibold inline-flex items-center">
-                  Read More
-                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 text-gray-400">
+          <i class="fas fa-newspaper text-5xl mb-4"></i>
+          <p class="text-lg">No articles available yet. Check back soon!</p>
+        </div>
+      )}
     </div>
   </section>
 

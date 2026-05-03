@@ -1,0 +1,236 @@
+---
+export const prerender = false;
+import Layout from '../../../layouts/Layout.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/blog');
+
+// Detect preferred language from URL query (?lang=fr) or Accept-Language header
+const LANGS = ['en', 'fr', 'es', 'af'] as const;
+type Lang = typeof LANGS[number];
+
+const queryLang = Astro.url.searchParams.get('lang') as Lang | null;
+const headerLang = (Astro.request.headers.get('accept-language') || '').slice(0, 2).toLowerCase() as Lang;
+const lang: Lang = (queryLang && LANGS.includes(queryLang))
+  ? queryLang
+  : (LANGS.includes(headerLang) ? headerLang : 'en');
+
+// Fetch published post from Supabase (anon key — RLS allows public reads of published posts)
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  { auth: { autoRefreshToken: false, persistSession: false } },
+);
+
+const { data: post, error } = await supabase
+  .from('admin_blog_posts')
+  .select('id, slug, title, description, content, author, category, featured, image_url, video_url, links, tags, published_at, created_at')
+  .eq('status', 'published')
+  .eq('slug', slug)
+  .single();
+
+if (error || !post) return Astro.redirect('/blog');
+
+// Resolve text for the detected language, fall back to English, then any available language
+function resolve(obj: Record<string, string> | null | undefined): string {
+  if (!obj) return '';
+  return obj[lang] || obj['en'] || Object.values(obj).find(v => v) || '';
+}
+
+const title       = resolve(post.title);
+const description = resolve(post.description);
+const content     = resolve(post.content);
+
+const CATEGORY_LABELS: Record<string, string> = {
+  'irrigation':     'Irrigation',
+  'greenhouse':     'Greenhouse',
+  'substrates':     'Substrates',
+  'farming-tips':   'Farming Tips',
+  'digital-farming':'Digital Farming',
+};
+
+const formatDate = (d: string) =>
+  new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(d));
+
+const pubDate = post.published_at || post.created_at;
+
+// Build video embed or direct URL
+function buildVideoEmbed(url: string): string | null {
+  if (!url) return null;
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  return null;
+}
+
+const videoEmbed = post.video_url ? buildVideoEmbed(post.video_url) : null;
+const videoDirect = post.video_url && !videoEmbed ? post.video_url : null;
+
+const links: Array<{ label: string; url: string }> = Array.isArray(post.links) ? post.links : [];
+
+// Language switcher URLs
+const langSwitcher = LANGS.map(l => ({
+  code: l,
+  label: { en: '🇬🇧 EN', fr: '🇫🇷 FR', es: '🇪🇸 ES', af: '🇿🇦 AF' }[l],
+  url: `/blog/p/${slug}?lang=${l}`,
+  hasContent: Boolean((post.title as Record<string, string>)?.[l]),
+}));
+---
+
+<Layout title={title || 'Blog'} description={description} image={post.image_url ?? undefined}>
+  <article class="max-w-4xl mx-auto px-4 py-16">
+
+    <!-- Language switcher -->
+    {langSwitcher.some(l => l.hasContent) && (
+      <div class="flex gap-2 mb-6 flex-wrap">
+        {langSwitcher.filter(l => l.hasContent).map(l => (
+          <a
+            href={l.url}
+            class:list={[
+              "px-3 py-1.5 text-xs font-medium rounded-full border transition-colors",
+              l.code === lang
+                ? "border-[#194642] bg-[#194642] text-white"
+                : "border-gray-300 text-gray-600 hover:border-[#194642] hover:text-[#194642]",
+            ]}
+          >
+            {l.label}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Cover image -->
+    {post.image_url && (
+      <img
+        src={post.image_url}
+        alt={title}
+        class="w-full h-[400px] object-cover rounded-xl mb-8"
+        loading="eager"
+      />
+    )}
+
+    <!-- Meta -->
+    <div class="prose prose-lg max-w-none">
+      <div class="flex flex-wrap items-center gap-2 mb-6 text-sm text-gray-500">
+        <span>{formatDate(pubDate)}</span>
+        <span>•</span>
+        <span class="text-primary capitalize">{CATEGORY_LABELS[post.category] ?? post.category}</span>
+        <span>•</span>
+        <span>By {post.author}</span>
+        {post.featured && (
+          <>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 text-yellow-500 font-medium">
+              <i class="fas fa-star text-xs"></i>Featured
+            </span>
+          </>
+        )}
+      </div>
+
+      <h1 class="text-4xl font-bold mb-6">{title}</h1>
+
+      {description && (
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed">{description}</p>
+      )}
+
+      <!-- Content -->
+      {content ? (
+        <div class="prose-content" set:html={content} />
+      ) : (
+        <p class="text-gray-500 italic">Content not available in this language.</p>
+      )}
+    </div>
+
+    <!-- Embedded video -->
+    {videoEmbed && (
+      <div class="mt-10">
+        <h3 class="text-xl font-bold mb-4">Video</h3>
+        <div class="relative w-full rounded-xl overflow-hidden" style="padding-bottom:56.25%;">
+          <iframe
+            src={videoEmbed}
+            title="Video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    )}
+
+    <!-- Direct video -->
+    {videoDirect && (
+      <div class="mt-10">
+        <h3 class="text-xl font-bold mb-4">Video</h3>
+        <video controls class="w-full rounded-xl" preload="metadata">
+          <source src={videoDirect} />
+          Your browser does not support the video element.
+        </video>
+      </div>
+    )}
+
+    <!-- External links -->
+    {links.length > 0 && (
+      <div class="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-200">
+        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <i class="fas fa-external-link-alt text-[#194642] text-sm"></i>
+          Useful Links
+        </h3>
+        <ul class="space-y-2">
+          {links.map(link => (
+            <li>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-[#194642] hover:underline font-medium"
+              >
+                <i class="fas fa-arrow-right text-xs"></i>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <!-- Share buttons -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+      <h3 class="text-xl font-bold mb-4">Share This Article</h3>
+      <div class="flex flex-wrap gap-4">
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1877F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
+          <i class="fa-brands fa-facebook-f mr-2"></i>Facebook
+        </a>
+        <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="bg-[#1DA1F2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
+          <i class="fa-brands fa-twitter mr-2"></i>Twitter
+        </a>
+        <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.url.href)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`} target="_blank" rel="noopener noreferrer" class="bg-[#0A66C2] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
+          <i class="fa-brands fa-linkedin-in mr-2"></i>LinkedIn
+        </a>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${title} - ${Astro.url.href}`)}`} target="_blank" rel="noopener noreferrer" class="bg-[#25D366] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
+          <i class="fa-brands fa-whatsapp mr-2"></i>WhatsApp
+        </a>
+        <a href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url.href}`)}`} class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors inline-flex items-center">
+          <i class="fa-solid fa-envelope mr-2"></i>Email
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">Need Expert Advice?</h2>
+      <p class="text-xl text-white mb-8">Our team is here to help you implement these solutions on your farm.</p>
+      <a href="/contact" class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center">
+        Contact Us
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </section>
+</Layout>
