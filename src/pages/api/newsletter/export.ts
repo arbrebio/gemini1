@@ -94,7 +94,7 @@ async function sendExportEmail(csvContent: string, subscriberCount: number) {
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
           <header style="text-align: center; margin-bottom: 30px;">
-            <img src="https://i.imgur.com/79cS79J.png" alt="Arbre Bio Africa" style="max-width: 200px;">
+            <img src="https://www.arbrebio.com/logo.png" alt="Arbre Bio Africa" style="max-width: 200px;">
           </header>
           
           <main>

@@ -164,7 +164,7 @@ async function sendConfirmationEmail(user: any) {
         <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
           <header style="text-align: center; margin-bottom: 30px;">
-            <img src="https://i.imgur.com/79cS79J.png" alt="Arbre Bio Africa" style="max-width: 200px;">
+            <img src="https://www.arbrebio.com/logo.png" alt="Arbre Bio Africa" style="max-width: 200px;">
           </header>
           <main>
             <h1 style="color: #194642; margin-bottom: 20px;">Confirm Your Subscription</h1>

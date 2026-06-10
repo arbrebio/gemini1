@@ -97,7 +97,7 @@ export function generateStructuredData(type: string, data: any, baseUrl: string)
         '@type': 'Organization',
         name: data.name || 'Arbre Bio Africa',
         url: baseUrl,
-        logo: data.logo || 'https://i.imgur.com/79cS79J.png',
+        logo: data.logo || 'https://www.arbrebio.com/logo.png',
         description: data.description || 'Leading provider of precision farming solutions in Africa',
         address: {
           '@type': 'PostalAddress',
@@ -145,7 +145,7 @@ export function generateStructuredData(type: string, data: any, baseUrl: string)
           name: 'Arbre Bio Africa',
           logo: {
             '@type': 'ImageObject',
-            url: 'https://i.imgur.com/79cS79J.png'
+            url: 'https://www.arbrebio.com/logo.png'
           }
         },
         mainEntityOfPage: {

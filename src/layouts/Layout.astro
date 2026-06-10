@@ -43,7 +43,7 @@ const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toStri
 const organizationSchema = {
   "name": "Arbre Bio Africa",
   "url": Astro.site?.toString() || "https://www.arbrebio.com",
-  "logo": "https://i.imgur.com/79cS79J.png",
+  "logo": "https://www.arbrebio.com/logo.png",
   "description": "Leading provider of precision farming solutions in Africa",
   "address": {
     "addressLocality": "Abidjan",
@@ -169,7 +169,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         basic: {
           title: optimizedTitle,
           type,
-          image: image || "https://i.imgur.com/79cS79J.png",
+          image: image || "https://www.arbrebio.com/logo.png",
         },
         optional: {
           siteName: "Arbre Bio Africa",
@@ -198,12 +198,16 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           { name: "apple-mobile-web-app-status-bar-style", content: "default" },
           // Explicit OG tags that astro-seo doesn't emit on its own
           { property: "og:url",               content: canonicalURL },
-          { property: "og:image:secure_url",  content: image || "https://i.imgur.com/79cS79J.png" },
+          { property: "og:image:secure_url",  content: image || "https://www.arbrebio.com/logo.png" },
           { property: "og:image:width",       content: "1200" },
           { property: "og:image:height",      content: "630" },
           { property: "og:image:alt",         content: optimizedTitle },
+          // Tell social/search about the other language versions of this page
+          ...(['en_US','fr_FR','es_ES','af_ZA']
+            .filter(l => l !== ({'en':'en_US','fr':'fr_FR','es':'es_ES','af':'af_ZA'} as Record<string,string>)[lang])
+            .map(l => ({ property: "og:locale:alternate", content: l }))),
           // Explicit Twitter image so cards render on every client
-          { name: "twitter:image",            content: image || "https://i.imgur.com/79cS79J.png" },
+          { name: "twitter:image",            content: image || "https://www.arbrebio.com/logo.png" },
           { name: "twitter:title",            content: optimizedTitle },
           { name: "twitter:description",      content: optimizedDescription },
           // Article-specific OG tags (ignored by non-article pages)
@@ -246,6 +250,12 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
       return (<>
         <link rel="alternate" hreflang="en" href={enUrl} />
         <link rel="alternate" hreflang="fr" href={frUrl} />
+        {/* Region-specific French for the francophone West African markets we serve.
+            Helps Google serve the /fr pages to Côte d'Ivoire and neighbours. */}
+        <link rel="alternate" hreflang="fr-CI" href={frUrl} />
+        <link rel="alternate" hreflang="fr-SN" href={frUrl} />
+        <link rel="alternate" hreflang="fr-ML" href={frUrl} />
+        <link rel="alternate" hreflang="fr-BF" href={frUrl} />
         <link rel="alternate" hreflang="es" href={esUrl} />
         <link rel="alternate" hreflang="af" href={afUrl} />
         <link rel="alternate" hreflang="x-default" href={enUrl} />
