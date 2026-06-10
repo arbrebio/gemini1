@@ -66,3 +66,22 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Only import this in server-side API routes, never in client-side code.
 const serviceRoleKey = (import.meta.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key').trim();
 export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+
+/**
+ * Authenticated fetch — automatically attaches the current Supabase session
+ * as an `Authorization: Bearer <token>` header so server-side API routes
+ * can verify the caller via `requireAdminAuth()`.
+ *
+ * Use this instead of plain `fetch` for all /api/admin/* calls.
+ */
+export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = new Headers(options.headers as HeadersInit | undefined);
+  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
+  }
+  if (session?.access_token) {
+    headers.set('Authorization', `Bearer ${session.access_token}`);
+  }
+  return fetch(url, { ...options, headers });
+}

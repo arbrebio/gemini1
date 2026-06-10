@@ -538,6 +538,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../lib/supabase";
   // ─── Types ───────────────────────────────────────────────────────────────────
   type Project = {
     id: string;
@@ -680,7 +681,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function fetchProjects() {
     setGridState('loading');
     try {
-      const res = await fetch('/api/admin/projects');
+      const res = await authFetch('/api/admin/projects');
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       projects = data.projects ?? [];
@@ -694,7 +695,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function fetchCustomers() {
     try {
-      const res = await fetch('/api/admin/customers');
+      const res = await authFetch('/api/admin/customers');
       if (!res.ok) return;
       const data = await res.json();
       customers = data.customers ?? [];
@@ -704,7 +705,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function fetchEmployees() {
     try {
-      const res = await fetch('/api/admin/careers/employees');
+      const res = await authFetch('/api/admin/careers/employees');
       if (!res.ok) return;
       const data = await res.json();
       employees = data.employees ?? [];
@@ -734,9 +735,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function sendWhatsAppNotification(whatsappNumber: string, employeeName: string, taskTitle: string, projectName: string, priority: string, dueDate: string | undefined) {
     if (!whatsappNumber) return;
     try {
-      await fetch('/api/admin/whatsapp', {
+      await authFetch('/api/admin/whatsapp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: whatsappNumber,
           employee_name: employeeName,
@@ -963,9 +963,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function updateProjectStatus(projectId: string, newStatus: string) {
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: projectId, status: newStatus }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Update failed');
@@ -1111,9 +1110,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       const priority = (document.getElementById('task-priority') as HTMLSelectElement).value;
       const due_date = (document.getElementById('task-due-date') as HTMLInputElement).value || undefined;
 
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id:            activeProjectId,
           _action:       'add_task',
@@ -1212,9 +1210,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function updateTask(taskId: string, updates: Partial<Task>, showSuccess = false) {
     if (!activeProjectId) return;
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id:       activeProjectId,
           _action:  'update_task',
@@ -1233,9 +1230,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function deleteTask(taskId: string) {
     if (!activeProjectId) return;
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id:      activeProjectId,
           _action: 'delete_task',
@@ -1340,9 +1336,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (id) payload.id = id;
 
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: id ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Save failed');
@@ -1384,9 +1379,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.disabled  = true;
     spinner.classList.remove('hidden');
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await authFetch('/api/admin/projects', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: pendingDeleteId }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Delete failed');

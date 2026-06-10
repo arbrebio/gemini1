@@ -126,8 +126,22 @@ import Layout from "../../layouts/Layout.astro";
 
                 if (error) throw error;
 
-                // Check if user has admin access
-                // Ideally, check admin_profiles table here, but for now just redirect
+                // Verify the account actually has admin privileges by hitting a
+                // server endpoint that enforces requireAdminAuth(). A valid
+                // Supabase login is NOT sufficient — non-admin users are rejected.
+                const token = data.session?.access_token;
+                const check = await fetch(
+                    "/api/admin/notifications?count_only=true",
+                    { headers: { Authorization: `Bearer ${token}` } },
+                );
+
+                if (!check.ok) {
+                    await supabase.auth.signOut();
+                    throw new Error(
+                        "This account does not have admin access.",
+                    );
+                }
+
                 window.location.href = "/admin";
             } catch (error) {
                 if (errorMsg) {

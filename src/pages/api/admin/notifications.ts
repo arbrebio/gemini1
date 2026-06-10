@@ -2,6 +2,8 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdminAuth } from '../../../lib/adminAuth';
+import { createNotification } from '../../../lib/notify';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -31,7 +33,9 @@ function json(body: any, status = 200) {
  *   Body: { mark_all_read: true } — mark all notifications read
  */
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ request, url }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const countOnly = url.searchParams.get('count_only') === 'true';
@@ -65,26 +69,15 @@ export const GET: APIRoute = async ({ url }) => {
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
-    const supabase = getSupabase();
     const body = await request.json();
     const { type, message, entity_id, entity_type } = body;
 
     if (!message) return json({ error: 'message is required' }, 400);
 
-    const { data, error } = await supabase
-      .from('admin_notifications')
-      .insert({
-        type: type ?? 'default',
-        message,
-        entity_id: entity_id ?? null,
-        entity_type: entity_type ?? null,
-        is_read: false,
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
+    const data = await createNotification({ type, message, entity_id, entity_type });
     return json({ notification: data }, 201);
   } catch (e: any) {
     return json({ error: e.message }, 500);
@@ -92,6 +85,8 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 export const PUT: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();

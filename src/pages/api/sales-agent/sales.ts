@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { createNotification, sendWhatsApp } from '../../../lib/notify';
 
 function getSupabaseAdmin() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -247,16 +248,12 @@ export const POST: APIRoute = async ({ request }) => {
     const amountFormatted = new Intl.NumberFormat('fr-FR').format(total);
     const commissionFormatted = new Intl.NumberFormat('fr-FR').format(commission_amount);
 
-    // 1. Admin in-app notification
-    fetch(`${baseUrl}/api/admin/notifications`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'sale_pending',
-        message: `Nouvelle vente à valider — ${agent.full_name} • ${client_name} • ${amountFormatted} FCFA`,
-        entity_id: sale.id,
-        entity_type: 'sale',
-      }),
+    // 1. Admin in-app notification (direct DB insert — no unauthenticated HTTP hop)
+    createNotification({
+      type: 'sale_pending',
+      message: `Nouvelle vente à valider — ${agent.full_name} • ${client_name} • ${amountFormatted} FCFA`,
+      entity_id: sale.id,
+      entity_type: 'sale',
     }).catch(() => {});
 
     // 2. WhatsApp notification to super admin (+225 05 00 55 25 25)
@@ -273,11 +270,7 @@ export const POST: APIRoute = async ({ request }) => {
       `📊 Commission: ${commission_rate}% = ${commissionFormatted} FCFA\n\n` +
       `→ Validez sur: ${adminSalesUrl}`;
 
-    fetch(`${baseUrl}/api/admin/whatsapp`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: superAdminWhatsApp, task_title: messageText }),
-    }).catch(() => {});
+    sendWhatsApp({ to: superAdminWhatsApp, task_title: messageText, raw: true }).catch(() => {});
 
     return json({ sale, commission_rate, commission_amount }, 201);
   } catch (e: any) {

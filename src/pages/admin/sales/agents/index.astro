@@ -4,6 +4,22 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout title="Sales Agents">
+<style>
+  .docs-cat-tab {
+    padding: 0.3rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1.5px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .docs-cat-tab:hover { border-color: #194642; color: #194642; }
+  .docs-cat-tab.active-cat-tab { background: #194642; color: white; border-color: #194642; }
+</style>
   <!-- Toast -->
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
@@ -57,16 +73,89 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       <!-- Credentials display after creation -->
       <div id="credentials-display" class="hidden p-5 border-t border-gray-100">
         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p class="text-sm font-semibold text-green-800 mb-2"><i class="fas fa-check-circle mr-1"></i> Agent created successfully!</p>
-          <p class="text-xs text-green-700 mb-3">Share these credentials with the agent. The password is only shown once.</p>
-          <div class="bg-white rounded-lg p-3 border border-green-100 font-mono text-sm space-y-1">
-            <p><strong>Email:</strong> <span id="cred-email">—</span></p>
-            <p><strong>Password:</strong> <span id="cred-password">—</span></p>
-            <p><strong>Login URL:</strong> <span>arbrebioafrica.com/sales-agent/login</span></p>
+          <p class="text-sm font-semibold text-green-800 mb-1"><i class="fas fa-check-circle mr-1"></i> Agent créé avec succès !</p>
+          <!-- Email sent notice -->
+          <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
+            <i class="fas fa-envelope text-blue-500 text-xs"></i>
+            <p class="text-xs text-blue-700">
+              Les identifiants ont été envoyés automatiquement par email à <strong id="cred-email-notice">—</strong>.
+            </p>
+          </div>
+          <p class="text-xs text-green-700 mb-3">Conservez ces informations — le mot de passe n'est affiché qu'une seule fois.</p>
+          <div class="bg-white rounded-lg p-3 border border-green-100 text-sm space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Email</span>
+              <span id="cred-email" class="font-mono text-gray-800">—</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Mot de passe</span>
+              <span id="cred-password" class="font-mono font-bold text-gray-800">—</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Portail</span>
+              <span class="font-mono text-[#194642] text-xs">arbrebio.com/sales-agent/login</span>
+            </div>
           </div>
           <button id="copy-creds" class="mt-3 px-3 py-1.5 text-xs font-medium bg-green-700 text-white rounded-lg hover:opacity-90">
-            <i class="fas fa-copy mr-1"></i> Copy Credentials
+            <i class="fas fa-copy mr-1"></i> Copier les identifiants
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents Modal -->
+  <div id="docs-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-5 border-b border-gray-100 flex-shrink-0">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-folder-open text-[#194642] mr-2"></i>Documents Agent</h2>
+          <p id="docs-agent-name" class="text-sm text-gray-500 mt-0.5"></p>
+        </div>
+        <button id="close-docs-modal" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+
+      <!-- Upload Form -->
+      <div class="p-4 border-b border-gray-100 bg-gray-50 flex-shrink-0">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Ajouter un document</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <input id="doc-title" type="text" placeholder="Titre du document *"
+            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          <select id="doc-category" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="">— Catégorie * —</option>
+            <option value="learning">📚 Formation</option>
+            <option value="catalog">📖 Catalogue</option>
+            <option value="pricing">🏷️ Tarifs</option>
+          </select>
+          <div class="flex gap-2">
+            <label class="flex-1 flex items-center gap-2 border border-dashed border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 cursor-pointer hover:border-[#194642] hover:text-[#194642] transition-colors">
+              <i class="fas fa-paperclip text-xs"></i>
+              <span id="doc-file-label" class="truncate">Choisir un fichier *</span>
+              <input id="doc-file" type="file" class="hidden"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx" />
+            </label>
+            <button id="btn-upload-doc"
+              class="px-4 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90 whitespace-nowrap"
+              style="background:#194642">
+              <i class="fas fa-upload mr-1"></i> Envoyer
+            </button>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">Formats acceptés : PDF, images, Word, Excel, PowerPoint — 50 Mo max.</p>
+      </div>
+
+      <!-- Document list -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <!-- Category filter tabs -->
+        <div class="flex gap-2 mb-4 flex-wrap">
+          <button class="docs-cat-tab active-cat-tab" data-cat="all">Tous</button>
+          <button class="docs-cat-tab" data-cat="learning">📚 Formation</button>
+          <button class="docs-cat-tab" data-cat="catalog">📖 Catalogue</button>
+          <button class="docs-cat-tab" data-cat="pricing">🏷️ Tarifs</button>
+        </div>
+        <div id="docs-list">
+          <p class="text-center py-8 text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Chargement…</p>
         </div>
       </div>
     </div>
@@ -193,6 +282,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../../lib/supabase";
   const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
   let selectedAgentId: string | null = null;
   let lastCreatedPassword = '';
@@ -200,7 +290,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load employees for linking ─────────────────────────────────────────
   async function loadEmployees() {
-    const res = await fetch('/api/admin/careers/employees');
+    const res = await authFetch('/api/admin/careers/employees');
     if (!res.ok) return;
     const data = await res.json();
     const employees = data.employees || data || [];
@@ -216,7 +306,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load agents ────────────────────────────────────────────────────────
   async function loadAgents() {
-    const res = await fetch('/api/admin/sales-agents');
+    const res = await authFetch('/api/admin/sales-agents');
     const data = await res.json();
     const agents: any[] = data.agents || [];
 
@@ -271,6 +361,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
               : `<button class="btn-activate px-2 py-1 text-xs font-medium border border-green-200 text-green-600 rounded-lg hover:bg-green-50" data-id="${a.id}"><i class="fas fa-check mr-1"></i>Activer</button>`
             }
             <button class="btn-reset-pw px-2 py-1 text-xs font-medium border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50" data-id="${a.id}" data-name="${a.full_name}"><i class="fas fa-key mr-1"></i>Réinitialiser MDP</button>
+            <button class="btn-docs px-2 py-1 text-xs font-medium border border-[#194642] text-[#194642] rounded-lg hover:bg-green-50" data-id="${a.id}" data-name="${a.full_name}"><i class="fas fa-folder-open mr-1"></i>Documents</button>
             <button class="btn-delete px-2 py-1 text-xs font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50" data-id="${a.id}"><i class="fas fa-trash"></i></button>
           </div>
         </td>
@@ -288,6 +379,9 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     });
     document.querySelectorAll('.btn-reset-pw').forEach(btn => {
       btn.addEventListener('click', () => openResetPwModal(btn.getAttribute('data-id')!, btn.getAttribute('data-name')!));
+    });
+    document.querySelectorAll('.btn-docs').forEach(btn => {
+      btn.addEventListener('click', () => openDocsModal(btn.getAttribute('data-id')!, btn.getAttribute('data-name')!));
     });
     document.querySelectorAll('.btn-copy-pw').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -343,9 +437,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     lastCreatedEmail = body.email;
     lastCreatedPassword = body.password;
 
-    const res = await fetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
     const data = await res.json();
@@ -360,13 +453,15 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
     // Show credentials
     document.getElementById('cred-email')!.textContent = lastCreatedEmail;
+    document.getElementById('cred-email-notice')!.textContent = lastCreatedEmail;
     document.getElementById('cred-password')!.textContent = lastCreatedPassword;
     document.getElementById('credentials-display')!.classList.remove('hidden');
     (document.getElementById('create-form') as HTMLElement)!.classList.add('hidden');
+    showToast(`✅ Compte créé — identifiants envoyés à ${lastCreatedEmail}`, 'success');
   });
 
   document.getElementById('copy-creds')?.addEventListener('click', () => {
-    const text = `Email: ${lastCreatedEmail}\nPassword: ${lastCreatedPassword}\nLogin URL: arbrebioafrica.com/sales-agent/login`;
+    const text = `Email: ${lastCreatedEmail}\nMot de passe: ${lastCreatedPassword}\nPortail: https://arbrebio.com/sales-agent/login`;
     navigator.clipboard.writeText(text).then(() => showToast('Credentials copied!', 'success'));
   });
 
@@ -389,9 +484,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   });
 
   async function toggleAgent(id: string, action: 'suspend' | 'activate', reason?: string) {
-    const res = await fetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, action, reason }),
     });
     const data = await res.json();
@@ -410,9 +504,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   });
   document.getElementById('confirm-delete')?.addEventListener('click', async () => {
     document.getElementById('delete-modal')!.classList.add('hidden');
-    const res = await fetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents', {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: selectedAgentId }),
     });
     const data = await res.json();
@@ -453,9 +546,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Réinitialisation…';
 
-    const res = await fetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: selectedAgentId, action: 'reset-password', new_password: newPassword }),
     });
     const data = await res.json();
@@ -468,6 +560,202 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     document.getElementById('reset-pw-modal')!.classList.add('hidden');
     loadAgents();
   });
+
+  // ── Documents Modal ────────────────────────────────────────────────────
+  let docsAgentId: string | null = null;
+  let allAdminDocs: any[] = [];
+  let activeCat = 'all';
+
+  function openDocsModal(agentId: string, agentName: string) {
+    docsAgentId = agentId;
+    activeCat = 'all';
+    document.getElementById('docs-agent-name')!.textContent = agentName;
+    // reset form
+    (document.getElementById('doc-title') as HTMLInputElement).value = '';
+    (document.getElementById('doc-category') as HTMLSelectElement).value = '';
+    (document.getElementById('doc-file') as HTMLInputElement).value = '';
+    document.getElementById('doc-file-label')!.textContent = 'Choisir un fichier *';
+    // reset tabs
+    document.querySelectorAll('.docs-cat-tab').forEach(t => t.classList.remove('active-cat-tab'));
+    document.querySelector('.docs-cat-tab[data-cat="all"]')?.classList.add('active-cat-tab');
+    document.getElementById('docs-modal')!.classList.remove('hidden');
+    loadAdminDocs();
+  }
+
+  document.getElementById('close-docs-modal')?.addEventListener('click', () => {
+    document.getElementById('docs-modal')!.classList.add('hidden');
+  });
+
+  // File input label update
+  document.getElementById('doc-file')?.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    document.getElementById('doc-file-label')!.textContent = file ? file.name : 'Choisir un fichier *';
+  });
+
+  // Category tab filter
+  document.querySelectorAll('.docs-cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.docs-cat-tab').forEach(t => t.classList.remove('active-cat-tab'));
+      tab.classList.add('active-cat-tab');
+      activeCat = tab.getAttribute('data-cat') || 'all';
+      renderAdminDocs();
+    });
+  });
+
+  async function loadAdminDocs() {
+    if (!docsAgentId) return;
+    const listEl = document.getElementById('docs-list')!;
+    listEl.innerHTML = '<p class="text-center py-8 text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Chargement…</p>';
+    try {
+      const res = await authFetch(`/api/admin/agent-documents?agent_id=${docsAgentId}`);
+      const data = await res.json();
+      allAdminDocs = data.documents || [];
+      renderAdminDocs();
+    } catch {
+      listEl.innerHTML = '<p class="text-center py-8 text-red-400 text-sm">Erreur de chargement.</p>';
+    }
+  }
+
+  function renderAdminDocs() {
+    const listEl = document.getElementById('docs-list')!;
+    const filtered = activeCat === 'all' ? allAdminDocs : allAdminDocs.filter(d => d.category === activeCat);
+    if (!filtered.length) {
+      listEl.innerHTML = '<p class="text-center py-8 text-gray-400 text-sm"><i class="fas fa-folder-open mr-2"></i>Aucun document dans cette catégorie.</p>';
+      return;
+    }
+    const catLabels: Record<string, string> = { learning: '📚 Formation', catalog: '📖 Catalogue', pricing: '🏷️ Tarifs' };
+    const catColors: Record<string, string> = {
+      learning: 'bg-blue-50 text-blue-700 border-blue-100',
+      catalog: 'bg-green-50 text-green-700 border-green-100',
+      pricing: 'bg-yellow-50 text-yellow-700 border-yellow-100',
+    };
+    listEl.innerHTML = `<div class="space-y-2">${filtered.map(doc => {
+      const size = doc.file_size < 1024 * 1024
+        ? `${(doc.file_size / 1024).toFixed(0)} Ko`
+        : `${(doc.file_size / (1024 * 1024)).toFixed(1)} Mo`;
+      const catColor = catColors[doc.category] || 'bg-gray-50 text-gray-700 border-gray-100';
+      return `<div class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+        <i class="fas fa-file-alt text-gray-400 text-lg flex-shrink-0"></i>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-800 truncate">${escapeHtmlAdmin(doc.title)}</p>
+          <div class="flex items-center gap-2 mt-0.5">
+            <span class="text-xs px-2 py-0.5 rounded-full border ${catColor} font-medium">${catLabels[doc.category] ?? doc.category}</span>
+            <span class="text-xs text-gray-400">${escapeHtmlAdmin(doc.file_name)}</span>
+            <span class="text-xs text-gray-300">·</span>
+            <span class="text-xs text-gray-400">${size}</span>
+          </div>
+        </div>
+        <button class="btn-delete-doc flex-shrink-0 w-7 h-7 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 flex items-center justify-center" data-id="${doc.id}" title="Supprimer">
+          <i class="fas fa-trash text-xs pointer-events-none"></i>
+        </button>
+      </div>`;
+    }).join('')}</div>`;
+
+    document.querySelectorAll('.btn-delete-doc').forEach(btn => {
+      btn.addEventListener('click', () => deleteDoc(btn.getAttribute('data-id')!));
+    });
+  }
+
+  // Upload document — 3-step flow to bypass Vercel's 4.5 MB body limit:
+  // 1. Get a Supabase signed upload URL (tiny JSON request via Vercel)
+  // 2. PUT the file DIRECTLY from browser to Supabase (no Vercel in the middle)
+  // 3. Save metadata via Vercel API (tiny JSON request)
+  document.getElementById('btn-upload-doc')?.addEventListener('click', async () => {
+    if (!docsAgentId) return;
+    const titleInput = document.getElementById('doc-title') as HTMLInputElement;
+    const catSelect  = document.getElementById('doc-category') as HTMLSelectElement;
+    const fileInput  = document.getElementById('doc-file') as HTMLInputElement;
+    const btn        = document.getElementById('btn-upload-doc') as HTMLButtonElement;
+
+    const title    = titleInput.value.trim();
+    const category = catSelect.value;
+    const file     = fileInput.files?.[0];
+
+    if (!title)    { showToast('Veuillez saisir un titre.', 'error'); return; }
+    if (!category) { showToast('Veuillez choisir une catégorie.', 'error'); return; }
+    if (!file)     { showToast('Veuillez sélectionner un fichier.', 'error'); return; }
+
+    btn.disabled = true;
+
+    try {
+      // ── Step 1: obtain signed upload URL ───────────────────────────────
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Préparation…';
+      const presignRes = await authFetch('/api/admin/agent-documents-presign', {
+        method: 'POST',
+        body: JSON.stringify({
+          agent_id:  docsAgentId,
+          title,
+          category,
+          file_name: file.name,
+          file_type: file.type,
+          file_size: file.size,
+        }),
+      });
+      const presignData = await presignRes.json();
+      if (presignData.error) { showToast(presignData.error, 'error'); return; }
+
+      const { signed_url, file_path } = presignData;
+
+      // ── Step 2: upload file DIRECTLY to Supabase (bypasses Vercel) ─────
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Envoi du fichier…';
+      const uploadRes = await fetch(signed_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text().catch(() => uploadRes.statusText);
+        throw new Error(`Erreur d'envoi: ${errText}`);
+      }
+
+      // ── Step 3: save metadata via API ──────────────────────────────────
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Enregistrement…';
+      const metaRes = await authFetch('/api/admin/agent-documents', {
+        method: 'POST',
+        body: JSON.stringify({
+          agent_id:  docsAgentId,
+          title,
+          category,
+          file_name: file.name,
+          file_path,
+          file_type: file.type,
+          file_size: file.size,
+        }),
+      });
+      const metaData = await metaRes.json();
+      if (metaData.error) { showToast(metaData.error, 'error'); return; }
+
+      // ── Reset form ─────────────────────────────────────────────────────
+      titleInput.value = '';
+      catSelect.value  = '';
+      fileInput.value  = '';
+      document.getElementById('doc-file-label')!.textContent = 'Choisir un fichier *';
+      showToast('Document ajouté avec succès !', 'success');
+      loadAdminDocs();
+
+    } catch (err: any) {
+      showToast(err.message || 'Erreur lors de l\'envoi.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-upload mr-1"></i> Envoyer';
+    }
+  });
+
+  async function deleteDoc(docId: string) {
+    if (!confirm('Supprimer ce document ?')) return;
+    const res = await authFetch('/api/admin/agent-documents', {
+      method: 'DELETE',
+      body: JSON.stringify({ id: docId }),
+    });
+    const data = await res.json();
+    if (data.error) { showToast(data.error, 'error'); return; }
+    showToast('Document supprimé.', 'success');
+    loadAdminDocs();
+  }
+
+  function escapeHtmlAdmin(s: string): string {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
   // ── Toast ──────────────────────────────────────────────────────────────
   function showToast(msg: string, type: 'success' | 'error' = 'success') {

@@ -32,22 +32,37 @@ export function forbiddenJson(message = 'Forbidden') {
 }
 
 /**
- * Verify the request carries a valid Supabase session cookie
- * belonging to a user listed in the `admin_profiles` table.
+ * Comma-separated allowlist of admin email addresses, used as a fail-safe
+ * when the `admin_profiles` table does not exist yet. Configure in env as:
+ *   ADMIN_EMAILS=alice@arbrebio.com,bob@arbrebio.com
+ */
+function getAdminEmailAllowlist(): string[] {
+  return (import.meta.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e: string) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+/**
+ * Verify the request carries a valid Supabase access token belonging to a
+ * known admin. Admin status is determined by membership in the
+ * `admin_profiles` table; if that table does not exist yet, we fall back to
+ * the ADMIN_EMAILS allowlist. If NEITHER is configured, access is DENIED
+ * (fail-closed) rather than granted to every authenticated user.
  *
- * Returns { ok: true, userId } on success, or
+ * Returns { ok: true, userId, email } on success, or
  *         { ok: false, response } with a 401/403 Response on failure.
  */
 export async function requireAdminAuth(
   request: Request
-): Promise<{ ok: true; userId: string } | { ok: false; response: Response }> {
+): Promise<{ ok: true; userId: string; email: string | null } | { ok: false; response: Response }> {
   // Extract Bearer token from Authorization header
   const authHeader = request.headers.get('Authorization') || '';
   let token: string | null = authHeader.startsWith('Bearer ')
     ? authHeader.slice(7).trim()
     : null;
 
-  // Fall back to sb-access-token cookie (set by the admin login page)
+  // Fall back to a Supabase access-token cookie if present
   if (!token) {
     const cookie = request.headers.get('cookie') || '';
     const match = cookie.match(/sb-access-token=([^;]+)/);
@@ -61,10 +76,9 @@ export async function requireAdminAuth(
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) return { ok: false, response: unauthorizedJson('Invalid or expired session') };
 
-    // Verify the user exists in admin_profiles (if the table exists).
-    // If the query errors with "relation does not exist" we fall back to
-    // accepting any valid authenticated user — this keeps the admin panel
-    // working even before an admin_profiles table is created.
+    const email = user.email?.toLowerCase() ?? null;
+
+    // Primary check: membership in admin_profiles.
     const { data: adminProfile, error: profileErr } = await supabase
       .from('admin_profiles')
       .select('id')
@@ -76,15 +90,30 @@ export async function requireAdminAuth(
       profileErr?.message?.includes('does not exist');
 
     if (profileErr && !tableNotFound) {
-      // Table exists but something else went wrong — deny access
+      // Table exists but the query failed for another reason — deny.
       return { ok: false, response: forbiddenJson('Not an admin account') };
     }
 
-    if (!tableNotFound && !adminProfile) {
-      return { ok: false, response: forbiddenJson('Not an admin account') };
+    if (!tableNotFound) {
+      // Table exists — membership is authoritative.
+      if (!adminProfile) return { ok: false, response: forbiddenJson('Not an admin account') };
+      return { ok: true, userId: user.id, email };
     }
 
-    return { ok: true, userId: user.id };
+    // Table missing — fail-safe to the email allowlist (fail-CLOSED if empty).
+    const allowlist = getAdminEmailAllowlist();
+    if (allowlist.length === 0) {
+      return {
+        ok: false,
+        response: forbiddenJson(
+          'Admin access not configured. Create an admin_profiles table or set ADMIN_EMAILS.'
+        ),
+      };
+    }
+    if (!email || !allowlist.includes(email)) {
+      return { ok: false, response: forbiddenJson('Not an admin account') };
+    }
+    return { ok: true, userId: user.id, email };
   } catch {
     return { ok: false, response: unauthorizedJson('Auth check failed') };
   }

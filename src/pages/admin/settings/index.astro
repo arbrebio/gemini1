@@ -646,6 +646,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../lib/supabase";
   // ─── Toast ───────────────────────────────────────────────────────────────────
 
   function showToast(message: string, type: 'success' | 'error' = 'success') {
@@ -728,7 +729,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function loadSettings() {
     try {
-      const res = await fetch('/api/admin/settings');
+      const res = await authFetch('/api/admin/settings');
       if (!res.ok) throw new Error('Failed to load settings');
       const data = await res.json();
       settings = data.settings ?? {};
@@ -803,9 +804,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> Saving…';
 
     try {
-      const res = await fetch('/api/admin/settings', {
+      const res = await authFetch('/api/admin/settings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
@@ -862,7 +862,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       else if (entity === 'orders')   url = '/api/admin/orders?limit=10000';
       else if (entity === 'products') url = '/api/admin/products?limit=10000';
 
-      const res = await fetch(url);
+      const res = await authFetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${entity}`);
       const data = await res.json();
 

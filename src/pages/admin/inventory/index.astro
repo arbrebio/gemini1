@@ -489,6 +489,7 @@ export const prerender = false;
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../lib/supabase";
   // ─── Utility ───────────────────────────────────────────────────────────────
 
   function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
@@ -534,7 +535,7 @@ export const prerender = false;
   }
 
   async function apiFetch(url: string, opts?: RequestInit) {
-    const res = await fetch(url, opts);
+    const res = await authFetch(url, opts ?? {});
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: res.statusText }));
       throw new Error(err.error || res.statusText);
@@ -817,7 +818,7 @@ export const prerender = false;
       const formData = new FormData();
       formData.append('file', file);
       formData.append('bucket', 'product-images');
-      const res = await fetch('/api/admin/upload-asset', { method: 'POST', body: formData });
+      const res = await authFetch('/api/admin/upload-asset', { method: 'POST', body: formData });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Upload failed');
       const data = await res.json();
       const url = data.url;

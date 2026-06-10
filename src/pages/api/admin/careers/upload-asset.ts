@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdminAuth } from '../../../../lib/adminAuth';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -29,6 +30,8 @@ function json(body: any, status: number) {
  * - contract → 10-year signed URL from career-documents bucket
  */
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;

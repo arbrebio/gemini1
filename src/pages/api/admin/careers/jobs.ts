@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdminAuth } from '../../../../lib/adminAuth';
 
 function getSupabase(request: Request) {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -20,6 +21,8 @@ function slugify(text: string): string {
 
 // GET — list all jobs (admin sees all statuses)
 export const GET: APIRoute = async ({ request, url }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase(request);
     const id = url.searchParams.get('id');
@@ -42,6 +45,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 // POST — create new job
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase(request);
     const body = await request.json();
@@ -61,6 +66,8 @@ export const POST: APIRoute = async ({ request }) => {
 
 // PUT — update job
 export const PUT: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase(request);
     const body = await request.json();
@@ -78,6 +85,8 @@ export const PUT: APIRoute = async ({ request }) => {
 
 // DELETE — delete job (cascades related applications and their child records)
 export const DELETE: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase(request);
     const { id } = await request.json();

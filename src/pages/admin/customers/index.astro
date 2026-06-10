@@ -310,6 +310,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../lib/supabase";
   // ─── Helpers ────────────────────────────────────────────────────────────────
 
   function showToast(message: string, type: 'success' | 'error' = 'success') {
@@ -398,7 +399,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (typeValue)   params.set('customer_type', typeValue);
 
     try {
-      const res = await fetch(`/api/admin/customers?${params.toString()}`);
+      const res = await authFetch(`/api/admin/customers?${params.toString()}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       customers = data.customers ?? [];
@@ -417,7 +418,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       const types = ['Farmer', 'Cooperative', 'Enterprise'];
       const results = await Promise.all(
         types.map(t =>
-          fetch(`/api/admin/customers?customer_type=${t}&limit=1`).then(r => r.ok ? r.json() : { total: 0 })
+          authFetch(`/api/admin/customers?customer_type=${t}&limit=1`).then(r => r.ok ? r.json() : { total: 0 })
         )
       );
       const statTotal = document.getElementById('stat-total')!;
@@ -547,9 +548,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function deleteCustomer(id: string) {
     try {
-      const res = await fetch('/api/admin/customers', {
+      const res = await authFetch('/api/admin/customers', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
       if (!res.ok) {
@@ -589,9 +589,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (id) payload.id = id;
 
     try {
-      const res = await fetch('/api/admin/customers', {
+      const res = await authFetch('/api/admin/customers', {
         method: id ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {

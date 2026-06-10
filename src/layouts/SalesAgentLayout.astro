@@ -6,7 +6,7 @@ export const prerender = false;
 
 interface Props {
   title: string;
-  activeTab?: 'sales' | 'inventory' | 'customers' | 'categories' | 'dashboard' | 'account';
+  activeTab?: 'sales' | 'inventory' | 'customers' | 'categories' | 'dashboard' | 'account' | 'documents';
 }
 
 const { title, activeTab = 'dashboard' } = Astro.props;
@@ -141,6 +141,10 @@ const { title, activeTab = 'dashboard' } = Astro.props;
         <i class="fas fa-tags"></i>
         <span data-i18n="categories">Catégories</span>
       </a>
+      <a href="/sales-agent/documents" class:list={['bottom-nav-item', activeTab === 'documents' && 'active']}>
+        <i class="fas fa-folder-open"></i>
+        <span data-i18n="documents">Documents</span>
+      </a>
       <a href="/sales-agent/change-password" class:list={['bottom-nav-item', activeTab === 'account' && 'active']} id="nav-account">
         <i class="fas fa-user-gear"></i>
         <span data-i18n="account">Compte</span>
@@ -162,10 +166,10 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <script>
       // ── Translations (embedded for offline use) ──────────────────────────
       const TRANSLATIONS = {
-        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',account:'Account',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
-        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',account:'Compte',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
-        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',account:'Cuenta',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
-        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',account:'Rekening',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
+        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',documents:'Documents',account:'Account',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
+        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',documents:'Documents',account:'Compte',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
+        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',documents:'Documentos',account:'Cuenta',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
+        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',documents:'Dokumente',account:'Rekening',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
       };
 
       const LANG_LABELS = { en: 'EN', fr: 'FR', es: 'ES', af: 'AF' };

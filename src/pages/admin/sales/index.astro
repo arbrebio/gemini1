@@ -153,6 +153,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 </style>
 
 <script>
+  import { authFetch } from "../../../lib/supabase";
   const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
 
@@ -193,7 +194,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   // ── Load agents for filter dropdown ──────────────────────────────────
   async function loadAgents() {
-    const res = await fetch('/api/admin/sales-agents');
+    const res = await authFetch('/api/admin/sales-agents');
     const data = await res.json();
     agents = data.agents || [];
     const sel = document.getElementById('filter-agent') as HTMLSelectElement;
@@ -218,7 +219,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (status) params.set('status', status);
     if (agentId) params.set('agent_id', agentId);
 
-    const res = await fetch(`/api/admin/sales?${params}`);
+    const res = await authFetch(`/api/admin/sales?${params}`);
     const data = await res.json();
     const sales: any[] = data.sales || [];
 
@@ -366,9 +367,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Processing…';
 
-    const res = await fetch('/api/admin/sales', {
+    const res = await authFetch('/api/admin/sales', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: currentSaleId, action, rejection_reason: reason }),
     });
     const data = await res.json();
@@ -388,7 +388,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   // ── Commission Report ─────────────────────────────────────────────────
   async function loadReport() {
     const year = (document.getElementById('report-year') as HTMLSelectElement)?.value || currentYear;
-    const res = await fetch(`/api/admin/sales?stats=true&year=${year}`);
+    const res = await authFetch(`/api/admin/sales?stats=true&year=${year}`);
     const data = await res.json();
     const report: any[] = data.report || [];
 

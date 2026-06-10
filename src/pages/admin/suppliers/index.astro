@@ -366,6 +366,7 @@ const CATEGORIES: Record<string, string> = {
 </AdminLayout>
 
 <script type="module">
+  import { authFetch } from "../../../lib/supabase";
   // ── Confirm dialog ──────────────────────────────────────────────
   function showConfirm(message) {
     return new Promise(resolve => {
@@ -430,9 +431,8 @@ const CATEGORIES: Record<string, string> = {
 
   // ── Fetch helpers ──────────────────────────────────────────────
   async function api(method, body) {
-    const res = await fetch('/api/admin/suppliers', {
+    const res = await authFetch('/api/admin/suppliers', {
       method,
-      headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined,
     });
     return res.json();

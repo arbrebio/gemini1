@@ -159,6 +159,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
+  import { authFetch } from "../../../../lib/supabase";
   // ── Utilities ──────────────────────────────────────────────────
   function showToast(message: string, type: 'success' | 'error' = 'success') {
     let container = document.getElementById('_toast-container');
@@ -250,7 +251,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load jobs ──────────────────────────────────────────────────
   async function loadJobs() {
-    const res = await fetch('/api/admin/careers/jobs');
+    const res = await authFetch('/api/admin/careers/jobs');
     const data = await res.json();
     jobs = data.jobs || [];
     renderJobs();
@@ -339,14 +340,14 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   function closeModal() { document.getElementById('job-modal')!.classList.add('hidden'); }
 
   (window as any).editJob = async (id: string) => {
-    const res = await fetch(`/api/admin/careers/jobs?id=${id}`);
+    const res = await authFetch(`/api/admin/careers/jobs?id=${id}`);
     const data = await res.json();
     openModal(data.job);
   };
 
   (window as any).deleteJob = async (id: string, title: string) => {
     if (!await showConfirm(`Delete "${title}"? This cannot be undone.`)) return;
-    await fetch('/api/admin/careers/jobs', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    await authFetch('/api/admin/careers/jobs', { method: 'DELETE', body: JSON.stringify({ id }) });
     showToast('Job deleted');
     await loadJobs();
   };
@@ -402,9 +403,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
     if (id) payload.id = id;
 
-    const res = await fetch('/api/admin/careers/jobs', {
+    const res = await authFetch('/api/admin/careers/jobs', {
       method: id ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     const data = await res.json();

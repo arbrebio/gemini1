@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
+import { requireAdminAuth } from '../../../../lib/adminAuth';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -19,6 +20,8 @@ function getAnthropicClient() {
 
 // POST — upload ID card image + extract fields via Claude vision
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const formData = await request.formData();
     const file = formData.get('image') as File | null;

@@ -18,12 +18,13 @@ export const securityHeaders = {
   // Content Security Policy
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com",
+    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
     "style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data: https://rsms.me https://cdnjs.cloudflare.com",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com",
     "frame-ancestors 'none'",
+    "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "upgrade-insecure-requests"
@@ -37,6 +38,22 @@ export function applySecurityHeaders(headers: Headers): void {
   Object.entries(securityHeaders).forEach(([key, value]) => {
     headers.set(key, value);
   });
+}
+
+/**
+ * Escape HTML special characters so user-supplied text can be safely
+ * interpolated into an HTML document (emails, server-rendered markup).
+ * This is an allowlist-style transform — strictly safer than blocklist
+ * stripping — and should be preferred whenever rendering untrusted input.
+ */
+export function escapeHtml(input: unknown): string {
+  if (input === null || input === undefined) return '';
+  return String(input)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /**

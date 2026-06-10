@@ -85,7 +85,7 @@
 </div>
 
 <script>
-    import { supabase } from "../../lib/supabase";
+    import { supabase, authFetch } from "../../lib/supabase";
 
     // ── User profile ──────────────────────────────────────────────
     let currentUserId: string | null = null;
@@ -154,10 +154,13 @@
 
             const avatar_url = urlData.publicUrl + `?t=${Date.now()}`;
 
-            // Update profile in DB
-            await supabase
+            // Update profile in DB — use UPDATE (not upsert) to avoid
+            // triggering an INSERT that RLS would block for authenticated users.
+            const { error: profileErr } = await supabase
                 .from("admin_profiles")
-                .upsert({ id: currentUserId, avatar_url }, { onConflict: "id" });
+                .update({ avatar_url })
+                .eq("id", currentUserId);
+            if (profileErr) throw profileErr;
 
             // Update avatar in header
             const avatarEl = document.getElementById("user-avatar-inner");
@@ -201,9 +204,8 @@
 
     markAllBtn?.addEventListener("click", async () => {
         try {
-            await fetch("/api/admin/notifications", {
+            await authFetch("/api/admin/notifications", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ mark_all_read: true }),
             });
             unreadCount = 0;
@@ -216,7 +218,7 @@
         if (!notifList) return;
         notifList.innerHTML = '<p class="text-gray-400 text-xs text-center py-6">Loading…</p>';
         try {
-            const res  = await fetch("/api/admin/notifications?limit=15");
+            const res  = await authFetch("/api/admin/notifications?limit=15");
             const data = await res.json();
             const notifications: any[] = data.notifications ?? [];
             unreadCount = data.unread_count ?? 0;
@@ -262,9 +264,8 @@
                 el.addEventListener("click", async () => {
                     const id = (el as HTMLElement).dataset.notifId;
                     if (!id) return;
-                    await fetch("/api/admin/notifications", {
+                    await authFetch("/api/admin/notifications", {
                         method: "PUT",
-                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id, is_read: true }),
                     });
                     el.classList.remove("bg-blue-50");
@@ -289,7 +290,7 @@
 
     async function pollUnreadCount() {
         try {
-            const res  = await fetch("/api/admin/notifications?count_only=true");
+            const res  = await authFetch("/api/admin/notifications?count_only=true");
             const data = await res.json();
             unreadCount = data.unread_count ?? 0;
             updateBadge();

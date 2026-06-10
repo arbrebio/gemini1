@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminAuth } from '../../../lib/adminAuth';
+import { createNotification } from '../../../lib/notify';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -197,15 +198,11 @@ export const PUT: APIRoute = async ({ request }) => {
     const statusLabel = action === 'validate' ? '✅ Vente validée' : '❌ Vente rejetée';
     const agentName = (sale.sales_agent_profiles as any)?.full_name || 'Agent';
 
-    fetch(`${import.meta.env.SITE || 'https://www.arbrebio.com'}/api/admin/notifications`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
-        message: `${statusLabel} — ${agentName} • ${sale.client_name} • ${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA`,
-        entity_id: id,
-        entity_type: 'sale',
-      }),
+    createNotification({
+      type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
+      message: `${statusLabel} — ${agentName} • ${sale.client_name} • ${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA`,
+      entity_id: id,
+      entity_type: 'sale',
     }).catch(() => {});
 
     return json({ sale });

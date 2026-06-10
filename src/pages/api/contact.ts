@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import { sanitizeInput, globalRateLimiter } from '../../lib/securityHeaders';
+import { sanitizeInput, escapeHtml, globalRateLimiter } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
@@ -131,13 +131,16 @@ export const POST: APIRoute = async ({ request }) => {
 
     const { firstName, lastName, email, phone, interest, message, lang } = validationResult.data;
 
+    // Two-stage hardening: strip dangerous patterns, THEN HTML-escape every
+    // field before it is interpolated into the email markup below. Escaping is
+    // the real defense (allowlist), preventing any HTML/email injection.
     const d = {
-      firstName: sanitizeInput(firstName, 50),
-      lastName: sanitizeInput(lastName, 50),
-      email: sanitizeInput(email, 100),
-      phone: sanitizeInput(phone, 20),
-      interest: sanitizeInput(interest, 100),
-      message: sanitizeInput(message, 1000)
+      firstName: escapeHtml(sanitizeInput(firstName, 50)),
+      lastName: escapeHtml(sanitizeInput(lastName, 50)),
+      email: escapeHtml(sanitizeInput(email, 100)),
+      phone: escapeHtml(sanitizeInput(phone, 20)),
+      interest: escapeHtml(sanitizeInput(interest, 100)),
+      message: escapeHtml(sanitizeInput(message, 1000))
     };
 
     // Email to admin

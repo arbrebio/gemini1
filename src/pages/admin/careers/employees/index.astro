@@ -283,6 +283,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 <script>
   // @ts-nocheck
+  import { authFetch } from "../../../../lib/supabase";
 
   // ── Utilities ──────────────────────────────────────────────────
   function showToast(message, type = 'success') {
@@ -339,7 +340,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     fd.append('file', file);
     fd.append('type', type);
     if (employeeId) fd.append('employee_id', employeeId);
-    const res = await fetch('/api/admin/careers/upload-asset', { method: 'POST', body: fd });
+    const res = await authFetch('/api/admin/careers/upload-asset', { method: 'POST', body: fd });
     return await res.json(); // { url } or { error }
   }
 
@@ -439,7 +440,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     fd.append('side', side);
 
     try {
-      const res = await fetch('/api/admin/careers/scan-id', { method: 'POST', body: fd });
+      const res = await authFetch('/api/admin/careers/scan-id', { method: 'POST', body: fd });
       const data = await res.json();
 
       if (!res.ok || data.error) {
@@ -541,7 +542,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   async function loadEmployees() {
     const grid = document.getElementById('employees-grid');
     try {
-      const res = await fetch('/api/admin/careers/employees');
+      const res = await authFetch('/api/admin/careers/employees');
       const data = await res.json();
       if (!res.ok || data.error) {
         grid.innerHTML = `<div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-6 text-center text-red-700 text-sm">
@@ -767,8 +768,8 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       contract_url: document.getElementById(`eedit-contract-${id}`).value.trim() || null,
       photo_url: document.getElementById(`eedit-photo-${id}`).value.trim() || null,
     };
-    const res = await fetch('/api/admin/careers/employees', {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
+    const res = await authFetch('/api/admin/careers/employees', {
+      method: 'PUT', body: JSON.stringify(updates),
     });
     const data = await res.json();
     if (!res.ok) { errDiv.textContent = data.error || 'Save failed'; errDiv.classList.remove('hidden'); return; }
@@ -778,7 +779,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
   window.deleteEmployee = async (id, name) => {
     if (!await showConfirm(`Remove employee record for ${name}? This cannot be undone.`)) return;
-    await fetch('/api/admin/careers/employees', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    await authFetch('/api/admin/careers/employees', { method: 'DELETE', body: JSON.stringify({ id }) });
     showToast('Employee record removed');
     await loadEmployees();
   };
@@ -849,8 +850,8 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       id_card_expiry: (document.getElementById('ne-id-expiry') as HTMLInputElement).value || null,
     };
 
-    const res = await fetch('/api/admin/careers/employees', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+    const res = await authFetch('/api/admin/careers/employees', {
+      method: 'POST', body: JSON.stringify(payload),
     });
     const data = await res.json();
 
