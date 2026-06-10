@@ -14,9 +14,9 @@
     "Achieved organic certification"
   ],
   "testimonial": "Moving to hydroponics in greenhouses has revolutionized our business. We're now the preferred supplier for several high-end restaurants and supermarkets.",
-  "clientImage": "https://imgur.com/bjqispj.jpg",
-  "beforeImage": "https://imgur.com/d6UGBx9.jpg",
-  "afterImage": "https://imgur.com/mzATBKP.jpg",
+  "clientImage": "/images/content/bjqispj.jpg",
+  "beforeImage": "/images/content/d6UGBx9.jpg",
+  "afterImage": "/images/content/mzATBKP.jpg",
   "stats": [
     { "label": "Annual Production", "value": "3,000 tons" },
     { "label": "Water Savings", "value": "65%" },

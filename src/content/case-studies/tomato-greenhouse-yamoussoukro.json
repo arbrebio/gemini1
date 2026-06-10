@@ -14,9 +14,9 @@
     "Product quality improvement leading to premium market prices"
   ],
   "testimonial": "The greenhouse technology from Arbre Bio has transformed our operation. We now produce high-quality tomatoes year-round, and our income has grown significantly.",
-  "clientImage": "https://imgur.com/YbVGmcu.jpg",
-  "beforeImage": "https://imgur.com/tXiE4Aq.jpg",
-  "afterImage": "https://imgur.com/hjafzfj.jpg",
+  "clientImage": "/images/content/YbVGmcu.jpg",
+  "beforeImage": "/images/content/tXiE4Aq.jpg",
+  "afterImage": "/images/content/hjafzfj.jpg",
   "stats": [
     { "label": "Greenhouse Area", "value": "1,000 m²" },
     { "label": "Expected Production", "value": "50 tons/year" },

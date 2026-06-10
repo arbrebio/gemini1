@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `arbre-bio-${CACHE_VERSION}`;
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
@@ -120,7 +120,6 @@ self.addEventListener('fetch', (event) => {
   // Skip non-same-origin and non-CDN requests
   if (
     url.origin !== self.location.origin &&
-    !url.hostname.includes('imgur.com') &&
     !url.hostname.includes('cdnjs.cloudflare.com') &&
     !url.hostname.includes('rsms.me')
   ) {

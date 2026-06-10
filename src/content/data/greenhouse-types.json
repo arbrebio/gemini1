@@ -32,7 +32,7 @@
       "yieldIncrease": "40-60%",
       "waterSavings": "30-40%"
     },
-    "image": "https://imgur.com/XxwTJh8.jpg"
+    "image": "/images/content/XxwTJh8.jpg"
   },
   {
     "name": "Sawtooth Greenhouse",
@@ -67,6 +67,6 @@
       "yieldIncrease": "70-90%",
       "waterSavings": "50-60%"
     },
-    "image": "https://imgur.com/dORTVaM.jpg"
+    "image": "/images/content/dORTVaM.jpg"
   }
 ]

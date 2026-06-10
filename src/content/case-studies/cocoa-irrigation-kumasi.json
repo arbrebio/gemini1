@@ -14,9 +14,9 @@
     "Higher price per kg achieved through quality improvements"
   ],
   "testimonial": "The irrigation system has made our farm more resilient to climate changes. Our cocoa trees are healthier, and we're seeing much better yields than ever before.",
-  "clientImage": "https://imgur.com/m4XZt0I.jpg",
-  "beforeImage": "https://imgur.com/Sm4hQzW.jpg",
-  "afterImage": "https://imgur.com/FTly7JB.jpg",
+  "clientImage": "/images/content/m4XZt0I.jpg",
+  "beforeImage": "/images/content/Sm4hQzW.jpg",
+  "afterImage": "/images/content/FTly7JB.jpg",
   "stats": [
     { "label": "Water Efficiency", "value": "85%" },
     { "label": "Yield Increase", "value": "40%" },
