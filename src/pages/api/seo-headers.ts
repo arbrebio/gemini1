@@ -15,7 +15,7 @@ export const GET: APIRoute = async () => {
     'Vary': 'Accept-Language, Accept-Encoding',
     
     // Content headers
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com; img-src 'self' data: https://i.imgur.com https://images.unsplash.com; font-src 'self' https://rsms.me https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co; frame-ancestors 'none';",
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; font-src 'self' data: https://rsms.me https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';",
   };
   
   // Return the headers as JSON

@@ -12,24 +12,24 @@ const T = useT(lang as any);
 const p = `/${lang}`;
 
 const partners = [
-  { name: "Conseil Hévéa Palmier", logo: "https://i.imgur.com/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
-  { name: "CDTA El Mirador", logo: "https://i.imgur.com/P1DPCaB.jpg", url: "https://cdtaelmirador.com/" },
-  { name: "FIRCA", logo: "https://i.imgur.com/91MTbWi.jpg", url: "https://firca.ci/" },
-  { name: "Ministère de l'Agriculture", logo: "https://i.imgur.com/nsRSuEQ.jpg", url: "https://www.agriculture.gouv.ci/accueil" },
-  { name: "CNRA", logo: "https://i.imgur.com/6an3KC8.jpg", url: "http://cnra.ci/" },
-  { name: "Eureka Network", logo: "https://i.imgur.com/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
-  { name: "World Bank", logo: "https://i.imgur.com/W55LKPV.jpg", url: "https://www.worldbank.org/ext/en/home" },
-  { name: "INP-HB ESA", logo: "https://i.imgur.com/da88PlP.jpg", url: "https://www.inphb.edu.ci/ecoles/esa" },
-  { name: "Econatur", logo: "https://i.imgur.com/6GjxYNG.jpg", url: "https://econatur.net/en/" },
-  { name: "Hortalan", logo: "https://i.imgur.com/hVXMDbV.jpg", url: "https://hortalan.com/" },
-  { name: "Agrogenia Biotech", logo: "https://i.imgur.com/9aFTawp.jpg", url: "https://agrogeniabiotech.com/" },
-  { name: "African Development Bank", logo: "https://i.imgur.com/xUbaryR.jpg", url: "https://www.afdb.org/en" },
-  { name: "AZUD", logo: "https://i.imgur.com/cYKFakb.jpg", url: "https://azud.com/en/" },
-  { name: "Novagric", logo: "https://i.imgur.com/cyocoKN.jpg", url: "https://novagric.com/" },
-  { name: "PDC2V", logo: "https://i.imgur.com/BMzFHHR.jpg", url: "https://pdc2v.ci/" },
-  { name: "Agence Emploi Jeunes", logo: "https://i.imgur.com/YTmTlBr.jpg", url: "https://www.agenceemploijeunes.ci/site/" },
-  { name: "GIZ", logo: "https://i.imgur.com/g3qxeY3.jpg", url: "https://www.giz.de/en/regions/africa/cote-divoire" },
-  { name: "OMRI", logo: "https://i.imgur.com/pcM8A7v.jpg", url: "https://www.omri.org/" },
+  { name: "Conseil Hévéa Palmier", logo: "/images/content/shsj3KH.jpg", url: "https://conseilheveapalmier.ci/" },
+  { name: "CDTA El Mirador", logo: "/images/content/P1DPCaB.png", url: "https://cdtaelmirador.com/" },
+  { name: "FIRCA", logo: "/images/content/91MTbWi.png", url: "https://firca.ci/" },
+  { name: "Ministère de l'Agriculture", logo: "/images/content/nsRSuEQ.png", url: "https://www.agriculture.gouv.ci/accueil" },
+  { name: "CNRA", logo: "/images/content/6an3KC8.png", url: "http://cnra.ci/" },
+  { name: "Eureka Network", logo: "/images/content/hf5JXIm.jpg", url: "https://www.eurekanetwork.org/" },
+  { name: "World Bank", logo: "/images/content/W55LKPV.png", url: "https://www.worldbank.org/ext/en/home" },
+  { name: "INP-HB ESA", logo: "/images/content/da88PlP.png", url: "https://www.inphb.edu.ci/ecoles/esa" },
+  { name: "Econatur", logo: "/images/content/6GjxYNG.png", url: "https://econatur.net/en/" },
+  { name: "Hortalan", logo: "/images/content/hVXMDbV.png", url: "https://hortalan.com/" },
+  { name: "Agrogenia Biotech", logo: "/images/content/9aFTawp.png", url: "https://agrogeniabiotech.com/" },
+  { name: "African Development Bank", logo: "/images/content/xUbaryR.png", url: "https://www.afdb.org/en" },
+  { name: "AZUD", logo: "/images/content/cYKFakb.jpg", url: "https://azud.com/en/" },
+  { name: "Novagric", logo: "/images/content/cyocoKN.png", url: "https://novagric.com/" },
+  { name: "PDC2V", logo: "/images/content/BMzFHHR.png", url: "https://pdc2v.ci/" },
+  { name: "Agence Emploi Jeunes", logo: "/images/content/YTmTlBr.png", url: "https://www.agenceemploijeunes.ci/site/" },
+  { name: "GIZ", logo: "/images/content/g3qxeY3.png", url: "https://www.giz.de/en/regions/africa/cote-divoire" },
+  { name: "OMRI", logo: "/images/content/pcM8A7v.png", url: "https://www.omri.org/" },
 ];
 
 const scriptOpen = '<' + 'script type="application/ld+json">';
@@ -82,11 +82,11 @@ const jsonLdData = scriptOpen + JSON.stringify({
 }) + scriptClose;
 ---
 
-<Layout title={({'fr':'Agriculture de Précision en Afrique | Arbre Bio Africa','en':'Precision Agriculture in Africa | Arbre Bio Africa','es':'Agricultura de Precisión en África | Arbre Bio Africa','af':'Presisieboerdery in Afrika | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Precision Agriculture in Africa | Arbre Bio Africa'} description={T.heroSubtitle} image="https://i.imgur.com/Aab6e6c.jpg">
+<Layout title={({'fr':'Agriculture de Précision en Afrique | Arbre Bio Africa','en':'Precision Agriculture in Africa | Arbre Bio Africa','es':'Agricultura de Precisión en África | Arbre Bio Africa','af':'Presisieboerdery in Afrika | Arbre Bio Africa'} as Record<string,string>)[lang] || 'Precision Agriculture in Africa | Arbre Bio Africa'} description={T.heroSubtitle} image="/images/content/Aab6e6c.jpg">
 
   <!-- Hero Section -->
   <section class="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero section">
-    <img src="https://i.imgur.com/Aab6e6c.jpg" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"/>
+    <img src="/images/content/Aab6e6c.jpg" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"/>
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     <div class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto" role="banner">
       <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">{T.heroTitle}</h1>
