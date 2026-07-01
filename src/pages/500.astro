@@ -4,6 +4,7 @@ import { getLangFromUrl, useTranslations, defaultLang } from '../lib/i18n';
 
 const lang = getLangFromUrl(Astro.url) || defaultLang;
 const t = useTranslations(lang);
+Astro.response.status = 500;
 ---
 
 <Layout

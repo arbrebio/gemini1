@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.arbrebio.com/sitemap.xml
+Sitemap: https://www.arbrebio.com/sitemap-index.xml
 
 # Disallow utility pages
 Disallow: /newsletter/confirm

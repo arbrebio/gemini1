@@ -24,5 +24,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Set language in locals for use in all components
   context.locals.lang = lang;
 
-  return next();
+  try {
+    return await next();
+  } catch (err) {
+    console.error(`Unhandled error rendering ${pathname}:`, err);
+    return context.rewrite('/500');
+  }
 });

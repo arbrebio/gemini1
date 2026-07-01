@@ -15,20 +15,27 @@ const lang: Lang = (queryLang && LANGS.includes(queryLang))
   ? queryLang
   : (LANGS.includes(headerLang) ? headerLang : 'en');
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } },
-);
+let post: Record<string, any> | null = null;
+try {
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
 
-const { data: post, error } = await supabase
-  .from('admin_blog_posts')
-  .select('id, slug, title, description, content, author, category, featured, image_url, video_url, links, tags, published_at, created_at')
-  .eq('status', 'published')
-  .eq('slug', slug)
-  .single();
+  const { data, error } = await supabase
+    .from('admin_blog_posts')
+    .select('id, slug, title, description, content, author, category, featured, image_url, video_url, links, tags, published_at, created_at')
+    .eq('status', 'published')
+    .eq('slug', slug)
+    .single();
 
-if (error || !post) return Astro.redirect('/blog');
+  if (!error) post = data;
+} catch {
+  // Supabase misconfigured/unreachable — fall through to 404 below
+}
+
+if (!post) return Astro.rewrite('/404');
 
 function resolve(obj: Record<string, string> | null | undefined): string {
   if (!obj) return '';
