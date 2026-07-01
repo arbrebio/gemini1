@@ -54,25 +54,6 @@ export interface PageSectionTranslation {
   image_url?: string;
 }
 
-export interface BlogPost {
-  id: string;
-  slug: string;
-  author: string;
-  image?: string;
-  category: string;
-  featured: boolean;
-  pub_date: string;
-}
-
-export interface BlogPostTranslation {
-  id: string;
-  post_id: string;
-  language: Language;
-  title: string;
-  description: string;
-  content: string;
-}
-
 const cache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000;
 
@@ -323,63 +304,6 @@ export async function getPageSections(pageName: string, language: Language): Pro
   const sections = data?.map((section: any) => section.page_section_translations[0]) || [];
   setCachedData(cacheKey, sections);
   return sections;
-}
-
-export async function getBlogPosts(language: Language, featured?: boolean): Promise<(BlogPost & { translation: BlogPostTranslation })[]> {
-  const cacheKey = `blog_posts:${language}:${featured ?? 'all'}`;
-  const cached = getCachedData<(BlogPost & { translation: BlogPostTranslation })[]>(cacheKey);
-  if (cached) return cached;
-
-  let query = supabase
-    .from('blog_posts')
-    .select(`
-      *,
-      blog_post_translations!inner(*)
-    `)
-    .eq('blog_post_translations.language', language)
-    .order('pub_date', { ascending: false });
-
-  if (featured !== undefined) {
-    query = query.eq('featured', featured);
-  }
-
-  const { data, error } = await query;
-
-  if (error) return [];
-
-  const posts = data?.map((post: any) => ({
-    ...post,
-    translation: post.blog_post_translations[0]
-  })) || [];
-
-  setCachedData(cacheKey, posts);
-  return posts;
-}
-
-export async function getBlogPost(slug: string, language: Language): Promise<(BlogPost & { translation: BlogPostTranslation }) | null> {
-  const cacheKey = `blog_post:${slug}:${language}`;
-  const cached = getCachedData<BlogPost & { translation: BlogPostTranslation }>(cacheKey);
-  if (cached) return cached;
-
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select(`
-      *,
-      blog_post_translations!inner(*)
-    `)
-    .eq('slug', slug)
-    .eq('blog_post_translations.language', language)
-    .maybeSingle();
-
-  if (error || !data) return null;
-
-  const post = {
-    ...data,
-    translation: data.blog_post_translations[0]
-  };
-
-  setCachedData(cacheKey, post);
-  return post;
 }
 
 export async function getStaticTranslation(key: string, language: Language): Promise<string> {
