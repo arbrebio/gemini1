@@ -2,6 +2,14 @@
 import Layout from '../../layouts/Layout.astro';
 import EmojiIcon from '../../components/EmojiIcon.astro';
 
+const faq = [
+  { q: "Why use coco peat instead of regular soil in Africa?", a: "Coco peat offers weed- and pathogen-free growing, water retention 8x greater than sandy Sahel soils, a stable and controllable pH, and yields 2 to 3 times higher than open-field cultivation for vegetable crops." },
+  { q: "How do I prepare coco peat for use in cultivation?", a: "1) Soak 1 kg of the compressed block in 5L of water (it expands to 8-9L). 2) Rinse if EC is above 1.5 mS/cm. 3) Adjust pH to 5.5-6.5. 4) Optionally mix with 20-30% perlite. Arbre Bio Africa also supplies ready-to-use substrate." },
+  { q: "How much does coco peat cost in Côte d'Ivoire?", a: "Arbre Bio Africa offers dehydrated blocks (650g) starting at 1,500 FCFA, bulk bags (50kg) starting at 25,000 FCFA, and ready-to-use grow bags. Contact us at +225 05 00 55 25 25 for a personalized quote and volume discounts." },
+  { q: "How long does coco peat last as a growing substrate?", a: "A well-managed coco peat substrate lasts 2 to 3 growing cycles (12-18 months): rinsing between crops, disinfection, and EC/pH monitoring. At the end of its cycle, used coco peat makes an excellent organic amendment for tropical soils." },
+  { q: "Does Arbre Bio Africa deliver substrates across Africa?", a: "Yes, Arbre Bio Africa delivers coco peat, coco fiber, perlite, and vermiculite throughout West Africa: Côte d'Ivoire, Senegal, Ghana, Burkina Faso, Mali, Togo, and Benin. Training and agronomic technical follow-up are included." },
+];
+
 const solutions = [
   {
     title: "Growing Solutions",
@@ -130,22 +138,37 @@ const benefits = [
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions About Coco Peat & Substrates</h2>
+      <div class="space-y-6">
+        {faq.map((item) => (
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="font-bold text-lg mb-3">{item.q}</h3>
+            <p class="text-gray-700 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Growing Operation?</h2>
       <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a 
-          href="/contact/" 
+        <a
+          href="/contact/"
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
         >
           Get Started
         </a>
-        <a 
-          href="https://wa.me/2250500552525" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://wa.me/2250500552525"
+          target="_blank"
+          rel="noopener noreferrer"
           class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
         >
           <i class="fab fa-whatsapp mr-2"></i>
@@ -155,3 +178,13 @@ const benefits = [
     </div>
   </section>
 </Layout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+})}></script>

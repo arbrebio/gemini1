@@ -59,6 +59,14 @@ const features = [
   }
 ];
 
+const faq = [
+  { q: "What type of greenhouse should I choose to start growing under cover in Côte d'Ivoire?", a: "For a first greenhouse project in Côte d'Ivoire, we generally recommend a tunnel greenhouse or a modest-sized multi-span greenhouse (500 to 2,000 m²). These structures offer a strong cost-to-benefit ratio and let you build up experience before investing in a high-tech greenhouse. Arbre Bio Africa offers a free consultation to assess the best solution for your land, budget, and production plan." },
+  { q: "How much does an agricultural greenhouse cost in Côte d'Ivoire?", a: "The cost of a greenhouse in Côte d'Ivoire varies considerably depending on the type (tunnel, multi-span, high-tech), surface area, integrated equipment (irrigation, ventilation, shade screens), and financing options. As a rough guide, a basic tunnel greenhouse costs between 3,000 and 8,000 FCFA/m², a multi-span greenhouse between 8,000 and 20,000 FCFA/m², and a high-tech greenhouse upwards of 30,000 FCFA/m². Arbre Bio Africa provides a free, detailed quote and helps you optimize your investment." },
+  { q: "Which crop is most profitable in a greenhouse in West Africa?", a: "The most profitable greenhouse crops in West Africa are generally cherry and cocktail tomatoes (premium pricing on urban and export markets), colored bell peppers, aromatic herbs (basil, parsley, coriander), lettuces and salad mixes, and soilless strawberries. Profitability also depends heavily on your market access and sales strategy. Our advisors can help you define the most profitable production plan for your region." },
+  { q: "Do Arbre Bio Africa greenhouses withstand extreme weather conditions?", a: "Yes. All our greenhouses are designed and sized to withstand West African climate conditions: strong winds (up to 120 km/h for reinforced structures), torrential rain, and intense heat (up to 45°C in the dry season). The corrosion-resistant galvanized steel structure, UV-stabilized films, and ventilation systems are specifically chosen for their durability in the tropics." },
+  { q: "Does Arbre Bio Africa provide technical support after greenhouse installation?", a: "Absolutely. Post-installation support is at the core of our model. We train your team on greenhouse management, irrigation, crop management, and disease prevention. We offer regular agronomic follow-up visits and a technical support service available via WhatsApp and phone. Our goal is for your greenhouse to be productive from the very first season." },
+];
+
 const comparisons = [
   {
     title: 'Connection System',
@@ -370,6 +378,21 @@ const comparisons = [
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions About Greenhouses</h2>
+      <div class="space-y-6">
+        {faq.map((item) => (
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="font-bold text-lg mb-3">{item.q}</h3>
+            <p class="text-gray-700 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
@@ -395,6 +418,16 @@ const comparisons = [
     </div>
   </section>
 </Layout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+})}></script>
 
 <script is:inline type="application/ld+json">
 {

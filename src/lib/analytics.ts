@@ -10,13 +10,12 @@ export interface AnalyticsEvent {
 
 export class AnalyticsTracker {
   private static instance: AnalyticsTracker;
-  private gaId: string = 'G-XXXXXXXXXX'; // Replace with actual GA4 ID
+  // GA4 script/init lives in Layout.astro (driven by PUBLIC_GA_MEASUREMENT_ID) so
+  // it loads as early as possible in <head>. This class only reads that ID to
+  // avoid tracking calls silently going to a hardcoded placeholder property.
+  private gaId: string = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '';
 
-  private constructor() {
-    if (typeof window !== 'undefined') {
-      this.initializeGoogleAnalytics();
-    }
-  }
+  private constructor() {}
 
   static getInstance(): AnalyticsTracker {
     if (!AnalyticsTracker.instance) {
@@ -25,29 +24,8 @@ export class AnalyticsTracker {
     return AnalyticsTracker.instance;
   }
 
-  private initializeGoogleAnalytics() {
-    // Load Google Analytics
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.gaId}`;
-    document.head.appendChild(script);
-
-    // Initialize gtag
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    function gtag(...args: any[]) {
-      (window as any).dataLayer.push(arguments);
-    }
-    (window as any).gtag = gtag;
-
-    gtag('js', new Date());
-    gtag('config', this.gaId, {
-      page_path: window.location.pathname,
-      send_page_view: true
-    });
-  }
-
   trackPageView(path: string) {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
+    if (typeof window !== 'undefined' && (window as any).gtag && this.gaId) {
       (window as any).gtag('config', this.gaId, {
         page_path: path
       });

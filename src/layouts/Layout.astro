@@ -160,7 +160,26 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     
     <!-- Sitemap reference -->
     <link rel="sitemap" href="/sitemap-index.xml" />
-    
+
+    <!-- Google Search Console verification -->
+    {import.meta.env.PUBLIC_GSC_VERIFICATION && (
+      <meta name="google-site-verification" content={import.meta.env.PUBLIC_GSC_VERIFICATION} />
+    )}
+
+    <!-- Google Analytics 4 -->
+    {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA_MEASUREMENT_ID}`}></script>
+        <script define:vars={{ gaId: import.meta.env.PUBLIC_GA_MEASUREMENT_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(...args) { window.dataLayer.push(args); }
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', gaId, { anonymize_ip: true });
+        </script>
+      </>
+    )}
+
     <SEO
       title={optimizedTitle}
       description={optimizedDescription}
@@ -463,6 +482,9 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
   
   <!-- Initialize performance optimizations -->
   <script>
+    import { initializeAnalytics } from '../lib/analytics';
+    initializeAnalytics();
+
     // Newsletter form functionality
     const form = document.getElementById('footer-newsletter-form') as HTMLFormElement | null;
     const successMessage = form?.querySelector('.success-message');

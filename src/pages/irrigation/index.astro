@@ -1,6 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
+const faq = [
+  { q: "Which irrigation system is best suited to vegetable crops in West Africa?", a: "For vegetable crops (tomatoes, peppers, onions, lettuce), drip irrigation is the most cost-effective system in West Africa. It offers the best water efficiency, is compatible with fertigation, and keeps moisture constant at the root zone despite the heat. For large cereal or fodder crops, boom or gun sprinkler irrigation is preferable." },
+  { q: "How much does it cost to install a drip irrigation system in Côte d'Ivoire?", a: "The cost of a drip irrigation system depends on the surface area, crop type, land slope, and equipment chosen. For one hectare of greenhouse vegetable production, installation costs generally range between 1.5 and 4 million FCFA depending on complexity. Arbre Bio Africa offers a free assessment and a detailed, no-obligation quote for your project." },
+  { q: "Can drip irrigation be combined with a fertigation system?", a: "Absolutely. Fertigation — injecting fertilizer and nutrients directly into the irrigation network — is one of the most effective precision agriculture practices. It reduces fertilizer losses from leaching by 30 to 50%, improves nutrient uptake by plants, and lowers application costs. All our drip systems are designed to be fertigation-compatible." },
+  { q: "Does Arbre Bio Africa provide maintenance for installed irrigation systems?", a: "Yes. We offer preventive and corrective maintenance contracts for every system we install. These contracts include regular inspection visits, filter and emitter cleaning, pressure and flow rate checks, and rapid intervention in case of breakdown. We have a technical team based in Côte d'Ivoire for fast on-site response." },
+  { q: "How much water can be saved with a drip system compared to traditional irrigation?", a: "Compared to surface irrigation or manual watering, a well-designed drip system saves between 40% and 70% of water consumed. Combined with moisture sensors and a smart controller, savings can exceed 70%. For a commercial vegetable operation, this represents significant savings on pumping and energy costs." },
+];
+
 const technologies = [
   {
     title: 'Drip Irrigation Systems',
@@ -315,22 +323,37 @@ const calculatorInputs = [
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions About Irrigation</h2>
+      <div class="space-y-6">
+        {faq.map((item) => (
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h3 class="font-bold text-lg mb-3">{item.q}</h3>
+            <p class="text-gray-700 leading-relaxed">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="bg-primary py-16">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Farm?</h2>
       <p class="text-xl text-white mb-8">Contact us today for expert advice and custom solutions.</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a 
-          href="/contact/" 
+        <a
+          href="/contact/"
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90"
         >
           Get Started
         </a>
-        <a 
-          href="https://wa.me/2250500552525" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://wa.me/2250500552525"
+          target="_blank"
+          rel="noopener noreferrer"
           class="bg-[#25D366] text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 inline-flex items-center"
         >
           <i class="fab fa-whatsapp mr-2"></i>
@@ -340,6 +363,16 @@ const calculatorInputs = [
     </div>
   </section>
 </Layout>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+})}></script>
 
 <script>
   // ROI Calculator Logic
@@ -386,12 +419,6 @@ const calculatorInputs = [
     "@type": "Organization",
     "name": "Arbre Bio Africa",
     "url": "https://arbrebio.com"
-  },
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "XOF",
-    "priceValidUntil": "2025-12-31",
-    "availability": "https://schema.org/InStock"
   },
   "image": [
     "/images/content/699v91Q.jpg"
