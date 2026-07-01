@@ -15,7 +15,7 @@ const T = useCareerT(lang);
       <nav class="flex items-center gap-2 text-sm text-gray-600">
         <a href="/" class="hover:text-[#194642]">Home</a>
         <span>/</span>
-        <a href="/careers" class="hover:text-[#194642]">{T.careers}</a>
+        <a href="/careers/" class="hover:text-[#194642]">{T.careers}</a>
         <span>/</span>
         <span id="job-title-breadcrumb" class="text-[#194642] font-medium">{T.applicationForm}</span>
       </nav>
@@ -45,7 +45,7 @@ const T = useCareerT(lang);
             <p id="portal-token-display" class="font-mono text-lg font-bold text-[#194642]"></p>
           </div>
           <p class="text-sm text-gray-600 mb-4">Save this token — you'll need it to track your application.</p>
-          <a href="/careers/portal" class="inline-block bg-[#194642] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors">
+          <a href="/careers/portal/" class="inline-block bg-[#194642] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors">
             {T.trackApplication}
           </a>
         </div>
@@ -131,7 +131,7 @@ const T = useCareerT(lang);
           <div id="form-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm"></div>
 
           <div class="flex justify-end gap-4">
-            <a href="/careers" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">{T.backToJobs}</a>
+            <a href="/careers/" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">{T.backToJobs}</a>
             <button type="submit" id="submit-btn" class="bg-[#194642] text-white font-bold px-10 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
               <span id="submit-text">{T.submitApplication}</span>
               <span id="submit-spinner" class="hidden">

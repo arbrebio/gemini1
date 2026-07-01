@@ -12,41 +12,42 @@ const prefix = isEn ? '' : `/${lang}`;
 const menuItems = [
   {
     name: t("nav.greenhouses"),
-    url: `${prefix}/greenhouses`,
+    url: `${prefix}/greenhouses/`,
     submenu: [
-      { name: t("nav.highTech"), url: `${prefix}/greenhouses/high-tech` },
-      { name: t("nav.accessories"), url: `${prefix}/greenhouses/accessories` },
+      { name: t("nav.highTech"), url: `${prefix}/greenhouses/high-tech/` },
+      { name: t("nav.accessories"), url: `${prefix}/greenhouses/accessories/` },
     ],
   },
   {
     name: t("nav.irrigation"),
-    url: `${prefix}/irrigation`,
+    url: `${prefix}/irrigation/`,
     submenu: [
-      { name: t("nav.dripSystems"), url: `${prefix}/irrigation/drip-systems` },
-      { name: t("nav.sprinklers"), url: `${prefix}/irrigation/sprinklers` },
-      { name: t("nav.controllers"), url: `${prefix}/irrigation/controllers` },
+      { name: t("nav.dripSystems"), url: `${prefix}/irrigation/drip-systems/` },
+      { name: t("nav.sprinklers"), url: `${prefix}/irrigation/sprinklers/` },
+      { name: t("nav.controllers"), url: `${prefix}/irrigation/controllers/` },
     ],
   },
   {
     name: t("nav.substrates"),
-    url: `${prefix}/substrates`,
+    url: `${prefix}/substrates/`,
     submenu: [
-      { name: t("nav.growingSolutions"), url: `${prefix}/substrates/growing-solutions` },
+      { name: t("nav.growingSolutions"), url: `${prefix}/substrates/growing-solutions/` },
     ],
   },
-  { name: t("nav.projects"), url: `${prefix}/projects` },
-  { name: t("nav.company"), url: `${prefix}/company` },
-  { name: t("nav.blog"), url: `${prefix}/blog` },
-  { name: t("nav.careers"), url: `${prefix}/careers` },
-  { name: t("nav.contact"), url: `${prefix}/contact` },
+  { name: t("nav.projects"), url: `${prefix}/projects/` },
+  { name: t("nav.company"), url: `${prefix}/company/` },
+  { name: t("nav.blog"), url: `${prefix}/blog/` },
+  { name: t("nav.careers"), url: `${prefix}/careers/` },
+  { name: t("nav.contact"), url: `${prefix}/contact/` },
 ];
 
 // Build language-switch URLs (strip current lang prefix, add new one)
 const currentPath = new URL(Astro.request.url).pathname;
 const basePath = currentPath.replace(/^\/(fr|es|af)(\/|$)/, '/').replace(/\/+$/, '') || '/';
 function switchUrl(newLang: string) {
-  if (newLang === 'en') return basePath === '' ? '/' : basePath;
-  return `/${newLang}${basePath === '/' ? '' : basePath}`;
+  const suffix = basePath === '/' ? '' : basePath;
+  if (newLang === 'en') return suffix === '' ? '/' : `${suffix}/`;
+  return `/${newLang}${suffix}/`;
 }
 
 const langOptions = [

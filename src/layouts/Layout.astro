@@ -243,10 +243,10 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         if (path === pfx.trimEnd()) { path = '/'; break; }
       }
       if (!path.startsWith('/')) path = '/' + path;
-      const enUrl  = base + (path === '/' ? '' : path);
-      const frUrl  = base + '/fr' + (path === '/' ? '' : path);
-      const esUrl  = base + '/es' + (path === '/' ? '' : path);
-      const afUrl  = base + '/af' + (path === '/' ? '' : path);
+      const enUrl  = base + (path === '/' ? '/' : path);
+      const frUrl  = base + '/fr' + (path === '/' ? '/' : path);
+      const esUrl  = base + '/es' + (path === '/' ? '/' : path);
+      const afUrl  = base + '/af' + (path === '/' ? '/' : path);
       return (<>
         <link rel="alternate" hreflang="en" href={enUrl} />
         <link rel="alternate" hreflang="fr" href={frUrl} />
@@ -374,10 +374,10 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           <div>
             <h3 class="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul class="space-y-2">
-              <li><a href={`${lp}/about`} class="text-gray-300 hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
-              <li><a href={`${lp}/solutions`} class="text-gray-300 hover:text-white transition-colors">{t('footer.solutions')}</a></li>
-              <li><a href={`${lp}/blog`} class="text-gray-300 hover:text-white transition-colors">{t('footer.blog')}</a></li>
-              <li><a href={`${lp}/contact`} class="text-gray-300 hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
+              <li><a href={`${lp}/about/`} class="text-gray-300 hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
+              <li><a href={`${lp}/solutions/`} class="text-gray-300 hover:text-white transition-colors">{t('footer.solutions')}</a></li>
+              <li><a href={`${lp}/blog/`} class="text-gray-300 hover:text-white transition-colors">{t('footer.blog')}</a></li>
+              <li><a href={`${lp}/contact/`} class="text-gray-300 hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
             </ul>
           </div>
 
@@ -451,9 +451,9 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
               <p>&copy; {new Date().getFullYear()} Arbre Bio Africa. {t('footer.copyright')}</p>
             </div>
             <div class="flex space-x-6 mt-4 md:mt-0">
-              <a href="/terms" class="hover:text-white transition-colors">{t('footer.terms')}</a>
-              <a href="/privacy" class="hover:text-white transition-colors">{t('footer.privacy')}</a>
-              <a href="/cookies" class="hover:text-white transition-colors">{t('footer.cookies')}</a>
+              <a href="/terms/" class="hover:text-white transition-colors">{t('footer.terms')}</a>
+              <a href="/privacy/" class="hover:text-white transition-colors">{t('footer.privacy')}</a>
+              <a href="/cookies/" class="hover:text-white transition-colors">{t('footer.cookies')}</a>
             </div>
           </div>
         </div>

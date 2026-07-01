@@ -22,19 +22,19 @@ const solutionCategories = [
         name: "High-tech Tropical Greenhouses",
         description: "State-of-the-art greenhouses designed specifically for African climate conditions.",
         image: "/images/content/w7OS5f6.jpg",
-        link: "/greenhouses/high-tech"
+        link: "/greenhouses/high-tech/"
       },
       {
         name: "Insect-proof Nets & Films",
         description: "Premium quality agricultural nets and films that protect crops while maintaining optimal growing conditions.",
         image: "/images/content/lAI3XeF.jpg",
-        link: "/greenhouses/accessories"
+        link: "/greenhouses/accessories/"
       },
       {
         name: "Climate Control Systems",
         description: "Advanced automation systems for precise control of temperature, humidity, and ventilation.",
         image: "/images/content/xn6Qik0.jpg",
-        link: "/greenhouses/high-tech"
+        link: "/greenhouses/high-tech/"
       }
     ]
   },
@@ -56,19 +56,19 @@ const solutionCategories = [
         name: "Drip Irrigation Systems",
         description: "Water-efficient irrigation solutions designed for optimal crop hydration and nutrient delivery.",
         image: "/images/content/33OuKiU.jpg",
-        link: "/irrigation/drip-systems"
+        link: "/irrigation/drip-systems/"
       },
       {
         name: "Smart Filtration & Fertigation",
         description: "Integrated systems for water filtration and fertilizer injection, ensuring optimal nutrient delivery.",
         image: "/images/content/AVECFTr.jpg",
-        link: "/irrigation/drip-systems"
+        link: "/irrigation/drip-systems/"
       },
       {
         name: "Automated Irrigation Controllers",
         description: "Smart irrigation controllers and monitoring systems for efficient water management.",
         image: "/images/content/OJ0Dbgb.jpg",
-        link: "/irrigation/controllers"
+        link: "/irrigation/controllers/"
       }
     ]
   },
@@ -90,13 +90,13 @@ const solutionCategories = [
         name: "Coco Peat & Coir",
         description: "Premium quality growing solutions for hydroponics and nursery applications.",
         image: "/images/content/WgMc6pm.jpg",
-        link: "/substrates/growing-solutions"
+        link: "/substrates/growing-solutions/"
       },
       {
         name: "Organic Soil Amendments",
         description: "Natural soil enrichment products for improved crop growth and soil health.",
         image: "/images/content/Yc1gQqw.jpg",
-        link: "/substrates/growing-solutions"
+        link: "/substrates/growing-solutions/"
       }
     ]
   },
@@ -118,13 +118,13 @@ const solutionCategories = [
         name: "Turnkey Farm Projects",
         description: "Comprehensive farm planning and implementation services from concept to completion.",
         image: "/images/content/CPZXVHq.jpg",
-        link: "/projects"
+        link: "/projects/"
       },
       {
         name: "Installation & Training",
         description: "Professional installation and setup of greenhouse and irrigation systems with comprehensive training.",
         image: "/images/content/EhAcgNJ.jpg",
-        link: "/contact"
+        link: "/contact/"
       }
     ]
   }
@@ -192,7 +192,7 @@ const testimonials = [
             Explore Our Solutions
           </a>
           <a 
-            href="/contact"
+            href="/contact/"
             class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-all duration-300 transform hover:scale-105 animate-slide-up"
             style="animation-delay: 400ms;"
           >
@@ -254,8 +254,8 @@ const testimonials = [
                 </ul>
               </div>
               
-              <a 
-                href={`/${category.id}`}
+              <a
+                href={category.id === 'services' ? '/projects/' : `/${category.id}/`}
                 class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors"
               >
                 Learn more about our {category.title.toLowerCase()}
@@ -340,7 +340,7 @@ const testimonials = [
         increasing yields, improving efficiency, and creating sustainable livelihoods.
       </p>
       <a 
-        href="/success-stories" 
+        href="/success-stories/" 
         class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 inline-flex items-center"
       >
         View Success Stories
@@ -358,7 +358,7 @@ const testimonials = [
       <p class="text-xl text-white mb-8">Our team of agricultural experts is ready to help you implement the perfect solution for your specific needs.</p>
       <div class="flex flex-wrap justify-center gap-4">
         <a 
-          href="/contact" 
+          href="/contact/" 
           class="bg-white text-primary px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105"
         >
           Schedule a Consultation

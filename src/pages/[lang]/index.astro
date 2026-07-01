@@ -92,8 +92,8 @@ const jsonLdData = scriptOpen + JSON.stringify({
       <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">{T.heroTitle}</h1>
       <p class="text-xl md:text-2xl mb-8 animate-slide-up">{T.heroSubtitle}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 200ms;">{T.getStarted}</a>
-        <a href={`${p}/solutions`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 400ms;">{T.exploreSolutions}</a>
+        <a href={`${p}/contact/`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 200ms;">{T.getStarted}</a>
+        <a href={`${p}/solutions/`} class="bg-white hover:bg-gray-100 text-primary px-8 py-3 rounded-full text-lg transition-colors duration-300 animate-slide-up" style="animation-delay: 400ms;">{T.exploreSolutions}</a>
       </div>
     </div>
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-hidden="true">
@@ -110,9 +110,9 @@ const jsonLdData = scriptOpen + JSON.stringify({
       <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">{T.servicesSubtitle}</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
         {[
-          { icon: "leaf", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses` },
-          { icon: "water", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation` },
-          { icon: "plant", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates` },
+          { icon: "leaf", title: T.greenhouseServiceTitle, desc: T.greenhouseServiceDesc, link: `${p}/greenhouses/` },
+          { icon: "water", title: T.irrigationServiceTitle, desc: T.irrigationServiceDesc, link: `${p}/irrigation/` },
+          { icon: "plant", title: T.substratesServiceTitle, desc: T.substratesServiceDesc, link: `${p}/substrates/` },
         ].map((service, index) => (
           <article class="group bg-white rounded-lg shadow-lg p-8 transform hover:-translate-y-1 transition-all duration-300" style={`animation-delay: ${index * 100}ms`} role="listitem">
             <div class="text-4xl mb-4 group-hover:animate-scale" aria-hidden="true"><EmojiIcon id={service.icon} size="2rem" /></div>
@@ -170,7 +170,7 @@ const jsonLdData = scriptOpen + JSON.stringify({
       <h2 id="cta-heading" class="text-3xl md:text-4xl font-bold mb-6">{T.ctaTitle}</h2>
       <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">{T.ctaSubtitle}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href={`${p}/contact`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.freeConsultation}</a>
+        <a href={`${p}/contact/`} class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.freeConsultation}</a>
         <a href="https://wa.me/2250500552525" target="_blank" rel="noopener noreferrer" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-3 rounded-full text-lg transition-colors duration-300 flex items-center justify-center">
           <i class="fab fa-whatsapp mr-2"></i>{T.chatWhatsApp}
         </a>

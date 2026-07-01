@@ -17,7 +17,7 @@ const T = useCareerT(lang);
       <nav class="flex items-center gap-2 text-sm text-gray-600">
         <a href={`/${lang}`} class="hover:text-[#194642]">Home</a>
         <span>/</span>
-        <a href={`/${lang}/careers`} class="hover:text-[#194642]">{T.careers}</a>
+        <a href={`/${lang}/careers/`} class="hover:text-[#194642]">{T.careers}</a>
         <span>/</span>
         <span id="job-title-breadcrumb" class="text-[#194642] font-medium">{T.applicationForm}</span>
       </nav>
@@ -49,7 +49,7 @@ const T = useCareerT(lang);
             <p id="portal-token-display" class="font-mono text-lg font-bold text-[#194642]"></p>
           </div>
           <p class="text-sm text-gray-600 mb-4">Save this token — you'll need it to track your application.</p>
-          <a href={`/${lang}/careers/portal`} class="inline-block bg-[#194642] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors">
+          <a href={`/${lang}/careers/portal/`} class="inline-block bg-[#194642] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#2a5e59] transition-colors">
             {T.trackApplication}
           </a>
         </div>
@@ -182,7 +182,7 @@ const T = useCareerT(lang);
 
           <!-- Submit -->
           <div class="flex justify-end gap-4">
-            <a href={`/${lang}/careers`} class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+            <a href={`/${lang}/careers/`} class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">
               {T.backToJobs}
             </a>
             <button type="submit" id="submit-btn"
