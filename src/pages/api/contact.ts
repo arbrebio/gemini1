@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { sanitizeInput, escapeHtml, globalRateLimiter } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
+import { sendContactEvent, parseFacebookCookies } from '../../lib/metaConversions';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
@@ -203,6 +204,19 @@ export const POST: APIRoute = async ({ request }) => {
         </html>
       `
     );
+
+    // Report the lead to Meta so ad campaigns can measure/optimize for it,
+    // independent of whether the visitor's browser pixel fired.
+    const { fbc, fbp } = parseFacebookCookies(request.headers.get('cookie'));
+    await sendContactEvent({
+      email,
+      phone,
+      clientIp: clientIP !== 'unknown' ? clientIP : null,
+      userAgent: request.headers.get('user-agent'),
+      fbc,
+      fbp,
+      sourceUrl: request.headers.get('referer') || import.meta.env.SITE || 'https://arbrebio.com',
+    }).catch(() => {});
 
     return createSuccessResponse(null, 'Message sent successfully');
   } catch (error) {

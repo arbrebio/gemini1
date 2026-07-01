@@ -175,6 +175,14 @@ export function initOutboundLinkTracking() {
 
     if (link && link.hostname !== window.location.hostname) {
       tracker.trackOutboundLink(link.href);
+
+      // WhatsApp click-to-chat links double as our primary lead/contact
+      // conversion — fire the Meta Pixel event so ad campaigns can
+      // optimize/report on it (mirrors the Conversions API "Contact"
+      // event sent server-side from the contact form).
+      if (/(^|\.)wa\.me$|(^|\.)api\.whatsapp\.com$/.test(link.hostname) && (window as any).fbq) {
+        (window as any).fbq('track', 'Contact', { content_name: 'whatsapp_click' });
+      }
     }
   });
 }
