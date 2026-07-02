@@ -1,12 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
     <style>
-        .light { display: inline; }
-        .dark { display: none; }
+        image { filter: none; }
         @media (prefers-color-scheme: dark) {
-            .light { display: none; }
-            .dark { display: inline; }
+            image { filter: brightness(0) invert(1); }
         }
     </style>
-    <image class="light" href="/favicon.png" width="64" height="64" />
-    <image class="dark" href="/favicon-dark.png" width="64" height="64" />
+    <image href="/favicon.png" width="64" height="64" />
 </svg>
