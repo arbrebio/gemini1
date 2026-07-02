@@ -160,6 +160,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
 <script>
   import { authFetch } from "../../../../lib/supabase";
+
+  function esc(v: unknown) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   // ── Utilities ──────────────────────────────────────────────────
   function showToast(message: string, type: 'success' | 'error' = 'success') {
     let container = document.getElementById('_toast-container');
@@ -279,11 +281,11 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           ${jobs.map(j => `
             <tr class="hover:bg-gray-50 transition-colors">
               <td class="px-6 py-4">
-                <p class="font-medium text-gray-800">${j.title_en || j.title_fr || '—'}</p>
-                <p class="text-xs text-gray-400">${[j.title_fr, j.title_es, j.title_af].filter(Boolean).join(' · ')}</p>
+                <p class="font-medium text-gray-800">${esc(j.title_en || j.title_fr) || '—'}</p>
+                <p class="text-xs text-gray-400">${esc([j.title_fr, j.title_es, j.title_af].filter(Boolean).join(' · '))}</p>
               </td>
               <td class="px-6 py-4 text-gray-600 capitalize">${j.job_type.replace(/_/g,' ')}</td>
-              <td class="px-6 py-4 text-gray-600">${j.location}</td>
+              <td class="px-6 py-4 text-gray-600">${esc(j.location)}</td>
               <td class="px-6 py-4">
                 <span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[j.status] || 'bg-gray-100 text-gray-600'}">${j.status}</span>
               </td>
@@ -291,8 +293,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
                   <button onclick="editJob('${j.id}')" class="text-[#194642] hover:underline text-xs font-medium">Edit</button>
-                  <button onclick="deleteJob('${j.id}','${(j.title_en||j.title_fr||'').replace(/'/g,"\\'")}') " class="text-red-500 hover:underline text-xs font-medium">Delete</button>
-                  ${j.status === 'published' ? `<a href="/careers/${j.slug}" target="_blank" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>` : `<span class="text-gray-300 text-xs cursor-not-allowed" title="Only published jobs can be viewed publicly">View ↗</span>`}
+                  <button onclick="deleteJob('${esc(j.id)}','${esc((j.title_en||j.title_fr||'').replace(/['"\\<>]/g,''))}')" class="text-red-500 hover:underline text-xs font-medium">Delete</button>
+                  ${j.status === 'published' ? `<a href="/careers/${encodeURIComponent(j.slug)}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>` : `<span class="text-gray-300 text-xs cursor-not-allowed" title="Only published jobs can be viewed publicly">View ↗</span>`}
                 </div>
               </td>
             </tr>

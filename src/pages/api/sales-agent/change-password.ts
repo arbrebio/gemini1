@@ -109,6 +109,6 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ success: true });
   } catch (e: any) {
     console.error('[change-password]', e);
-    return json({ error: e.message || 'Internal server error' }, 500);
+    return json({ error: 'Internal server error' }, 500);
   }
 };

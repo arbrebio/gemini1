@@ -46,6 +46,45 @@ const title       = resolve(post.title);
 const description = resolve(post.description);
 const content     = resolve(post.content);
 
+// ── Full-document content isolation ─────────────────────────────────────────
+// Some posts are authored as complete standalone HTML documents with their own
+// <style> (global selectors like body/footer/h2) and <footer>. Injected raw,
+// that CSS leaks into the site chrome and repaints the nav/footer. Detect
+// those posts, keep only their styles + body markup, drop their embedded
+// footer/scripts, and render inside a declarative Shadow DOM so the article's
+// design stays fully scoped to itself.
+const isFullDocument = /<(?:html|head|body)[\s>]/i.test(content);
+
+// Google Fonts must be loaded at document level — @font-face registered
+// inside a shadow root does not reliably apply.
+const contentFontLinks = isFullDocument
+  ? [...content.matchAll(/<link[^>]+fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi)].map(m => m[0]).join('')
+  : '';
+
+let isolatedContent = '';
+if (isFullDocument) {
+  const styles = [...content.matchAll(/<style[^>]*>[\s\S]*?<\/style>/gi)]
+    .map(m => m[0]
+      // :root/html/body don't exist inside a shadow root — retarget them at
+      // the shadow host so CSS variables and base typography still apply.
+      .replace(/:root\b/g, ':host')
+      .replace(/(^|[}\s,])(?:html|body)(\s*[,{])/g, '$1:host$2')
+      // Keep the styles inert (media="not all") while they sit in the hidden
+      // source div, so they cannot leak into the page before the script moves
+      // them into the shadow root and re-enables them.
+      .replace(/<style\b/i, '<style media="not all"')
+    )
+    .join('\n');
+
+  const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const inner = (bodyMatch ? bodyMatch[1] : content)
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    // The article's own footer clashes with the site footer — drop it.
+    .replace(/<footer[\s\S]*?<\/footer>/gi, '');
+
+  isolatedContent = `${styles}\n${inner}`;
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   'irrigation':     'Irrigation',
   'greenhouse':     'Greenhouse',
@@ -246,7 +285,7 @@ const articleJsonLd = scriptOpen + JSON.stringify({
   publishedTime={post.published_at || post.created_at}
   keywords={seoKeywords}
 >
-  <Fragment slot="head" set:html={articleJsonLd} />
+  <Fragment slot="head" set:html={articleJsonLd + contentFontLinks} />
 
   <!-- ── Hero ────────────────────────────────────────────────────────────────── -->
   <section class="relative min-h-[50vh] flex items-end">
@@ -331,7 +370,13 @@ const articleJsonLd = scriptOpen + JSON.stringify({
       )}
 
       <!-- Content -->
-      {content ? (
+      {content && isFullDocument && (
+        <>
+          <div id="article-shadow-host" class="not-prose"></div>
+          <div id="article-shadow-source" style="display:none" set:html={isolatedContent}></div>
+        </>
+      )}
+      {content && !isFullDocument && (
         <div class="prose prose-lg max-w-none
           prose-headings:font-bold prose-headings:text-gray-900
           prose-p:text-gray-700 prose-p:leading-relaxed
@@ -341,7 +386,8 @@ const articleJsonLd = scriptOpen + JSON.stringify({
           prose-strong:text-gray-900"
           set:html={content}
         />
-      ) : (
+      )}
+      {!content && (
         <p class="text-gray-400 italic py-8 text-center">
           Content not available in this language.
         </p>
@@ -521,6 +567,24 @@ const articleJsonLd = scriptOpen + JSON.stringify({
     </div>
   </div>
 
+  <script is:inline>
+    // Move full-document article content into a shadow root so its global CSS
+    // (body/footer/h2 selectors) stays scoped to the article instead of
+    // repainting the site chrome. Styles are shipped inert (media="not all")
+    // and only re-enabled once inside the shadow root.
+    (function () {
+      var host = document.getElementById('article-shadow-host');
+      var src = document.getElementById('article-shadow-source');
+      if (!host || !src || host.shadowRoot) return;
+      var root = host.attachShadow({ mode: 'open' });
+      while (src.firstChild) root.appendChild(src.firstChild);
+      src.remove();
+      root.querySelectorAll('style[media="not all"]').forEach(function (s) {
+        s.removeAttribute('media');
+      });
+    })();
+  </script>
+
   <script define:vars={{ postId: post.id }}>
     // ── Fingerprint ──────────────────────────────────────────────────────────────
     function getFingerprint() {
@@ -594,18 +658,26 @@ const articleJsonLd = scriptOpen + JSON.stringify({
       catch { return iso.slice(0,10); }
     }
 
+    // Escape user-supplied text before it goes anywhere near innerHTML —
+    // comments are untrusted input from anonymous visitors (stored XSS risk).
+    function escapeHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function renderComment(c) {
       const el = document.createElement('div');
       el.className = 'bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex gap-4 animate-fade-in';
-      const initial = (c.author_name[0] || '?').toUpperCase();
+      const initial = escapeHtml((String(c.author_name || '?')[0] || '?').toUpperCase());
       el.innerHTML = `
         <div class="w-10 h-10 rounded-full bg-[#194642] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">${initial}</div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
-            <span class="font-semibold text-gray-900 text-sm">${c.author_name}</span>
-            <span class="text-gray-400 text-xs">${formatDate(c.created_at)}</span>
+            <span class="font-semibold text-gray-900 text-sm">${escapeHtml(c.author_name)}</span>
+            <span class="text-gray-400 text-xs">${escapeHtml(formatDate(c.created_at))}</span>
           </div>
-          <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">${c.content}</p>
+          <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">${escapeHtml(c.content)}</p>
         </div>`;
       return el;
     }

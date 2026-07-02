@@ -31,7 +31,7 @@ export const GET: APIRoute = async ({ request }) => {
       })
       .eq('confirmation_token', token)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
 

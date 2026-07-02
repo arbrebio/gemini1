@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import { sanitizeInput, escapeHtml, globalRateLimiter } from '../../lib/securityHeaders';
+import { sanitizeInput, escapeHtml, globalRateLimiter, getClientIp } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
 import { sendContactEvent, parseFacebookCookies } from '../../lib/metaConversions';
 
@@ -114,9 +114,7 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const clientIP = request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      'unknown';
+    const clientIP = getClientIp(request);
 
     if (!globalRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');

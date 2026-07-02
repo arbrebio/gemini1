@@ -82,6 +82,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     return json({ products: products ?? [] });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };

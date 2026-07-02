@@ -18,11 +18,12 @@ export const securityHeaders = {
   // Content Security Policy
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
-    "style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com",
+    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://connect.facebook.net",
+    "style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com https://fonts.googleapis.com",
     "img-src 'self' data: https: blob:",
-    "font-src 'self' data: https://rsms.me https://cdnjs.cloudflare.com",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com",
+    "font-src 'self' data: https://rsms.me https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -71,6 +72,16 @@ export function sanitizeInput(input: string, maxLength: number = 1000): string {
 }
 
 /**
+ * Extract the client IP for rate limiting. x-forwarded-for may contain a
+ * comma-separated chain — only the first (client) hop is meaningful.
+ */
+export function getClientIp(request: Request): string {
+  const xff = request.headers.get('x-forwarded-for');
+  if (xff) return xff.split(',')[0].trim();
+  return request.headers.get('x-real-ip')?.trim() || 'unknown';
+}
+
+/**
  * Rate limiting utility
  */
 export class RateLimiter {
@@ -83,6 +94,15 @@ export class RateLimiter {
   
   isAllowed(identifier: string): boolean {
     const now = Date.now();
+
+    // Prevent unbounded memory growth on long-lived instances: periodically
+    // drop identifiers whose entire window has expired.
+    if (this.requests.size > 10000) {
+      for (const [key, times] of this.requests) {
+        if (times.every(t => now - t >= this.windowMs)) this.requests.delete(key);
+      }
+    }
+
     const requests = this.requests.get(identifier) || [];
     
     // Remove old requests outside the window

@@ -153,6 +153,12 @@ const statusColors: Record<string, string> = {
 </Layout>
 
 <script define:vars={{ lang, T }}>
+  // Escape data before innerHTML interpolation (XSS guard).
+  function esc(v) {
+    return String(v ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   const progressMap = {
     submitted: 10, under_review: 30, interview_scheduled: 50,
     interview_done: 65, offer_sent: 80, hired: 100, rejected: 0, withdrawn: 0
@@ -243,7 +249,7 @@ const statusColors: Record<string, string> = {
           <div class="w-3 h-3 rounded-full bg-[#194642] mt-1.5 flex-shrink-0 ring-2 ring-[#194642]/20"></div>
           <div>
             <p class="font-semibold text-gray-800 text-sm">${statusLabels[t.status] || t.status}</p>
-            ${t.note ? `<p class="text-gray-600 text-sm mt-0.5">${t.note}</p>` : ''}
+            ${t.note ? `<p class="text-gray-600 text-sm mt-0.5">${esc(t.note)}</p>` : ''}
             <p class="text-xs text-gray-400 mt-1">${new Date(t.created_at).toLocaleString()}</p>
           </div>
         </div>
@@ -256,8 +262,8 @@ const statusColors: Record<string, string> = {
     if (docs.length) {
       docsEl.innerHTML = `<div class="space-y-2">${docs.map(d => `
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <span class="text-sm font-medium text-gray-800">${d.file_name}</span>
-          <span class="text-xs text-gray-500 capitalize">${d.doc_type}</span>
+          <span class="text-sm font-medium text-gray-800">${esc(d.file_name)}</span>
+          <span class="text-xs text-gray-500 capitalize">${esc(d.doc_type)}</span>
         </div>
       `).join('')}</div>`;
     } else {

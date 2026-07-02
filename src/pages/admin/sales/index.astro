@@ -154,6 +154,13 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
 <script>
   import { authFetch } from "../../../lib/supabase";
+
+  // Escape agent-supplied values before innerHTML interpolation (XSS guard).
+  function esc(v: unknown): string {
+    return String(v ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
 
@@ -262,9 +269,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
           <div class="font-medium text-gray-800">${agent?.full_name || s.agent_name}</div>
           <div class="text-xs text-gray-400">${agent?.worker_id || s.worker_id || ''}</div>
         </td>
-        <td class="px-4 py-3 font-medium text-gray-800">${s.client_name}</td>
+        <td class="px-4 py-3 font-medium text-gray-800">${esc(s.client_name)}</td>
         <td class="px-4 py-3 text-gray-600">
-          <div>${s.product_name}</div>
+          <div>${esc(s.product_name)}</div>
           <div class="text-xs text-gray-400">Qty: ${s.quantity}</div>
         </td>
         <td class="px-4 py-3 text-right font-semibold text-gray-800 whitespace-nowrap">${fmt(Number(s.total_amount))} <span class="text-xs font-normal text-gray-400">FCFA</span></td>
@@ -300,18 +307,18 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     const content = document.getElementById('modal-content')!;
     content.innerHTML = `
       <div class="grid grid-cols-2 gap-3">
-        <div><span class="text-gray-400">Agent:</span> <strong>${sale.agent_name}</strong> (${sale.worker_id || 'N/A'})</div>
+        <div><span class="text-gray-400">Agent:</span> <strong>${esc(sale.agent_name)}</strong> (${esc(sale.worker_id) || 'N/A'})</div>
         <div><span class="text-gray-400">Date:</span> ${fmtDate(sale.created_at)}</div>
-        <div><span class="text-gray-400">Client:</span> <strong>${sale.client_name}</strong></div>
-        <div><span class="text-gray-400">Product:</span> ${sale.product_name}</div>
+        <div><span class="text-gray-400">Client:</span> <strong>${esc(sale.client_name)}</strong></div>
+        <div><span class="text-gray-400">Product:</span> ${esc(sale.product_name)}</div>
         <div><span class="text-gray-400">Qty:</span> ${sale.quantity} × ${fmt(Number(sale.unit_price))} FCFA</div>
         <div><span class="text-gray-400">Total:</span> <strong class="text-lg text-[#194642]">${fmt(Number(sale.total_amount))} FCFA</strong></div>
         <div><span class="text-gray-400">Payment:</span> ${PAYMENT_LABELS[sale.payment_method] || sale.payment_method}</div>
-        <div><span class="text-gray-400">Reference:</span> ${sale.transaction_reference || '—'}</div>
+        <div><span class="text-gray-400">Reference:</span> ${esc(sale.transaction_reference) || '—'}</div>
         <div><span class="text-gray-400">Commission:</span> ${sale.commission_rate}% = <strong>${fmt(Number(sale.commission_amount))} FCFA</strong></div>
         <div><span class="text-gray-400">Status:</span> ${STATUS_BADGE[sale.status] || sale.status}</div>
-        ${sale.notes ? `<div class="col-span-2"><span class="text-gray-400">Notes:</span> ${sale.notes}</div>` : ''}
-        ${sale.rejection_reason ? `<div class="col-span-2 p-2 bg-red-50 rounded-lg"><span class="text-red-600 font-medium">Rejection reason:</span> ${sale.rejection_reason}</div>` : ''}
+        ${sale.notes ? `<div class="col-span-2"><span class="text-gray-400">Notes:</span> ${esc(sale.notes)}</div>` : ''}
+        ${sale.rejection_reason ? `<div class="col-span-2 p-2 bg-red-50 rounded-lg"><span class="text-red-600 font-medium">Rejection reason:</span> ${esc(sale.rejection_reason)}</div>` : ''}
       </div>`;
 
     // Proof preview
@@ -322,11 +329,11 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       const isImage = /\.(jpg|jpeg|png|webp)$/i.test(sale.proof_url) || sale.proof_url.includes('image');
       const isPdf = /\.pdf$/i.test(sale.proof_url) || sale.proof_url.includes('pdf');
       if (isImage) {
-        proofPreview.innerHTML = `<img src="${sale.proof_url}" alt="Proof" class="max-h-64 mx-auto rounded object-contain" />`;
+        proofPreview.innerHTML = `<img src="${esc(sale.proof_url)}" alt="Proof" class="max-h-64 mx-auto rounded object-contain" />`;
       } else if (isPdf) {
-        proofPreview.innerHTML = `<iframe src="${sale.proof_url}" class="w-full h-64 rounded" title="Proof PDF"></iframe>`;
+        proofPreview.innerHTML = `<iframe src="${esc(sale.proof_url)}" class="w-full h-64 rounded" title="Proof PDF"></iframe>`;
       } else {
-        proofPreview.innerHTML = `<a href="${sale.proof_url}" target="_blank" class="text-blue-600 underline text-sm flex items-center gap-1"><i class="fas fa-file"></i> View proof document</a>`;
+        proofPreview.innerHTML = `<a href="${esc(sale.proof_url)}" target="_blank" class="text-blue-600 underline text-sm flex items-center gap-1"><i class="fas fa-file"></i> View proof document</a>`;
       }
     } else {
       proofContainer.classList.add('hidden');
@@ -400,8 +407,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     tbody.innerHTML = report.map(r => `
       <tr class="hover:bg-gray-50">
         <td class="px-4 py-3">
-          <div class="font-medium text-gray-800">${r.full_name}</div>
-          <div class="text-xs text-gray-400">${r.worker_id || r.email}</div>
+          <div class="font-medium text-gray-800">${esc(r.full_name)}</div>
+          <div class="text-xs text-gray-400">${esc(r.worker_id || r.email)}</div>
         </td>
         <td class="px-4 py-3 text-center text-gray-700">${r.total_count}</td>
         <td class="px-4 py-3 text-center text-green-700 font-medium">${r.validated_count}</td>

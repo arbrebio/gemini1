@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { config } from '../../lib/config';
+import { escapeHtml, globalRateLimiter, getClientIp } from '../../lib/securityHeaders';
 
 const ADMIN_EMAIL = config.contact.adminEmail;
 const SENDER_NAME = config.contact.senderName;
@@ -66,9 +67,9 @@ const quoteSchema = z.object({
   phone: z.string().min(1, 'Phone number is required').max(20, 'Phone number too long'),
   location: z.string().min(1, 'Location is required').max(100, 'Location too long').optional(),
   size: z.number().min(1, 'Size must be at least 1').max(100000, 'Size too large').optional(),
-  timeline: z.string().optional(),
+  timeline: z.string().max(100, 'Timeline too long').optional(),
   requirements: z.string().max(500, 'Requirements too long').optional(),
-  productType: z.string().optional(),
+  productType: z.string().max(100, 'Product type too long').optional(),
   quantity: z.number().min(1, 'Quantity must be at least 1').optional(),
   quoteType: z.enum(['greenhouse', 'irrigation', 'substrate', 'general']).default('general'),
   lang: z.enum(['en', 'fr', 'es', 'af']).default('en'),
@@ -107,6 +108,13 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return new Response(JSON.stringify({ success: false, message: 'Too many requests. Please try again later.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const data = await request.json();
 
     const validationResult = quoteSchema.safeParse(data);
@@ -118,7 +126,20 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const v = validationResult.data;
+    // HTML-escape every user-supplied string before interpolating into email
+    // markup (prevents HTML/phishing injection into admin + client emails).
+    const raw = validationResult.data;
+    const v = {
+      ...raw,
+      firstName: escapeHtml(raw.firstName),
+      lastName: escapeHtml(raw.lastName),
+      email: raw.email, // validated as an email by zod; escaped where rendered
+      phone: escapeHtml(raw.phone),
+      location: raw.location ? escapeHtml(raw.location) : raw.location,
+      timeline: raw.timeline ? escapeHtml(raw.timeline) : raw.timeline,
+      requirements: raw.requirements ? escapeHtml(raw.requirements) : raw.requirements,
+      productType: raw.productType ? escapeHtml(raw.productType) : raw.productType,
+    };
     const emailSubject = `New Quote Request: ${v.quoteType.charAt(0).toUpperCase() + v.quoteType.slice(1)}`;
 
     let emailContent = `
@@ -126,7 +147,7 @@ export const POST: APIRoute = async ({ request }) => {
       <h2 style="color: #666;">Contact Information</h2>
       <ul style="list-style: none; padding: 0;">
         <li><strong>Name:</strong> ${v.firstName} ${v.lastName}</li>
-        <li><strong>Email:</strong> ${v.email}</li>
+        <li><strong>Email:</strong> ${escapeHtml(v.email)}</li>
         <li><strong>Phone:</strong> ${v.phone}</li>
         <li><strong>Quote Type:</strong> ${v.quoteType}</li>
       </ul>

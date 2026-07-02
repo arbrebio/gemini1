@@ -5,10 +5,20 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { timingSafeEqual } from 'node:crypto';
+
+function tokenMatches(provided: string | null, expected: string | undefined): boolean {
+  // Fail closed when the token is not configured or not supplied, and use a
+  // constant-time comparison to prevent timing side-channel guessing.
+  if (!provided || !expected) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export const GET: APIRoute = async ({ request }) => {
   const token = new URL(request.url).searchParams.get('token');
-  if (token !== import.meta.env.ADMIN_TOKEN) {
+  if (!tokenMatches(token, import.meta.env.ADMIN_TOKEN)) {
     return new Response('Unauthorized', { status: 401 });
   }
 

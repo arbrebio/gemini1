@@ -91,6 +91,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({ signed_url: data.signedUrl, file_path: filePath });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };

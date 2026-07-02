@@ -90,7 +90,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     return json({ sales: sales ?? [] });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };
 
@@ -274,6 +275,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({ sale, commission_rate, commission_amount }, 201);
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };

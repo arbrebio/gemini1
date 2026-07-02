@@ -285,6 +285,8 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   // @ts-nocheck
   import { authFetch } from "../../../../lib/supabase";
 
+  function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
   // ── Utilities ──────────────────────────────────────────────────
   function showToast(message, type = 'success') {
     let container = document.getElementById('_toast-container');
@@ -575,18 +577,18 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           <div class="flex items-center gap-4 mb-4">
             <div class="w-14 h-14 bg-white/20 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
               ${e.photo_url
-                ? `<img src="${e.photo_url}" class="w-full h-full object-cover" />`
+                ? `<img src="${esc(e.photo_url)}" class="w-full h-full object-cover" />`
                 : `<i class="fas fa-user text-white/60 text-xl"></i>`}
             </div>
             <div class="min-w-0">
-              <h3 class="font-bold text-lg leading-tight truncate">${e.first_name} ${e.last_name}</h3>
-              <p class="text-[#4ade80] text-sm truncate">${e.job_title || '—'}</p>
-              ${e.department ? `<p class="text-white/60 text-xs">${e.department}</p>` : ''}
+              <h3 class="font-bold text-lg leading-tight truncate">${esc(e.first_name)} ${esc(e.last_name)}</h3>
+              <p class="text-[#4ade80] text-sm truncate">${esc(e.job_title) || '—'}</p>
+              ${e.department ? `<p class="text-white/60 text-xs">${esc(e.department)}</p>` : ''}
             </div>
           </div>
           <div class="bg-white/10 rounded-lg p-3 mb-3">
             <p class="text-white/60 text-xs mb-0.5">Worker ID</p>
-            <p class="font-mono text-xl font-bold tracking-wider">${e.worker_id}</p>
+            <p class="font-mono text-xl font-bold tracking-wider">${esc(e.worker_id)}</p>
           </div>
           <div class="flex items-center justify-between text-xs text-white/60 mb-3">
             <span>Since ${e.start_date ? new Date(e.start_date).toLocaleDateString() : '—'}</span>
@@ -621,7 +623,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
         <!-- Photo -->
         <div class="flex items-center gap-4">
           <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
-            ${e.photo_url ? `<img src="${e.photo_url}" class="w-full h-full object-cover" id="edit-photo-preview-img" />` : `<i class="fas fa-user text-gray-300 text-xl" id="edit-photo-preview-icon"></i>`}
+            ${e.photo_url ? `<img src="${esc(e.photo_url)}" class="w-full h-full object-cover" id="edit-photo-preview-img" />` : `<i class="fas fa-user text-gray-300 text-xl" id="edit-photo-preview-icon"></i>`}
           </div>
           <div>
             <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Update Photo</p>
@@ -632,16 +634,16 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
             <div id="edit-photo-status-${id}" class="hidden text-xs mt-1 text-gray-500"></div>
           </div>
         </div>
-        <input type="hidden" id="eedit-photo-${id}" value="${e.photo_url || ''}" />
+        <input type="hidden" id="eedit-photo-${id}" value="${esc(e.photo_url)}" />
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Job Title</label>
-            <input id="eedit-title-${id}" type="text" value="${e.job_title || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-title-${id}" type="text" value="${esc(e.job_title)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Department</label>
-            <input id="eedit-dept-${id}" type="text" value="${e.department || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-dept-${id}" type="text" value="${esc(e.department)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label>
@@ -668,25 +670,25 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Phone</label>
-            <input id="eedit-phone-${id}" type="text" value="${e.phone || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-phone-${id}" type="text" value="${esc(e.phone)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1"><i class="fab fa-whatsapp text-green-500 mr-1"></i>WhatsApp</label>
-            <input id="eedit-whatsapp-${id}" type="text" placeholder="+225 00 00 00 00 00" value="${e.whatsapp_number || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-whatsapp-${id}" type="text" placeholder="+225 00 00 00 00 00" value="${esc(e.whatsapp_number)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
         </div>
         <div>
           <label class="block text-xs font-medium text-gray-600 mb-1">Address</label>
-          <input id="eedit-address-${id}" type="text" value="${e.address || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          <input id="eedit-address-${id}" type="text" value="${esc(e.address)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">City</label>
-            <input id="eedit-city-${id}" type="text" value="${e.city || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-city-${id}" type="text" value="${esc(e.city)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Country</label>
-            <input id="eedit-country-${id}" type="text" value="${e.country || "Côte d'Ivoire"}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+            <input id="eedit-country-${id}" type="text" value="${esc(e.country || "Côte d'Ivoire")}" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
           </div>
         </div>
         <!-- Contract upload -->
@@ -694,18 +696,18 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           <label class="block text-xs font-medium text-gray-600 mb-1">Contract Document</label>
           ${e.contract_url ? `<div class="flex items-center gap-2 mb-2 text-sm">
             <i class="fas fa-file-contract text-[#194642]"></i>
-            <a href="${e.contract_url}" target="_blank" rel="noopener noreferrer" class="text-[#194642] hover:underline text-xs font-medium">View current contract ↗</a>
+            <a href="${esc(e.contract_url)}" target="_blank" rel="noopener noreferrer" class="text-[#194642] hover:underline text-xs font-medium">View current contract ↗</a>
           </div>` : ''}
           <label class="flex items-center gap-2 cursor-pointer bg-[#194642]/5 hover:bg-[#194642]/10 text-[#194642] text-xs font-semibold px-3 py-2 rounded-lg border border-[#194642]/20 w-fit">
             <i class="fas fa-upload text-xs"></i> ${e.contract_url ? 'Replace Contract' : 'Upload Contract'}
             <input type="file" id="eedit-contract-file-${id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden" />
           </label>
           <div id="eedit-contract-status-${id}" class="hidden text-xs mt-1 text-gray-500"></div>
-          <input type="hidden" id="eedit-contract-${id}" value="${e.contract_url || ''}" />
+          <input type="hidden" id="eedit-contract-${id}" value="${esc(e.contract_url)}" />
         </div>
         <div class="bg-gray-50 rounded-lg p-3 text-sm">
-          <p class="font-medium text-gray-700">Worker ID: <span class="font-mono text-[#194642] font-bold">${e.worker_id}</span></p>
-          <p class="text-gray-500 mt-1">Email: ${e.email}</p>
+          <p class="font-medium text-gray-700">Worker ID: <span class="font-mono text-[#194642] font-bold">${esc(e.worker_id)}</span></p>
+          <p class="text-gray-500 mt-1">Email: ${esc(e.email)}</p>
         </div>
         <div id="eedit-error-${id}" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm"></div>
         <div class="flex justify-end gap-3">

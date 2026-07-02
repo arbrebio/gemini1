@@ -45,6 +45,11 @@ export default defineConfig({
   site: 'https://www.arbrebio.com',
   output: 'static',
   adapter: vercel(),
+  // Prefetch internal links on hover for near-instant navigation.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   server: {
     host: true,
     port: 4321
@@ -70,7 +75,9 @@ export default defineConfig({
       chunkSizeWarningLimit: 400,
       target: 'es2020',
       terserOptions: {
-        compress: { drop_console: true, drop_debugger: true, passes: 2 },
+        // Strip noisy dev logging but KEEP console.error/console.warn so
+        // server-side API error logging remains observable in production.
+        compress: { drop_console: ['log', 'debug', 'info'], drop_debugger: true, passes: 2 },
         mangle: { safari10: true }
       }
     },

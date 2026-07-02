@@ -5,6 +5,9 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function getSupabase() {
   return createClient(
@@ -23,7 +26,7 @@ function json(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request }) => {
   const postId = new URL(request.url).searchParams.get('post_id');
-  if (!postId) return json({ error: 'post_id required' }, 400);
+  if (!postId || !UUID_RE.test(postId)) return json({ error: 'post_id required' }, 400);
 
   const { data, error } = await getSupabase()
     .from('blog_post_comments')
@@ -31,21 +34,29 @@ export const GET: APIRoute = async ({ request }) => {
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
 
-  if (error) return json({ error: error.message }, 500);
+  if (error) return json({ error: 'Failed to load comments' }, 500);
   return json({ comments: data ?? [] });
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return json({ error: 'Too many requests. Please try again later.' }, 429);
+    }
+
     const body = await request.json();
     const { post_id, author_name, author_email, content } = body ?? {};
 
-    if (!post_id)                          return json({ error: 'post_id required' }, 400);
-    if (!author_name?.trim())              return json({ error: 'Name is required' }, 400);
+    if (typeof post_id !== 'string' || !UUID_RE.test(post_id)) return json({ error: 'post_id required' }, 400);
+    if (typeof author_name !== 'string' || !author_name.trim()) return json({ error: 'Name is required' }, 400);
     if (author_name.trim().length < 2)     return json({ error: 'Name too short' }, 400);
-    if (!content?.trim())                  return json({ error: 'Comment cannot be empty' }, 400);
+    if (author_name.trim().length > 80)    return json({ error: 'Name too long (max 80 chars)' }, 400);
+    if (typeof content !== 'string' || !content.trim()) return json({ error: 'Comment cannot be empty' }, 400);
     if (content.trim().length < 5)         return json({ error: 'Comment too short' }, 400);
     if (content.trim().length > 2000)      return json({ error: 'Comment too long (max 2000 chars)' }, 400);
+    if (author_email != null && (typeof author_email !== 'string' || author_email.length > 120)) {
+      return json({ error: 'Invalid email' }, 400);
+    }
 
     const { data, error } = await getSupabase()
       .from('blog_post_comments')
@@ -58,7 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
       .select('id, author_name, content, created_at')
       .single();
 
-    if (error) return json({ error: error.message }, 500);
+    if (error) return json({ error: 'Failed to submit comment' }, 500);
     return json({ comment: data }, 201);
   } catch {
     return json({ error: 'Invalid request' }, 400);

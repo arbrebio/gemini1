@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import { z } from 'zod';
-import { sanitizeInput, globalRateLimiter } from '../../../lib/securityHeaders';
+import { sanitizeInput, globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../../lib/errorHandling';
 
 // Email configuration
@@ -31,9 +31,7 @@ const subscribeSchema = z.object({
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting
-    const clientIP = request.headers.get('x-forwarded-for') ||
-                    request.headers.get('x-real-ip') ||
-                    'unknown';
+    const clientIP = getClientIp(request);
 
     if (!globalRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse(
@@ -74,7 +72,9 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // If user exists but is not confirmed or is unsubscribed, update their record
+    // If user exists but is not confirmed or is unsubscribed, update their
+    // record with a FRESH confirmation token (a null token would render the
+    // confirmation link in the email useless).
     if (existingUser) {
       const { data: updatedUser, error: updateError } = await supabase
         .from('newsletter_subscribers')
@@ -82,7 +82,7 @@ export const POST: APIRoute = async ({ request }) => {
           full_name: sanitizedData.full_name,
           source: sanitizedData.source,
           status: 'pending',
-          confirmation_token: null,
+          confirmation_token: crypto.randomUUID(),
           confirmed: false
         })
         .eq('id', existingUser.id)

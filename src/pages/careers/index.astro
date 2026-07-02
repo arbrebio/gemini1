@@ -133,6 +133,7 @@ const T = useCareerT(lang);
 </Layout>
 
 <script define:vars={{ lang, T }}>
+  function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   const typeLabels = {
     full_time: T.fullTime, part_time: T.partTime,
     contract: T.contract, internship: T.internship, volunteer: T.volunteer
@@ -187,25 +188,25 @@ const T = useCareerT(lang);
           const typeColor = typeColors[job.job_type] || 'bg-gray-100 text-gray-700';
           const deadline = job.deadline ? new Date(job.deadline).toLocaleDateString() : '';
           return `
-            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-[#194642]/30 bg-white group" data-dept="${dept}" data-type="${job.job_type}">
+            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-[#194642]/30 bg-white group" data-dept="${esc(dept)}" data-type="${job.job_type}">
               <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div class="flex-1">
                   <div class="flex flex-wrap items-center gap-2 mb-3">
-                    <span class="${typeColor} text-xs font-semibold px-3 py-1 rounded-full">${typeLabel}</span>
-                    ${dept ? `<span class="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">${dept}</span>` : ''}
+                    <span class="${typeColor} text-xs font-semibold px-3 py-1 rounded-full">${esc(typeLabel)}</span>
+                    ${dept ? `<span class="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">${esc(dept)}</span>` : ''}
                   </div>
-                  <h3 class="text-xl font-bold text-[#194642] group-hover:text-[#2a5e59] transition-colors mb-2">${title}</h3>
+                  <h3 class="text-xl font-bold text-[#194642] group-hover:text-[#2a5e59] transition-colors mb-2">${esc(title)}</h3>
                   <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-                    <span>${job.location}</span>
-                    ${deadline ? `<span>${T.deadline}: ${deadline}</span>` : ''}
-                    <span>${job.positions} ${T.positions}</span>
+                    <span>${esc(job.location)}</span>
+                    ${deadline ? `<span>${T.deadline}: ${esc(deadline)}</span>` : ''}
+                    <span>${esc(job.positions)} ${T.positions}</span>
                   </div>
                 </div>
                 <div class="flex gap-3 md:flex-col lg:flex-row">
-                  <a href="/careers/${job.slug}" class="flex-1 md:flex-none text-center border border-[#194642] text-[#194642] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#194642]/5 transition-colors text-sm">
+                  <a href="/careers/${encodeURIComponent(job.slug)}" class="flex-1 md:flex-none text-center border border-[#194642] text-[#194642] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#194642]/5 transition-colors text-sm">
                     ${T.viewDetails}
                   </a>
-                  <a href="/careers/apply/${job.slug}" class="flex-1 md:flex-none text-center bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
+                  <a href="/careers/apply/${encodeURIComponent(job.slug)}" class="flex-1 md:flex-none text-center bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
                     ${T.applyNow}
                   </a>
                 </div>

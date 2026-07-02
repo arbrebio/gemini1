@@ -2,9 +2,15 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { escapeHtml, globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
+
+// Upload restrictions — documents only, capped size, allowlisted extensions.
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB per file
+const ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp']);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -25,7 +31,9 @@ async function sendEmail(to: string | string[], subject: string, html: string): 
 
 async function uploadFile(supabase: any, file: File, folder: string): Promise<string | null> {
   if (!file || file.size === 0) return null;
-  const ext = file.name.split('.').pop();
+  if (file.size > MAX_UPLOAD_BYTES) return null;
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (!ALLOWED_EXTENSIONS.has(ext)) return null;
   const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const arrayBuffer = await file.arrayBuffer();
   const { data, error } = await supabase.storage
@@ -37,23 +45,37 @@ async function uploadFile(supabase: any, file: File, folder: string): Promise<st
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
+        status: 429, headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabase = getSupabase();
     const formData = await request.formData();
 
-    const jobId = formData.get('job_id') as string;
-    const firstName = (formData.get('first_name') as string || '').trim();
-    const middleName = (formData.get('middle_name') as string || '').trim();
-    const lastName = (formData.get('last_name') as string || '').trim();
-    const email = (formData.get('email') as string || '').trim().toLowerCase();
-    const phone = (formData.get('phone') as string || '').trim();
-    const birthDate = formData.get('birth_date') as string;
-    const nationality = (formData.get('nationality') as string || '').trim();
-    const city = (formData.get('city') as string || '').trim();
-    const address = (formData.get('address') as string || '').trim();
-    const coverLetter = (formData.get('cover_letter') as string || '').trim();
+    const str = (name: string, max: number) =>
+      String(formData.get(name) || '').trim().slice(0, max);
+
+    const jobId = str('job_id', 64);
+    const firstName = str('first_name', 80);
+    const middleName = str('middle_name', 80);
+    const lastName = str('last_name', 80);
+    const email = str('email', 120).toLowerCase();
+    const phone = str('phone', 30);
+    const birthDate = str('birth_date', 20);
+    const nationality = str('nationality', 80);
+    const city = str('city', 80);
+    const address = str('address', 200);
+    const coverLetter = str('cover_letter', 5000);
 
     if (!firstName || !lastName || !email || !jobId) {
       return new Response(JSON.stringify({ error: 'Missing required fields.' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    if (!EMAIL_RE.test(email)) {
+      return new Response(JSON.stringify({ error: 'Invalid email address.' }), {
         status: 400, headers: { 'Content-Type': 'application/json' },
       });
     }
@@ -134,13 +156,23 @@ export const POST: APIRoute = async ({ request }) => {
       note: 'Application received',
     });
 
+    // HTML-escape all user-supplied values before interpolating into emails.
+    const e = {
+      firstName: escapeHtml(firstName),
+      middleName: escapeHtml(middleName),
+      lastName: escapeHtml(lastName),
+      email: escapeHtml(email),
+      phone: escapeHtml(phone),
+      city: escapeHtml(city),
+    };
+
     // Send confirmation email to applicant
     await sendEmail(email,
       `Application Received — ${job.title_en} | Arbre Bio Africa`,
       `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif;color:#333;line-height:1.6">
         <div style="max-width:600px;margin:0 auto;padding:24px">
           <h2 style="color:#194642">Application Received</h2>
-          <p>Dear ${firstName} ${lastName},</p>
+          <p>Dear ${e.firstName} ${e.lastName},</p>
           <p>Thank you for applying for <strong>${job.title_en}</strong> at Arbre Bio Africa. We have received your application.</p>
           <div style="background:#f0f9f0;border:1px solid #c6e8c6;border-radius:8px;padding:16px;margin:20px 0">
             <p style="margin:0 0 8px"><strong>Your Reference Token:</strong></p>
@@ -160,10 +192,10 @@ export const POST: APIRoute = async ({ request }) => {
         <div style="max-width:600px;margin:0 auto;padding:24px">
           <h2 style="color:#194642">New Job Application</h2>
           <p><strong>Position:</strong> ${job.title_en}</p>
-          <p><strong>Applicant:</strong> ${firstName} ${middleName ? middleName + ' ' : ''}${lastName}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
-          <p><strong>City:</strong> ${city || 'N/A'}</p>
+          <p><strong>Applicant:</strong> ${e.firstName} ${e.middleName ? e.middleName + ' ' : ''}${e.lastName}</p>
+          <p><strong>Email:</strong> ${e.email}</p>
+          <p><strong>Phone:</strong> ${e.phone || 'N/A'}</p>
+          <p><strong>City:</strong> ${e.city || 'N/A'}</p>
           <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
           <p><a href="https://arbrebio.com/admin/careers/applications" style="background:#194642;color:white;padding:10px 20px;border-radius:6px;text-decoration:none">View in Admin</a></p>
         </div>

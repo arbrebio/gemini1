@@ -119,6 +119,7 @@ const typeLabels: Record<string, string> = {
 </Layout>
 
 <script define:vars={{ typeLabels }}>
+  function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   async function loadJob() {
     const slug = window.location.pathname.split('/').pop();
     try {
@@ -158,12 +159,12 @@ const typeLabels: Record<string, string> = {
       const tagsEl = document.getElementById('job-tags');
       tagsEl.innerHTML = `
         <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full">
-          ${typeLabels[job.job_type] || job.job_type}
+          ${esc(typeLabels[job.job_type] || job.job_type)}
         </span>
-        ${job.department ? `<span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">${job.department}</span>` : ''}
+        ${job.department ? `<span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">${esc(job.department)}</span>` : ''}
       `;
 
-      const applyUrl = `/careers/apply/${job.slug}`;
+      const applyUrl = `/careers/apply/${encodeURIComponent(job.slug)}`;
       document.getElementById('apply-btn').href = applyUrl;
       document.getElementById('apply-btn-side').href = applyUrl;
 

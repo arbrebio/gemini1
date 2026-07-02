@@ -39,6 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
   } catch (e: any) {
     // Don't surface WhatsApp failures as blocking errors — log only
     console.error('[whatsapp]', e.message);
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };

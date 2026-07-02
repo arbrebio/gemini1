@@ -2,17 +2,25 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
+import { globalRateLimiter, getClientIp, escapeHtml } from '../../../lib/securityHeaders';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const SENDER_NAME = 'Arbre Bio Africa';
 
 export const GET: APIRoute = async ({ request }) => {
   try {
+    // Rate limit: prevents bulk unsubscribe abuse / subscriber enumeration.
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return new Response(JSON.stringify({ success: false, message: 'Too many requests' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const url = new URL(request.url);
     const email = url.searchParams.get('email');
-    const token = url.searchParams.get('token');
 
-    if (!email || !token) {
+    if (!email || email.length > 120) {
       return new Response(JSON.stringify({
         success: false,
         message: 'Invalid unsubscribe link'
@@ -25,9 +33,9 @@ export const GET: APIRoute = async ({ request }) => {
     const { data, error } = await supabase
       .from('newsletter_subscribers')
       .update({ status: 'unsubscribed' })
-      .eq('email', email)
+      .eq('email', email.toLowerCase().trim())
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
 
@@ -61,8 +69,8 @@ export const GET: APIRoute = async ({ request }) => {
                 <h1 style="color: #194642;">Newsletter Unsubscription</h1>
                 <p>A user has unsubscribed from the Arbre Bio Africa newsletter:</p>
                 <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                  <p><strong>Email:</strong> ${data.email}</p>
-                  <p><strong>Name:</strong> ${data.full_name || 'Not provided'}</p>
+                  <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+                  <p><strong>Name:</strong> ${escapeHtml(data.full_name) || 'Not provided'}</p>
                   <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
                 </div>
               </body>

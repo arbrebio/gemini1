@@ -95,7 +95,8 @@ export const GET: APIRoute = async ({ request }) => {
 
     return json({ posts: data || [], total: count ?? 0 });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };
 
@@ -164,7 +165,8 @@ export const POST: APIRoute = async ({ request }) => {
     if (insertErr) throw insertErr;
     return json({ post }, 201);
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };
 
@@ -249,7 +251,8 @@ export const PUT: APIRoute = async ({ request }) => {
     if (updateErr) throw updateErr;
     return json({ post });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };
 
@@ -284,6 +287,7 @@ export const DELETE: APIRoute = async ({ request }) => {
     if (delErr) throw delErr;
     return json({ success: true });
   } catch (e: any) {
-    return json({ error: e.message }, 500);
+    console.error("API error:", e);
+    return json({ error: "Internal server error" }, 500);
   }
 };

@@ -95,7 +95,8 @@ export const GET: APIRoute = async ({ request, url }) => {
     if (error) throw error;
     return new Response(JSON.stringify({ applications: applications || [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    console.error("API error:", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 };
 
@@ -152,7 +153,8 @@ export const PUT: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify({ application }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    console.error("API error:", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 };
 
@@ -173,6 +175,7 @@ export const DELETE: APIRoute = async ({ request }) => {
     if (error) throw error;
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    console.error("API error:", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 };

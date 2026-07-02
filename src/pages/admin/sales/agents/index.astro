@@ -283,6 +283,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
 <script>
   import { authFetch } from "../../../../lib/supabase";
+
+  function esc(v: unknown) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
   let selectedAgentId: string | null = null;
   let lastCreatedPassword = '';
@@ -326,20 +328,20 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       const pwCell = a.temp_password
         ? `<div class="flex items-center gap-1">
              <span class="font-mono text-xs bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded select-all" id="pw-${a.id}">${a.temp_password}</span>
-             <button class="btn-copy-pw text-gray-400 hover:text-gray-600" data-pw="${a.temp_password}" title="Copy"><i class="fas fa-copy text-xs"></i></button>
+             <button class="btn-copy-pw text-gray-400 hover:text-gray-600" data-pw="${esc(a.temp_password)}" title="Copy"><i class="fas fa-copy text-xs"></i></button>
            </div>
            <div class="text-xs text-amber-600 mt-0.5 flex items-center gap-1"><i class="fas fa-clock text-xs"></i> En attente de changement</div>`
         : `<div class="flex items-center gap-1 text-xs text-green-600"><i class="fas fa-check-circle"></i> Modifié par l'agent</div>`;
 
       return `<tr class="hover:bg-gray-50 transition-colors" data-id="${a.id}">
         <td class="px-4 py-3">
-          <div class="font-medium text-gray-800">${a.full_name}</div>
-          <div class="text-xs text-gray-400">${a.worker_id || '—'}</div>
+          <div class="font-medium text-gray-800">${esc(a.full_name)}</div>
+          <div class="text-xs text-gray-400">${esc(a.worker_id) || '—'}</div>
           ${emp ? `<div class="text-xs text-blue-600">${emp.job_title || ''}</div>` : ''}
         </td>
         <td class="px-4 py-3 text-gray-600">
-          <div>${a.email}</div>
-          ${a.phone ? `<div class="text-xs text-gray-400">${a.phone}</div>` : ''}
+          <div>${esc(a.email)}</div>
+          ${a.phone ? `<div class="text-xs text-gray-400">${esc(a.phone)}</div>` : ''}
         </td>
         <td class="px-4 py-3">${pwCell}</td>
         <td class="px-4 py-3 text-center">
@@ -352,7 +354,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           <span class="px-2 py-0.5 rounded-full text-xs font-medium ${a.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
             ${a.is_active ? '<i class="fas fa-check mr-1"></i>Active' : '<i class="fas fa-ban mr-1"></i>Suspended'}
           </span>
-          ${!a.is_active && a.suspended_reason ? `<div class="text-xs text-gray-400 mt-0.5 max-w-24 truncate" title="${a.suspended_reason}">${a.suspended_reason}</div>` : ''}
+          ${!a.is_active && a.suspended_reason ? `<div class="text-xs text-gray-400 mt-0.5 max-w-24 truncate" title="${esc(a.suspended_reason)}">${esc(a.suspended_reason)}</div>` : ''}
         </td>
         <td class="px-4 py-3 text-center">
           <div class="flex items-center justify-center gap-2 flex-wrap">
@@ -360,8 +362,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
               ? `<button class="btn-suspend px-2 py-1 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50" data-id="${a.id}"><i class="fas fa-ban mr-1"></i>Suspendre</button>`
               : `<button class="btn-activate px-2 py-1 text-xs font-medium border border-green-200 text-green-600 rounded-lg hover:bg-green-50" data-id="${a.id}"><i class="fas fa-check mr-1"></i>Activer</button>`
             }
-            <button class="btn-reset-pw px-2 py-1 text-xs font-medium border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50" data-id="${a.id}" data-name="${a.full_name}"><i class="fas fa-key mr-1"></i>Réinitialiser MDP</button>
-            <button class="btn-docs px-2 py-1 text-xs font-medium border border-[#194642] text-[#194642] rounded-lg hover:bg-green-50" data-id="${a.id}" data-name="${a.full_name}"><i class="fas fa-folder-open mr-1"></i>Documents</button>
+            <button class="btn-reset-pw px-2 py-1 text-xs font-medium border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50" data-id="${a.id}" data-name="${esc(a.full_name)}"><i class="fas fa-key mr-1"></i>Réinitialiser MDP</button>
+            <button class="btn-docs px-2 py-1 text-xs font-medium border border-[#194642] text-[#194642] rounded-lg hover:bg-green-50" data-id="${a.id}" data-name="${esc(a.full_name)}"><i class="fas fa-folder-open mr-1"></i>Documents</button>
             <button class="btn-delete px-2 py-1 text-xs font-medium border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50" data-id="${a.id}"><i class="fas fa-trash"></i></button>
           </div>
         </td>

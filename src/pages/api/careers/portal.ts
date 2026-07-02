@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -12,10 +13,17 @@ function getSupabase() {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // Rate limit token lookups to block brute-force guessing.
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
+        status: 429, headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabase = getSupabase();
     const { email, token } = await request.json();
 
-    if (!email || !token) {
+    if (typeof email !== 'string' || typeof token !== 'string' || !email || !token) {
       return new Response(JSON.stringify({ error: 'Email and token are required.' }), {
         status: 400, headers: { 'Content-Type': 'application/json' },
       });
@@ -27,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
       .select(`
         id, job_id, first_name, middle_name, last_name, email, phone,
         birth_date, nationality, city, address, status, portal_token,
-        submitted_at, reviewed_at, admin_notes, employee_id
+        submitted_at, reviewed_at, employee_id
       `)
       .eq('portal_token', token.trim())
       .eq('portal_email', email.trim().toLowerCase())

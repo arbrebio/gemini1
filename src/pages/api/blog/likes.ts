@@ -5,6 +5,9 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function getSupabase() {
   return createClient(
@@ -23,21 +26,26 @@ function json(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request }) => {
   const postId = new URL(request.url).searchParams.get('post_id');
-  if (!postId) return json({ error: 'post_id required' }, 400);
+  if (!postId || !UUID_RE.test(postId)) return json({ error: 'post_id required' }, 400);
 
   const { count, error } = await getSupabase()
     .from('blog_post_likes')
     .select('*', { count: 'exact', head: true })
     .eq('post_id', postId);
 
-  if (error) return json({ error: error.message }, 500);
+  if (error) return json({ error: 'Failed to load likes' }, 500);
   return json({ count: count ?? 0 });
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+      return json({ error: 'Too many requests. Please try again later.' }, 429);
+    }
+
     const { post_id, fingerprint } = await request.json() ?? {};
-    if (!post_id || !fingerprint) return json({ error: 'post_id and fingerprint required' }, 400);
+    if (typeof post_id !== 'string' || !UUID_RE.test(post_id)) return json({ error: 'post_id and fingerprint required' }, 400);
+    if (typeof fingerprint !== 'string' || !fingerprint || fingerprint.length > 128) return json({ error: 'post_id and fingerprint required' }, 400);
 
     const sb = getSupabase();
 
