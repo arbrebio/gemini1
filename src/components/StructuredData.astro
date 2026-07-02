@@ -18,7 +18,7 @@ function generateStructuredData(type: string, data: any) {
       return {
         ...baseSchema,
         name: data.name || 'Arbre Bio Africa',
-        url: data.url || 'https://arbrebio.com',
+        url: data.url || 'https://www.arbrebio.com',
         logo: data.logo || 'https://www.arbrebio.com/logo.png',
         description: data.description || 'Leading provider of precision farming solutions in Africa',
         address: data.address || {
@@ -28,13 +28,16 @@ function generateStructuredData(type: string, data: any) {
         },
         contactPoint: data.contactPoint || {
           '@type': 'ContactPoint',
-          telephone: '+225 21 21 80 69 50',
+          telephone: '+2250500552525',
           contactType: 'customer service'
         },
         sameAs: data.sameAs || [
-          'https://facebook.com/arbrebio',
+          'https://www.facebook.com/arbrebio',
+          'https://www.linkedin.com/company/arbrebio',
           'https://twitter.com/arbrebio',
-          'https://linkedin.com/company/arbrebio'
+          'https://www.instagram.com/arbrebio',
+          'https://www.youtube.com/@arbrebio',
+          'https://www.tiktok.com/@arbrebio'
         ]
       };
 
@@ -48,7 +51,7 @@ function generateStructuredData(type: string, data: any) {
         isPartOf: {
           '@type': 'WebSite',
           name: 'Arbre Bio Africa',
-          url: 'https://arbrebio.com'
+          url: 'https://www.arbrebio.com'
         }
       };
 
@@ -65,7 +68,7 @@ function generateStructuredData(type: string, data: any) {
         manufacturer: {
           '@type': 'Organization',
           name: 'Arbre Bio Africa',
-          url: 'https://arbrebio.com'
+          url: 'https://www.arbrebio.com'
         }
       };
 

@@ -247,7 +247,7 @@ export const organizationSchema = {
     'https://twitter.com/arbrebio',
     'https://linkedin.com/company/arbrebio',
     'https://instagram.com/arbrebio',
-    'https://youtube.com/arbrebio',
+    'https://www.youtube.com/@arbrebio',
     'https://tiktok.com/@arbrebio'
   ],
   contactPoint: [

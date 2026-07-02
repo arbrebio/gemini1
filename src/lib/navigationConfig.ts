@@ -67,7 +67,7 @@ export const socialMediaLinks = [
   },
   {
     name: 'YouTube',
-    url: 'https://youtube.com/arbrebio',
+    url: 'https://www.youtube.com/@arbrebio',
     icon: 'fa-brands fa-youtube'
   },
   {

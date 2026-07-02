@@ -38,7 +38,7 @@ export const config = {
     twitter: 'https://twitter.com/arbrebio',
     linkedin: 'https://linkedin.com/company/arbrebio',
     instagram: 'https://instagram.com/arbrebio',
-    youtube: 'https://youtube.com/arbrebio',
+    youtube: 'https://www.youtube.com/@arbrebio',
     tiktok: 'https://tiktok.com/@arbrebio'
   },
   

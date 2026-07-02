@@ -40,28 +40,6 @@ const optimizedDescription = generateMetaDescription(description);
 const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com');
 
 // Generate structured data
-const organizationSchema = {
-  "name": "Arbre Bio Africa",
-  "url": Astro.site?.toString() || "https://www.arbrebio.com",
-  "logo": "https://www.arbrebio.com/logo.png",
-  "description": "Leading provider of precision farming solutions in Africa",
-  "address": {
-    "addressLocality": "Abidjan",
-    "addressCountry": "CI"
-  },
-  "contactPoint": {
-    "telephone": "+225 21 21 80 69 50",
-    "contactType": "customer service"
-  },
-  "sameAs": [
-    "https://facebook.com/arbrebio",
-    "https://twitter.com/arbrebio",
-    "https://linkedin.com/company/arbrebio",
-    "https://instagram.com/arbrebio",
-    "https://youtube.com/arbrebio"
-  ]
-};
-
 const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com') as { itemListElement?: any[] };
 const breadcrumbData = {
   items: breadcrumbSchema.itemListElement || []
@@ -81,6 +59,10 @@ const jsonLdOrg = scriptOpen + JSON.stringify({
   "description": "Leader en agriculture de précision en Afrique. Serres agricoles, irrigation goutte-à-goutte, substrats coco peat, fertilisants et solutions innovantes pour doubler vos rendements.",
   "telephone": "+2250500552525",
   "email": "farms@arbrebio.com",
+  "contactPoint": [
+    { "@type": "ContactPoint", "telephone": "+2250500552525", "contactType": "customer service", "areaServed": "CI", "availableLanguage": ["French", "English"] },
+    { "@type": "ContactPoint", "telephone": "+2252121806950", "contactType": "customer service", "areaServed": "CI", "availableLanguage": ["French", "English"] }
+  ],
   "address": { "@type": "PostalAddress", "addressCountry": "CI", "addressRegion": "Abidjan", "addressLocality": "Abidjan" },
   "areaServed": [
     { "@type": "Continent", "name": "Africa" },
@@ -100,7 +82,14 @@ const jsonLdOrg = scriptOpen + JSON.stringify({
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Agriculture de précision" } }
     ]
   },
-  "sameAs": ["https://www.facebook.com/arbrebioafrica", "https://www.linkedin.com/company/arbre-bio-africa"]
+  "sameAs": [
+    "https://www.facebook.com/arbrebio",
+    "https://www.linkedin.com/company/arbrebio",
+    "https://twitter.com/arbrebio",
+    "https://www.instagram.com/arbrebio",
+    "https://www.youtube.com/@arbrebio",
+    "https://www.tiktok.com/@arbrebio"
+  ]
 }) + scriptClose;
 
 const jsonLdWebsite = scriptOpen + JSON.stringify({
@@ -128,8 +117,8 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     
-    <!-- Favicon: actual Arbre Bio logo -->
-    <link rel="icon" href="/favicon.png" type="image/png" />
+    <!-- Favicon: actual Arbre Bio logo. Adaptive SVG swaps the real green/white logo PNGs based on browser color scheme; PNG links are the fallback for browsers without SVG favicon support (e.g. Safari) -->
+    <link rel="icon" href="/favicon-adaptive.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     
@@ -261,7 +250,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     />
 
     <!-- Structured Data -->
-    <StructuredData type="Organization" data={organizationSchema} />
     <StructuredData type="BreadcrumbList" data={breadcrumbData} />
     
     <!-- Web App Manifest -->
@@ -390,7 +378,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
                 <i class="fa-brands fa-instagram"></i>
               </a>
               <a 
-                href="https://youtube.com/arbrebio"
+                href="https://www.youtube.com/@arbrebio"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-white/80 hover:text-white transition-colors text-lg"
