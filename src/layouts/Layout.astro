@@ -117,8 +117,9 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     
-    <!-- Favicon: actual Arbre Bio logo. Adaptive SVG swaps the real green/white logo PNGs based on browser color scheme; PNG links are the fallback for browsers without SVG favicon support (e.g. Safari) -->
-    <link rel="icon" href="/favicon-adaptive.svg" type="image/svg+xml" />
+    <!-- Favicon: actual Arbre Bio logo. Separate light/dark PNGs selected via the link's own media attribute (browsers without media-query support on icon links fall back to the unconditioned green PNG) -->
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="icon" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" type="image/png" />
     <link rel="icon" href="/favicon.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     
