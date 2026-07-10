@@ -58,8 +58,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           <div>
             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Status</label>
             <select id="f-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] text-sm">
-              <option value="draft">Draft</option>
               <option value="published">Published</option>
+              <option value="draft">Draft</option>
               <option value="closed">Closed</option>
               <option value="archived">Archived</option>
             </select>
@@ -322,7 +322,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     (document.getElementById('form-id') as HTMLInputElement).value = job?.id || '';
     (document.getElementById('f-location') as HTMLInputElement).value = job?.location || "Côte d'Ivoire";
     (document.getElementById('f-type') as HTMLSelectElement).value = job?.job_type || 'full_time';
-    (document.getElementById('f-status') as HTMLSelectElement).value = job?.status || 'draft';
+    (document.getElementById('f-status') as HTMLSelectElement).value = job?.status || 'published';
     (document.getElementById('f-dept') as HTMLInputElement).value = job?.department || '';
     (document.getElementById('f-positions') as HTMLInputElement).value = String(job?.positions ?? 1);
     (document.getElementById('f-deadline') as HTMLInputElement).value = job?.deadline || '';
