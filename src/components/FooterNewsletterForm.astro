@@ -9,8 +9,8 @@ const { class: className } = Astro.props;
 <form class={`space-y-4 ${className}`} id="footer-newsletter-form">
   <div class="relative">
     <label for="footer-email" class="sr-only">Email address</label>
-    <input 
-      type="email" 
+    <input
+      type="email"
       id="footer-email"
       name="email"
       placeholder="Your email address"
@@ -18,6 +18,12 @@ const { class: className } = Astro.props;
       required
       aria-required="true"
     />
+  </div>
+  <!-- Honeypot: hidden from real users, left empty. Bots that auto-fill every
+       input tend to fill this in, letting the API silently drop the submission. -->
+  <div class="absolute left-[-9999px] w-px h-px overflow-hidden" aria-hidden="true">
+    <label for="footer-website">Website</label>
+    <input type="text" id="footer-website" name="website" tabindex="-1" autocomplete="off" />
   </div>
   <button 
     type="submit"
@@ -58,6 +64,7 @@ const { class: className } = Astro.props;
 
       try {
         const email = (form.querySelector('#footer-email') as HTMLInputElement)?.value;
+        const website = (form.querySelector('#footer-website') as HTMLInputElement)?.value;
 
         if (!email) {
           throw new Error('Email is required');
@@ -72,7 +79,8 @@ const { class: className } = Astro.props;
           body: JSON.stringify({
             email,
             source: 'footer',
-            consent: true
+            consent: true,
+            website
           }),
         });
 

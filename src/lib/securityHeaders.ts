@@ -126,3 +126,29 @@ export class RateLimiter {
 
 // Global rate limiter instance
 export const globalRateLimiter = new RateLimiter(50, 60000); // 50 requests per minute
+
+// Tighter limiter for low-traffic, bot-targeted forms like newsletter signup
+export const newsletterRateLimiter = new RateLimiter(5, 60000); // 5 requests per minute
+
+// Common disposable/temporary email domains used by bots and spam signups
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  'mailinator.com', 'guerrillamail.com', 'guerrillamail.info', 'guerrillamail.biz',
+  'guerrillamail.de', 'guerrillamail.net', 'guerrillamail.org', 'sharklasers.com',
+  '10minutemail.com', '10minutemail.net', 'tempmail.com', 'temp-mail.org',
+  'yopmail.com', 'yopmail.fr', 'yopmail.net', 'trashmail.com', 'trashmail.net',
+  'throwawaymail.com', 'getnada.com', 'dispostable.com', 'maildrop.cc',
+  'fakeinbox.com', 'mailnesia.com', 'mintemail.com', 'mytemp.email',
+  'moakt.com', 'discard.email', 'discardmail.com', 'mailcatch.com',
+  'tempinbox.com', 'tempmailaddress.com', 'emailondeck.com', 'spamgourmet.com',
+  'example.com', 'example.org', 'example.net', 'test.com', 'test.org',
+]);
+
+/**
+ * Returns true if the email's domain is a known disposable/temporary
+ * provider or a reserved documentation-only domain (e.g. example.com).
+ */
+export function isDisposableEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase().trim();
+  if (!domain) return false;
+  return DISPOSABLE_EMAIL_DOMAINS.has(domain);
+}

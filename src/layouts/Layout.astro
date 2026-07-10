@@ -444,8 +444,8 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
               <form id="footer-newsletter-form" class="space-y-4">
                 <div class="relative">
                   <label for="footer-email" class="sr-only">Email address</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     id="footer-email"
                     name="email"
                     placeholder={t('footer.emailPlaceholder')}
@@ -454,7 +454,13 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
                     aria-required="true"
                   />
                 </div>
-                <button 
+                <!-- Honeypot: hidden from real users, left empty. Bots that auto-fill
+                     every input tend to fill this in, letting the API silently drop it. -->
+                <div class="absolute left-[-9999px] w-px h-px overflow-hidden" aria-hidden="true">
+                  <label for="footer-website">Website</label>
+                  <input type="text" id="footer-website" name="website" tabindex="-1" autocomplete="off" />
+                </div>
+                <button
                   type="submit"
                   class="w-full px-4 py-2 bg-white text-primary rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
                 >
@@ -519,6 +525,8 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         try {
           const emailInput = form.querySelector('#footer-email') as HTMLInputElement | null;
           const email = emailInput?.value;
+          const websiteInput = form.querySelector('#footer-website') as HTMLInputElement | null;
+          const website = websiteInput?.value;
 
           if (!email) {
             throw new Error('Email is required');
@@ -532,7 +540,8 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
             body: JSON.stringify({
               email,
               source: 'footer',
-              consent: true
+              consent: true,
+              website
             }),
           });
 

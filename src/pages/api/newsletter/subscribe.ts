@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import { z } from 'zod';
-import { sanitizeInput, globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+import { sanitizeInput, newsletterRateLimiter, getClientIp, isDisposableEmail } from '../../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../../lib/errorHandling';
 
 // Email configuration
@@ -25,7 +25,10 @@ const subscribeSchema = z.object({
     .default('website'),
   consent: z.boolean().refine(val => val === true, {
     message: 'You must accept the privacy policy'
-  })
+  }),
+  // Honeypot: a field real users never see or fill in. Bots that auto-fill
+  // every input will populate it, letting us silently drop the submission.
+  website: z.string().max(200).optional()
 });
 
 export const POST: APIRoute = async ({ request }) => {
@@ -33,7 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Rate limiting
     const clientIP = getClientIp(request);
 
-    if (!globalRateLimiter.isAllowed(clientIP)) {
+    if (!newsletterRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse(
         'Too many requests. Please try again later.',
         429,
@@ -45,6 +48,24 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Validate input data
     const validatedData = subscribeSchema.parse(data);
+
+    // Honeypot triggered: pretend success so the bot doesn't adapt, but
+    // never touch the database or send any email.
+    if (validatedData.website && validatedData.website.trim() !== '') {
+      return createSuccessResponse(
+        null,
+        'Please check your email to confirm your subscription'
+      );
+    }
+
+    // Reject known disposable/temporary email providers
+    if (isDisposableEmail(validatedData.email)) {
+      return createErrorResponse(
+        'Please use a permanent email address to subscribe',
+        400,
+        'DISPOSABLE_EMAIL'
+      );
+    }
 
     // Additional sanitization
     const sanitizedData = {
