@@ -6,6 +6,7 @@ import { useCareerT } from "../../lib/careerTranslations";
 
 const lang = 'en';
 const T = useCareerT(lang);
+const { jobSlug } = Astro.params as { jobSlug: string };
 
 const typeLabels: Record<string, string> = {
   full_time: T.fullTime, part_time: T.partTime,
@@ -118,10 +119,10 @@ const typeLabels: Record<string, string> = {
 
 </Layout>
 
-<script define:vars={{ typeLabels }}>
+<script define:vars={{ jobSlug, typeLabels }}>
   function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   async function loadJob() {
-    const slug = window.location.pathname.split('/').pop();
+    const slug = jobSlug;
     try {
       const res = await fetch(`/api/careers/jobs?slug=${slug}`);
       const data = await res.json();

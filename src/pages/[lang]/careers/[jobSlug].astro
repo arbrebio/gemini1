@@ -135,7 +135,7 @@ const typeLabels: Record<string, string> = {
 <script define:vars={{ lang, jobSlug, typeLabels }}>
   function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   async function loadJob() {
-    const slug = window.location.pathname.split('/').pop();
+    const slug = jobSlug;
     try {
       const res = await fetch(`/api/careers/jobs?slug=${slug}`);
       const data = await res.json();
