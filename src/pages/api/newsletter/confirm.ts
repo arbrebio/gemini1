@@ -77,15 +77,15 @@ export const GET: APIRoute = async ({ request }) => {
                     <li>Exclusive offers and early access to new products</li>
                   </ul>
                   <div style="margin: 30px 0; text-align: center;">
-                    <a href="https://arbrebio.com/contact" style="background-color: #194642; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Contact Our Experts</a>
+                    <a href="https://arbrebio.com/contact/" style="background-color: #194642; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Contact Our Experts</a>
                   </div>
                 </main>
                 <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
                   <p>This email was sent to ${data.email}</p>
                   <p>Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire</p>
                   <p>
-                    <a href="https://arbrebio.com/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}&token=${token}" style="color: #666;">Unsubscribe</a> |
-                    <a href="https://arbrebio.com/privacy" style="color: #666;">Privacy Policy</a>
+                    <a href="https://arbrebio.com/newsletter/unsubscribe/?email=${encodeURIComponent(data.email)}&token=${token}" style="color: #666;">Unsubscribe</a> |
+                    <a href="https://arbrebio.com/privacy/" style="color: #666;">Privacy Policy</a>
                   </p>
                 </footer>
               </body>

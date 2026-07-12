@@ -111,8 +111,8 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       var params = new URLSearchParams({ limit: '100' });
       if (search) params.set('search', search);
       try {
-        var res = await fetch('/api/sales-agent/customers?' + params, { headers: { Authorization: 'Bearer ' + token } });
-        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var res = await fetch('/api/sales-agent/customers/?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login/'; return; }
         var data = await res.json();
         customers = data.customers || [];
         if (!search) localStorage.setItem('agentCustomers', JSON.stringify(customers));
@@ -214,7 +214,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       var method = id ? 'PUT' : 'POST';
       if (id) body['id'] = id;
 
-      var res = await fetch('/api/sales-agent/customers', { method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+      var res = await fetch('/api/sales-agent/customers/', { method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
       var data = await res.json();
       if (data.error) { showToast(data.error, true); return; }
       showToast(id ? 'Client modifié.' : 'Client ajouté.');
@@ -224,7 +224,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
 
     document.getElementById('confirm-delete').addEventListener('click', async function() {
       document.getElementById('delete-modal').classList.add('hidden');
-      var res = await fetch('/api/sales-agent/customers', { method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ id: selectedId }) });
+      var res = await fetch('/api/sales-agent/customers/', { method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ id: selectedId }) });
       var data = await res.json();
       if (data.error) { showToast(data.error, true); return; }
       showToast('Client supprimé.');

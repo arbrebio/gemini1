@@ -10,7 +10,7 @@ const p = `/${lang}`;
 
 const tr: Record<string, Record<string, string>> = {
   en: {
-    layoutTitle: "Irrigation Controllers | Automation Solutions | Arbre Bio Africa",
+    layoutTitle: "Irrigation Controllers | Arbre Bio Africa",
     layoutDesc: "Advanced irrigation control systems from Rain Bird. Smart automation for optimal water management in agricultural and commercial applications.",
     heroTitle: "Precision Irrigation Controllers",
     heroSub: "Smart Automation for Optimal Water Management",
@@ -41,7 +41,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Chat on WhatsApp",
   },
   fr: {
-    layoutTitle: "Contrôleurs d'Irrigation | Solutions d'Automatisation | Arbre Bio Africa",
+    layoutTitle: "Contrôleurs d'Irrigation | Arbre Bio Africa",
     layoutDesc: "Systèmes de contrôle d'irrigation avancés de Rain Bird. Automatisation intelligente pour une gestion optimale de l'eau dans les applications agricoles et commerciales.",
     heroTitle: "Contrôleurs d'Irrigation de Précision",
     heroSub: "Automatisation Intelligente pour une Gestion Optimale de l'Eau",
@@ -72,7 +72,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Discuter sur WhatsApp",
   },
   es: {
-    layoutTitle: "Controladores de Riego | Soluciones de Automatización | Arbre Bio Africa",
+    layoutTitle: "Controladores de Riego | Arbre Bio Africa",
     layoutDesc: "Sistemas de control de riego avanzados de Rain Bird. Automatización inteligente para una gestión óptima del agua en aplicaciones agrícolas y comerciales.",
     heroTitle: "Controladores de Riego de Precisión",
     heroSub: "Automatización Inteligente para una Gestión Óptima del Agua",
@@ -103,7 +103,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Chat en WhatsApp",
   },
   af: {
-    layoutTitle: "Besproeiingsbeheerders | Outomatiseringsoplossings | Arbre Bio Africa",
+    layoutTitle: "Besproeiingsbeheerders | Arbre Bio Africa",
     layoutDesc: "Gevorderde besproeiingbeheerstelsels van Rain Bird. Intelligente outomatisering vir optimale waterbestuur in landbou- en kommersiële toepassings.",
     heroTitle: "Presisiebesproeiingsbeheerders",
     heroSub: "Intelligente Outomatisering vir Optimale Waterbestuur",
@@ -496,28 +496,28 @@ const qualityCertifications = [
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
-        <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="firstName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="lastName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
-            <input type="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="email" name="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
-            <input type="tel" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="tel" name="phone" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblModel}</label>
-            <select required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+            <select name="productType" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
               <option value="">{T.selectModel}</option>
               {products.map((product) => (
                 <optgroup label={product.name}>
@@ -532,13 +532,16 @@ const qualityCertifications = [
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblZones}</label>
-            <input type="number" required min="1" max="12" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="number" name="quantity" required min="1" max="12" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
+            <textarea name="requirements" rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
           <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -558,3 +561,8 @@ const qualityCertifications = [
     </div>
   </section>
 </Layout>
+
+<script>
+  import { initQuoteForm } from '../../../scripts/quoteForm';
+  initQuoteForm();
+</script>

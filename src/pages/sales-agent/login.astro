@@ -17,7 +17,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <link rel="icon" href="/favicon.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     <link rel="manifest" href="/manifest-agent.json" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <title>Sales Agent Login — Arbre Bio Africa</title>
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -175,7 +175,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         // If already logged in, redirect
         var existingToken = localStorage.getItem('agentToken');
         if (existingToken) {
-          fetch('/api/sales-agent/auth', { headers: { Authorization: 'Bearer ' + existingToken } })
+          fetch('/api/sales-agent/auth/', { headers: { Authorization: 'Bearer ' + existingToken } })
             .then(function(r) { if (r.ok) window.location.href = '/sales-agent/'; })
             .catch(function() {});
         }
@@ -221,7 +221,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
             var token = signInData.access_token;
 
             // Verify agent profile
-            var profileRes = await fetch('/api/sales-agent/auth', {
+            var profileRes = await fetch('/api/sales-agent/auth/', {
               headers: { Authorization: 'Bearer ' + token },
             });
             var profileData = await profileRes.json();
@@ -249,7 +249,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
             localStorage.setItem('agentProfile', JSON.stringify(profileData.profile));
             // First login: admin-generated password must be replaced
             if (profileData.profile.must_change_password) {
-              window.location.href = '/sales-agent/change-password';
+              window.location.href = '/sales-agent/change-password/';
             } else {
               window.location.href = '/sales-agent/';
             }

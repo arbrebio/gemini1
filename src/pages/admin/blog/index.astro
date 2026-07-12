@@ -518,7 +518,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (categoryFilter) params.set('category', categoryFilter);
 
     try {
-      const res = await authFetch(`/api/admin/blog?${params}`);
+      const res = await authFetch(`/api/admin/blog/?${params}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       posts = data.posts ?? [];
@@ -534,9 +534,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function fetchStats() {
     try {
       const [pubRes, draftRes, featRes] = await Promise.all([
-        authFetch('/api/admin/blog?status=published&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
-        authFetch('/api/admin/blog?status=draft&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
-        authFetch('/api/admin/blog?featured=true&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+        authFetch('/api/admin/blog/?status=published&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+        authFetch('/api/admin/blog/?status=draft&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
+        authFetch('/api/admin/blog/?featured=true&limit=1').then(r => r.ok ? r.json() : { total: 0 }),
       ]);
       document.getElementById('stat-published')!.textContent = String(pubRes.total ?? 0);
       document.getElementById('stat-drafts')!.textContent    = String(draftRes.total ?? 0);
@@ -572,7 +572,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
           <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">${formatDate(p.published_at || p.created_at)}</td>
           <td class="px-4 py-3 text-right">
             <div id="actions-${p.id}" class="flex items-center justify-end gap-2">
-              <a href="/blog/p/${esc(p.slug)}" target="_blank" class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors rounded" title="View live"><i class="fas fa-external-link-alt text-xs"></i></a>
+              <a href="/blog/p/${esc(p.slug)}/" target="_blank" class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors rounded" title="View live"><i class="fas fa-external-link-alt text-xs"></i></a>
               <button data-edit="${esc(p.id)}" class="p-1.5 text-gray-400 hover:text-[#194642] transition-colors rounded" title="Edit"><i class="fas fa-pencil-alt text-xs"></i></button>
               <button data-delete-init="${esc(p.id)}" class="p-1.5 text-gray-400 hover:text-red-600 transition-colors rounded" title="Delete"><i class="fas fa-trash text-xs"></i></button>
             </div>
@@ -634,7 +634,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function deletePost(id: string) {
     try {
-      const res = await authFetch('/api/admin/blog', { method: 'DELETE', body: JSON.stringify({ id }) });
+      const res = await authFetch('/api/admin/blog/', { method: 'DELETE', body: JSON.stringify({ id }) });
       if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error ?? 'Delete failed'); }
       showToast('Post deleted successfully');
       confirmDeleteId = null;
@@ -677,7 +677,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     }
 
     try {
-      const res = await authFetch('/api/admin/blog', {
+      const res = await authFetch('/api/admin/blog/', {
         method: id ? 'PUT' : 'POST',
         body:   JSON.stringify(payload),
       });
@@ -834,7 +834,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
     try {
       // Step 1: Get presigned URL
-      const presignRes = await authFetch('/api/admin/blog-presign', {
+      const presignRes = await authFetch('/api/admin/blog-presign/', {
         method: 'POST',
         body:   JSON.stringify({ file_name: file.name, file_type: file.type, file_size: file.size }),
       });
@@ -886,7 +886,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     videoUploadStatus.style.color = '#194642';
 
     try {
-      const presignRes = await authFetch('/api/admin/blog-presign', {
+      const presignRes = await authFetch('/api/admin/blog-presign/', {
         method: 'POST',
         body: JSON.stringify({ file_name: file.name, file_type: file.type, file_size: file.size }),
       });

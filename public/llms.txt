@@ -1,0 +1,39 @@
+# Arbre Bio Africa
+
+> Arbre Bio Africa is a precision agriculture company based in Abidjan, Côte d'Ivoire, with an additional warehouse in Cape Town, South Africa. It designs, manufactures, and installs greenhouses, irrigation systems, and organic growing media (coco peat / coir substrates) engineered for African climate conditions, helping farmers and agribusinesses across West and Southern Africa increase crop yields (commonly cited up to 10x) and reduce water use (up to 70% savings with precision irrigation).
+
+Core services: greenhouse design and installation (tunnel, multi-chapelle, sawtooth, ridge-and-furrow, high-tech climate-controlled structures), drip irrigation and sprinkler systems, irrigation controllers and automation, organic coco peat / coir substrates and growing media, and end-to-end agricultural project management. All product pages offer custom quotes rather than fixed online pricing, since installations are engineered per-project.
+
+The site is available in English, French, Spanish, and Afrikaans (URL prefixes `/fr/`, `/es/`, `/af/`; English is unprefixed).
+
+## Products & Solutions
+
+- [Greenhouses](https://www.arbrebio.com/greenhouses/): Overview of greenhouse structures for African climates.
+- [High-Tech Greenhouses](https://www.arbrebio.com/greenhouses/high-tech/): Climate-controlled greenhouse systems — nethouse, sawtooth, tunnel, and ridge-and-furrow designs with ROI, yield, and water-savings data per type.
+- [Greenhouse Accessories](https://www.arbrebio.com/greenhouses/accessories/): Structural components, fasteners, coverage materials, and growing accessories for greenhouse builds.
+- [Irrigation](https://www.arbrebio.com/irrigation/): Overview of precision irrigation solutions, including an ROI/water-savings calculator.
+- [Drip Irrigation Systems](https://www.arbrebio.com/irrigation/drip-systems/): Precision drippers and driplines for efficient water management.
+- [Irrigation Sprinklers](https://www.arbrebio.com/irrigation/sprinklers/): Sprinkler systems for uniform crop coverage, including Netafim-brand equipment.
+- [Irrigation Controllers](https://www.arbrebio.com/irrigation/controllers/): Automated irrigation control and fertigation systems.
+- [Substrates & Growing Solutions](https://www.arbrebio.com/substrates/growing-solutions/): Organic coco peat and coir growing media for horticulture.
+- [Solutions Overview](https://www.arbrebio.com/solutions/): Full catalog of greenhouses, irrigation, growing media, and project management services.
+
+## Company
+
+- [About Us](https://www.arbrebio.com/about/): Company mission, team, and history.
+- [Company](https://www.arbrebio.com/company/): How Arbre Bio Africa transforms agriculture across the continent.
+- [Projects](https://www.arbrebio.com/projects/): Portfolio of completed agricultural installations, from commercial farms to research facilities.
+- [Success Stories](https://www.arbrebio.com/success-stories/): Real results and case studies from African farms using Arbre Bio Africa systems.
+- [Contact](https://www.arbrebio.com/contact/): Offices in Abidjan, Côte d'Ivoire and Cape Town, South Africa; phone, email, and WhatsApp contact details.
+
+## Blog
+
+- [Blog](https://www.arbrebio.com/blog/): Agricultural insights on climate-smart farming, irrigation, greenhouse technology, soil health, and digital tools for Ivorian and African agriculture.
+
+## Careers
+
+- [Careers](https://www.arbrebio.com/careers/): Open job postings and the applicant/employee self-service portal.
+
+## Optional
+
+- [Terms](https://www.arbrebio.com/terms/), [Privacy Policy](https://www.arbrebio.com/privacy/), [Cookie Policy](https://www.arbrebio.com/cookies/): Legal and policy pages.

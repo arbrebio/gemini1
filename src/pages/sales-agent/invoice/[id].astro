@@ -204,7 +204,7 @@ export const prerender = false;
 (function () {
   var token  = localStorage.getItem('agentToken');
   var saleId = window.location.pathname.split('/').filter(Boolean).pop();
-  if (!token) { window.location.href = '/sales-agent/login'; return; }
+  if (!token) { window.location.href = '/sales-agent/login/'; return; }
 
   /* ── French number-to-words ──────────────────────────────────── */
   var ONES = ['','un','deux','trois','quatre','cinq','six','sept','huit','neuf',
@@ -448,11 +448,11 @@ export const prerender = false;
   }
 
   /* ── Fetch & render ──────────────────────────────────────────── */
-  fetch('/api/sales-agent/invoice?id=' + saleId, {
+  fetch('/api/sales-agent/invoice/?id=' + saleId, {
     headers: { Authorization: 'Bearer ' + token }
   })
   .then(function(r) {
-    if (r.status === 401) { window.location.href = '/sales-agent/login'; return null; }
+    if (r.status === 401) { window.location.href = '/sales-agent/login/'; return null; }
     return r.json();
   })
   .then(function(data) {

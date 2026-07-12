@@ -216,17 +216,11 @@ const certifications = [
           <span class="block text-2xl md:text-3xl mt-2">Quality-Certified Accessories & Supplies</span>
         </h1>
         <div class="flex flex-wrap gap-4">
-          <a 
+          <a
             href="#quote-form"
             class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
           >
             Request Quote
-          </a>
-          <a 
-            href="#technical-specs"
-            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
-          >
-            View Technical Specs
           </a>
         </div>
       </div>
@@ -449,56 +443,6 @@ const certifications = [
     </div>
   </section>
 
-  <!-- Technical Specifications Section -->
-  <section id="technical-specs" class="py-20">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-        <a 
-          href="#"
-          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span class="text-sm font-medium text-gray-500">PDF</span>
-          </div>
-          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Technical Specifications</h3>
-          <p class="text-sm text-gray-500">Complete product specifications</p>
-        </a>
-
-        <a 
-          href="#"
-          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span class="text-sm font-medium text-gray-500">PDF</span>
-          </div>
-          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">Installation Guide</h3>
-          <p class="text-sm text-gray-500">Step-by-step installation instructions</p>
-        </a>
-
-        <a 
-          href="#"
-          class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span class="text-sm font-medium text-gray-500">PDF</span>
-          </div>
-          <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">CAD Files</h3>
-          <p class="text-sm text-gray-500">Technical drawings and 3D models</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- Certifications Section -->
   <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
@@ -520,7 +464,7 @@ const certifications = [
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">Request a Quote</h2>
-        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -528,6 +472,7 @@ const certifications = [
               </label>
               <input
                 type="text"
+                name="firstName"
                 required
                 class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
@@ -538,6 +483,7 @@ const certifications = [
               </label>
               <input
                 type="text"
+                name="lastName"
                 required
                 class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
@@ -550,6 +496,7 @@ const certifications = [
             </label>
             <input
               type="email"
+              name="email"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
@@ -561,6 +508,7 @@ const certifications = [
             </label>
             <input
               type="tel"
+              name="phone"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
@@ -571,6 +519,7 @@ const certifications = [
               Product Category *
             </label>
             <select
+              name="productType"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
@@ -587,6 +536,7 @@ const certifications = [
               Project Details
             </label>
             <textarea
+              name="requirements"
               rows="4"
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               placeholder="Tell us about your project and specific requirements..."
@@ -599,6 +549,9 @@ const certifications = [
           >
             Submit Quote Request
           </button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -630,6 +583,11 @@ const certifications = [
   </section>
 </Layout>
 
+<script>
+  import { initQuoteForm } from '../../scripts/quoteForm';
+  initQuoteForm();
+</script>
+
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -646,9 +604,9 @@ const certifications = [
     "url": "https://arbrebio.com"
   },
   "image": [
-    "/images/content/9zbYXXU.jpg",
-    "/images/content/Fn2AVYj.jpg",
-    "/images/content/KRKFqz1.jpg"
+    "https://www.arbrebio.com/images/content/9zbYXXU.jpg",
+    "https://www.arbrebio.com/images/content/Fn2AVYj.jpg",
+    "https://www.arbrebio.com/images/content/KRKFqz1.jpg"
   ]
 }
 </script>

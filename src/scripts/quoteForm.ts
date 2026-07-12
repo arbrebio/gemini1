@@ -13,8 +13,28 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
       
       try {
         const formData = new FormData(quoteForm as HTMLFormElement);
-        const data = Object.fromEntries(formData.entries());
-        
+        const rawData = Object.fromEntries(formData.entries()) as Record<string, string>;
+
+        // Only these keys are recognized by the /api/quote schema. Any other
+        // named field on a given page (e.g. "cropType", "systemType") is
+        // folded into the free-text requirements field below instead of
+        // being silently dropped by the backend's schema parsing.
+        const knownKeys = ['firstName', 'lastName', 'email', 'phone', 'location', 'size', 'quantity', 'timeline', 'requirements', 'productType'];
+        const extraLines: string[] = [];
+        const data: Record<string, string> = {};
+        for (const [key, value] of Object.entries(rawData)) {
+          if (!value) continue;
+          if (knownKeys.includes(key)) {
+            data[key] = value;
+          } else {
+            const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+            extraLines.push(`${label}: ${value}`);
+          }
+        }
+        if (extraLines.length) {
+          data.requirements = [...extraLines, data.requirements].filter(Boolean).join('\n');
+        }
+
         // Basic validation
         const required = ['firstName', 'lastName', 'email', 'phone'];
         for (const field of required) {
@@ -22,21 +42,27 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
             throw new Error(`${field} is required`);
           }
         }
-        
+
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(data.email as string)) {
           throw new Error('Please enter a valid email address');
         }
-        
+
+        // size/quantity travel through FormData as strings; the API schema
+        // expects numbers for these two fields.
+        const payload: Record<string, unknown> = { ...data };
+        if (data.size) payload.size = Number(data.size);
+        if (data.quantity) payload.quantity = Number(data.quantity);
+
         // Send data to quote API endpoint
-        const response = await fetch('/api/quote', {
+        const response = await fetch('/api/quote/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ...data,
+            ...payload,
             quoteType: getQuoteTypeFromForm(quoteForm),
             lang: getLangFromPath()
           }),

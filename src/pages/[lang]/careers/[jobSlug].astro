@@ -137,7 +137,7 @@ const typeLabels: Record<string, string> = {
   async function loadJob() {
     const slug = jobSlug;
     try {
-      const res = await fetch(`/api/careers/jobs?slug=${slug}`);
+      const res = await fetch(`/api/careers/jobs/?slug=${slug}`);
       const data = await res.json();
       const job = data.job;
       if (!job) throw new Error('not found');
@@ -180,7 +180,7 @@ const typeLabels: Record<string, string> = {
       `;
 
       // Set apply links
-      const applyUrl = `/${lang}/careers/apply/${job.slug}`;
+      const applyUrl = `/${lang}/careers/apply/${encodeURIComponent(job.slug)}/`;
       document.getElementById('apply-btn').href = applyUrl;
       document.getElementById('apply-btn-side').href = applyUrl;
 

@@ -80,11 +80,11 @@ import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
     }
 
     async function loadDashboard() {
-      if (!token) { window.location.href = '/sales-agent/login'; return; }
+      if (!token) { window.location.href = '/sales-agent/login/'; return; }
       try {
         // Load profile + commission stats
-        var authRes = await fetch('/api/sales-agent/auth', { headers: { Authorization: 'Bearer ' + token } });
-        if (!authRes.ok) { window.location.href = '/sales-agent/login'; return; }
+        var authRes = await fetch('/api/sales-agent/auth/', { headers: { Authorization: 'Bearer ' + token } });
+        if (!authRes.ok) { window.location.href = '/sales-agent/login/'; return; }
         var authData = await authRes.json();
         var p = authData.profile;
         var stats = authData.commissionStats;
@@ -101,7 +101,7 @@ import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
         document.getElementById('stat-validated').textContent = String(stats.validated_count);
 
         // Load recent sales
-        var salesRes = await fetch('/api/sales-agent/sales?limit=5', { headers: { Authorization: 'Bearer ' + token } });
+        var salesRes = await fetch('/api/sales-agent/sales/?limit=5', { headers: { Authorization: 'Bearer ' + token } });
         var salesData = await salesRes.json();
         var sales = salesData.sales || [];
         var sl = STATUS_LABEL[lang] || STATUS_LABEL['fr'];

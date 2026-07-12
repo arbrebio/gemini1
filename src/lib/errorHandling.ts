@@ -80,6 +80,14 @@ export function handleApiError(error: unknown): Response {
     });
   }
 
+  // Zod throws on .parse() failures; surface the first issue as a clean
+  // 400 instead of dumping the raw issue array as a 500.
+  if (error instanceof Error && error.name === 'ZodError') {
+    const issues = (error as unknown as { errors?: { message: string }[] }).errors;
+    const message = issues?.[0]?.message || 'Invalid input';
+    return createErrorResponse(message, 400, 'VALIDATION_ERROR');
+  }
+
   if (error instanceof Error) {
     return createErrorResponse(
       error.message,

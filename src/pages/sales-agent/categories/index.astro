@@ -21,8 +21,8 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
 
     async function loadCategories() {
       try {
-        var res = await fetch('/api/sales-agent/categories', { headers: { Authorization: 'Bearer ' + token } });
-        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var res = await fetch('/api/sales-agent/categories/', { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login/'; return; }
         var data = await res.json();
         var cats = data.categories || [];
         localStorage.setItem('agentCategories', JSON.stringify(cats));

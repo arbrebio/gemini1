@@ -399,7 +399,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (typeValue)   params.set('customer_type', typeValue);
 
     try {
-      const res = await authFetch(`/api/admin/customers?${params.toString()}`);
+      const res = await authFetch(`/api/admin/customers/?${params.toString()}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       customers = data.customers ?? [];
@@ -418,7 +418,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       const types = ['Farmer', 'Cooperative', 'Enterprise'];
       const results = await Promise.all(
         types.map(t =>
-          authFetch(`/api/admin/customers?customer_type=${t}&limit=1`).then(r => r.ok ? r.json() : { total: 0 })
+          authFetch(`/api/admin/customers/?customer_type=${t}&limit=1`).then(r => r.ok ? r.json() : { total: 0 })
         )
       );
       const statTotal = document.getElementById('stat-total')!;
@@ -548,7 +548,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function deleteCustomer(id: string) {
     try {
-      const res = await authFetch('/api/admin/customers', {
+      const res = await authFetch('/api/admin/customers/', {
         method: 'DELETE',
         body: JSON.stringify({ id }),
       });
@@ -589,7 +589,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     if (id) payload.id = id;
 
     try {
-      const res = await authFetch('/api/admin/customers', {
+      const res = await authFetch('/api/admin/customers/', {
         method: id ? 'PUT' : 'POST',
         body: JSON.stringify(payload),
       });

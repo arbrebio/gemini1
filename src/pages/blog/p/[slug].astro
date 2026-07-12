@@ -4,7 +4,7 @@ import Layout from '../../../layouts/Layout.astro';
 import { createClient } from '@supabase/supabase-js';
 
 const { slug } = Astro.params;
-if (!slug) return Astro.redirect('/blog');
+if (!slug) return Astro.redirect('/blog/');
 
 const LANGS = ['en', 'fr', 'es', 'af'] as const;
 type Lang = typeof LANGS[number];
@@ -623,7 +623,7 @@ const articleJsonLd = scriptOpen + JSON.stringify({
 
     async function fetchLikes() {
       try {
-        const res = await fetch(`/api/blog/likes?post_id=${postId}`);
+        const res = await fetch(`/api/blog/likes/?post_id=${postId}`);
         const { count } = await res.json();
         likeCount.textContent = count === 1 ? '1 like' : `${count} likes`;
         applyLikedState(liked);
@@ -632,7 +632,7 @@ const articleJsonLd = scriptOpen + JSON.stringify({
 
     likeBtn.addEventListener('click', async () => {
       try {
-        const res = await fetch('/api/blog/likes', {
+        const res = await fetch('/api/blog/likes/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ post_id: postId, fingerprint: fp }),
@@ -684,7 +684,7 @@ const articleJsonLd = scriptOpen + JSON.stringify({
 
     async function fetchComments() {
       try {
-        const res = await fetch(`/api/blog/comments?post_id=${postId}`);
+        const res = await fetch(`/api/blog/comments/?post_id=${postId}`);
         const { comments } = await res.json();
         if (!Array.isArray(comments)) return;
         commentBadge.textContent = comments.length ? `(${comments.length})` : '';
@@ -710,7 +710,7 @@ const articleJsonLd = scriptOpen + JSON.stringify({
       commentStatus.style.color = '#6b7280';
 
       try {
-        const res = await fetch('/api/blog/comments', {
+        const res = await fetch('/api/blog/comments/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ post_id: postId, author_name: name, content }),

@@ -22,8 +22,12 @@ export function generateMetaTitle(title: string, siteName: string = 'Arbre Bio A
   
   // Ensure title is under 60 characters for optimal display
   const maxLength = 60 - siteName.length - 3; // Account for " | " separator
-  const truncatedTitle = title.length > maxLength ? title.substring(0, maxLength).trim() + '...' : title;
-  
+  // Reserve 3 more chars for the "..." ellipsis itself, or the truncated
+  // title + ellipsis + separator + site name blows past maxLength.
+  const truncatedTitle = title.length > maxLength
+    ? title.substring(0, maxLength - 3).trim() + '...'
+    : title;
+
   return `${truncatedTitle} | ${siteName}`;
 }
 
@@ -48,8 +52,11 @@ export function generateMetaDescription(description: string): string {
  * Generate canonical URL
  */
 export function generateCanonicalUrl(pathname: string, baseUrl: string): string {
-  // Remove trailing slash and ensure proper format
-  const cleanPath = pathname.replace(/\/$/, '') || '/';
+  // The site enforces trailing slashes on every route (vercel.json
+  // trailingSlash: true, 308-redirecting anything without one) — the
+  // canonical URL must match that exact served URL, not the un-slashed
+  // form, or we tell crawlers to canonicalize to a URL that redirects.
+  const cleanPath = pathname === '/' ? '/' : pathname.replace(/\/?$/, '/');
   return new URL(cleanPath, baseUrl).href;
 }
 

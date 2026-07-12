@@ -61,8 +61,8 @@ async function sendWorkerIdEmail(employee: {
         <p style="color:#555;font-size:13px;margin:0 0 10px">
           You can view your application status, Worker ID, and download your contract at any time through the portal.
         </p>
-        <a href="${SITE_URL}/en/careers/portal"
-           style="color:#194642;font-size:13px;font-weight:600;text-decoration:underline">${SITE_URL}/en/careers/portal</a>
+        <a href="${SITE_URL}/careers/portal/"
+           style="color:#194642;font-size:13px;font-weight:600;text-decoration:underline">${SITE_URL}/careers/portal/</a>
       </div>`;
 
   const html = `<!DOCTYPE html>

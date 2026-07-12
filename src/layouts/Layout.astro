@@ -186,7 +186,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         fbq('track', 'ViewContent');
       </script>
       <noscript>
-        <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${import.meta.env.PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`} />
+        <img height="1" width="1" style="display:none" alt="" src={`https://www.facebook.com/tr?id=${import.meta.env.PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`} />
       </noscript>
     )}
 
@@ -194,11 +194,14 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
       title={optimizedTitle}
       description={optimizedDescription}
       noindex={noIndex}
+      nofollow={noIndex}
+      canonical={canonicalURL}
       openGraph={{
         basic: {
           title: optimizedTitle,
           type,
           image: image || "https://www.arbrebio.com/logo.png",
+          url: canonicalURL,
         },
         optional: {
           siteName: "Arbre Bio Africa",
@@ -217,7 +220,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
         meta: [
           ...(import.meta.env.PUBLIC_FB_DOMAIN_VERIFICATION ? [{ name: "facebook-domain-verification", content: import.meta.env.PUBLIC_FB_DOMAIN_VERIFICATION }] : []),
           { name: "theme-color", content: "#194642" },
-          { name: "robots", content: noIndex ? "noindex, nofollow" : "index, follow" },
           { name: "author", content: author || "Arbre Bio Africa" },
           { name: "geo.region", content: "CI" },
           { name: "geo.placename", content: "Abidjan" },
@@ -227,7 +229,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           { name: "apple-mobile-web-app-capable", content: "yes" },
           { name: "apple-mobile-web-app-status-bar-style", content: "default" },
           // Explicit OG tags that astro-seo doesn't emit on its own
-          { property: "og:url",               content: canonicalURL },
           { property: "og:image:secure_url",  content: image || "https://www.arbrebio.com/logo.png" },
           { property: "og:image:width",       content: "1200" },
           { property: "og:image:height",      content: "630" },
@@ -244,9 +245,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
           ...(publishedTime ? [{ property: "article:published_time", content: publishedTime }] : []),
           ...(author        ? [{ property: "article:author",         content: author }] : []),
         ],
-        link: [
-          { rel: "canonical", href: canonicalURL },
-        ]
       }}
     />
 
@@ -532,7 +530,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
             throw new Error('Email is required');
           }
 
-          const response = await fetch('/api/newsletter/subscribe', {
+          const response = await fetch('/api/newsletter/subscribe/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

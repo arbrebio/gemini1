@@ -245,7 +245,7 @@ export const POST: APIRoute = async ({ request }) => {
     // ── Non-blocking side effects ─────────────────────────────────────────
 
     const baseUrl = import.meta.env.SITE || 'https://www.arbrebio.com';
-    const adminSalesUrl = `${baseUrl}/admin/sales`;
+    const adminSalesUrl = `${baseUrl}/admin/sales/`;
     const amountFormatted = new Intl.NumberFormat('fr-FR').format(total);
     const commissionFormatted = new Intl.NumberFormat('fr-FR').format(commission_amount);
 

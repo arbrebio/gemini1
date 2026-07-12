@@ -178,7 +178,7 @@ export const POST: APIRoute = async ({ request }) => {
             <p style="margin:0 0 8px"><strong>Your Reference Token:</strong></p>
             <p style="font-family:monospace;font-size:18px;color:#194642;margin:0">${portalToken}</p>
           </div>
-          <p>Use this token to track your application status at our <a href="https://arbrebio.com/en/careers/portal" style="color:#194642">Applicant Portal</a>.</p>
+          <p>Use this token to track your application status at our <a href="https://arbrebio.com/careers/portal/" style="color:#194642">Applicant Portal</a>.</p>
           <p>Our team will review your application and contact you soon.</p>
           <p>Best regards,<br>The Arbre Bio Africa HR Team</p>
         </div>
@@ -197,7 +197,7 @@ export const POST: APIRoute = async ({ request }) => {
           <p><strong>Phone:</strong> ${e.phone || 'N/A'}</p>
           <p><strong>City:</strong> ${e.city || 'N/A'}</p>
           <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-          <p><a href="https://arbrebio.com/admin/careers/applications" style="background:#194642;color:white;padding:10px 20px;border-radius:6px;text-decoration:none">View in Admin</a></p>
+          <p><a href="https://arbrebio.com/admin/careers/applications/" style="background:#194642;color:white;padding:10px 20px;border-radius:6px;text-decoration:none">View in Admin</a></p>
         </div>
       </body></html>`
     );

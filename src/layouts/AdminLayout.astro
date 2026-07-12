@@ -22,7 +22,7 @@ const { title } = Astro.props;
         <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
         <link
             rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         />
         <title>{title} | Arbre Bio Admin</title>
     </head>
@@ -40,7 +40,7 @@ const { title } = Astro.props;
                 <main class="flex-1 overflow-y-auto p-6">
                     <!-- Back button — always visible on sub-pages -->
                     <div id="admin-back-bar" style="display:none" class="mb-5">
-                        <button onclick="history.length > 1 ? history.back() : (window.location.href='/admin')"
+                        <button onclick="history.length > 1 ? history.back() : (window.location.href='/admin/')"
                             class="inline-flex items-center gap-2 bg-white border border-gray-200 shadow-sm text-sm font-medium text-gray-600 hover:text-[#194642] hover:border-[#194642] px-4 py-2 rounded-lg transition-all">
                             <i class="fas fa-arrow-left text-xs"></i>
                             Return
@@ -64,7 +64,7 @@ const { title } = Astro.props;
                 if (!user || error) {
                     // Clear any stale session data before redirecting
                     await supabase.auth.signOut();
-                    window.location.href = "/admin/login";
+                    window.location.href = "/admin/login/";
                     return;
                 }
             };
@@ -97,7 +97,7 @@ const { title } = Astro.props;
             const backBar = document.getElementById('admin-back-bar');
             if (backBar) {
                 const path = window.location.pathname.replace(/\/$/, '');
-                if (path !== '/admin') {
+                if (path !== '/admin/') {
                     backBar.style.display = 'block';
                 }
             }

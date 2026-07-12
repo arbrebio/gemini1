@@ -34,7 +34,7 @@ export function initNewsletterForm(formId: string = 'newsletter-form') {
         }
         
         // Send data to our API endpoint
-        const response = await fetch('/api/newsletter/subscribe', {
+        const response = await fetch('/api/newsletter/subscribe/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

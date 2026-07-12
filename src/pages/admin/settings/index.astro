@@ -729,7 +729,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   async function loadSettings() {
     try {
-      const res = await authFetch('/api/admin/settings');
+      const res = await authFetch('/api/admin/settings/');
       if (!res.ok) throw new Error('Failed to load settings');
       const data = await res.json();
       settings = data.settings ?? {};
@@ -804,7 +804,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> Saving…';
 
     try {
-      const res = await authFetch('/api/admin/settings', {
+      const res = await authFetch('/api/admin/settings/', {
         method: 'POST',
         body: JSON.stringify(payload),
       });

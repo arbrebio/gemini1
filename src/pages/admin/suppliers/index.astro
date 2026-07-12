@@ -365,7 +365,11 @@ const CATEGORIES: Record<string, string> = {
 
 </AdminLayout>
 
-<script type="module">
+<script>
+  // @ts-nocheck — legacy untyped DOM script; was previously excluded from
+  // Astro's script processing entirely (see git history), so it was never
+  // type-checked. Fix that bug (bundle it like every other admin page)
+  // without taking on a full retroactive type-safety pass in the same change.
   import { authFetch } from "../../../lib/supabase";
 
   // Escape supplier-supplied values before innerHTML interpolation (XSS guard).
@@ -443,7 +447,7 @@ const CATEGORIES: Record<string, string> = {
 
   // ── Fetch helpers ──────────────────────────────────────────────
   async function api(method, body) {
-    const res = await authFetch('/api/admin/suppliers', {
+    const res = await authFetch('/api/admin/suppliers/', {
       method,
       body: body ? JSON.stringify(body) : undefined,
     });
@@ -592,7 +596,7 @@ const CATEGORIES: Record<string, string> = {
 
   async function quickEdit(id) {
     try {
-      const data = await fetch(`/api/admin/suppliers?id=${id}`).then(r => r.json());
+      const data = await fetch(`/api/admin/suppliers/?id=${id}`).then(r => r.json());
       openSupplierModal(data.supplier);
     } catch (e) {
       showToast('Failed to load supplier', true);
@@ -658,7 +662,7 @@ const CATEGORIES: Record<string, string> = {
     document.getElementById('info-grid').innerHTML = '<div class="col-span-2 text-gray-400 text-sm">Loading…</div>';
 
     try {
-      const data = await fetch(`/api/admin/suppliers?id=${id}`).then(r => r.json());
+      const data = await fetch(`/api/admin/suppliers/?id=${id}`).then(r => r.json());
       const s = data.supplier;
       if (!s) { showToast('Supplier not found', true); return; }
 
@@ -751,7 +755,7 @@ const CATEGORIES: Record<string, string> = {
 
   document.getElementById('btn-edit-supplier').addEventListener('click', async () => {
     if (!currentSupplierId) return;
-    const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}`).then(r => r.json());
+    const data = await fetch(`/api/admin/suppliers/?id=${currentSupplierId}`).then(r => r.json());
     openSupplierModal(data.supplier);
   });
 
@@ -773,7 +777,7 @@ const CATEGORIES: Record<string, string> = {
     const list = document.getElementById('orders-list');
     list.innerHTML = '<p class="text-gray-400 text-xs text-center py-4">Loading…</p>';
     try {
-      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=orders`).then(r => r.json());
+      const data = await fetch(`/api/admin/suppliers/?id=${currentSupplierId}&action=orders`).then(r => r.json());
       const orders = data.orders || [];
       if (!orders.length) {
         list.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No orders yet.</p>';
@@ -874,7 +878,7 @@ const CATEGORIES: Record<string, string> = {
     const list = document.getElementById('deliveries-list');
     list.innerHTML = '<p class="text-gray-400 text-xs text-center py-4">Loading…</p>';
     try {
-      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=deliveries`).then(r => r.json());
+      const data = await fetch(`/api/admin/suppliers/?id=${currentSupplierId}&action=deliveries`).then(r => r.json());
       const deliveries = data.deliveries || [];
       if (!deliveries.length) {
         list.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No deliveries recorded.</p>';
@@ -904,7 +908,7 @@ const CATEGORIES: Record<string, string> = {
 
   document.getElementById('btn-record-delivery').addEventListener('click', async () => {
     try {
-      const ordersData = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=orders`).then(r => r.json());
+      const ordersData = await fetch(`/api/admin/suppliers/?id=${currentSupplierId}&action=orders`).then(r => r.json());
       const sel = document.getElementById('delivery-order-id');
       const available = (ordersData.orders || []).filter(o => !['delivered','cancelled'].includes(o.status));
       sel.innerHTML = available.length
@@ -944,7 +948,7 @@ const CATEGORIES: Record<string, string> = {
     const list = document.getElementById('notes-list');
     list.innerHTML = '<p class="text-gray-400 text-xs text-center py-2">Loading…</p>';
     try {
-      const data = await fetch(`/api/admin/suppliers?id=${currentSupplierId}&action=notes`).then(r => r.json());
+      const data = await fetch(`/api/admin/suppliers/?id=${currentSupplierId}&action=notes`).then(r => r.json());
       const notes = data.notes || [];
       if (!notes.length) {
         list.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">No notes yet.</p>';

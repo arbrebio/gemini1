@@ -10,7 +10,7 @@ const p = `/${lang}`;
 
 const tr: Record<string, Record<string, string>> = {
   en: {
-    layoutTitle: "Irrigation Sprinklers - Precision Water Distribution | Arbre Bio Africa",
+    layoutTitle: "Irrigation Sprinklers | Arbre Bio Africa",
     layoutDesc: "Discover our range of professional irrigation sprinklers designed for optimal water distribution and crop coverage in various agricultural applications.",
     heroTitle: "Professional Sprinklers",
     heroSub: "Precision Water Distribution",
@@ -48,7 +48,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Chat on WhatsApp",
   },
   fr: {
-    layoutTitle: "Arroseurs d'Irrigation | Distribution d'Eau de Précision | Arbre Bio Africa",
+    layoutTitle: "Arroseurs d'Irrigation | Arbre Bio Africa",
     layoutDesc: "Découvrez notre gamme d'arroseurs professionnels conçus pour une distribution optimale de l'eau dans diverses applications agricoles.",
     heroTitle: "Arroseurs Professionnels",
     heroSub: "Distribution d'Eau de Précision",
@@ -86,7 +86,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Discuter sur WhatsApp",
   },
   es: {
-    layoutTitle: "Aspersores de Riego | Distribución de Agua de Precisión | Arbre Bio Africa",
+    layoutTitle: "Aspersores de Riego | Arbre Bio Africa",
     layoutDesc: "Descubra nuestra gama de aspersores de riego profesionales diseñados para una distribución óptima del agua en diversas aplicaciones agrícolas.",
     heroTitle: "Aspersores Profesionales",
     heroSub: "Distribución de Agua de Precisión",
@@ -124,7 +124,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Chat en WhatsApp",
   },
   af: {
-    layoutTitle: "Besproeiingsprinklers | Presisie Waterverspreiding | Arbre Bio Africa",
+    layoutTitle: "Besproeiingsprinklers | Arbre Bio Africa",
     layoutDesc: "Ontdek ons reeks professionele besproeiingsprinklers ontwerp vir optimale waterverspreiding in verskeie landboutoepassings.",
     heroTitle: "Professionele Sprinklers",
     heroSub: "Presisie Waterverspreiding",
@@ -593,35 +593,35 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
-        <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="firstName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="lastName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
-            <input type="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="email" name="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
-            <input type="tel" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="tel" name="phone" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblProduct}</label>
-            <select required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+            <select name="productType" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
               <option value="">{T.selectProduct}</option>
               {products.map((product) => (<option value={product.name}>{product.name}</option>))}
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAppType}</label>
-            <select required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+            <select name="applicationType" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
               <option value="">{T.selectAppType}</option>
               <option value="field-crops">{T.optFieldCrops}</option>
               <option value="orchards">{T.optOrchards}</option>
@@ -630,13 +630,16 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblArea}</label>
-            <input type="number" required min="0.1" step="0.1" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="number" name="size" required min="0.1" step="0.1" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
+            <textarea name="requirements" rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
           <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -657,6 +660,11 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   </section>
 </Layout>
 
+<script>
+  import { initQuoteForm } from '../../../scripts/quoteForm';
+  initQuoteForm();
+</script>
+
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -665,6 +673,6 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   "description": "Professional low trajectory impact sprinkler for uniform under-canopy irrigation, ideal for banana and oil palm plantations.",
   "brand": { "@type": "Brand", "name": "Netafim" },
   "manufacturer": { "@type": "Organization", "name": "Netafim", "url": "https://arbrebio.com" },
-  "image": ["/images/content/vQFO4ob.jpg"]
+  "image": ["https://www.arbrebio.com/images/content/vQFO4ob.jpg"]
 }
 </script>

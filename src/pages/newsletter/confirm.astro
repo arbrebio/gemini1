@@ -22,7 +22,7 @@ const token = Astro.url.searchParams.get('token');
 <script define:vars={{ token }}>
   async function confirmSubscription() {
     try {
-      const response = await fetch(`/api/newsletter/confirm?token=${token}`);
+      const response = await fetch(`/api/newsletter/confirm/?token=${token}`);
       const statusMessage = document.getElementById('status-message');
       
       if (response.ok) {
@@ -63,5 +63,11 @@ const token = Astro.url.searchParams.get('token');
 
   if (token) {
     confirmSubscription();
+  } else {
+    const statusMessage = document.getElementById('status-message');
+    if (statusMessage) {
+      statusMessage.textContent = 'This confirmation link is invalid or missing a token.';
+      statusMessage.className = 'text-red-600';
+    }
   }
 </script>

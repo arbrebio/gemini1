@@ -232,7 +232,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <a href="/admin/sales" class="text-sm text-gray-500 hover:text-[#194642] transition-colors">← Sales</a>
+        <a href="/admin/sales/" class="text-sm text-gray-500 hover:text-[#194642] transition-colors">← Sales</a>
       </div>
       <h1 class="text-2xl font-bold text-gray-800">Sales Agents</h1>
       <p class="text-gray-500 text-sm mt-0.5">Manage sales agent credentials and access</p>
@@ -292,7 +292,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load employees for linking ─────────────────────────────────────────
   async function loadEmployees() {
-    const res = await authFetch('/api/admin/careers/employees');
+    const res = await authFetch('/api/admin/careers/employees/');
     if (!res.ok) return;
     const data = await res.json();
     const employees = data.employees || data || [];
@@ -308,7 +308,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load agents ────────────────────────────────────────────────────────
   async function loadAgents() {
-    const res = await authFetch('/api/admin/sales-agents');
+    const res = await authFetch('/api/admin/sales-agents/');
     const data = await res.json();
     const agents: any[] = data.agents || [];
 
@@ -439,7 +439,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     lastCreatedEmail = body.email;
     lastCreatedPassword = body.password;
 
-    const res = await authFetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents/', {
       method: 'POST',
       body: JSON.stringify(body),
     });
@@ -486,7 +486,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   });
 
   async function toggleAgent(id: string, action: 'suspend' | 'activate', reason?: string) {
-    const res = await authFetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents/', {
       method: 'PUT',
       body: JSON.stringify({ id, action, reason }),
     });
@@ -506,7 +506,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   });
   document.getElementById('confirm-delete')?.addEventListener('click', async () => {
     document.getElementById('delete-modal')!.classList.add('hidden');
-    const res = await authFetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents/', {
       method: 'DELETE',
       body: JSON.stringify({ id: selectedAgentId }),
     });
@@ -548,7 +548,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Réinitialisation…';
 
-    const res = await authFetch('/api/admin/sales-agents', {
+    const res = await authFetch('/api/admin/sales-agents/', {
       method: 'PUT',
       body: JSON.stringify({ id: selectedAgentId, action: 'reset-password', new_password: newPassword }),
     });
@@ -609,7 +609,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const listEl = document.getElementById('docs-list')!;
     listEl.innerHTML = '<p class="text-center py-8 text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Chargement…</p>';
     try {
-      const res = await authFetch(`/api/admin/agent-documents?agent_id=${docsAgentId}`);
+      const res = await authFetch(`/api/admin/agent-documents/?agent_id=${docsAgentId}`);
       const data = await res.json();
       allAdminDocs = data.documents || [];
       renderAdminDocs();
@@ -682,7 +682,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     try {
       // ── Step 1: obtain signed upload URL ───────────────────────────────
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Préparation…';
-      const presignRes = await authFetch('/api/admin/agent-documents-presign', {
+      const presignRes = await authFetch('/api/admin/agent-documents-presign/', {
         method: 'POST',
         body: JSON.stringify({
           agent_id:  docsAgentId,
@@ -712,7 +712,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
       // ── Step 3: save metadata via API ──────────────────────────────────
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Enregistrement…';
-      const metaRes = await authFetch('/api/admin/agent-documents', {
+      const metaRes = await authFetch('/api/admin/agent-documents/', {
         method: 'POST',
         body: JSON.stringify({
           agent_id:  docsAgentId,
@@ -745,7 +745,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   async function deleteDoc(docId: string) {
     if (!confirm('Supprimer ce document ?')) return;
-    const res = await authFetch('/api/admin/agent-documents', {
+    const res = await authFetch('/api/admin/agent-documents/', {
       method: 'DELETE',
       body: JSON.stringify({ id: docId }),
     });

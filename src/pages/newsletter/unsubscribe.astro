@@ -23,7 +23,7 @@ const token = Astro.url.searchParams.get('token');
 <script define:vars={{ email, token }}>
   async function unsubscribe() {
     try {
-      const response = await fetch(`/api/newsletter/unsubscribe?email=${email}&token=${token}`);
+      const response = await fetch(`/api/newsletter/unsubscribe/?email=${email}&token=${token}`);
       const statusMessage = document.getElementById('status-message');
       
       if (response.ok) {
@@ -64,5 +64,11 @@ const token = Astro.url.searchParams.get('token');
 
   if (email && token) {
     unsubscribe();
+  } else {
+    const statusMessage = document.getElementById('status-message');
+    if (statusMessage) {
+      statusMessage.textContent = 'This unsubscribe link is invalid or missing required parameters.';
+      statusMessage.className = 'text-red-600';
+    }
   }
 </script>

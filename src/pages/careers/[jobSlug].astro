@@ -124,7 +124,7 @@ const typeLabels: Record<string, string> = {
   async function loadJob() {
     const slug = jobSlug;
     try {
-      const res = await fetch(`/api/careers/jobs?slug=${slug}`);
+      const res = await fetch(`/api/careers/jobs/?slug=${slug}`);
       const data = await res.json();
       const job = data.job;
       if (!job) throw new Error('not found');
@@ -165,7 +165,7 @@ const typeLabels: Record<string, string> = {
         ${job.department ? `<span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">${esc(job.department)}</span>` : ''}
       `;
 
-      const applyUrl = `/careers/apply/${encodeURIComponent(job.slug)}`;
+      const applyUrl = `/careers/apply/${encodeURIComponent(job.slug)}/`;
       document.getElementById('apply-btn').href = applyUrl;
       document.getElementById('apply-btn-side').href = applyUrl;
 

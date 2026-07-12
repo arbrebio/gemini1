@@ -9,7 +9,11 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 ---
-<Layout title={`${T.privacyTitle} | Arbre Bio Africa`} description={T.privacyTitle}>
+<Layout title={`${T.privacyTitle} | Arbre Bio Africa`} description={({
+  fr: "Découvrez comment Arbre Bio Africa collecte, utilise et protège vos données personnelles. Consultez notre politique de confidentialité complète.",
+  es: "Descubra cómo Arbre Bio Africa recopila, utiliza y protege su información personal. Consulte nuestra política de privacidad completa.",
+  af: "Leer hoe Arbre Bio Africa jou persoonlike inligting versamel, gebruik en beskerm. Lees ons volledige privaatheidsbeleid.",
+} as Record<string, string>)[lang] || "Learn how Arbre Bio Africa collects, uses, and protects your personal information. Read our comprehensive privacy policy."}>
   <div class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12">

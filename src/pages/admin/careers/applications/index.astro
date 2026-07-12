@@ -160,7 +160,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     modal.classList.remove('hidden');
     content.innerHTML = '<div class="flex justify-center py-12"><div class="animate-spin w-8 h-8 border-4 border-[#194642] border-t-transparent rounded-full"></div></div>';
 
-    const res = await authFetch(`/api/admin/careers/applications?id=${id}`);
+    const res = await authFetch(`/api/admin/careers/applications/?id=${id}`);
     const data = await res.json();
     const a = data.application;
     if (!a) { content.innerHTML = '<p class="text-red-500">Failed to load.</p>'; return; }
@@ -293,7 +293,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const note = (document.getElementById(`new-note-${id}`) as HTMLInputElement).value.trim();
     const notify = (document.getElementById(`notify-${id}`) as HTMLInputElement).checked;
 
-    const res = await authFetch('/api/admin/careers/applications', {
+    const res = await authFetch('/api/admin/careers/applications/', {
       method: 'PUT',
       body: JSON.stringify({ id, status, note: note || null, notify_applicant: notify }),
     });
@@ -327,7 +327,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       const fd = new FormData();
       fd.append('file', contractFile);
       fd.append('type', 'contract');
-      const uploadRes = await authFetch('/api/admin/careers/upload-asset', { method: 'POST', body: fd });
+      const uploadRes = await authFetch('/api/admin/careers/upload-asset/', { method: 'POST', body: fd });
       const uploadData = await uploadRes.json();
       if (uploadData.url) {
         contractUrl = uploadData.url;
@@ -341,7 +341,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     }
 
     // 2. Create employee record (contract_url passed → auto-emailed)
-    const res = await authFetch('/api/admin/careers/employees', {
+    const res = await authFetch('/api/admin/careers/employees/', {
       method: 'POST',
       body: JSON.stringify({
         application_id: appId,
@@ -361,12 +361,12 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const successMsg = `Employee created! Worker ID: ${data.employee.worker_id}. Welcome email sent to ${data.employee.email}.`;
     showToast(successMsg);
     document.getElementById('app-modal')!.classList.add('hidden');
-    setTimeout(() => { window.location.href = '/admin/careers/employees'; }, 2000);
+    setTimeout(() => { window.location.href = '/admin/careers/employees/'; }, 2000);
   };
 
   (window as any).deleteApp = async (id: string, name: string) => {
     if (!await showConfirm(`Delete application from ${name}?`)) return;
-    await authFetch('/api/admin/careers/applications', { method: 'DELETE', body: JSON.stringify({ id }) });
+    await authFetch('/api/admin/careers/applications/', { method: 'DELETE', body: JSON.stringify({ id }) });
     showToast('Application deleted');
     await loadApps((document.getElementById('filter-status') as HTMLSelectElement).value);
   };

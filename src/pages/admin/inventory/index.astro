@@ -823,7 +823,7 @@ export const prerender = false;
       const formData = new FormData();
       formData.append('file', file);
       formData.append('bucket', 'product-images');
-      const res = await authFetch('/api/admin/upload-asset', { method: 'POST', body: formData });
+      const res = await authFetch('/api/admin/upload-asset/', { method: 'POST', body: formData });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Upload failed');
       const data = await res.json();
       const url = data.url;

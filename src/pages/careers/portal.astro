@@ -41,7 +41,7 @@ const statusColors: Record<string, string> = {
           </div>
           <div class="p-6 space-y-5">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{T.enterEmail}</label>
+              <label for="portal-email" class="block text-sm font-medium text-gray-700 mb-1">{T.enterEmail}</label>
               <input type="email" id="portal-email"
                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642]"
                 placeholder="email@example.com"
@@ -49,7 +49,7 @@ const statusColors: Record<string, string> = {
               <p class="text-xs text-gray-500 mt-1">{T.portalEmailHint}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{T.enterToken}</label>
+              <label for="portal-token" class="block text-sm font-medium text-gray-700 mb-1">{T.enterToken}</label>
               <input type="text" id="portal-token"
                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#194642] font-mono"
                 placeholder="e.g. abc123..."
@@ -191,7 +191,7 @@ const statusColors: Record<string, string> = {
       return;
     }
     try {
-      const res = await fetch('/api/careers/portal', {
+      const res = await fetch('/api/careers/portal/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, token }),
@@ -234,7 +234,7 @@ const statusColors: Record<string, string> = {
       document.getElementById('emp-title').textContent = employee.job_title || '';
       document.getElementById('emp-worker-id').textContent = employee.worker_id;
       if (employee.photo_url) {
-        document.getElementById('emp-photo-container').innerHTML = `<img src="${employee.photo_url}" class="w-full h-full object-cover" />`;
+        document.getElementById('emp-photo-container').innerHTML = `<img src="${employee.photo_url}" alt="${esc(employee.first_name)} ${esc(employee.last_name)}" class="w-full h-full object-cover" />`;
       }
       if (employee.contract_url) {
         const cl = document.getElementById('contract-link');

@@ -9,7 +9,11 @@ const { lang } = Astro.params as { lang: Language };
 const T = useT(lang as any);
 const p = `/${lang}`;
 ---
-<Layout title={`${T.termsTitle} | Arbre Bio Africa`} description={T.termsTitle}>
+<Layout title={`${T.termsTitle} | Arbre Bio Africa`} description={({
+  fr: "Conditions générales d'utilisation des produits et services d'Arbre Bio Africa. Consultez nos politiques sur les commandes, la livraison et les garanties.",
+  es: "Términos y condiciones de uso de los productos y servicios de Arbre Bio Africa. Consulte nuestras políticas sobre pedidos, entrega y garantías.",
+  af: "Bepalings en voorwaardes vir die gebruik van Arbre Bio Africa se produkte en dienste. Lees ons beleid oor bestellings, aflewering en waarborge.",
+} as Record<string, string>)[lang] || "Terms and conditions for using Arbre Bio Africa's products and services. Read our policies on orders, delivery, warranties, and more."}>
   <div class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12">

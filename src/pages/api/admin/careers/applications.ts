@@ -143,7 +143,7 @@ export const PUT: APIRoute = async ({ request }) => {
             <p>Dear ${application.first_name} ${application.last_name},</p>
             <p>${msg.body}</p>
             ${customNote}
-            <p>Track your application: <a href="https://arbrebio.com/en/careers/portal" style="color:#194642">Applicant Portal</a></p>
+            <p>Track your application: <a href="https://arbrebio.com/careers/portal/" style="color:#194642">Applicant Portal</a></p>
             <p>Your reference token: <code style="background:#f0f9f0;padding:4px 8px;border-radius:4px">${application.portal_token}</code></p>
             <p>Best regards,<br>Arbre Bio Africa HR Team</p>
           </div>

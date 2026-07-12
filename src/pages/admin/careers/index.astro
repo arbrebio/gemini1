@@ -32,7 +32,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   <!-- Quick Links -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <a href="/admin/careers/jobs" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+    <a href="/admin/careers/jobs/" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
       <div class="flex items-center gap-4">
         <div class="bg-[#194642]/10 rounded-xl p-3">
           <i class="fas fa-briefcase text-[#194642] text-xl"></i>
@@ -43,7 +43,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
         </div>
       </div>
     </a>
-    <a href="/admin/careers/applications" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+    <a href="/admin/careers/applications/" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
       <div class="flex items-center gap-4">
         <div class="bg-blue-50 rounded-xl p-3">
           <i class="fas fa-file-alt text-blue-600 text-xl"></i>
@@ -54,7 +54,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
         </div>
       </div>
     </a>
-    <a href="/admin/careers/employees" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+    <a href="/admin/careers/employees/" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
       <div class="flex items-center gap-4">
         <div class="bg-green-50 rounded-xl p-3">
           <i class="fas fa-id-card text-green-600 text-xl"></i>
@@ -71,7 +71,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
       <h2 class="font-bold text-gray-800">Recent Applications</h2>
-      <a href="/admin/careers/applications" class="text-sm text-[#194642] hover:underline">View all</a>
+      <a href="/admin/careers/applications/" class="text-sm text-[#194642] hover:underline">View all</a>
     </div>
     <div id="recent-apps" class="divide-y divide-gray-50">
       <div class="px-6 py-8 text-center text-gray-400 text-sm">Loading...</div>
@@ -97,9 +97,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   async function loadDashboard() {
     try {
       const [jobsRes, appsRes, empsRes] = await Promise.all([
-        authFetch('/api/admin/careers/jobs'),
-        authFetch('/api/admin/careers/applications'),
-        authFetch('/api/admin/careers/employees'),
+        authFetch('/api/admin/careers/jobs/'),
+        authFetch('/api/admin/careers/applications/'),
+        authFetch('/api/admin/careers/employees/'),
       ]);
       const [jobsData, appsData, empsData] = await Promise.all([
         jobsRes.json(), appsRes.json(), empsRes.json()
@@ -121,7 +121,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
         return;
       }
       container.innerHTML = recent.map((a: any) => `
-        <a href="/admin/careers/applications?id=${a.id}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+        <a href="/admin/careers/applications/?id=${a.id}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
           <div>
             <p class="font-medium text-gray-800">${a.first_name} ${a.last_name}</p>
             <p class="text-sm text-gray-500">${esc(a.career_jobs?.title_en) || 'Unknown job'} · ${esc(a.email)}</p>

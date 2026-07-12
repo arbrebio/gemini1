@@ -268,7 +268,7 @@ const calculatorInputs = [
         <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           {calculatorInputs.map((input) => (
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label for={input.id} class="block text-sm font-medium text-gray-700 mb-1">
                 {input.label}
               </label>
               {input.type === 'select' ? (
@@ -421,7 +421,7 @@ const calculatorInputs = [
     "url": "https://arbrebio.com"
   },
   "image": [
-    "/images/content/699v91Q.jpg"
+    "https://www.arbrebio.com/images/content/699v91Q.jpg"
   ],
   "features": [
     "Drip irrigation systems",

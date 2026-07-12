@@ -45,7 +45,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     // Load categories
     async function loadCategories() {
       try {
-        var res = await fetch('/api/sales-agent/categories', { headers: { Authorization: 'Bearer ' + token } });
+        var res = await fetch('/api/sales-agent/categories/', { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
         var cats = data.categories || [];
         var sel = document.getElementById('cat-filter');
@@ -82,8 +82,8 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       if (catId) params.set('category_id', catId);
 
       try {
-        var res = await fetch('/api/sales-agent/inventory?' + params, { headers: { Authorization: 'Bearer ' + token } });
-        if (res.status === 401) { window.location.href = '/sales-agent/login'; return; }
+        var res = await fetch('/api/sales-agent/inventory/?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = '/sales-agent/login/'; return; }
         var data = await res.json();
         var products = data.products || [];
 

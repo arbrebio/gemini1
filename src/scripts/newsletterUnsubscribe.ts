@@ -1,7 +1,7 @@
 export function initNewsletterUnsubscribe(email: string, token: string, lang: string) {
   async function unsubscribe() {
     try {
-      const response = await fetch(`/api/newsletter/unsubscribe?email=${email}&token=${token}`);
+      const response = await fetch(`/api/newsletter/unsubscribe/?email=${email}&token=${token}`);
       const statusMessage = document.getElementById('status-message');
       
       if (response.ok) {

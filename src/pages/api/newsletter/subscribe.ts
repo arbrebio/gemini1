@@ -47,7 +47,12 @@ export const POST: APIRoute = async ({ request }) => {
     const data = await request.json();
 
     // Validate input data
-    const validatedData = subscribeSchema.parse(data);
+    const validationResult = subscribeSchema.safeParse(data);
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0];
+      return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
+    }
+    const validatedData = validationResult.data;
 
     // Honeypot triggered: pretend success so the bot doesn't adapt, but
     // never touch the database or send any email.
@@ -174,7 +179,7 @@ async function sendEmail(to: string | string[], subject: string, html: string): 
 }
 
 async function sendConfirmationEmail(user: any) {
-  const confirmationUrl = `https://arbrebio.com/newsletter/confirm?token=${user.confirmation_token}`;
+  const confirmationUrl = `https://arbrebio.com/newsletter/confirm/?token=${user.confirmation_token}`;
 
   await sendEmail(
     user.email,

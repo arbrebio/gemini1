@@ -5,20 +5,20 @@ Allow: /
 Sitemap: https://www.arbrebio.com/sitemap-index.xml
 
 # Disallow utility pages
-Disallow: /newsletter/confirm
-Disallow: /newsletter/unsubscribe
-Disallow: /*/newsletter/confirm
-Disallow: /*/newsletter/unsubscribe
+Disallow: /newsletter/confirm/
+Disallow: /newsletter/unsubscribe/
+Disallow: /*/newsletter/confirm/
+Disallow: /*/newsletter/unsubscribe/
 
 # Disallow error pages
-Disallow: /404
-Disallow: /500
-Disallow: /*/404
-Disallow: /*/500
+Disallow: /404/
+Disallow: /500/
+Disallow: /*/404/
+Disallow: /*/500/
 
-# Disallow admin areas
+# Disallow admin and internal portal areas
 Disallow: /admin/
-Disallow: /wp-admin/
+Disallow: /sales-agent/
 
 # Disallow temporary files
 Disallow: /*.tmp
@@ -37,6 +37,31 @@ User-agent: MJ12bot
 Crawl-delay: 10
 User-agent: DotBot
 Crawl-delay: 10
+
+# AI answer-engine / LLM crawlers — explicitly allowed so our product and
+# agronomy content can be cited by AI search and chat assistants.
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+User-agent: Bytespider
+Allow: /
 
 # Block problematic bots
 User-agent: SiteBot

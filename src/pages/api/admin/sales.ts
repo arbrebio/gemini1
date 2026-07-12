@@ -104,17 +104,22 @@ export const GET: APIRoute = async ({ url, request }) => {
     const { data: sales, error } = await query;
     if (error) throw error;
 
-    // Counts per status for the same filters
-    const countQuery = supabase
-      .from('sales_records')
-      .select('status', { count: 'exact' })
-      .gte('created_at', `${year}-01-01`)
-      .lt('created_at', `${year + 1}-01-01`);
+    // Counts per status for the same filters. Each status needs its own
+    // fresh query builder — Supabase's builder mutates and returns `this`,
+    // so reusing one instance across multiple .eq() calls ANDs all three
+    // status filters together instead of running three independent counts.
+    const countByStatus = (status: string) =>
+      supabase
+        .from('sales_records')
+        .select('status', { count: 'exact', head: true })
+        .gte('created_at', `${year}-01-01`)
+        .lt('created_at', `${year + 1}-01-01`)
+        .eq('status', status);
 
     const [{ count: pendingCount }, { count: validatedCount }, { count: rejectedCount }] = await Promise.all([
-      countQuery.eq('status', 'pending'),
-      countQuery.eq('status', 'validated'),
-      countQuery.eq('status', 'rejected'),
+      countByStatus('pending'),
+      countByStatus('validated'),
+      countByStatus('rejected'),
     ]);
 
     return json({

@@ -80,7 +80,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Discuter sur WhatsApp",
   },
   es: {
-    layoutTitle: "Soluciones de Invernaderos de Alta Tecnología | Arbre Bio Africa",
+    layoutTitle: "Invernaderos de Alta Tecnología | Arbre Bio Africa",
     layoutDesc: "Estructuras de invernaderos avanzadas diseñadas para el clima africano. Descubra nuestra gama de entornos de cultivo climatizados para una producción óptima.",
     heroTitle: "Soluciones de Invernaderos Avanzados",
     heroSub: "Diseñados para Condiciones de Cultivo Óptimas",
@@ -207,14 +207,6 @@ const certsByLang: Record<string, Cert[]> = {
 };
 const certifications = certsByLang[lang] ?? certsByLang.en;
 
-type DocSpec = { name: string; format: string; size: string };
-const docsByLang: Record<string, DocSpec[]> = {
-  en: [{ name: "Technical Specifications", format: "PDF", size: "2.5 MB" },{ name: "Installation Guide", format: "PDF", size: "3.1 MB" },{ name: "Maintenance Manual", format: "PDF", size: "1.8 MB" }],
-  fr: [{ name: "Spécifications Techniques", format: "PDF", size: "2.5 MB" },{ name: "Guide d'Installation", format: "PDF", size: "3.1 MB" },{ name: "Manuel de Maintenance", format: "PDF", size: "1.8 MB" }],
-  es: [{ name: "Especificaciones Técnicas", format: "PDF", size: "2.5 MB" },{ name: "Guía de Instalación", format: "PDF", size: "3.1 MB" },{ name: "Manual de Mantenimiento", format: "PDF", size: "1.8 MB" }],
-  af: [{ name: "Tegniese Spesifikasies", format: "PDF", size: "2.5 MB" },{ name: "Installasiegids", format: "PDF", size: "3.1 MB" },{ name: "Onderhoudshandleiding", format: "PDF", size: "1.8 MB" }],
-};
-const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
 ---
 
 <Layout title={T.layoutTitle} description={T.layoutDesc}>
@@ -232,7 +224,6 @@ const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
         </h1>
         <div class="flex flex-wrap gap-4">
           <a href="#quote-form" class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300">{T.btnQuote}</a>
-          <a href="#specifications" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm">{T.btnSpecs}</a>
         </div>
       </div>
     </div>
@@ -309,27 +300,6 @@ const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
     </section>
   ))}
 
-  <!-- Technical Documentation -->
-  <section id="specifications" class="py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">{T.secDocs}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {downloadableSpecs.map((doc) => (
-            <a href="#" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group">
-              <div class="flex items-center justify-between mb-4">
-                <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span class="text-sm font-medium text-gray-500">{doc.format}</span>
-              </div>
-              <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
-              <p class="text-sm text-gray-500">{doc.size}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Certifications -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
@@ -351,45 +321,48 @@ const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
-        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="firstName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="lastName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
-            <input type="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="email" name="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
-            <input type="tel" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="tel" name="phone" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblGHType}</label>
-            <select required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+            <select name="productType" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
               <option value="">{T.selectGHType}</option>
               {greenhouseTypes.map((type) => (<option value={type.name.toLowerCase().replace(/\s+/g, '-')}>{type.name}</option>))}
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLocation}</label>
-            <input type="text" required placeholder={T.phLocation} class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="text" name="location" required placeholder={T.phLocation} class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblSize}</label>
-            <input type="number" required min="100" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="number" name="size" required min="100" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
+            <textarea name="requirements" rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
           <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -410,6 +383,11 @@ const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
   </section>
 </Layout>
 
+<script>
+  import { initQuoteForm } from '../../../scripts/quoteForm';
+  initQuoteForm();
+</script>
+
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -418,6 +396,6 @@ const downloadableSpecs = docsByLang[lang] ?? docsByLang.en;
   "description": "Advanced greenhouse structures engineered for African climate conditions, featuring climate control and optimal growing environments.",
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
   "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
-  "image": ["/images/content/HBS7ARL.jpg","/images/content/dORTVaM.jpg","/images/content/6r1b5oY.jpg","/images/content/2r7ziKF.jpg"]
+  "image": ["https://www.arbrebio.com/images/content/HBS7ARL.jpg","https://www.arbrebio.com/images/content/dORTVaM.jpg","https://www.arbrebio.com/images/content/6r1b5oY.jpg","https://www.arbrebio.com/images/content/2r7ziKF.jpg"]
 }
 </script>

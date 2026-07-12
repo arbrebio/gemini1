@@ -30,7 +30,7 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="manifest" href="/manifest-agent.json" />
     <!-- Font Awesome — also cached by SW for offline -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <title id="page-title">{title} | Arbre Bio Sales</title>
     <style>
       /* Critical base styles inlined for offline reliability */
@@ -144,11 +144,11 @@ const { title, activeTab = 'dashboard' } = Astro.props;
         <i class="fas fa-tags"></i>
         <span data-i18n="categories">Catégories</span>
       </a>
-      <a href="/sales-agent/documents" class:list={['bottom-nav-item', activeTab === 'documents' && 'active']}>
+      <a href="/sales-agent/documents/" class:list={['bottom-nav-item', activeTab === 'documents' && 'active']}>
         <i class="fas fa-folder-open"></i>
         <span data-i18n="documents">Documents</span>
       </a>
-      <a href="/sales-agent/change-password" class:list={['bottom-nav-item', activeTab === 'account' && 'active']} id="nav-account">
+      <a href="/sales-agent/change-password/" class:list={['bottom-nav-item', activeTab === 'account' && 'active']} id="nav-account">
         <i class="fas fa-user-gear"></i>
         <span data-i18n="account">Compte</span>
       </a>
@@ -233,29 +233,29 @@ const { title, activeTab = 'dashboard' } = Astro.props;
           localStorage.removeItem('agentToken');
           localStorage.removeItem('agentProfile');
         } catch {}
-        window.location.href = '/sales-agent/login';
+        window.location.href = '/sales-agent/login/';
       });
 
       // ── Auth check ────────────────────────────────────────────────────────
       async function checkAgentAuth() {
         const token = localStorage.getItem('agentToken');
         if (!token) {
-          window.location.href = '/sales-agent/login';
+          window.location.href = '/sales-agent/login/';
           return;
         }
         try {
-          const res = await fetch('/api/sales-agent/auth', {
+          const res = await fetch('/api/sales-agent/auth/', {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (!res.ok) {
             localStorage.removeItem('agentToken');
             localStorage.removeItem('agentProfile');
-            window.location.href = '/sales-agent/login';
+            window.location.href = '/sales-agent/login/';
             return;
           }
           const data = await res.json();
           if (!data.profile) {
-            window.location.href = '/sales-agent/login';
+            window.location.href = '/sales-agent/login/';
             return;
           }
           // Cache profile for offline use
@@ -275,7 +275,7 @@ const { title, activeTab = 'dashboard' } = Astro.props;
           // Network error — check if we have a cached profile
           const cached = localStorage.getItem('agentProfile');
           if (!cached) {
-            window.location.href = '/sales-agent/login';
+            window.location.href = '/sales-agent/login/';
           }
           // If cached, allow access (offline mode)
         }

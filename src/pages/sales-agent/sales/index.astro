@@ -290,7 +290,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
         var payload = Object.assign({}, sale);
         delete payload.localId;
         try {
-          var res = await fetch('/api/sales-agent/sales', {
+          var res = await fetch('/api/sales-agent/sales/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(payload),
@@ -330,7 +330,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     async function loadProductsFromAPI() {
       isLoadingProducts = true;
       try {
-        var res = await fetch('/api/sales-agent/inventory?limit=200&in_stock=true', { headers: { Authorization: 'Bearer ' + token } });
+        var res = await fetch('/api/sales-agent/inventory/?limit=200&in_stock=true', { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
         var freshProducts = (data.products || []).filter(function(p) { return p.stock_quantity > 0; });
         products = freshProducts;  // Update global products array
@@ -605,13 +605,13 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       var fd = new FormData();
       fd.append('file', file);
       try {
-        var res = await fetch('/api/sales-agent/upload-proof', { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: fd });
+        var res = await fetch('/api/sales-agent/upload-proof/', { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: fd });
         var data = await res.json();
         if (data.error) throw new Error(data.error);
         pendingProof = { url: data.url, signed_url: data.signed_url, file_name: data.file_name };
         var isImg = file.type.startsWith('image/');
         previewInner.innerHTML = isImg
-          ? '<img src="' + data.signed_url + '" class="h-12 w-12 object-cover rounded-lg" /><span class="text-xs text-gray-600 truncate max-w-xs">' + file.name + '</span>'
+          ? '<img src="' + data.signed_url + '" alt="Preuve de paiement" class="h-12 w-12 object-cover rounded-lg" /><span class="text-xs text-gray-600 truncate max-w-xs">' + file.name + '</span>'
           : '<i class="fas fa-file-pdf text-red-500 text-xl"></i><span class="text-xs text-gray-600 truncate max-w-xs">' + file.name + '</span>';
         showToast('Fichier téléchargé avec succès.', false);
       } catch (err) {
@@ -710,7 +710,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       }
 
       try {
-        var res = await fetch('/api/sales-agent/sales', {
+        var res = await fetch('/api/sales-agent/sales/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
           body: JSON.stringify(pendingFormData),
@@ -753,7 +753,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       var params = new URLSearchParams({ limit: '50' });
       if (status) params.set('status', status);
       try {
-        var res = await fetch('/api/sales-agent/sales?' + params, { headers: { Authorization: 'Bearer ' + token } });
+        var res = await fetch('/api/sales-agent/sales/?' + params, { headers: { Authorization: 'Bearer ' + token } });
         var data = await res.json();
         var sales = data.sales || [];
         renderHistory(sales);
@@ -787,7 +787,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
             ? '<p class="text-xs text-red-500 mt-1.5 bg-red-50 rounded-lg px-2 py-1"><i class="fas fa-exclamation-circle mr-1"></i>' + s.rejection_reason + '</p>'
             : '') +
           (s.status === 'validated'
-            ? '<a href="/sales-agent/invoice/' + s.id + '" onclick="event.stopPropagation()" class="mt-2 flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-xl text-white text-xs font-semibold" style="background:#194642"><i class="fas fa-file-invoice mr-1"></i>📄 Télécharger la Facture</a>'
+            ? '<a href="/sales-agent/invoice/' + s.id + '/" onclick="event.stopPropagation()" class="mt-2 flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-xl text-white text-xs font-semibold" style="background:#194642"><i class="fas fa-file-invoice mr-1"></i>📄 Télécharger la Facture</a>'
             : '') +
         '</div>';
       }).join('');
@@ -822,7 +822,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
           (s.rejection_reason ? '<p class="text-gray-400 text-xs col-span-2">Motif de rejet:</p><p class="text-xs col-span-2 bg-red-50 text-red-600 rounded-lg p-2">' + s.rejection_reason + '</p>' : '') +
         '</div>' +
         (s.proof_url ? '<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-xs font-semibold text-gray-500 mb-2">Preuve de paiement:</p><a href="' + s.proof_url + '" target="_blank" class="text-blue-600 text-xs underline"><i class="fas fa-external-link-alt mr-1"></i>Voir la preuve</a></div>' : '') +
-        (s.status === 'validated' ? '<div class="mt-3 pt-3 border-t border-gray-100"><a href="/sales-agent/invoice/' + s.id + '" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#194642"><i class="fas fa-file-invoice"></i>📄 Télécharger la Facture</a></div>' : '');
+        (s.status === 'validated' ? '<div class="mt-3 pt-3 border-t border-gray-100"><a href="/sales-agent/invoice/' + s.id + '/" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#194642"><i class="fas fa-file-invoice"></i>📄 Télécharger la Facture</a></div>' : '');
       document.getElementById('detail-modal').classList.remove('hidden');
     }
 

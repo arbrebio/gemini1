@@ -1,7 +1,7 @@
 export function initNewsletterConfirm(token: string, lang: string) {
   async function confirmSubscription() {
     try {
-      const response = await fetch(`/api/newsletter/confirm?token=${token}`);
+      const response = await fetch(`/api/newsletter/confirm/?token=${token}`);
       const statusMessage = document.getElementById('status-message');
       
       if (response.ok) {

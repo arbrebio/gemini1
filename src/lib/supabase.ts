@@ -48,7 +48,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
             Object.keys(localStorage)
               .filter(k => k.startsWith('sb-'))
               .forEach(k => localStorage.removeItem(k));
-            window.location.href = '/admin/login';
+            window.location.href = '/admin/login/';
             // Reset the flag after a short delay so future expiry events are handled
             setTimeout(() => { _handlingExpiredJwt = false; }, 3000);
           }

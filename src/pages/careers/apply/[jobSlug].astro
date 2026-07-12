@@ -6,6 +6,7 @@ import { useCareerT } from "../../../lib/careerTranslations";
 
 const lang = 'en';
 const T = useCareerT(lang);
+const { jobSlug } = Astro.params as { jobSlug: string };
 ---
 
 <Layout title={`${T.applicationForm} | Arbre Bio Africa`} description={T.applicationFormDesc}>
@@ -148,20 +149,19 @@ const T = useCareerT(lang);
 
 </Layout>
 
-<script define:vars={{ T }}>
-  const pathParts = window.location.pathname.split('/');
-  const slug = pathParts[pathParts.length - 1];
+<script define:vars={{ T, jobSlug }}>
+  const slug = jobSlug;
 
   async function loadJob() {
     try {
-      const res = await fetch(`/api/careers/jobs?slug=${slug}`);
+      const res = await fetch(`/api/careers/jobs/?slug=${slug}`);
       const data = await res.json();
       if (data.job) {
         const title = data.job.title_en;
         document.getElementById('job-title-breadcrumb').textContent = title;
         document.getElementById('applying-for').textContent = `Applying for: ${title}`;
         document.getElementById('job-id-field').value = data.job.id;
-        document.getElementById('back-link').href = `/careers/${slug}`;
+        document.getElementById('back-link').href = `/careers/${slug}/`;
       }
     } catch (e) {}
   }
@@ -206,7 +206,7 @@ const T = useCareerT(lang);
 
     try {
       const formData = new FormData(form);
-      const res = await fetch('/api/careers/apply', { method: 'POST', body: formData });
+      const res = await fetch('/api/careers/apply/', { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || 'Submission failed');
 

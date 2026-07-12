@@ -10,7 +10,7 @@ const p = `/${lang}`;
 
 const tr: Record<string, Record<string, string>> = {
   en: {
-    layoutTitle: "Premium Growing Solutions | Organic Coco Peat & Coir | Arbre Bio Africa",
+    layoutTitle: "Growing Solutions | Organic Coco Peat | Arbre Bio Africa",
     layoutDesc: "Discover Arbre Bio Africa's premium organic coco peat and coir products. Sustainable growing solutions engineered for maximum yield and crop health.",
     heroTitle: "Sustainable Growth Starts Here",
     heroSub: "Premium Organic Coco Peat & Coir",
@@ -42,7 +42,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Chat on WhatsApp",
   },
   fr: {
-    layoutTitle: "Solutions de Culture Premium | Coco Peat Bio | Arbre Bio Africa",
+    layoutTitle: "Solutions de Culture | Coco Peat Bio | Arbre Bio Africa",
     layoutDesc: "Découvrez les produits premium de coco peat et fibre de coco d'Arbre Bio Africa. Solutions de culture durables pour un rendement maximal et une santé optimale des cultures.",
     heroTitle: "La Croissance Durable Commence Ici",
     heroSub: "Coco Peat & Fibre de Coco Bio Premium",
@@ -74,7 +74,7 @@ const tr: Record<string, Record<string, string>> = {
     btnWhatsapp: "Discuter sur WhatsApp",
   },
   es: {
-    layoutTitle: "Soluciones de Cultivo Premium | Coco Peat Orgánico | Arbre Bio Africa",
+    layoutTitle: "Soluciones de Cultivo | Coco Peat | Arbre Bio Africa",
     layoutDesc: "Descubra los productos premium de coco peat y fibra de coco de Arbre Bio Africa. Soluciones de cultivo sostenibles para el máximo rendimiento y salud de los cultivos.",
     heroTitle: "El Crecimiento Sostenible Comienza Aquí",
     heroSub: "Coco Peat y Fibra de Coco Orgánica Premium",
@@ -415,28 +415,28 @@ const benefits = benefitsByLang[lang] ?? benefitsByLang.en;
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">{T.formTitle}</h2>
-        <form class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-gray-50 p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblFirstName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="firstName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblLastName}</label>
-              <input type="text" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+              <input type="text" name="lastName" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblEmail}</label>
-            <input type="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="email" name="email" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblPhone}</label>
-            <input type="tel" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="tel" name="phone" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblProductType}</label>
-            <select required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+            <select name="productType" required class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
               <option value="">{T.selectProduct}</option>
               <option value="type20">{T.optType20}</option>
               <option value="type30">{T.optType30}</option>
@@ -445,13 +445,16 @@ const benefits = benefitsByLang[lang] ?? benefitsByLang.en;
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblQuantity}</label>
-            <input type="number" required min="1" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+            <input type="number" name="quantity" required min="1" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{T.lblAdditional}</label>
-            <textarea rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
+            <textarea name="requirements" rows="4" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder={T.phAdditional}></textarea>
           </div>
           <button type="submit" class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300">{T.btnSubmit}</button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -472,6 +475,11 @@ const benefits = benefitsByLang[lang] ?? benefitsByLang.en;
   </section>
 </Layout>
 
+<script>
+  import { initQuoteForm } from '../../../scripts/quoteForm';
+  initQuoteForm();
+</script>
+
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -480,6 +488,6 @@ const benefits = benefitsByLang[lang] ?? benefitsByLang.en;
   "description": "Premium organic coco peat and coir products for professional horticulture and agriculture, featuring superior water retention and optimal aeration.",
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
   "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
-  "image": ["/images/content/AlUvYxz.jpg"]
+  "image": ["https://www.arbrebio.com/images/content/AlUvYxz.jpg"]
 }
 </script>

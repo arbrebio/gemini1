@@ -1,8 +1,18 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import "../../styles/base.css";
 ---
 
-<Layout title="Admin Login" description="Admin login for Arbre Bio Africa">
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="icon" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" type="image/png" />
+        <title>Admin Login | Arbre Bio Africa</title>
+    </head>
+    <body class="bg-gray-50 font-sans text-gray-900">
     <div
         class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
     >
@@ -68,18 +78,20 @@ import Layout from "../../layouts/Layout.astro";
                     </div>
 
                     <div class="text-sm">
-                        <a
-                            href="#"
+                        <button
+                            type="button"
+                            id="forgot-password-btn"
                             class="font-medium text-primary hover:text-primary-600"
                         >
                             Forgot your password?
-                        </a>
+                        </button>
                     </div>
                 </div>
 
                 <div>
                     <button
                         type="submit"
+                        id="submit-btn"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
                     >
                         <span
@@ -98,16 +110,66 @@ import Layout from "../../layouts/Layout.astro";
                     class="hidden text-red-600 text-sm text-center mt-4 bg-red-50 p-2 rounded"
                 >
                 </div>
+                <div
+                    id="success-message"
+                    class="hidden text-green-700 text-sm text-center mt-4 bg-green-50 p-2 rounded"
+                >
+                </div>
             </form>
         </div>
     </div>
-</Layout>
+    </body>
+</html>
 
 <script>
     import { supabase } from "../../lib/supabase";
 
     const form = document.getElementById("login-form");
     const errorMsg = document.getElementById("error-message");
+    const successMsg = document.getElementById("success-message");
+    const emailInput = document.getElementById("email") as HTMLInputElement | null;
+    const forgotBtn = document.getElementById("forgot-password-btn") as HTMLButtonElement | null;
+
+    if (forgotBtn) {
+        forgotBtn.addEventListener("click", async () => {
+            errorMsg?.classList.add("hidden");
+            successMsg?.classList.add("hidden");
+
+            const email = emailInput?.value.trim();
+            if (!email) {
+                if (errorMsg) {
+                    errorMsg.textContent = "Enter your email address above first, then click \"Forgot your password?\"";
+                    errorMsg.classList.remove("hidden");
+                }
+                emailInput?.focus();
+                return;
+            }
+
+            forgotBtn.disabled = true;
+            const originalText = forgotBtn.textContent;
+            forgotBtn.textContent = "Sending...";
+
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/admin/reset-password/`,
+                });
+                if (error) throw error;
+
+                if (successMsg) {
+                    successMsg.textContent = "If an admin account exists for that email, a password reset link has been sent.";
+                    successMsg.classList.remove("hidden");
+                }
+            } catch (error) {
+                if (errorMsg) {
+                    errorMsg.textContent = error instanceof Error ? error.message : "Failed to send reset link.";
+                    errorMsg.classList.remove("hidden");
+                }
+            } finally {
+                forgotBtn.disabled = false;
+                forgotBtn.textContent = originalText;
+            }
+        });
+    }
 
     if (form) {
         form.addEventListener("submit", async (e) => {
@@ -131,7 +193,7 @@ import Layout from "../../layouts/Layout.astro";
                 // Supabase login is NOT sufficient — non-admin users are rejected.
                 const token = data.session?.access_token;
                 const check = await fetch(
-                    "/api/admin/notifications?count_only=true",
+                    "/api/admin/notifications/?count_only=true",
                     { headers: { Authorization: `Bearer ${token}` } },
                 );
 
@@ -142,7 +204,7 @@ import Layout from "../../layouts/Layout.astro";
                     );
                 }
 
-                window.location.href = "/admin";
+                window.location.href = "/admin/";
             } catch (error) {
                 if (errorMsg) {
                     errorMsg.textContent =

@@ -5,7 +5,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 <AdminLayout title="Job Postings">
   <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <a href="/admin/careers" class="text-gray-400 hover:text-[#194642] transition-colors" title="Back">
+      <a href="/admin/careers/" class="text-gray-400 hover:text-[#194642] transition-colors" title="Back">
         <i class="fas fa-arrow-left text-lg"></i>
       </a>
       <div>
@@ -253,7 +253,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
   // ── Load jobs ──────────────────────────────────────────────────
   async function loadJobs() {
-    const res = await authFetch('/api/admin/careers/jobs');
+    const res = await authFetch('/api/admin/careers/jobs/');
     const data = await res.json();
     jobs = data.jobs || [];
     renderJobs();
@@ -294,7 +294,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
                 <div class="flex items-center gap-3">
                   <button onclick="editJob('${j.id}')" class="text-[#194642] hover:underline text-xs font-medium">Edit</button>
                   <button onclick="deleteJob('${esc(j.id)}','${esc((j.title_en||j.title_fr||'').replace(/['"\\<>]/g,''))}')" class="text-red-500 hover:underline text-xs font-medium">Delete</button>
-                  ${j.status === 'published' ? `<a href="/careers/${encodeURIComponent(j.slug)}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>` : `<span class="text-gray-300 text-xs cursor-not-allowed" title="Only published jobs can be viewed publicly">View ↗</span>`}
+                  ${j.status === 'published' ? `<a href="/careers/${encodeURIComponent(j.slug)}/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 text-xs">View ↗</a>` : `<span class="text-gray-300 text-xs cursor-not-allowed" title="Only published jobs can be viewed publicly">View ↗</span>`}
                 </div>
               </td>
             </tr>
@@ -342,14 +342,14 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   function closeModal() { document.getElementById('job-modal')!.classList.add('hidden'); }
 
   (window as any).editJob = async (id: string) => {
-    const res = await authFetch(`/api/admin/careers/jobs?id=${id}`);
+    const res = await authFetch(`/api/admin/careers/jobs/?id=${id}`);
     const data = await res.json();
     openModal(data.job);
   };
 
   (window as any).deleteJob = async (id: string, title: string) => {
     if (!await showConfirm(`Delete "${title}"? This cannot be undone.`)) return;
-    await authFetch('/api/admin/careers/jobs', { method: 'DELETE', body: JSON.stringify({ id }) });
+    await authFetch('/api/admin/careers/jobs/', { method: 'DELETE', body: JSON.stringify({ id }) });
     showToast('Job deleted');
     await loadJobs();
   };
@@ -405,7 +405,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
 
     if (id) payload.id = id;
 
-    const res = await authFetch('/api/admin/careers/jobs', {
+    const res = await authFetch('/api/admin/careers/jobs/', {
       method: id ? 'PUT' : 'POST',
       body: JSON.stringify(payload),
     });

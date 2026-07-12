@@ -116,10 +116,10 @@ const pageTitles: Record<string, string> = {
         </div>
         <!-- Filters -->
         <div class="flex flex-wrap gap-3">
-          <select id="filter-dept" class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+          <select id="filter-dept" aria-label={T.allDepartments} class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
             <option value="">{T.allDepartments}</option>
           </select>
-          <select id="filter-type" class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
+          <select id="filter-type" aria-label={T.allTypes} class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#194642]">
             <option value="">{T.allTypes}</option>
             <option value="full_time">{T.fullTime}</option>
             <option value="part_time">{T.partTime}</option>
@@ -167,7 +167,7 @@ const pageTitles: Record<string, string> = {
 
   async function loadJobs() {
     try {
-      const res = await fetch('/api/careers/jobs');
+      const res = await fetch('/api/careers/jobs/');
       const data = await res.json();
       allJobs = data.jobs || [];
       renderJobs(allJobs);
@@ -230,10 +230,10 @@ const pageTitles: Record<string, string> = {
                   </div>
                 </div>
                 <div class="flex gap-3 md:flex-col lg:flex-row">
-                  <a href="/${lang}/careers/${job.slug}" class="flex-1 md:flex-none text-center border border-[#194642] text-[#194642] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#194642]/5 transition-colors text-sm">
+                  <a href="/${lang}/careers/${encodeURIComponent(job.slug)}/" class="flex-1 md:flex-none text-center border border-[#194642] text-[#194642] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#194642]/5 transition-colors text-sm">
                     ${T.viewDetails}
                   </a>
-                  <a href="/${lang}/careers/apply/${job.slug}" class="flex-1 md:flex-none text-center bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
+                  <a href="/${lang}/careers/apply/${encodeURIComponent(job.slug)}/" class="flex-1 md:flex-none text-center bg-[#194642] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#2a5e59] transition-colors text-sm">
                     ${T.applyNow}
                   </a>
                 </div>

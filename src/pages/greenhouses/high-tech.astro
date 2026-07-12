@@ -150,11 +150,6 @@ const certifications = [
   { name: "ISO 14001:2015", description: "Environmental Management" }
 ];
 
-const downloadableSpecs = [
-  { name: "Technical Specifications", format: "PDF", size: "2.5 MB" },
-  { name: "Installation Guide", format: "PDF", size: "3.1 MB" },
-  { name: "Maintenance Manual", format: "PDF", size: "1.8 MB" }
-];
 ---
 
 <Layout
@@ -178,17 +173,11 @@ const downloadableSpecs = [
           <span class="block text-2xl md:text-3xl mt-2">Engineered for Optimal Growing Conditions</span>
         </h1>
         <div class="flex flex-wrap gap-4">
-          <a 
+          <a
             href="#quote-form"
             class="bg-primary hover:bg-primary-600 text-white px-8 py-3 rounded-full text-lg transition-colors duration-300"
           >
             Request Custom Quote
-          </a>
-          <a 
-            href="#specifications"
-            class="bg-white/10 hover:bg-white/20 text-white border-2 border-white px-8 py-3 rounded-full text-lg transition-colors duration-300 backdrop-blur-sm"
-          >
-            Download Technical Specifications
           </a>
         </div>
       </div>
@@ -294,32 +283,6 @@ const downloadableSpecs = [
     </section>
   ))}
 
-  <!-- Technical Specifications Download -->
-  <section id="specifications" class="py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12">Technical Documentation</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {downloadableSpecs.map((doc) => (
-            <a 
-              href="#"
-              class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow group"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <span class="text-sm font-medium text-gray-500">{doc.format}</span>
-              </div>
-              <h3 class="font-bold mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
-              <p class="text-sm text-gray-500">{doc.size}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Certifications -->
   <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
@@ -340,7 +303,7 @@ const downloadableSpecs = [
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12">Request a Custom Quote</h2>
-        <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <form id="quote-form-element" class="bg-white p-8 rounded-lg shadow-lg space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -348,6 +311,7 @@ const downloadableSpecs = [
               </label>
               <input
                 type="text"
+                name="firstName"
                 required
                 class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
@@ -358,6 +322,7 @@ const downloadableSpecs = [
               </label>
               <input
                 type="text"
+                name="lastName"
                 required
                 class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
@@ -370,6 +335,7 @@ const downloadableSpecs = [
             </label>
             <input
               type="email"
+              name="email"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
@@ -381,6 +347,7 @@ const downloadableSpecs = [
             </label>
             <input
               type="tel"
+              name="phone"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
@@ -391,6 +358,7 @@ const downloadableSpecs = [
               Greenhouse Type *
             </label>
             <select
+              name="productType"
               required
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             >
@@ -409,6 +377,7 @@ const downloadableSpecs = [
             </label>
             <input
               type="text"
+              name="location"
               required
               placeholder="City, Country"
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
@@ -421,6 +390,7 @@ const downloadableSpecs = [
             </label>
             <input
               type="number"
+              name="size"
               required
               min="100"
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
@@ -432,6 +402,7 @@ const downloadableSpecs = [
               Additional Requirements
             </label>
             <textarea
+              name="requirements"
               rows="4"
               class="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               placeholder="Tell us about your specific needs, crops you plan to grow, or any special requirements..."
@@ -444,6 +415,9 @@ const downloadableSpecs = [
           >
             Submit Quote Request
           </button>
+
+          <div class="success-message hidden text-green-700 bg-green-50 border border-green-200 rounded-md p-4 text-sm"></div>
+          <div class="error-message hidden text-red-700 bg-red-50 border border-red-200 rounded-md p-4 text-sm"></div>
         </form>
       </div>
     </div>
@@ -475,6 +449,11 @@ const downloadableSpecs = [
   </section>
 </Layout>
 
+<script>
+  import { initQuoteForm } from '../../scripts/quoteForm';
+  initQuoteForm();
+</script>
+
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -491,10 +470,10 @@ const downloadableSpecs = [
     "url": "https://arbrebio.com"
   },
   "image": [
-    "/images/content/HBS7ARL.jpg",
-    "/images/content/hKnWqYO.png",
-    "/images/content/ybRfmvG.jpg",
-    "/images/content/u9CfHxE.jpg"
+    "https://www.arbrebio.com/images/content/HBS7ARL.jpg",
+    "https://www.arbrebio.com/images/content/hKnWqYO.png",
+    "https://www.arbrebio.com/images/content/ybRfmvG.jpg",
+    "https://www.arbrebio.com/images/content/u9CfHxE.jpg"
   ]
 }
 </script>
