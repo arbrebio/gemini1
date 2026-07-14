@@ -1,0 +1,94 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Tableau de bord" role="engineer" active="dashboard">
+  <header class="main-header">
+    <div>
+      <div class="page-title" id="hdr-title">Bonjour 👋</div>
+      <div class="page-subtitle">Voici un résumé de votre activité terrain</div>
+    </div>
+    <div class="header-actions">
+      <a href="/terrain/portal/visit-form/" class="btn btn-primary"><span>+</span> Nouvelle visite</a>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Mes visites</div><div class="stat-value" id="st-visits">—</div><div class="stat-sub" id="st-visits-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Clients / Projets</div><div class="stat-value" id="st-projects">—</div></div>
+      <div class="stat-card"><div class="stat-label">Photos soumises</div><div class="stat-value" id="st-photos">—</div></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-header"><span class="card-title">Mes visites récentes</span></div>
+      <div class="table-wrap" id="my-visits">
+        <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div>
+      </div>
+    </div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth(['engineer', 'technician']);
+  if (me) {
+    document.getElementById('hdr-title')!.textContent = `Bonjour, ${me.full_name.split(' ')[0]} 👋`;
+    init();
+  }
+
+  async function init() {
+    const [statsRes, visitsRes] = await Promise.all([
+      terrainFetch('/api/terrain/visits/?action=stats'),
+      terrainFetch('/api/terrain/visits/'),
+    ]);
+    const stats = (await statsRes.json()).stats || {};
+    const visits = (await visitsRes.json()).visits || [];
+
+    document.getElementById('st-visits')!.textContent = String(stats.totalVisits ?? 0);
+    document.getElementById('st-visits-sub')!.textContent = `${stats.thisMonth ?? 0} ce mois-ci`;
+    document.getElementById('st-projects')!.textContent = String(stats.totalProjects ?? 0);
+    document.getElementById('st-photos')!.textContent = String(stats.totalPhotos ?? 0);
+
+    renderVisits(visits.slice(0, 20));
+  }
+
+  function renderVisits(visits: any[]) {
+    const el = document.getElementById('my-visits')!;
+    if (!visits.length) {
+      el.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">Aucune visite pour l'instant</div>
+        <div class="empty-desc">Commencez par enregistrer votre première visite de site.</div>
+        <a href="/terrain/portal/visit-form/" class="btn btn-primary" style="margin-top:12px">+ Nouvelle visite</a>
+      </div>`;
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Client</th><th>Zone</th><th>Type</th><th>Statut</th><th>Date</th></tr></thead><tbody>
+      ${visits.map(v => `
+        <tr class="visit-card" data-visit-id="${v.id}" style="cursor:pointer">
+          <td class="fw-600">${esc(v.client_name)}</td>
+          <td class="text-muted">${esc(v.zone || '—')}</td>
+          <td>${(v.project_types || []).map((t: string) => projectTypeLabels[t] || t).join(', ')}</td>
+          <td>${statusBadge(v.status)}</td>
+          <td class="text-muted">${formatDate(v.created_at)}</td>
+        </tr>
+      `).join('')}
+    </tbody></table>`;
+    el.querySelectorAll('[data-visit-id]').forEach(row => {
+      row.addEventListener('click', () => {
+        window.location.href = `/terrain/admin/project-view/?visitId=${(row as HTMLElement).dataset.visitId}`;
+      });
+    });
+  }
+
+  function statusBadge(status: string): string {
+    const map: Record<string, string> = {
+      submitted: '<span class="badge badge-blue">Soumise</span>',
+      confirmed: '<span class="badge badge-amber">Confirmée</span>',
+      in_progress: '<span class="badge badge-green">En cours</span>',
+    };
+    return map[status] || status;
+  }
+</script>

@@ -1,0 +1,106 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Tableau de bord" role="super_admin" active="dashboard">
+  <header class="main-header">
+    <div>
+      <div class="page-title">Tableau de bord</div>
+      <div class="page-subtitle">Vue d'ensemble de l'activité terrain</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-label">Équipe active</div><div class="stat-value" id="st-users">—</div><div class="stat-sub" id="st-users-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Projets</div><div class="stat-value" id="st-projects">—</div></div>
+      <div class="stat-card"><div class="stat-label">Visites totales</div><div class="stat-value" id="st-visits">—</div><div class="stat-sub" id="st-visits-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Ingénieurs</div><div class="stat-value" id="st-engineers">—</div></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-header"><span class="card-title">Visites récentes</span></div>
+      <div class="table-wrap" id="recent-visits">
+        <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-header"><span class="card-title">Équipe terrain</span></div>
+      <div id="team-list" style="padding:16px">
+        <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div>
+      </div>
+    </div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, roleLabel, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth(['super_admin']);
+  if (me) init();
+
+  async function init() {
+    const [statsRes, visitsRes, usersRes] = await Promise.all([
+      terrainFetch('/api/terrain/visits/?action=stats'),
+      terrainFetch('/api/terrain/visits/'),
+      terrainFetch('/api/terrain/users/'),
+    ]);
+    const stats = (await statsRes.json()).stats || {};
+    const visits = (await visitsRes.json()).visits || [];
+    const users = (await usersRes.json()).users || [];
+
+    document.getElementById('st-users')!.textContent = String(stats.totalUsers ?? 0);
+    document.getElementById('st-users-sub')!.textContent = `${stats.engineers ?? 0} ing. · ${stats.technicians ?? 0} tech.`;
+    document.getElementById('st-projects')!.textContent = String(stats.totalProjects ?? 0);
+    document.getElementById('st-visits')!.textContent = String(stats.totalVisits ?? 0);
+    document.getElementById('st-visits-sub')!.textContent = `${stats.thisMonth ?? 0} ce mois-ci`;
+    document.getElementById('st-engineers')!.textContent = String(stats.engineers ?? 0);
+
+    renderRecentVisits(visits.slice(0, 6));
+    renderTeam(users.slice(0, 8));
+  }
+
+  function renderRecentVisits(visits: any[]) {
+    const el = document.getElementById('recent-visits')!;
+    if (!visits.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Aucune visite pour l'instant</div></div>`;
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Client</th><th>Zone</th><th>Type</th><th>Agent</th><th>Date</th></tr></thead><tbody>
+      ${visits.map(v => `
+        <tr class="visit-card" data-visit-id="${v.id}" style="cursor:pointer">
+          <td class="fw-600">${esc(v.client_name)}</td>
+          <td class="text-muted">${esc(v.zone || '—')}</td>
+          <td>${(v.project_types || []).map((t: string) => projectTypeLabels[t] || t).join(', ')}</td>
+          <td class="text-muted">${esc(v.terrain_profiles?.full_name || '—')}</td>
+          <td class="text-muted">${formatDate(v.created_at)}</td>
+        </tr>
+      `).join('')}
+    </tbody></table>`;
+    el.querySelectorAll('[data-visit-id]').forEach(row => {
+      row.addEventListener('click', () => {
+        window.location.href = `/terrain/admin/project-view/?visitId=${(row as HTMLElement).dataset.visitId}`;
+      });
+    });
+  }
+
+  function renderTeam(users: any[]) {
+    const el = document.getElementById('team-list')!;
+    if (!users.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Aucun utilisateur</div></div>`;
+      return;
+    }
+    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+      ${users.map(u => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--ink-100,#eee);border-radius:var(--radius,10px)">
+          <div class="user-avatar" style="background:var(--green-${u.role === 'engineer' ? '700' : '500'})">${esc(u.full_name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2))}</div>
+          <div>
+            <div class="fw-600" style="font-size:0.9rem">${esc(u.full_name)}</div>
+            <div class="text-muted" style="font-size:0.78rem">${roleLabel(u.role)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+</script>

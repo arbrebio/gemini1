@@ -1,0 +1,94 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Tous les projets" role="super_admin" active="projects">
+  <header class="main-header">
+    <div>
+      <div class="page-title">Tous les projets</div>
+      <div class="page-subtitle">Vue d'ensemble des chantiers en cours</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Projets</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="form-control" id="search-projects" placeholder="Rechercher…" style="width:200px">
+          <select class="form-control" id="filter-type" style="width:180px">
+            <option value="">Tous les types</option>
+            <option value="greenhouse">Serre tropicale</option>
+            <option value="irrigation">Irrigation</option>
+            <option value="substrate">Substrat</option>
+            <option value="crops">Cultures</option>
+            <option value="consulting">Consulting</option>
+            <option value="equipment">Équipements</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap" id="projects-table">
+        <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div>
+      </div>
+    </div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth(['super_admin']);
+  if (me) load();
+
+  document.getElementById('search-projects')!.addEventListener('input', load);
+  document.getElementById('filter-type')!.addEventListener('change', load);
+
+  let debounce: any;
+  async function load() {
+    clearTimeout(debounce);
+    debounce = setTimeout(async () => {
+      const search = (document.getElementById('search-projects') as HTMLInputElement).value.trim();
+      const type = (document.getElementById('filter-type') as HTMLSelectElement).value;
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (type) params.set('type', type);
+
+      const res = await terrainFetch(`/api/terrain/projects/?${params}`);
+      const data = await res.json();
+      render(data.projects || []);
+    }, 250);
+  }
+
+  function render(projects: any[]) {
+    const el = document.getElementById('projects-table')!;
+    if (!projects.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📁</div><div class="empty-title">Aucun projet trouvé</div></div>`;
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Client</th><th>Zone</th><th>Types</th><th>Agent</th><th>Statut</th><th>Créé le</th></tr></thead><tbody>
+      ${projects.map(p => `
+        <tr class="visit-card" data-project-id="${p.id}" style="cursor:pointer">
+          <td class="fw-600">${esc(p.client_name)}</td>
+          <td class="text-muted">${esc(p.zone) || '—'}</td>
+          <td>${(p.project_types || []).map((t: string) => projectTypeLabels[t] || t).join(', ')}</td>
+          <td class="text-muted">${esc(p.terrain_profiles?.full_name) || '—'}</td>
+          <td>${statusBadge(p.status)}</td>
+          <td class="text-muted">${formatDate(p.created_at)}</td>
+        </tr>
+      `).join('')}
+    </tbody></table>`;
+    el.querySelectorAll('[data-project-id]').forEach(row => {
+      row.addEventListener('click', () => {
+        window.location.href = `/terrain/admin/project-view/?projectId=${(row as HTMLElement).dataset.projectId}`;
+      });
+    });
+  }
+
+  function statusBadge(status: string): string {
+    const map: Record<string, string> = {
+      active: '<span class="badge badge-blue">Actif</span>', confirmed: '<span class="badge badge-amber">Confirmé</span>',
+      in_progress: '<span class="badge badge-green">En cours</span>', archived: '<span class="badge badge-gray">Archivé</span>',
+    };
+    return map[status] || status;
+  }
+</script>

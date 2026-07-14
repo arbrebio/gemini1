@@ -1,0 +1,160 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Détail" role="super_admin" active="projects">
+  <header class="main-header">
+    <div>
+      <div class="page-title" id="hdr-title">Chargement…</div>
+      <div class="page-subtitle" id="hdr-subtitle"></div>
+    </div>
+    <div class="header-actions" id="hdr-actions"></div>
+  </header>
+
+  <div class="page-body" id="content">
+    <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth();
+  if (me) init();
+
+  const params = new URLSearchParams(window.location.search);
+  const visitId = params.get('visitId');
+  const projectId = params.get('projectId');
+
+  async function init() {
+    if (visitId) return renderVisit(visitId);
+    if (projectId) return renderProject(projectId);
+    document.getElementById('content')!.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Aucun élément sélectionné</div></div>`;
+  }
+
+  async function renderProject(id: string) {
+    const res = await terrainFetch(`/api/terrain/projects/?id=${id}`);
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('content')!.innerHTML = notFound(); return; }
+    const { project, visits } = data;
+
+    document.getElementById('hdr-title')!.textContent = project.client_name;
+    document.getElementById('hdr-subtitle')!.textContent = `${project.zone || ''} · ${(project.project_types || []).map((t: string) => projectTypeLabels[t] || t).join(', ')}`;
+    if (me?.role === 'super_admin') {
+      document.getElementById('hdr-actions')!.innerHTML = `<a href="/terrain/admin/project-manage/?projectId=${project.id}" class="btn btn-primary">📋 Gérer les tâches</a>`;
+    }
+
+    document.getElementById('content')!.innerHTML = `
+      <div class="card">
+        <div class="card-header"><span class="card-title">Informations projet</span></div>
+        <div class="detail-grid" style="padding:16px">
+          <div class="detail-field"><div class="detail-label">Client</div><div class="detail-value">${esc(project.client_name)}</div></div>
+          <div class="detail-field"><div class="detail-label">Téléphone</div><div class="detail-value">${esc(project.client_phone) || '—'}</div></div>
+          <div class="detail-field"><div class="detail-label">Zone</div><div class="detail-value">${esc(project.zone) || '—'}</div></div>
+          <div class="detail-field"><div class="detail-label">Agent assigné</div><div class="detail-value">${esc(project.terrain_profiles?.full_name) || '—'}</div></div>
+          <div class="detail-field"><div class="detail-label">Statut</div><div class="detail-value">${statusBadge(project.status)}</div></div>
+          <div class="detail-field"><div class="detail-label">Créé le</div><div class="detail-value">${formatDate(project.created_at)}</div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-header"><span class="card-title">Visites (${visits.length})</span></div>
+        <div class="table-wrap">
+          ${visits.length ? `<table><thead><tr><th>Date</th><th>Client</th><th>Statut</th></tr></thead><tbody>
+            ${visits.map((v: any) => `<tr class="visit-card" data-visit-id="${v.id}" style="cursor:pointer"><td>${formatDate(v.created_at)}</td><td class="fw-600">${esc(v.client_name)}</td><td>${statusBadge(v.status)}</td></tr>`).join('')}
+          </tbody></table>` : `<div class="empty-state"><div class="empty-title">Aucune visite</div></div>`}
+        </div>
+      </div>
+    `;
+    document.querySelectorAll('[data-visit-id]').forEach(row => {
+      row.addEventListener('click', () => { window.location.href = `?visitId=${(row as HTMLElement).dataset.visitId}`; });
+    });
+  }
+
+  async function renderVisit(id: string) {
+    const res = await terrainFetch(`/api/terrain/visits/?id=${id}`);
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('content')!.innerHTML = notFound(); return; }
+    const v = data.visit;
+
+    document.getElementById('hdr-title')!.textContent = v.client_name;
+    document.getElementById('hdr-subtitle')!.textContent = `Visite du ${formatDate(v.visit_date || v.created_at)} par ${esc(v.terrain_profiles?.full_name || '—')}`;
+
+    let actions = `<button class="btn btn-secondary" id="btn-print">🖨️ Imprimer</button>`;
+    if (me?.role === 'super_admin') {
+      if (v.status === 'submitted') actions = `<button class="btn btn-primary" id="btn-confirm">✓ Confirmer la visite</button>` + actions;
+      else if (v.status === 'confirmed') actions = `<button class="btn btn-primary" id="btn-start">▶ Démarrer le projet</button>` + actions;
+      else if (v.status === 'in_progress' && v.project_id) actions += ` <a href="/terrain/admin/project-manage/?projectId=${v.project_id}" class="btn btn-primary">📋 Gérer les tâches</a>`;
+    }
+    document.getElementById('hdr-actions')!.innerHTML = actions;
+    document.getElementById('btn-confirm')?.addEventListener('click', () => doAction('confirm', id));
+    document.getElementById('btn-start')?.addEventListener('click', () => doAction('start-project', id));
+    document.getElementById('btn-print')?.addEventListener('click', () => window.print());
+
+    const g = v.greenhouse_data, ir = v.irrigation_data, su = v.substrate_data, cr = v.crops_data, eq = v.equipment_data, so = v.site_observations || {};
+
+    document.getElementById('content')!.innerHTML = `
+      <div class="card">
+        <div class="card-header"><span class="card-title">Statut : ${statusBadge(v.status)}</span></div>
+      </div>
+
+      ${section('Identification', {
+        Client: v.client_name, Téléphone: v.client_phone, Email: v.client_email, Zone: v.zone,
+        Adresse: v.site_address, GPS: v.site_gps, 'Date de visite': formatDate(v.visit_date),
+        Superficie: v.land_area, 'Statut foncier': v.land_tenure, Expérience: v.client_experience,
+      })}
+
+      ${section('Types de projet', { Types: (v.project_types || []).map((t: string) => projectTypeLabels[t] || t).join(', ') || '—', Objectif: v.project_objective, 'Certification bio': v.organic_cert, Budget: v.project_budget_range })}
+
+      ${g ? section('Serre tropicale', { Nombre: g.count, 'Surface/serre': g.size_each, Longueur: g.length, Largeur: g.width, 'Type structure': g.structure_type, Couverture: g.cover_type, Ventilation: g.ventilation, Automatisation: g.automation, Notes: g.notes }) : ''}
+      ${ir ? section('Irrigation', { 'Source eau': ir.water_source, Débit: ir.flow_rate, pH: ir.ph, EC: ir.ec, 'Pompe existante': ir.pump_exists, Type: ir.irrigation_type, Zones: ir.zones, Fertigation: ir.fertigation }) : ''}
+      ${su ? section('Substrat', { Types: (su.types || []).join(', '), Volume: su.volume, Sacs: su.bags, Origine: su.coco_source, Notes: su.notes }) : ''}
+      ${cr ? section('Cultures', { Cultures: (cr.crops || []).join(', '), Système: cr.system, Cycle: cr.cycle, Marché: cr.market, Notes: cr.notes }) : ''}
+      ${eq ? section('Équipements', { Liste: (eq.list || []).join(', '), Marque: eq.brand, Budget: eq.budget, Notes: eq.notes }) : ''}
+
+      ${section('Observations du site', {
+        Orientation: so.sun_orientation, Pente: so.slope_percent, Drainage: so.drainage_risk, Vent: so.wind_exposure,
+        'Type de sol': so.soil_type, 'pH sol': so.soil_ph, Électricité: so.electricity_available, Observations: so.observations,
+      })}
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-header"><span class="card-title">Photos (${(v.photos || []).length})</span></div>
+        <div class="photo-view-grid" style="padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+          ${(v.photos || []).map((p: any) => `<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px" alt=""></a>`).join('') || '<p class="text-muted">Aucune photo</p>'}
+        </div>
+      </div>
+
+      ${section('Résumé', { 'Points bloquants': v.blocking_issues, Recommandations: v.recommendations, 'Prochaines étapes': v.next_steps, 'Budget estimé': v.estimated_budget })}
+    `;
+  }
+
+  function section(title: string, fields: Record<string, any>): string {
+    const rows = Object.entries(fields).filter(([, val]) => val !== null && val !== undefined && val !== '');
+    if (!rows.length) return '';
+    return `<div class="card" style="margin-top:20px">
+      <div class="card-header"><span class="card-title">${esc(title)}</span></div>
+      <div class="detail-grid" style="padding:16px">
+        ${rows.map(([k, val]) => `<div class="detail-field"><div class="detail-label">${esc(k)}</div><div class="detail-value">${esc(val)}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  function statusBadge(status: string): string {
+    const map: Record<string, string> = {
+      submitted: '<span class="badge badge-blue">Soumise</span>', confirmed: '<span class="badge badge-amber">Confirmée</span>',
+      in_progress: '<span class="badge badge-green">En cours</span>', active: '<span class="badge badge-blue">Actif</span>',
+      archived: '<span class="badge badge-gray">Archivé</span>',
+    };
+    return map[status] || status;
+  }
+
+  function notFound(): string {
+    return `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Introuvable</div><div class="empty-desc">Cet élément n'existe pas ou vous n'y avez pas accès.</div></div>`;
+  }
+
+  async function doAction(action: string, id: string) {
+    const res = await terrainFetch('/api/terrain/visits/', { method: 'PUT', body: JSON.stringify({ id, action }) });
+    if (!res.ok) { (window as any).UI?.toast('Échec de l\'opération.', 'error'); return; }
+    (window as any).UI?.toast('Mise à jour effectuée.', 'success');
+    renderVisit(id);
+  }
+</script>

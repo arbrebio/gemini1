@@ -1,0 +1,374 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Utilisateurs" role="super_admin" active="users">
+  <header class="main-header">
+    <div>
+      <div class="page-title">Gestion des Utilisateurs</div>
+      <div class="page-subtitle">Ingénieurs agronomes et techniciens terrain</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" id="btn-open-add">
+        <span>+</span> Nouvel utilisateur
+      </button>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <div class="card" id="reset-banner" style="display:none; border-left:4px solid #f59e0b; margin-bottom:16px;">
+      <div class="card-header">
+        <span class="card-title">🔑 Demandes de réinitialisation de mot de passe</span>
+      </div>
+      <div id="reset-list" style="padding:8px 16px 16px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Équipe terrain</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="form-control" id="search-users" placeholder="Rechercher…" style="width:200px">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Créé le</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Chargement…</div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add user modal -->
+  <div class="modal-backdrop" id="modal-add-user">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Ajouter un utilisateur</div>
+        <button class="modal-close" id="btn-close-add">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="add-user-error" class="alert alert-error" style="display:none">
+          <span>⚠</span><span id="add-user-error-msg"></span>
+        </div>
+        <form id="add-user-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="u-name">Nom complet <span class="required">*</span></label>
+            <input class="form-control" type="text" id="u-name" placeholder="Ex: Kouassi Jean-Marie" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="u-email">Email professionnel <span class="required">*</span></label>
+            <input class="form-control" type="email" id="u-email" placeholder="jean@arbrebio.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="u-phone">Téléphone</label>
+            <input class="form-control" type="tel" id="u-phone" placeholder="+225 00 00 00 00 00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="u-role">Rôle <span class="required">*</span></label>
+            <select class="form-control" id="u-role" required>
+              <option value="">-- Sélectionner --</option>
+              <option value="engineer">Ingénieur Agronome</option>
+              <option value="technician">Technicien Terrain</option>
+            </select>
+          </div>
+          <p class="text-xs text-muted">Un mot de passe temporaire sera généré automatiquement et envoyé par e-mail. L'utilisateur devra le changer à sa première connexion.</p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel-add">Annuler</button>
+        <button class="btn btn-primary" id="btn-submit-add">Créer l'utilisateur</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit user modal -->
+  <div class="modal-backdrop" id="modal-edit-user">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Modifier l'utilisateur</div>
+        <button class="modal-close" id="btn-close-edit">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-user-form" novalidate>
+          <input type="hidden" id="eu-id">
+          <div class="form-group">
+            <label class="form-label" for="eu-name">Nom complet <span class="required">*</span></label>
+            <input class="form-control" type="text" id="eu-name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" id="eu-email" disabled>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eu-phone">Téléphone</label>
+            <input class="form-control" type="tel" id="eu-phone">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eu-role">Rôle <span class="required">*</span></label>
+            <select class="form-control" id="eu-role" required>
+              <option value="engineer">Ingénieur Agronome</option>
+              <option value="technician">Technicien Terrain</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-reset-pw">Réinitialiser le mot de passe</button>
+        <button class="btn btn-primary" id="btn-save-edit">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Temp password reveal modal -->
+  <div class="modal-backdrop" id="modal-temp-pw">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Identifiants générés</div>
+        <button class="modal-close" id="btn-close-temp-pw">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm" style="margin-bottom:12px">Un e-mail avec ces identifiants a été envoyé (si l'envoi d'e-mail est configuré). Vous pouvez aussi les communiquer directement :</p>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" id="temp-pw-email" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe temporaire</label>
+          <input class="form-control" id="temp-pw-value" readonly style="font-family:var(--font-mono)">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btn-close-temp-pw-2">Fermer</button>
+      </div>
+    </div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, roleLabel, formatDateTime, esc } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth(['super_admin']);
+  if (me) {
+    init();
+  }
+
+  let allUsers: any[] = [];
+
+  async function init() {
+    await loadUsers();
+    document.getElementById('search-users')!.addEventListener('input', renderUsers);
+  }
+
+  async function loadUsers() {
+    const res = await terrainFetch('/api/terrain/users/');
+    const data = await res.json();
+    allUsers = data.users || [];
+    renderUsers();
+    renderResetBanner();
+  }
+
+  function renderResetBanner() {
+    const pending = allUsers.filter(u => u.pending_reset_at);
+    const banner = document.getElementById('reset-banner')!;
+    const list = document.getElementById('reset-list')!;
+    if (!pending.length) { banner.style.display = 'none'; return; }
+    banner.style.display = 'block';
+    list.innerHTML = pending.map(u => `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #f1f1f1;">
+        <div>
+          <div class="fw-600">${esc(u.full_name)}</div>
+          <div class="text-muted" style="font-size:0.82rem;">${esc(u.email)} · demandé le ${formatDateTime(u.pending_reset_at)}</div>
+        </div>
+        <button class="btn btn-sm btn-primary" data-reset-id="${u.id}">Réinitialiser le mot de passe</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('[data-reset-id]').forEach(btn => {
+      btn.addEventListener('click', () => resetPassword((btn as HTMLElement).dataset.resetId!));
+    });
+  }
+
+  function renderUsers() {
+    const q = ((document.getElementById('search-users') as HTMLInputElement).value || '').toLowerCase();
+    const users = allUsers.filter(u => !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    const tbody = document.getElementById('users-table-body')!;
+
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Aucun utilisateur trouvé</div><div class="empty-desc">Cliquez sur "Nouvel utilisateur" pour commencer.</div></div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="user-avatar" style="background:var(--green-${u.role === 'engineer' ? '700' : '500'})">
+              ${u.avatar_url ? `<img src="${esc(u.avatar_url)}" alt="${esc(u.full_name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">` : esc(u.full_name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2))}
+            </div>
+            <div class="fw-600">${esc(u.full_name)}</div>
+          </div>
+        </td>
+        <td class="text-muted">${esc(u.email)}</td>
+        <td>${roleLabel(u.role)}</td>
+        <td class="text-muted">${formatDateTime(u.created_at)}</td>
+        <td>
+          <span class="badge ${u.active ? 'badge-green' : 'badge-gray'}">${u.active ? 'Actif' : 'Inactif'}</span>
+          ${u.pending_reset_at ? '<span class="badge badge-gray" style="background:#fef3c7;color:#92400e;margin-left:4px;">🔑 Réinit. demandée</span>' : ''}
+          ${u.must_change_password ? '<span class="badge badge-gray" style="margin-left:4px;">1ère connexion en attente</span>' : ''}
+        </td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-secondary" data-edit-id="${u.id}">Modifier</button>
+            <button class="btn btn-sm ${u.active ? 'btn-danger' : 'btn-secondary'}" data-toggle-id="${u.id}">
+              ${u.active ? 'Désactiver' : 'Activer'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('[data-edit-id]').forEach(btn => {
+      btn.addEventListener('click', () => openEdit((btn as HTMLElement).dataset.editId!));
+    });
+    tbody.querySelectorAll('[data-toggle-id]').forEach(btn => {
+      btn.addEventListener('click', () => toggleActive((btn as HTMLElement).dataset.toggleId!));
+    });
+  }
+
+  // ── Add user ─────────────────────────────────────────────────────────
+  const addModal = document.getElementById('modal-add-user')!;
+  document.getElementById('btn-open-add')!.addEventListener('click', () => {
+    (document.getElementById('add-user-form') as HTMLFormElement).reset();
+    document.getElementById('add-user-error')!.style.display = 'none';
+    addModal.classList.add('open');
+  });
+  const closeAdd = () => addModal.classList.remove('open');
+  document.getElementById('btn-close-add')!.addEventListener('click', closeAdd);
+  document.getElementById('btn-cancel-add')!.addEventListener('click', closeAdd);
+
+  document.getElementById('btn-submit-add')!.addEventListener('click', async () => {
+    const full_name = (document.getElementById('u-name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('u-email') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('u-phone') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('u-role') as HTMLSelectElement).value;
+    const errDiv = document.getElementById('add-user-error')!;
+    const errMsg = document.getElementById('add-user-error-msg')!;
+
+    if (!full_name || !email || !role) {
+      errDiv.style.display = 'flex'; errMsg.textContent = 'Tous les champs requis doivent être remplis.'; return;
+    }
+
+    const btn = document.getElementById('btn-submit-add') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = 'Création…';
+
+    try {
+      const res = await terrainFetch('/api/terrain/users/', {
+        method: 'POST',
+        body: JSON.stringify({ full_name, email, phone, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Échec de la création');
+
+      closeAdd();
+      await loadUsers();
+      (window as any).UI?.toast(`Utilisateur ${full_name} créé avec succès.`, 'success');
+      showTempPassword(email, data.temp_password);
+    } catch (e: any) {
+      errDiv.style.display = 'flex'; errMsg.textContent = e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = "Créer l'utilisateur";
+    }
+  });
+
+  function showTempPassword(email: string, temp_password: string) {
+    (document.getElementById('temp-pw-email') as HTMLInputElement).value = email;
+    (document.getElementById('temp-pw-value') as HTMLInputElement).value = temp_password;
+    document.getElementById('modal-temp-pw')!.classList.add('open');
+  }
+  const closeTempPw = () => document.getElementById('modal-temp-pw')!.classList.remove('open');
+  document.getElementById('btn-close-temp-pw')!.addEventListener('click', closeTempPw);
+  document.getElementById('btn-close-temp-pw-2')!.addEventListener('click', closeTempPw);
+
+  // ── Edit user ────────────────────────────────────────────────────────
+  const editModal = document.getElementById('modal-edit-user')!;
+  let editingId: string | null = null;
+
+  function openEdit(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    editingId = id;
+    (document.getElementById('eu-id') as HTMLInputElement).value = u.id;
+    (document.getElementById('eu-name') as HTMLInputElement).value = u.full_name;
+    (document.getElementById('eu-email') as HTMLInputElement).value = u.email;
+    (document.getElementById('eu-phone') as HTMLInputElement).value = u.phone || '';
+    (document.getElementById('eu-role') as HTMLSelectElement).value = u.role;
+    editModal.classList.add('open');
+  }
+  const closeEdit = () => editModal.classList.remove('open');
+  document.getElementById('btn-close-edit')!.addEventListener('click', closeEdit);
+
+  document.getElementById('btn-save-edit')!.addEventListener('click', async () => {
+    if (!editingId) return;
+    const full_name = (document.getElementById('eu-name') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('eu-phone') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('eu-role') as HTMLSelectElement).value;
+    if (!full_name) { (window as any).UI?.toast('Le nom est requis.', 'error'); return; }
+
+    const res = await terrainFetch('/api/terrain/users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id: editingId, full_name, phone, role }),
+    });
+    if (!res.ok) { (window as any).UI?.toast('Échec de la mise à jour.', 'error'); return; }
+    closeEdit();
+    await loadUsers();
+    (window as any).UI?.toast('Utilisateur mis à jour.', 'success');
+  });
+
+  document.getElementById('btn-reset-pw')!.addEventListener('click', () => {
+    if (editingId) resetPassword(editingId);
+  });
+
+  async function resetPassword(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    if (!confirm(`Réinitialiser le mot de passe de ${u.full_name} ?`)) return;
+
+    const res = await terrainFetch('/api/terrain/users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id, action: 'reset-password' }),
+    });
+    const data = await res.json();
+    if (!res.ok) { (window as any).UI?.toast(data.error || 'Échec de la réinitialisation.', 'error'); return; }
+
+    closeEdit();
+    await loadUsers();
+    showTempPassword(u.email, data.temp_password);
+  }
+
+  async function toggleActive(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    const action = u.active ? 'désactiver' : 'activer';
+    if (!confirm(`Voulez-vous ${action} ${u.full_name} ?`)) return;
+
+    const res = await terrainFetch('/api/terrain/users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id, action: 'toggle-active' }),
+    });
+    if (!res.ok) { (window as any).UI?.toast('Échec de l\'opération.', 'error'); return; }
+    await loadUsers();
+    (window as any).UI?.toast(`Compte ${action === 'désactiver' ? 'désactivé' : 'activé'}.`, 'success');
+  }
+</script>

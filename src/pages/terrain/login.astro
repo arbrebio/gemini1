@@ -1,0 +1,251 @@
+---
+export const prerender = false;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Arbre Bio Africa</title>
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="/terrain/assets/style.css">
+  <style>
+    @media (max-width: 768px) {
+      .login-bg { display: none; }
+      .login-panel { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="login-page">
+  <div class="login-panel">
+    <div class="login-logo">
+      <div class="login-logo-icon">🌿</div>
+      <div class="login-logo-name">Arbre Bio Africa</div>
+      <div class="login-logo-sub">Plateforme Terrain — Agriculture de Précision</div>
+    </div>
+    <div class="login-title">Connexion</div>
+    <div class="login-desc">Accédez à votre espace selon votre rôle.</div>
+
+    <div id="login-error" class="alert alert-error" style="display:none">
+      <span>⚠</span><span id="login-error-msg"></span>
+    </div>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="email">Adresse e-mail <span class="required">*</span></label>
+        <input class="form-control" type="email" id="email" name="email" placeholder="votre@email.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Mot de passe <span class="required">*</span></label>
+        <input class="form-control" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:11px;" id="login-btn">
+        Se connecter
+      </button>
+    </form>
+
+    <p style="text-align:center; margin-top:14px;">
+      <a href="#" id="forgot-link" style="font-size:0.85rem; color:var(--green-700, #194642); text-decoration:none;">
+        Mot de passe oublié ?
+      </a>
+    </p>
+
+    <p class="text-xs text-muted mt-16" style="text-align:center">
+      Accès restreint — Personnel Arbre Bio Africa uniquement.<br>
+      Votre compte est créé par l'administrateur.
+    </p>
+  </div>
+
+  <div class="login-bg">
+    <div class="login-bg-pattern"></div>
+    <div class="login-bg-content">
+      <div class="login-bg-icon">🌱</div>
+      <div class="login-bg-title">Plateforme de Gestion Agronomique</div>
+      <div class="login-bg-desc">
+        Centralisez les visites de site, les fiches projet, les données terrain et le suivi des installations en temps réel.
+      </div>
+      <div style="margin-top:32px; display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.8rem;color:#fff">🏡</div>
+          <div style="font-size:0.75rem;color:var(--green-200);margin-top:4px">Serres tropicales</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.8rem;color:#fff">💧</div>
+          <div style="font-size:0.75rem;color:var(--green-200);margin-top:4px">Irrigation</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.8rem;color:#fff">🥥</div>
+          <div style="font-size:0.75rem;color:var(--green-200);margin-top:4px">Substrats coco</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.8rem;color:#fff">🌾</div>
+          <div style="font-size:0.75rem;color:var(--green-200);margin-top:4px">Cultures</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot password modal -->
+  <div id="forgot-modal" style="display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; border-radius:14px; box-shadow:0 20px 50px rgba(0,0,0,0.25); width:100%; max-width:420px; overflow:hidden;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eee;">
+        <strong style="font-size:1.05rem; color:#194642;">Réinitialiser le mot de passe</strong>
+        <button type="button" id="forgot-close" aria-label="Fermer" style="background:none; border:none; font-size:1.6rem; line-height:1; color:#9ca3af; cursor:pointer;">&times;</button>
+      </div>
+      <div style="padding:22px;">
+        <p style="font-size:0.88rem; color:#555; margin:0 0 16px;">
+          Saisissez l'adresse e-mail de votre compte. Votre demande sera transmise au
+          super administrateur, qui définira un nouveau mot de passe pour vous.
+        </p>
+        <div id="forgot-success" style="display:none; background:#f0f9f0; border:1px solid #c6e8c6; color:#166534; border-radius:8px; padding:12px 14px; font-size:0.85rem; margin-bottom:14px;">
+          ✓ Demande envoyée. Le super administrateur réinitialisera votre mot de passe et vous communiquera le nouveau.
+        </div>
+        <form id="forgot-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="forgot-email">Adresse e-mail <span class="required">*</span></label>
+            <input class="form-control" type="email" id="forgot-email" placeholder="votre@email.com" required autocomplete="email">
+          </div>
+          <div id="forgot-error" class="alert alert-error" style="display:none; margin-top:10px;">
+            <span>⚠</span><span id="forgot-error-msg"></span>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px; margin-top:8px;" id="forgot-submit">
+            Envoyer la demande
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+  window.__TERRAIN_SUPABASE_URL__ = SUPABASE_URL;
+  window.__TERRAIN_SUPABASE_KEY__ = SUPABASE_ANON_KEY;
+</script>
+<script>
+  import { setTerrainSession, getTerrainToken } from '../../lib/terrainClient';
+
+  // Already logged in? Skip straight to the right dashboard.
+  if (getTerrainToken()) {
+    const profileRaw = localStorage.getItem('terrainProfile');
+    const profile = profileRaw ? JSON.parse(profileRaw) : null;
+    if (profile) {
+      window.location.href = profile.role === 'super_admin' ? '/terrain/admin/dashboard/' : '/terrain/portal/dashboard/';
+    }
+  }
+
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const errorDiv = document.getElementById('login-error')!;
+  const errorMsg = document.getElementById('login-error-msg')!;
+  const btn = document.getElementById('login-btn') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorDiv.style.display = 'none';
+    const email = (document.getElementById('email') as HTMLInputElement).value.trim();
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+
+    if (!email || !password) {
+      errorMsg.textContent = 'Veuillez renseigner tous les champs.';
+      errorDiv.style.display = 'flex';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Connexion en cours…';
+
+    try {
+      const supabaseUrl = (window as any).__TERRAIN_SUPABASE_URL__;
+      const supabaseKey = (window as any).__TERRAIN_SUPABASE_KEY__;
+
+      const signInRes = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: supabaseKey },
+        body: JSON.stringify({ email, password }),
+      });
+      const signInData = await signInRes.json();
+
+      if (!signInRes.ok || !signInData.access_token) {
+        errorMsg.textContent = 'E-mail ou mot de passe incorrect.';
+        errorDiv.style.display = 'flex';
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+        return;
+      }
+
+      const token = signInData.access_token;
+      const profileRes = await fetch('/api/terrain/login/', { headers: { Authorization: `Bearer ${token}` } });
+      const profileData = await profileRes.json();
+
+      if (!profileRes.ok) {
+        errorMsg.textContent = profileData.deactivated
+          ? 'Votre compte a été désactivé. Contactez l\'administrateur.'
+          : (profileData.error === 'This account is not a Terrain account.'
+              ? "Ce compte n'est pas un compte de la Plateforme Terrain."
+              : 'E-mail ou mot de passe incorrect.');
+        errorDiv.style.display = 'flex';
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+        return;
+      }
+
+      setTerrainSession(token, profileData.profile);
+
+      if (profileData.profile.must_change_password) {
+        window.location.href = '/terrain/change-password/';
+      } else {
+        window.location.href = profileData.profile.role === 'super_admin' ? '/terrain/admin/dashboard/' : '/terrain/portal/dashboard/';
+      }
+    } catch {
+      errorMsg.textContent = 'Une erreur est survenue. Veuillez réessayer.';
+      errorDiv.style.display = 'flex';
+      btn.disabled = false;
+      btn.textContent = 'Se connecter';
+    }
+  });
+
+  // ── Forgot password ────────────────────────────────────────────────
+  const forgotModal = document.getElementById('forgot-modal')!;
+  const openForgot = (e: Event) => {
+    e.preventDefault();
+    document.getElementById('forgot-success')!.style.display = 'none';
+    document.getElementById('forgot-error')!.style.display = 'none';
+    (document.getElementById('forgot-form') as HTMLFormElement).style.display = 'block';
+    (document.getElementById('forgot-email') as HTMLInputElement).value = '';
+    forgotModal.style.display = 'flex';
+  };
+  const closeForgot = () => { forgotModal.style.display = 'none'; };
+
+  document.getElementById('forgot-link')!.addEventListener('click', openForgot);
+  document.getElementById('forgot-close')!.addEventListener('click', closeForgot);
+  forgotModal.addEventListener('click', (e) => { if (e.target === forgotModal) closeForgot(); });
+
+  document.getElementById('forgot-form')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('forgot-email') as HTMLInputElement).value.trim();
+    const errDiv = document.getElementById('forgot-error')!;
+    const errMsgEl = document.getElementById('forgot-error-msg')!;
+    errDiv.style.display = 'none';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errMsgEl.textContent = 'Veuillez saisir une adresse e-mail valide.';
+      errDiv.style.display = 'flex';
+      return;
+    }
+
+    try {
+      await fetch('/api/terrain/forgot-password/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+    } catch { /* still show success — enumeration-safe */ }
+
+    (document.getElementById('forgot-form') as HTMLFormElement).style.display = 'none';
+    document.getElementById('forgot-success')!.style.display = 'block';
+  });
+</script>
+</body>
+</html>

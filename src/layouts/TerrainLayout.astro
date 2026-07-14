@@ -1,0 +1,139 @@
+---
+export const prerender = false;
+
+interface Props {
+  title: string;
+  // Default nav shown before JS resolves the real session (avoids a nav
+  // flash on the common case). The client script below always corrects
+  // this to match the ACTUAL logged-in role — some pages (e.g. viewing a
+  // visit) are reachable by both admins and the field agent who owns it.
+  role: 'super_admin' | 'engineer' | 'technician';
+  active: string;
+}
+const { title, role, active } = Astro.props;
+
+const adminNav = [
+  { key: 'dashboard', label: 'Tableau de bord', icon: '📊', href: '/terrain/admin/dashboard/' },
+  { key: 'users', label: 'Utilisateurs', icon: '👥', href: '/terrain/admin/users/' },
+  { key: 'projects', label: 'Tous les projets', icon: '📁', href: '/terrain/admin/projects/' },
+];
+const portalNav = [
+  { key: 'dashboard', label: 'Tableau de bord', icon: '📊', href: '/terrain/portal/dashboard/' },
+  { key: 'visit-form', label: 'Nouvelle visite', icon: '📝', href: '/terrain/portal/visit-form/' },
+];
+const nav = role === 'super_admin' ? adminNav : portalNav;
+const roleLabel = role === 'super_admin' ? 'Super Admin' : role === 'engineer' ? 'Ingénieur Agronome' : 'Technicien';
+const profileHref = role === 'super_admin' ? '/terrain/admin/profile/' : '/terrain/portal/profile/';
+---
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} — Arbre Bio Africa</title>
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="/terrain/assets/style.css" />
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-text-main">Arbre Bio Africa</div>
+          <div class="logo-text-sub">Plateforme Terrain</div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge" id="sidebar-role-badge">{roleLabel}</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav" data-active={active}>
+      <div class="nav-section-label" id="nav-section-label">{role === 'super_admin' ? 'Administration' : 'Mon espace'}</div>
+      {nav.map(item => (
+        <a class:list={["nav-item", { active: active === item.key }]} href={item.href}>
+          <span class="nav-icon">{item.icon}</span>{item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <a href={profileHref} style="display:contents">
+          <div class="user-avatar" id="sb-user-av">…</div>
+        </a>
+        <div class="user-info">
+          <a href={profileHref} style="text-decoration:none;color:inherit">
+            <div class="user-name" id="sb-user-name">…</div>
+          </a>
+          <div class="user-role" id="sb-user-role">…</div>
+        </div>
+        <button class="btn-logout" id="btn-logout" title="Déconnexion">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <slot />
+  </div>
+</div>
+
+<script src="/terrain/assets/ui.js" is:inline></script>
+<script>
+  import { requireTerrainAuth, terrainLogout, roleLabel as rl } from '../lib/terrainClient';
+
+  // Populate the sidebar user card. The page itself is responsible for the
+  // actual auth/role guard (it needs to redirect BEFORE rendering page
+  // content); this just reads the same already-verified local session.
+  const profile = requireTerrainAuth();
+  if (profile) {
+    const initials = profile.full_name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+    const avEl = document.getElementById('sb-user-av');
+    if (avEl) {
+      avEl.innerHTML = profile.avatar_url
+        ? `<img src="${profile.avatar_url}" alt="${profile.full_name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`
+        : initials;
+    }
+    const nameEl = document.getElementById('sb-user-name');
+    if (nameEl) nameEl.textContent = profile.full_name;
+    const roleEl = document.getElementById('sb-user-role');
+    if (roleEl) roleEl.textContent = rl(profile.role);
+    const badgeEl = document.getElementById('sidebar-role-badge');
+    if (badgeEl) badgeEl.textContent = rl(profile.role);
+
+    const realProfileHref = profile.role === 'super_admin' ? '/terrain/admin/profile/' : '/terrain/portal/profile/';
+    document.querySelectorAll<HTMLAnchorElement>('.sidebar-user a[href$="/profile/"]').forEach((a) => { a.href = realProfileHref; });
+
+    // Some pages (e.g. a visit detail) are reachable by both an admin and
+    // the field agent who owns the record, so the sidebar's build-time nav
+    // may not match the real session — rebuild it here from the actual role.
+    const navEl = document.getElementById('sidebar-nav');
+    const active = navEl?.getAttribute('data-active') || '';
+    const isAdmin = profile.role === 'super_admin';
+    const expectedFirstHref = isAdmin ? '/terrain/admin/dashboard/' : '/terrain/portal/dashboard/';
+    const currentFirstHref = navEl?.querySelector('.nav-item')?.getAttribute('href');
+    if (navEl && currentFirstHref !== expectedFirstHref) {
+      const items = isAdmin
+        ? [
+            { key: 'dashboard', label: 'Tableau de bord', icon: '📊', href: '/terrain/admin/dashboard/' },
+            { key: 'users', label: 'Utilisateurs', icon: '👥', href: '/terrain/admin/users/' },
+            { key: 'projects', label: 'Tous les projets', icon: '📁', href: '/terrain/admin/projects/' },
+          ]
+        : [
+            { key: 'dashboard', label: 'Tableau de bord', icon: '📊', href: '/terrain/portal/dashboard/' },
+            { key: 'visit-form', label: 'Nouvelle visite', icon: '📝', href: '/terrain/portal/visit-form/' },
+          ];
+      navEl.innerHTML =
+        `<div class="nav-section-label">${isAdmin ? 'Administration' : 'Mon espace'}</div>` +
+        items.map((it) => `<a class="nav-item${active === it.key ? ' active' : ''}" href="${it.href}"><span class="nav-icon">${it.icon}</span>${it.label}</a>`).join('');
+    }
+  }
+
+  document.getElementById('btn-logout')?.addEventListener('click', () => {
+    terrainLogout();
+    const depth = window.location.pathname.split('/').filter(Boolean).length;
+    window.location.href = depth > 2 ? '../login/' : 'login/';
+  });
+</script>
+</body>
+</html>

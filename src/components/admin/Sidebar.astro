@@ -11,9 +11,10 @@ const menuItems = [
     { name: "Settings", href: "/admin/settings/", icon: "fa-cog" },
 ];
 
-// Terrain is a separate app (its own login/session, not Supabase-backed),
-// so it's linked out rather than treated as an internal nav item.
-const terrainHref = "/terrain/admin/dashboard.html";
+// Terrain is a separate app (its own Supabase-backed login/session under
+// terrain_profiles, not this panel's admin_profiles), so it's linked out
+// rather than treated as an internal nav item.
+const terrainHref = "/terrain/login/";
 
 const currentPath = Astro.url.pathname;
 ---

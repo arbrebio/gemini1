@@ -65,43 +65,6 @@ const UI = {
     if (el) el.style.display = 'none';
   },
 
-  // ── Render sidebar user info ───────────────────────
-  renderSidebar(session) {
-    if (!session) return;
-    const user = DB.getUserById(session.userId);
-    if (!user) return;
-    const nameEl  = document.getElementById('sb-user-name');
-    const roleEl  = document.getElementById('sb-user-role');
-    const avEl    = document.getElementById('sb-user-av');
-    const badgeEl = document.getElementById('sb-role-badge');
-    if (nameEl)  nameEl.textContent  = user.name;
-    if (roleEl)  roleEl.textContent  = DB.roleLabel(user.role);
-    if (avEl) {
-      if (user.avatarPhoto) {
-        avEl.innerHTML = `<img src="${user.avatarPhoto}" alt="${DB.esc(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`;
-      } else {
-        avEl.textContent = user.avatar || user.name.slice(0,2).toUpperCase();
-      }
-    }
-    if (badgeEl) badgeEl.textContent = DB.roleLabel(user.role);
-
-    // Make avatar + name clickable → profile page (same directory)
-    if (avEl) { avEl.style.cursor = 'pointer'; avEl.title = 'Mon profil'; avEl.onclick = (e) => { e.stopPropagation(); window.location.href = 'profile.html'; }; }
-    const infoEl = document.querySelector('.user-info');
-    if (infoEl) { infoEl.style.cursor = 'pointer'; infoEl.title = 'Mon profil'; infoEl.onclick = (e) => { e.stopPropagation(); window.location.href = 'profile.html'; }; }
-  },
-
-  // ── User avatar HTML (photo or initials) ─────────
-  // Returns an innerHTML string for any avatar container.
-  // size: CSS size string e.g. '32px' (default) or '28px'
-  userAvatarInner(user, size = '32px') {
-    if (!user) return '?';
-    if (user.avatarPhoto) {
-      return `<img src="${user.avatarPhoto}" alt="${DB.esc(user.name)}" style="width:${size};height:${size};object-fit:cover;border-radius:50%;display:block;">`;
-    }
-    return DB.esc(user.avatar || user.name.slice(0, 2).toUpperCase());
-  },
-
   // ── Active nav item ───────────────────────────────
   setActiveNav(href) {
     document.querySelectorAll('.nav-item').forEach(el => {
@@ -129,11 +92,6 @@ const UI = {
     };
     const [cls, label] = map[status] || ['badge-gray', status];
     return `<span class="badge ${cls}">${label}</span>`;
-  },
-
-  projectTypeBadges(types = []) {
-    if (!types.length) return '<span class="text-muted">—</span>';
-    return types.map(t => `<span class="badge badge-green">${DB.projectTypeLabels[t] || t}</span>`).join(' ');
   },
 
   // ── Form validation ───────────────────────────────

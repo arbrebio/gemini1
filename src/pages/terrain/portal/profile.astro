@@ -1,0 +1,106 @@
+---
+export const prerender = false;
+import TerrainLayout from '../../../layouts/TerrainLayout.astro';
+---
+<TerrainLayout title="Mon profil" role="engineer" active="dashboard">
+  <header class="main-header">
+    <div>
+      <div class="page-title">Mon profil</div>
+      <div class="page-subtitle">Gérez vos informations personnelles</div>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <div class="card profile-page" style="max-width:520px">
+      <div class="card-body" style="padding:24px">
+        <div class="profile-avatar-wrap" style="text-align:center;margin-bottom:20px">
+          <div class="profile-avatar-circle" id="p-avatar" style="width:96px;height:96px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--green-600,#194642);color:#fff;overflow:hidden;position:relative;cursor:pointer">…</div>
+          <input type="file" id="p-avatar-input" accept="image/*" class="hidden" style="display:none">
+          <p class="text-xs text-muted" style="margin-top:8px">Cliquez sur la photo pour la modifier (max 3 Mo)</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nom complet</label>
+          <input class="form-control" id="p-name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control profile-readonly" id="p-email" disabled>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Téléphone</label>
+          <input class="form-control" id="p-phone">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rôle</label>
+          <input class="form-control profile-readonly" id="p-role" disabled>
+        </div>
+
+        <button class="btn btn-primary" id="p-save" style="width:100%;justify-content:center;padding:11px;margin-top:8px">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</TerrainLayout>
+
+<script>
+  import { requireTerrainAuth, terrainFetch, roleLabel, setTerrainSession, getTerrainToken } from '../../../lib/terrainClient';
+
+  const me = requireTerrainAuth(['engineer', 'technician']);
+  if (me) {
+    (document.getElementById('p-name') as HTMLInputElement).value = me.full_name;
+    (document.getElementById('p-email') as HTMLInputElement).value = me.email;
+    (document.getElementById('p-phone') as HTMLInputElement).value = me.phone || '';
+    (document.getElementById('p-role') as HTMLInputElement).value = roleLabel(me.role);
+    const avEl = document.getElementById('p-avatar')!;
+    if (me.avatar_url) {
+      avEl.innerHTML = `<img src="${me.avatar_url}" style="width:100%;height:100%;object-fit:cover">`;
+    } else {
+      avEl.textContent = me.full_name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+  }
+
+  document.getElementById('p-avatar')!.addEventListener('click', () => {
+    (document.getElementById('p-avatar-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('p-avatar-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file || !me) return;
+    if (file.size > 3 * 1024 * 1024) { (window as any).UI?.toast('Photo trop volumineuse (max 3 Mo).', 'error'); return; }
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', 'avatars');
+    const uploadRes = await terrainFetch('/api/terrain/upload/', { method: 'POST', body: fd });
+    const uploadData = await uploadRes.json();
+    if (!uploadRes.ok) { (window as any).UI?.toast(uploadData.error || 'Échec du téléversement.', 'error'); return; }
+
+    const res = await terrainFetch('/api/terrain/profile/', {
+      method: 'PUT', body: JSON.stringify({ avatar_url: uploadData.url }),
+    });
+    const data = await res.json();
+    if (!res.ok) { (window as any).UI?.toast('Échec de la mise à jour.', 'error'); return; }
+
+    const token = getTerrainToken();
+    if (token) setTerrainSession(token, data.profile);
+    document.getElementById('p-avatar')!.innerHTML = `<img src="${uploadData.url}" style="width:100%;height:100%;object-fit:cover">`;
+    (window as any).UI?.toast('Photo de profil mise à jour.', 'success');
+  });
+
+  document.getElementById('p-save')!.addEventListener('click', async () => {
+    if (!me) return;
+    const full_name = (document.getElementById('p-name') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('p-phone') as HTMLInputElement).value.trim();
+    if (!full_name) { (window as any).UI?.toast('Le nom est requis.', 'error'); return; }
+
+    const res = await terrainFetch('/api/terrain/profile/', {
+      method: 'PUT', body: JSON.stringify({ full_name, phone }),
+    });
+    const data = await res.json();
+    if (!res.ok) { (window as any).UI?.toast('Échec de la mise à jour.', 'error'); return; }
+
+    const token = getTerrainToken();
+    if (token) setTerrainSession(token, data.profile);
+    (window as any).UI?.toast('Profil mis à jour.', 'success');
+  });
+</script>
