@@ -11,6 +11,10 @@ const menuItems = [
     { name: "Settings", href: "/admin/settings/", icon: "fa-cog" },
 ];
 
+// Terrain is a separate app (its own login/session, not Supabase-backed),
+// so it's linked out rather than treated as an internal nav item.
+const terrainHref = "/terrain/admin/dashboard.html";
+
 const currentPath = Astro.url.pathname;
 ---
 
@@ -50,6 +54,20 @@ const currentPath = Astro.url.pathname;
                 );
             })
         }
+
+        <div class="pt-3 mt-3 border-t border-[#2a5e59]/60">
+            <a
+                href={terrainHref}
+                target="_blank"
+                rel="noopener"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 group text-gray-300 hover:bg-[#2a5e59] hover:text-white"
+                title="Opens the Terrain platform in a new tab — separate login"
+            >
+                <i class="fas fa-map-marked-alt w-5 text-center text-gray-400 group-hover:text-white" />
+                <span class="font-medium">Terrain Platform</span>
+                <i class="fas fa-external-link-alt text-[10px] text-gray-500 group-hover:text-white/70 ml-auto" />
+            </a>
+        </div>
     </nav>
 
     <div class="p-4 border-t border-[#2a5e59]">
