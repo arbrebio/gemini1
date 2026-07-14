@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_NAME = `arbre-bio-${CACHE_VERSION}`;
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
@@ -25,7 +25,7 @@ const AGENT_SHELL_ASSETS = [
   '/sales-agent/customers/',
   '/sales-agent/categories/',
   '/manifest-agent.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  '/vendor/fontawesome/css/all.min.css',
 ];
 
 self.addEventListener('install', (event) => {
@@ -100,8 +100,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Font Awesome CDN — cache first
-  if (url.hostname.includes('cdnjs.cloudflare.com') || url.hostname.includes('rsms.me')) {
+  // Inter font CDN — cache first (Font Awesome is now same-origin under
+  // /vendor/fontawesome/ and is handled by the same-origin cache path below)
+  if (url.hostname.includes('rsms.me')) {
     event.respondWith(
       caches.match(request, { ignoreVary: true })
         .then(cached => {
@@ -120,7 +121,6 @@ self.addEventListener('fetch', (event) => {
   // Skip non-same-origin and non-CDN requests
   if (
     url.origin !== self.location.origin &&
-    !url.hostname.includes('cdnjs.cloudflare.com') &&
     !url.hostname.includes('rsms.me')
   ) {
     return;

@@ -29,8 +29,9 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="manifest" href="/manifest-agent.json" />
-    <!-- Font Awesome — also cached by SW for offline -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Font Awesome, self-hosted (same-origin, so the service worker can
+         reliably cache it for offline use, and it never depends on cdnjs). -->
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
     <title id="page-title">{title} | Arbre Bio Sales</title>
     <style>
       /* Critical base styles inlined for offline reliability */

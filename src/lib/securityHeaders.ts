@@ -18,10 +18,10 @@ export const securityHeaders = {
   // Content Security Policy
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://connect.facebook.net",
-    "style-src 'self' 'unsafe-inline' https://rsms.me https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
+    "style-src 'self' 'unsafe-inline' https://rsms.me https://fonts.googleapis.com",
     "img-src 'self' data: https: blob:",
-    "font-src 'self' data: https://rsms.me https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+    "font-src 'self' data: https://rsms.me https://fonts.gstatic.com",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com",
     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
     "frame-ancestors 'none'",

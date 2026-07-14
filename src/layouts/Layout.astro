@@ -124,7 +124,6 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <link rel="icon" href="/favicon.png" sizes="16x16" type="image/png" />
     
     <!-- Preconnect to external domains for performance -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://rsms.me" crossorigin />
 
     <!-- Preload critical images -->
@@ -134,18 +133,17 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://rsms.me/inter/inter.css" /></noscript>
 
-    <!-- Font Awesome (non-blocking) -->
+    <!-- Font Awesome, self-hosted so icons never depend on an external CDN
+         being reachable (was a real bug: icon-only buttons across the site
+         went invisible whenever cdnjs was slow/blocked). Non-blocking load. -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
+      href="/vendor/fontawesome/css/all.min.css"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
     </noscript>
     
     <!-- Sitemap reference -->
