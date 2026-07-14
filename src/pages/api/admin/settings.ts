@@ -65,6 +65,11 @@ export const GET: APIRoute = async ({ request }) => {
 // ── POST / PUT ───────────────────────────────────────────────────────────────
 // Both POST and PUT upsert a flat {key: value} object.
 const upsertSettings: APIRoute = async ({ request }) => {
+  // Writes go through the service-role client, so they MUST be gated behind
+  // admin auth — otherwise anyone could overwrite site settings (bank details,
+  // maintenance mode, etc.) with an unauthenticated request.
+  const auth = await requireAdminAuth(request);
+  if (!auth.ok) return auth.response;
   try {
     const supabase = sb();
     const body = await request.json();
