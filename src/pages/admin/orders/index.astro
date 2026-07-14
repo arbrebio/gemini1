@@ -112,7 +112,7 @@ export const prerender = false;
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 class="text-lg font-semibold text-gray-800" id="modal-title">Create Order</h2>
           <button id="modal-close-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
-            <i class="fas fa-times text-lg"></i>
+            <span class="text-2xl leading-none" aria-hidden="true">&times;</span>
           </button>
         </div>
 
@@ -227,7 +227,7 @@ export const prerender = false;
         <p class="text-xs text-gray-500" id="drawer-created-at"></p>
       </div>
       <button id="drawer-close-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
-        <i class="fas fa-times text-lg"></i>
+        <span class="text-2xl leading-none" aria-hidden="true">&times;</span>
       </button>
     </div>
 
@@ -512,7 +512,7 @@ export const prerender = false;
       </td>
       <td class="px-3 py-2 text-right text-sm text-gray-700 li-subtotal">${fmt(qty * price)}</td>
       <td class="px-3 py-2 text-center">
-        <button type="button" class="li-remove text-red-400 hover:text-red-600 text-xs"><i class="fas fa-times"></i></button>
+        <button type="button" class="li-remove text-red-400 hover:text-red-600 text-xs"><span aria-hidden="true">&times;</span></button>
       </td>
     `;
 

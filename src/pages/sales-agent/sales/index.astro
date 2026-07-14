@@ -25,7 +25,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[75vh] overflow-y-auto">
       <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
         <h2 class="font-bold text-gray-800" data-i18n="sales">Détail de la vente</h2>
-        <button id="close-detail" class="text-gray-400 text-xl p-1"><i class="fas fa-times"></i></button>
+        <button id="close-detail" class="text-gray-400 text-xl p-1"><span aria-hidden="true">&times;</span></button>
       </div>
       <div id="detail-content" class="p-4 text-sm text-gray-700 space-y-2"></div>
     </div>
@@ -36,7 +36,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
     <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
       <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
         <h2 class="font-bold text-gray-800" data-i18n="addLineItem">Ajouter un article</h2>
-        <button id="close-line-item" class="text-gray-400 text-xl p-1"><i class="fas fa-times"></i></button>
+        <button id="close-line-item" class="text-gray-400 text-xl p-1"><span aria-hidden="true">&times;</span></button>
       </div>
       <form id="line-item-form" class="p-4 space-y-3">
         <!-- Product search -->
@@ -186,7 +186,7 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
           </div>
           <div id="proof-preview" class="hidden mt-2 relative">
             <div id="proof-preview-inner" class="flex items-center gap-2 bg-gray-50 rounded-xl p-2"></div>
-            <button type="button" id="remove-proof" class="absolute top-1 right-1 text-gray-400 hover:text-red-500 text-xs p-1"><i class="fas fa-times"></i></button>
+            <button type="button" id="remove-proof" class="absolute top-1 right-1 text-gray-400 hover:text-red-500 text-xs p-1"><span aria-hidden="true">&times;</span></button>
           </div>
         </div>
 
