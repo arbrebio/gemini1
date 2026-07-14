@@ -8,8 +8,17 @@ const ADMIN_EMAIL = 'farms@arbrebio.com';
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
 
 // Upload restrictions — documents only, capped size, allowlisted extensions.
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB per file
-const ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp']);
+// Must stay in sync with the career-documents bucket's allowed_mime_types.
+// Hosting platform caps request bodies at ~4.5 MB, so 4 MB is the true limit.
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const EXTENSION_MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+};
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getSupabase() {
@@ -29,17 +38,30 @@ async function sendEmail(to: string | string[], subject: string, html: string): 
   });
 }
 
-async function uploadFile(supabase: any, file: File, folder: string): Promise<string | null> {
-  if (!file || file.size === 0) return null;
-  if (file.size > MAX_UPLOAD_BYTES) return null;
+// Returns a validation error message, or null if the file is acceptable.
+function validateFile(file: File | null, label: string): string | null {
+  if (!file || file.size === 0) return null; // absent is handled by required-field checks
+  if (file.size > MAX_UPLOAD_BYTES) return `${label}: file exceeds the 4 MB limit.`;
   const ext = (file.name.split('.').pop() || '').toLowerCase();
-  if (!ALLOWED_EXTENSIONS.has(ext)) return null;
+  if (!EXTENSION_MIME[ext]) return `${label}: unsupported file type ".${ext}". Allowed: PDF, DOC, DOCX, JPG, PNG.`;
+  return null;
+}
+
+async function uploadFile(supabase: any, file: File, folder: string): Promise<string | null> {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  const contentType = EXTENSION_MIME[ext];
+  if (!contentType || file.size > MAX_UPLOAD_BYTES) return null;
   const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const arrayBuffer = await file.arrayBuffer();
+  // Always send the extension-derived MIME type: browsers sometimes report an
+  // empty or generic type, which the bucket's allowed_mime_types would reject.
   const { data, error } = await supabase.storage
     .from('career-documents')
-    .upload(fileName, arrayBuffer, { contentType: file.type });
-  if (error) return null;
+    .upload(fileName, arrayBuffer, { contentType });
+  if (error) {
+    console.error(`Career doc upload failed (${fileName}):`, error);
+    return null;
+  }
   return data.path;
 }
 
@@ -78,6 +100,29 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: 'Invalid email address.' }), {
         status: 400, headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Validate documents BEFORE creating the application record so a bad file
+    // produces a clear error instead of an application with missing documents.
+    const docFields = [
+      { name: 'cv', type: 'cv', label: 'CV / Resume', required: true },
+      { name: 'id_card', type: 'id_card', label: 'ID Card', required: true },
+      { name: 'diploma', type: 'diploma', label: 'Diploma', required: false },
+      { name: 'other', type: 'other', label: 'Other document', required: false },
+    ];
+    for (const field of docFields) {
+      const file = formData.get(field.name) as File | null;
+      if (field.required && (!file || file.size === 0)) {
+        return new Response(JSON.stringify({ error: `${field.label} is required.` }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      const problem = validateFile(file, field.label);
+      if (problem) {
+        return new Response(JSON.stringify({ error: problem }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     // Fetch job info
@@ -124,14 +169,8 @@ export const POST: APIRoute = async ({ request }) => {
     const appId = application.id;
     const portalToken = application.portal_token;
 
-    // Upload documents
-    const docFields = [
-      { name: 'cv', type: 'cv' },
-      { name: 'id_card', type: 'id_card' },
-      { name: 'diploma', type: 'diploma' },
-      { name: 'other', type: 'other' },
-    ];
-
+    // Upload documents (already validated above)
+    const failedUploads: string[] = [];
     for (const field of docFields) {
       const file = formData.get(field.name) as File | null;
       if (file && file.size > 0) {
@@ -143,10 +182,22 @@ export const POST: APIRoute = async ({ request }) => {
             file_name: file.name,
             file_url: path,
             file_size: file.size,
-            mime_type: file.type,
+            mime_type: EXTENSION_MIME[(file.name.split('.').pop() || '').toLowerCase()] || file.type,
           });
+        } else {
+          failedUploads.push(field.label);
         }
       }
+    }
+
+    // If a required document failed to store, roll back and tell the applicant
+    // instead of accepting an application with missing documents.
+    if (failedUploads.some(l => l === 'CV / Resume' || l === 'ID Card')) {
+      await supabase.from('career_documents').delete().eq('application_id', appId);
+      await supabase.from('career_applications').delete().eq('id', appId);
+      return new Response(JSON.stringify({
+        error: `Could not store your ${failedUploads.join(' and ')}. Please try again with a PDF, DOC, DOCX, JPG or PNG file under 4 MB.`,
+      }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
     // Add initial timeline entry

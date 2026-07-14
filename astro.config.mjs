@@ -45,6 +45,15 @@ export default defineConfig({
   site: 'https://www.arbrebio.com',
   output: 'static',
   adapter: vercel(),
+  // Astro's built-in CSRF origin check rejects multipart form POSTs (careers
+  // apply, sales proof uploads) with a plain-text "Cross-site POST form
+  // submissions are forbidden" 403 whenever the Origin header differs from the
+  // serving host (e.g. apex→www redirects on Vercel). All state-changing API
+  // routes authenticate via Bearer tokens or per-record tokens — not ambient
+  // cookies — so the origin check adds no CSRF protection here.
+  security: {
+    checkOrigin: false,
+  },
   // Prefetch internal links on hover for near-instant navigation.
   prefetch: {
     prefetchAll: true,

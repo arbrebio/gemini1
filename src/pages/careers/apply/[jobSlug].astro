@@ -152,10 +152,18 @@ const { jobSlug } = Astro.params as { jobSlug: string };
 <script define:vars={{ T, jobSlug }}>
   const slug = jobSlug;
 
+  // Parse a response body defensively: server/proxy errors (413, CSRF blocks,
+  // gateway pages) return plain text, which would crash res.json().
+  async function readJson(res) {
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch { return { error: res.ok ? 'Unexpected server response. Please try again.' : `Request failed (error ${res.status}). Please try again.` }; }
+  }
+
   async function loadJob() {
     try {
-      const res = await fetch(`/api/careers/jobs/?slug=${slug}`);
-      const data = await res.json();
+      const res = await fetch(`/api/careers/jobs/?slug=${encodeURIComponent(slug)}`);
+      const data = await readJson(res);
       if (data.job) {
         const title = data.job.title_en;
         document.getElementById('job-title-breadcrumb').textContent = title;
@@ -184,6 +192,11 @@ const { jobSlug } = Astro.params as { jobSlug: string };
     const cvFile = form.querySelector('[name=cv]').files[0];
     const idFile = form.querySelector('[name=id_card]').files[0];
 
+    if (!document.getElementById('job-id-field').value) {
+      errorDiv.textContent = 'Could not load the job posting. Please refresh the page and try again.';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
     if (!firstName || !lastName || !email || !birthDate) {
       errorDiv.textContent = 'Please fill all required fields.';
       errorDiv.classList.remove('hidden');
@@ -200,6 +213,18 @@ const { jobSlug } = Astro.params as { jobSlug: string };
       return;
     }
 
+    // The hosting platform rejects request bodies over ~4.5 MB with an opaque
+    // 413, so enforce the documented 4 MB total limit before uploading.
+    const totalBytes = ['cv','id_card','diploma','other']
+      .map(n => form.querySelector(`[name=${n}]`).files[0])
+      .filter(Boolean)
+      .reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > 4 * 1024 * 1024) {
+      errorDiv.textContent = `${T.maxFileSize} — your files total ${(totalBytes / 1024 / 1024).toFixed(1)} MB. Please compress or resize them.`;
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+
     submitBtn.disabled = true;
     submitText.classList.add('hidden');
     submitSpinner.classList.remove('hidden');
@@ -207,7 +232,7 @@ const { jobSlug } = Astro.params as { jobSlug: string };
     try {
       const formData = new FormData(form);
       const res = await fetch('/api/careers/apply/', { method: 'POST', body: formData });
-      const data = await res.json();
+      const data = await readJson(res);
       if (!res.ok || data.error) throw new Error(data.error || 'Submission failed');
 
       form.classList.add('hidden');

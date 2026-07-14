@@ -214,7 +214,11 @@ const statusColors: Record<string, string> = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, token }),
       });
-      const data = await res.json();
+      // Parse defensively: proxy/server errors return plain text, not JSON.
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); }
+      catch { data = { error: `Request failed (error ${res.status}). Please try again.` }; }
 
       if (!res.ok || data.error) {
         errorDiv.textContent = data.error || 'Invalid email or token.';
