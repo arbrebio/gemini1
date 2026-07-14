@@ -11,6 +11,7 @@ const DB = {
     SESSION: 'ab_session',
     TASKS: 'ab_tasks',
     REPORTS: 'ab_reports',
+    RESET_REQUESTS: 'ab_reset_requests',
   },
 
   // ── Init seed data ────────────────────────────────
@@ -157,6 +158,43 @@ const DB = {
     const u = users.find(u => u.id === id);
     if (u) { u.active = !u.active; localStorage.setItem(this.KEYS.USERS, JSON.stringify(users)); }
     return u;
+  },
+
+  // ── Password reset requests ───────────────────────────────────────
+  // The platform is offline/local, so there is no email delivery. A user who
+  // forgets their password files a request here; the super admin sees it on
+  // the Users page and resets the password. Requests are keyed by userId so a
+  // user can only ever have one pending request.
+  getResetRequests() {
+    return JSON.parse(localStorage.getItem(this.KEYS.RESET_REQUESTS) || '[]');
+  },
+
+  // Returns { ok } regardless of whether the email matches, so the login page
+  // cannot be used to enumerate which emails have accounts.
+  requestPasswordReset(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    const user = this.getUsers().find(u => u.email.toLowerCase() === normalized);
+    if (user && user.role !== 'super_admin') {
+      const requests = this.getResetRequests().filter(r => r.userId !== user.id);
+      requests.push({
+        id: 'rst_' + Date.now(),
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+        requestedAt: new Date().toISOString(),
+      });
+      localStorage.setItem(this.KEYS.RESET_REQUESTS, JSON.stringify(requests));
+    }
+    return { ok: true };
+  },
+
+  hasPendingReset(userId) {
+    return this.getResetRequests().some(r => r.userId === userId);
+  },
+
+  clearResetRequest(userId) {
+    const requests = this.getResetRequests().filter(r => r.userId !== userId);
+    localStorage.setItem(this.KEYS.RESET_REQUESTS, JSON.stringify(requests));
   },
 
   // ── Projects ──────────────────────────────────────

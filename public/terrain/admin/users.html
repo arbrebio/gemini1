@@ -53,6 +53,14 @@
 
     <div class="page-body">
 
+      <!-- Pending password-reset requests -->
+      <div id="reset-banner" class="card" style="display:none; border-left:4px solid #f59e0b; margin-bottom:16px;">
+        <div class="card-header">
+          <span class="card-title">🔑 Demandes de réinitialisation de mot de passe</span>
+        </div>
+        <div id="reset-list" style="padding:8px 16px 16px;"></div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">Équipe terrain</span>
@@ -170,7 +178,36 @@
   const session = DB.requireAuth(['super_admin']);
   if (session) {
     UI.renderSidebar(session);
+    renderResetRequests();
     renderUsers();
+  }
+
+  function renderResetRequests() {
+    const banner = document.getElementById('reset-banner');
+    const list = document.getElementById('reset-list');
+    const requests = DB.getResetRequests();
+    if (!requests.length) { banner.style.display = 'none'; return; }
+    banner.style.display = 'block';
+    list.innerHTML = requests.map(r => `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #f1f1f1;">
+        <div>
+          <div class="fw-600">${DB.esc(r.name)}</div>
+          <div class="text-muted" style="font-size:0.82rem;">${DB.esc(r.email)} · demandé le ${DB.formatDateTime(r.requestedAt)}</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-sm btn-primary" onclick="openEdit('${r.userId}')">Réinitialiser le mot de passe</button>
+          <button class="btn btn-sm btn-secondary" onclick="dismissReset('${r.userId}')">Ignorer</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function dismissReset(userId) {
+    if (!UI.confirm('Ignorer cette demande de réinitialisation ?')) return;
+    DB.clearResetRequest(userId);
+    renderResetRequests();
+    renderUsers();
+    UI.toast('Demande ignorée.', 'success');
   }
 
   function renderUsers() {
@@ -200,6 +237,7 @@
         <td class="text-muted">${DB.formatDate(u.createdAt)}</td>
         <td>
           <span class="badge ${u.active ? 'badge-green' : 'badge-gray'}">${u.active ? 'Actif' : 'Inactif'}</span>
+          ${DB.hasPendingReset(u.id) ? '<span class="badge badge-gray" style="background:#fef3c7;color:#92400e;margin-left:4px;">🔑 Réinit. demandée</span>' : ''}
         </td>
         <td>
           <div style="display:flex;gap:6px">
@@ -267,13 +305,20 @@
     user.email = email;
     user.role = role;
     user.avatar = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    let passwordChanged = false;
     if (password.length >= 6) {
       user.password = DB._hash(password);
+      passwordChanged = true;
     }
     DB.saveUser(user);
+    // Setting a new password resolves any pending reset request for this user.
+    if (passwordChanged && DB.hasPendingReset(id)) {
+      DB.clearResetRequest(id);
+    }
     UI.closeModal('modal-edit-user');
+    renderResetRequests();
     renderUsers();
-    UI.toast('Utilisateur mis à jour.', 'success');
+    UI.toast(passwordChanged ? 'Utilisateur mis à jour · mot de passe réinitialisé.' : 'Utilisateur mis à jour.', 'success');
   }
 
   function toggleActive(id) {

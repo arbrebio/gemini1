@@ -241,7 +241,7 @@
                 const timeAgo = formatTimeAgo(n.created_at);
                 const unreadCls = !n.is_read ? "bg-blue-50" : "";
                 return `
-                    <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${unreadCls}" data-notif-id="${n.id}">
+                    <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${unreadCls}" data-notif-id="${n.id}" data-entity-type="${escHtml(n.entity_type || '')}" data-entity-id="${escHtml(n.entity_id || '')}">
                         <div class="flex items-start gap-3">
                             <div class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                                 <i class="fas ${icon} text-xs"></i>
@@ -256,18 +256,25 @@
                 `;
             }).join("");
 
-            // Mark as read on click
+            // Mark as read on click, then deep-link to the related record.
             notifList.querySelectorAll("[data-notif-id]").forEach(el => {
                 el.addEventListener("click", async () => {
                     const id = (el as HTMLElement).dataset.notifId;
                     if (!id) return;
-                    await authFetch("/api/admin/notifications/", {
+                    const entityType = (el as HTMLElement).dataset.entityType || "";
+                    const entityId = (el as HTMLElement).dataset.entityId || "";
+
+                    // Mark read (best-effort — don't block navigation on it).
+                    authFetch("/api/admin/notifications/", {
                         method: "PUT",
                         body: JSON.stringify({ id, is_read: true }),
-                    });
+                    }).catch(() => {});
                     el.classList.remove("bg-blue-50");
                     el.querySelector("span.rounded-full.bg-\\[\\#194642\\]")?.remove();
                     if (unreadCount > 0) { unreadCount--; updateBadge(); }
+
+                    const dest = notifDestination(entityType, entityId);
+                    if (dest) window.location.href = dest;
                 });
             });
         } catch {
@@ -292,6 +299,26 @@
             unreadCount = data.unread_count ?? 0;
             updateBadge();
         } catch { /* silent */ }
+    }
+
+    // Map a notification's entity to the admin page that shows it. Pages read
+    // the ?focus= id to auto-open the matching record where supported.
+    function notifDestination(entityType: string, entityId: string): string | null {
+        const routes: Record<string, string> = {
+            sale:      "/admin/sales/",
+            customer:  "/admin/customers/",
+            order:     "/admin/orders/",
+            supplier:  "/admin/suppliers/",
+            product:   "/admin/inventory/",
+            inventory: "/admin/inventory/",
+            project:   "/admin/projects/",
+            task:      "/admin/projects/",
+            employee:  "/admin/careers/employees/",
+            application: "/admin/careers/applications/",
+        };
+        const base = routes[entityType];
+        if (!base) return null;
+        return entityId ? `${base}?focus=${encodeURIComponent(entityId)}` : base;
     }
 
     function formatTimeAgo(dateStr: string): string {

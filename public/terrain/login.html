@@ -41,10 +41,47 @@
       </button>
     </form>
 
+    <p style="text-align:center; margin-top:14px;">
+      <a href="#" id="forgot-link" style="font-size:0.85rem; color:var(--green-700, #194642); text-decoration:none;">
+        Mot de passe oublié ?
+      </a>
+    </p>
+
     <p class="text-xs text-muted mt-16" style="text-align:center">
       Accès restreint — Personnel Arbre Bio Africa uniquement.<br>
       Votre compte est créé par l'administrateur.
     </p>
+  </div>
+
+  <!-- Forgot password modal -->
+  <div id="forgot-modal" style="display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#fff; border-radius:14px; box-shadow:0 20px 50px rgba(0,0,0,0.25); width:100%; max-width:420px; overflow:hidden;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eee;">
+        <strong style="font-size:1.05rem; color:#194642;">Réinitialiser le mot de passe</strong>
+        <button type="button" id="forgot-close" aria-label="Fermer" style="background:none; border:none; font-size:1.6rem; line-height:1; color:#9ca3af; cursor:pointer;">&times;</button>
+      </div>
+      <div style="padding:22px;">
+        <p style="font-size:0.88rem; color:#555; margin:0 0 16px;">
+          Saisissez l'adresse e-mail de votre compte. Votre demande sera transmise au
+          super administrateur, qui définira un nouveau mot de passe pour vous.
+        </p>
+        <div id="forgot-success" style="display:none; background:#f0f9f0; border:1px solid #c6e8c6; color:#166534; border-radius:8px; padding:12px 14px; font-size:0.85rem; margin-bottom:14px;">
+          ✓ Demande envoyée. Le super administrateur réinitialisera votre mot de passe et vous communiquera le nouveau.
+        </div>
+        <form id="forgot-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="forgot-email">Adresse e-mail <span class="required">*</span></label>
+            <input class="form-control" type="email" id="forgot-email" placeholder="votre@email.com" required autocomplete="email">
+          </div>
+          <div id="forgot-error" class="alert alert-error" style="display:none; margin-top:10px;">
+            <span>⚠</span><span id="forgot-error-msg"></span>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px; margin-top:8px;" id="forgot-submit">
+            Envoyer la demande
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="login-bg">
@@ -114,6 +151,41 @@
         btn.textContent = 'Se connecter';
       }
     }, 400);
+  });
+
+  // ── Forgot password ────────────────────────────────────────────────
+  const forgotModal = document.getElementById('forgot-modal');
+  const openForgot = (e) => {
+    if (e) e.preventDefault();
+    document.getElementById('forgot-success').style.display = 'none';
+    document.getElementById('forgot-error').style.display = 'none';
+    document.getElementById('forgot-form').style.display = 'block';
+    document.getElementById('forgot-email').value = '';
+    forgotModal.style.display = 'flex';
+  };
+  const closeForgot = () => { forgotModal.style.display = 'none'; };
+
+  document.getElementById('forgot-link').addEventListener('click', openForgot);
+  document.getElementById('forgot-close').addEventListener('click', closeForgot);
+  forgotModal.addEventListener('click', (e) => { if (e.target === forgotModal) closeForgot(); });
+
+  document.getElementById('forgot-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('forgot-email').value.trim();
+    const errDiv = document.getElementById('forgot-error');
+    const errMsg = document.getElementById('forgot-error-msg');
+    errDiv.style.display = 'none';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errDiv.style.display = 'flex';
+      errMsg.textContent = 'Veuillez saisir une adresse e-mail valide.';
+      return;
+    }
+
+    // Always reports success — never reveals whether the email has an account.
+    DB.requestPasswordReset(email);
+    document.getElementById('forgot-form').style.display = 'none';
+    document.getElementById('forgot-success').style.display = 'block';
   });
 </script>
 </body>
