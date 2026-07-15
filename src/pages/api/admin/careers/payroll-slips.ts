@@ -47,7 +47,7 @@ async function loadSettings(supabase: SupabaseClient) {
     .maybeSingle();
   if (error) throw error;
   if (!data) throw new Error('payroll_settings missing — run the migration');
-  return data as { company_cnps_number: string; company_contribuable_number: string; rules: PayrollRules };
+  return data as { company_cnps_number: string; company_contribuable_number: string; logo_url: string | null; rules: PayrollRules };
 }
 
 // GET — list slips (?year=&month=&employee_id=&id=)
@@ -216,6 +216,7 @@ async function handleGenerate(
       company_snapshot: {
         cnps_number: settings.company_cnps_number,
         contribuable_number: settings.company_contribuable_number,
+        logo_url: settings.logo_url || null,
       },
       lines: computed.lines,
       totals: computed.totals,

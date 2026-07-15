@@ -70,6 +70,23 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
         <h3 class="text-lg font-bold text-gray-800">Payroll Settings</h3>
         <button data-close-settings class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
       </div>
+      <div class="mb-4">
+        <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Logo officiel (affiché sur le bulletin de paie)</label>
+        <div class="flex items-center gap-4">
+          <div id="logo-preview-wrap" class="w-20 h-20 rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 flex-shrink-0">
+            <img id="logo-preview" src="" alt="Logo" class="hidden w-full h-full object-contain" />
+            <i id="logo-placeholder" class="fas fa-image text-gray-300 text-2xl"></i>
+          </div>
+          <div>
+            <input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
+            <button id="btn-upload-logo" type="button" class="px-3 py-2 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-[#194642] hover:bg-gray-50">
+              <i class="fas fa-upload mr-1"></i> Téléverser le logo
+            </button>
+            <p class="text-xs text-gray-400 mt-1">PNG, JPG, WEBP ou SVG — 5 Mo max. Remplace le logo par défaut sur tous les bulletins générés ensuite.</p>
+            <p id="logo-status" class="text-xs mt-1"></p>
+          </div>
+        </div>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="set-cnps">N° CNPS Employeur</label>
@@ -227,8 +244,47 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
         (document.getElementById('set-cnps') as HTMLInputElement).value = data.settings.company_cnps_number || '';
         (document.getElementById('set-ncc') as HTMLInputElement).value = data.settings.company_contribuable_number || '';
         (document.getElementById('set-rules') as HTMLTextAreaElement).value = JSON.stringify(data.settings.rules, null, 2);
+        showLogoPreview(data.settings.logo_url || '');
       }
     } catch { /* leave blank */ }
+  });
+
+  function showLogoPreview(url: string) {
+    const img = document.getElementById('logo-preview') as HTMLImageElement;
+    const placeholder = document.getElementById('logo-placeholder')!;
+    if (url) {
+      img.src = url;
+      img.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    } else {
+      img.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+    }
+  }
+
+  const logoFileInput = document.getElementById('logo-file') as HTMLInputElement;
+  document.getElementById('btn-upload-logo')!.addEventListener('click', () => logoFileInput.click());
+  logoFileInput.addEventListener('change', async () => {
+    const file = logoFileInput.files?.[0];
+    if (!file) return;
+    const logoStatus = document.getElementById('logo-status')!;
+    logoStatus.textContent = 'Téléversement…';
+    logoStatus.className = 'text-xs mt-1 text-gray-500';
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await authFetch('/api/admin/careers/payroll-logo/', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showLogoPreview(data.url);
+      logoStatus.textContent = '✅ Logo mis à jour — utilisé sur les prochains bulletins générés';
+      logoStatus.className = 'text-xs mt-1 text-green-600';
+    } catch (e: any) {
+      logoStatus.textContent = `❌ ${e.message || 'Erreur de téléversement'}`;
+      logoStatus.className = 'text-xs mt-1 text-red-600';
+    } finally {
+      logoFileInput.value = '';
+    }
   });
   settingsModal.querySelectorAll('[data-close-settings]').forEach((b) =>
     b.addEventListener('click', () => { settingsModal.classList.add('hidden'); settingsModal.classList.remove('flex'); }));

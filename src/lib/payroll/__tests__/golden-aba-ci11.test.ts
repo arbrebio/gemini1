@@ -113,6 +113,62 @@ describe('Golden — SAGE bulletin ABA-CI11 (06/2025)', () => {
   });
 });
 
+describe('Ancienneté — cas limites', () => {
+  it('embauche ce mois-ci → 0 an(s) et 0 mois', () => {
+    expect(computeAnciennete(new Date(2026, 6, 1), new Date(2026, 6, 31)).label).toBe('0 an(s) et 0 mois');
+  });
+
+  it('anniversaire atteint exactement le jour de fin de période', () => {
+    const s = computeAnciennete(new Date(2024, 0, 31), new Date(2026, 0, 31));
+    expect(s.label).toBe('2 an(s) et 0 mois');
+  });
+
+  it('anniversaire non encore atteint (fin de période avant le jour anniversaire)', () => {
+    const s = computeAnciennete(new Date(2024, 0, 31), new Date(2026, 1, 28));
+    expect(s.label).toBe('2 an(s) et 0 mois'); // 28 fév < jour 31 -> mois non compté, mais l'année l'est déjà
+  });
+
+  it('franchissement de fin d\'année (embauche en décembre)', () => {
+    const s = computeAnciennete(new Date(2024, 11, 1), new Date(2026, 0, 31));
+    expect(s.label).toBe('1 an(s) et 1 mois');
+  });
+
+  it('date d\'embauche future → aucune anciennété négative', () => {
+    const s = computeAnciennete(new Date(2027, 0, 1), new Date(2026, 6, 31));
+    expect(s.years).toBe(0);
+    expect(s.months).toBe(0);
+  });
+});
+
+describe('Moteur — non-régression sur profils atypiques', () => {
+  it('sursalaire à 0 (salaire de base seul)', () => {
+    const slip = computePayslip({ profile: { baseSalary: 200000, sursalaire: 0, transportAllowance: 0, partsIgr: 1, cmuDependents: 0 }, rules: RULES });
+    expect(slip.totals.brut).toBe(200000);
+    expect(slip.lines.find((l) => l.code === '190')).toBeUndefined();
+  });
+
+  it('lignes additionnelles imposables et non imposables', () => {
+    const slip = computePayslip({
+      profile: {
+        baseSalary: 300000, sursalaire: 0, transportAllowance: 0, partsIgr: 1, cmuDependents: 0,
+        extraLines: [
+          { code: '191', label: 'Prime rendement', amount: 50000, taxable: true },
+          { code: '10300', label: 'Prime de panier', amount: 15000, taxable: false },
+        ],
+      },
+      rules: RULES,
+    });
+    expect(slip.totals.brut).toBe(350000); // 300k + 50k taxable extra
+    expect(slip.totals.gainsNonImposables).toBe(15000);
+    expect(slip.lines.find((l) => l.code === '191')!.kind).toBe('gain');
+    expect(slip.lines.find((l) => l.code === '10300')!.kind).toBe('gain_non_imposable');
+  });
+
+  it('parts IGR non entières (2.5) sont acceptées et arrondies au demi-part pour le RICF', () => {
+    expect(computeRICF(2.5, RULES)).toBe(16500); // 3 demi-parts au-dessus de 1 part × 5 500
+  });
+});
+
 describe('ITS — barème et RICF', () => {
   it('salaire ≤ 75 000 → 0 impôt', () => {
     expect(computeGrossITS(75000, RULES.its_brackets)).toBe(0);

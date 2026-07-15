@@ -33,7 +33,7 @@ export interface SlipRow {
       contract_type?: string | null;
     };
   };
-  company_snapshot?: { cnps_number?: string; contribuable_number?: string };
+  company_snapshot?: { cnps_number?: string; contribuable_number?: string; logo_url?: string | null };
   lines: PayslipLine[];
   totals: PayslipTotals;
   cumuls: Cumuls;
@@ -69,6 +69,11 @@ export function renderBulletin(slip: SlipRow): string {
   const cnps = company.cnps_number || COMPANY.cnpsEmployer;
   // N° Contribuable is a full string ("2305213 D") — rendered verbatim.
   const ncc = company.contribuable_number || COMPANY.contribuablePayroll;
+  // Official logo uploaded by the admin in Payroll Settings; falls back to
+  // the generic inline mark only until one has been uploaded.
+  const logoHtml = company.logo_url
+    ? `<img src="${esc(company.logo_url)}" alt="${esc(COMPANY.name)}" />`
+    : LOGO_SVG;
 
   const gains = slip.lines.filter((l) => l.kind === 'gain');
   const cotisations = slip.lines.filter((l) => l.kind === 'cotisation');
@@ -111,11 +116,10 @@ export function renderBulletin(slip: SlipRow): string {
   <!-- ═══ EN-TÊTE ═══ -->
   <div class="b-header">
     <div class="b-company">
-      <div class="b-logo">${LOGO_SVG}</div>
+      <div class="b-logo">${logoHtml}</div>
       <div class="b-company-info">
         <div class="co-name">${esc(COMPANY.name)}</div>
         <div>${esc(COMPANY.address)}</div>
-        <div>RCCM : ${esc(COMPANY.rccm)}</div>
         <div>Email : ${esc(COMPANY.email)} — Tél : ${esc(COMPANY.phone)}</div>
         <div class="co-ids">CNPS : <strong>${esc(cnps)}</strong> &nbsp;&nbsp; N° Contribuable : <strong>${esc(ncc)}</strong></div>
       </div>
@@ -217,11 +221,12 @@ export function renderBulletin(slip: SlipRow): string {
       <div>Jours congé acquis Anc &amp; Déco&nbsp;: <strong>${conges.jours_acquis != null ? nb(Number(conges.jours_acquis)) : '—'}</strong></div>
       <div>Congé pris&nbsp;: <strong>${conges.conge_pris != null ? nb(Number(conges.conge_pris)) : '—'}</strong></div>
       <div>Solde Congés reste à prendre&nbsp;: <strong>${conges.solde != null ? nb(Number(conges.solde)) : '—'}</strong></div>
+      <div>Total Brut Congé&nbsp;: <strong>${conges.total_brut_conge != null ? money(Number(conges.total_brut_conge)) : '—'}</strong></div>
     </div>
     <div class="conges-col">
       <div>Jours fiscaux&nbsp;: <strong>${conges.jours_fiscaux != null ? nb(Number(conges.jours_fiscaux)) : '—'}</strong></div>
       <div>Jours depuis dernier congé&nbsp;: <strong>${conges.jours_depuis_conge != null ? nb(Number(conges.jours_depuis_conge)) : '—'}</strong></div>
-      <div>Dates de congés&nbsp;: Du ______ Au ______</div>
+      <div>Dates de congés&nbsp;: Du ${conges.conge_du ? formatDateShort(String(conges.conge_du)) : '______'} Au ${conges.conge_au ? formatDateShort(String(conges.conge_au)) : '______'}</div>
     </div>
   </div>
 
@@ -243,11 +248,12 @@ export const BULLETIN_CSS = `
     text-align: center; font-weight: 700; letter-spacing: 2px;
     padding: 6px; margin-bottom: 12px; font-size: 12px;
   }
-  .b-header { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
-  .b-company { display: flex; gap: 12px; }
-  .b-logo svg { width: 64px; height: 64px; }
-  .b-company-info { font-size: 10.5px; line-height: 1.6; color: #333; }
-  .co-name { font-size: 13px; font-weight: 700; color: #194642; }
+  .b-header { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #194642; }
+  .b-company { display: flex; align-items: flex-start; gap: 12px; }
+  .b-logo { flex-shrink: 0; }
+  .b-logo svg, .b-logo img { width: 64px; height: 64px; object-fit: contain; }
+  .b-company-info { font-size: 10.5px; line-height: 1.55; color: #333; }
+  .co-name { font-size: 13px; font-weight: 700; color: #194642; margin-bottom: 1px; }
   .co-ids { margin-top: 3px; }
   .b-title { text-align: right; min-width: 300px; }
   .b-title-text { font-size: 17px; font-weight: 800; letter-spacing: 2px; color: #194642; border: 2px solid #194642; display: inline-block; padding: 4px 14px; }
