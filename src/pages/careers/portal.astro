@@ -127,6 +127,14 @@ const statusColors: Record<string, string> = {
             </div>
           </div>
 
+          <div id="payslips-card" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h3 class="font-bold text-[#194642]">💰 Bulletins de paie</h3>
+              <span id="payslips-count" class="text-xs text-gray-400"></span>
+            </div>
+            <div id="payslips-list" class="p-6"></div>
+          </div>
+
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100">
               <h3 class="font-bold text-[#194642]">{T.timeline}</h3>
@@ -180,6 +188,9 @@ const statusColors: Record<string, string> = {
     withdrawn: 'bg-gray-100 text-gray-700 border-gray-200',
   };
 
+  // Kept in memory only for authenticated payslip fetches — never persisted.
+  let portalCredentials = null;
+
   document.getElementById('portal-submit').addEventListener('click', async () => {
     const email = document.getElementById('portal-email').value.trim();
     const token = document.getElementById('portal-token').value.trim();
@@ -206,6 +217,7 @@ const statusColors: Record<string, string> = {
         errorDiv.classList.remove('hidden');
         return;
       }
+      portalCredentials = { email, token };
       showDashboard(data);
     } catch (e) {
       errorDiv.textContent = 'An error occurred. Please try again.';
@@ -262,6 +274,24 @@ const statusColors: Record<string, string> = {
       timelineEl.innerHTML = `<p class="text-gray-500 text-sm">${statusLabels[app.status] || app.status}</p>`;
     }
 
+    const payslips = data.payslips || [];
+    if (payslips.length) {
+      const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+      document.getElementById('payslips-card').classList.remove('hidden');
+      document.getElementById('payslips-count').textContent = `${payslips.length} bulletin(s)`;
+      document.getElementById('payslips-list').innerHTML = `<div class="space-y-2">${payslips.map(s => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <span class="text-sm font-medium text-gray-800">${MONTHS[s.period_month - 1] || s.period_month} ${s.period_year}</span>
+          <button data-payslip="${esc(s.id)}" class="text-xs font-bold text-white bg-[#194642] hover:bg-[#2a5e59] px-3 py-1.5 rounded-lg">
+            📄 Voir / Imprimer
+          </button>
+        </div>
+      `).join('')}</div>`;
+      document.querySelectorAll('[data-payslip]').forEach(btn => {
+        btn.addEventListener('click', () => openPayslip(btn.getAttribute('data-payslip'), btn));
+      });
+    }
+
     const docsEl = document.getElementById('docs-list');
     if (docs.length) {
       docsEl.innerHTML = `<div class="space-y-2">${docs.map(d => `
@@ -275,7 +305,32 @@ const statusColors: Record<string, string> = {
     }
   }
 
+  async function openPayslip(slipId, btn) {
+    if (!portalCredentials) return;
+    const original = btn.textContent;
+    btn.textContent = '⏳ Chargement…';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/careers/payslip/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...portalCredentials, slip_id: slipId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.slip) throw new Error(data.error || 'Bulletin indisponible');
+      sessionStorage.setItem('aba_payslip', JSON.stringify(data.slip));
+      window.open('/careers/payslip-view/', '_blank');
+    } catch (e) {
+      alert(e.message || 'Erreur de chargement du bulletin');
+    } finally {
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  }
+
   document.getElementById('portal-logout').addEventListener('click', () => {
+    portalCredentials = null;
+    sessionStorage.removeItem('aba_payslip');
     document.getElementById('portal-dashboard').classList.add('hidden');
     document.getElementById('portal-login').classList.remove('hidden');
     document.getElementById('portal-email').value = '';

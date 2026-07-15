@@ -1,0 +1,100 @@
+---
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Bulletin de paie — Arbre Bio</title>
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #d8d8d8; }
+      #action-bar {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+        background: #194642; padding: 10px 20px;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 2px 10px rgba(0,0,0,.3);
+      }
+      #action-bar h1 { color: #fff; font-size: 13.5px; font-weight: 700; }
+      .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 7px 13px; border-radius: 6px; font-size: 12px; font-weight: 600;
+        cursor: pointer; border: none; text-decoration: none;
+      }
+      .btn-white { background: #fff; color: #194642; }
+      .btn-ghost { background: rgba(255,255,255,.15); color: #fff; }
+      #page-wrap { padding: 72px 20px 48px; max-width: 840px; margin: 0 auto; }
+      #loading { text-align: center; padding: 80px 20px; color: #555; font-size: 15px; }
+      #error-msg { display: none; text-align: center; padding: 60px 20px; color: #c00; font-size: 15px; }
+    </style>
+  </head>
+  <body>
+    <div id="action-bar">
+      <h1>📄 Bulletin de paie — Arbre Bio Africa</h1>
+      <div class="action-btns">
+        <button class="btn btn-white" onclick="window.print()">
+          <i class="fas fa-download"></i> Télécharger / Imprimer
+        </button>
+        <button class="btn btn-ghost" onclick="history.back()">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+      </div>
+    </div>
+
+    <div id="page-wrap">
+      <div id="loading">⏳ Chargement du bulletin…</div>
+      <div id="error-msg">❌ <span id="error-text">Erreur de chargement</span></div>
+      <div id="bulletin-content" style="display:none;"></div>
+    </div>
+
+    <script>
+      import { supabase } from '../../../../../lib/supabase';
+      import { BULLETIN_CSS, renderBulletin } from '../../../../../lib/payroll/renderBulletin';
+
+      const styleTag = document.createElement('style');
+      styleTag.textContent = BULLETIN_CSS;
+      document.head.appendChild(styleTag);
+
+      const loading = document.getElementById('loading')!;
+      const errorMsg = document.getElementById('error-msg')!;
+      const errorText = document.getElementById('error-text')!;
+      const content = document.getElementById('bulletin-content')!;
+
+      function showError(message: string) {
+        loading.style.display = 'none';
+        errorText.textContent = message;
+        errorMsg.style.display = 'block';
+      }
+
+      async function load() {
+        const slipId = window.location.pathname.split('/').filter(Boolean).pop();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.href = '/admin/login/';
+          return;
+        }
+        try {
+          const res = await fetch(`/api/admin/careers/payroll-slips?id=${encodeURIComponent(slipId || '')}`, {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          const data = await res.json();
+          if (!res.ok || !data.slip) throw new Error(data.error || 'Bulletin introuvable');
+          content.innerHTML = renderBulletin(data.slip);
+          loading.style.display = 'none';
+          content.style.display = 'block';
+          const emp = data.slip.profile_snapshot?.employee?.full_name || '';
+          document.title = `Bulletin de paie ${data.slip.profile_snapshot?.matricule || ''} — ${emp}`;
+        } catch (e: any) {
+          showError(e.message || 'Erreur de chargement');
+        }
+      }
+
+      load();
+    </script>
+  </body>
+</html>

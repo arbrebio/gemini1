@@ -1,0 +1,297 @@
+---
+import AdminLayout from "../../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Payroll Profiles">
+  <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Payroll Profiles</h1>
+      <p class="text-gray-500 text-sm mt-1">Salary configuration per employee (matricule, salaire, parts IGR, CNPS…)</p>
+    </div>
+    <a href="/admin/careers/payroll/" class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-semibold text-[#194642] hover:bg-gray-50">
+      <i class="fas fa-arrow-left mr-1"></i> Payroll
+    </a>
+  </div>
+
+  <!-- Employees without profile -->
+  <div id="missing-wrap" class="bg-yellow-50 border border-yellow-200 rounded-xl p-5 mb-6 hidden">
+    <h2 class="font-bold text-yellow-800 text-sm mb-2"><i class="fas fa-exclamation-triangle mr-1"></i> Employees without a payroll profile</h2>
+    <div id="missing-list" class="flex flex-wrap gap-2"></div>
+  </div>
+
+  <!-- Profiles table -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-left text-xs uppercase text-gray-500">
+          <tr>
+            <th class="px-6 py-3">Matricule</th>
+            <th class="px-6 py-3">Employee</th>
+            <th class="px-6 py-3 text-right">Salaire de base</th>
+            <th class="px-6 py-3 text-right">Sursalaire</th>
+            <th class="px-6 py-3 text-right">Transport</th>
+            <th class="px-6 py-3 text-center">Parts IGR</th>
+            <th class="px-6 py-3 text-center">Active</th>
+            <th class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="profiles-body" class="divide-y divide-gray-50">
+          <tr><td colspan="8" class="px-6 py-8 text-center text-gray-400">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div id="profile-modal" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-800" id="modal-title">Payroll profile</h3>
+        <button data-close class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <input type="hidden" id="f-id" />
+      <input type="hidden" id="f-employee-id" />
+      <p id="f-employee-name" class="text-sm font-semibold text-[#194642] mb-4"></p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-matricule">Matricule *</label>
+          <input id="f-matricule" type="text" placeholder="ABA-CI11" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-base">Salaire de base (CFA) *</label>
+          <input id="f-base" type="number" min="0" step="1" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-sursalaire">Sursalaire (CFA)</label>
+          <input id="f-sursalaire" type="number" min="0" step="1" value="0" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-transport">Indemnité transport (CFA)</label>
+          <input id="f-transport" type="number" min="0" step="1" value="0" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-parts">Parts IGR</label>
+          <select id="f-parts" class="w-full rounded-lg border-gray-200 text-sm"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-cmu">Ayants droit CMU</label>
+          <input id="f-cmu" type="number" min="0" step="1" value="0" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-cnps">N° CNPS employé</label>
+          <input id="f-cnps" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-bank">N° de compte bancaire</label>
+          <input id="f-bank" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-category">Catégorie</label>
+          <input id="f-category" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-grade">Grade</label>
+          <input id="f-grade" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-seniority">Date ancienneté</label>
+          <input id="f-seniority" type="date" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-salary-type">Type salaire</label>
+          <select id="f-salary-type" class="w-full rounded-lg border-gray-200 text-sm">
+            <option>Mensuel</option><option>Journalier</option><option>Horaire</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-payment">Mode de paiement</label>
+          <select id="f-payment" class="w-full rounded-lg border-gray-200 text-sm">
+            <option>Virement</option><option>Chèque</option><option>Espèces</option><option>Mobile Money</option>
+          </select>
+        </div>
+        <div class="flex items-end pb-2">
+          <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
+            <input id="f-active" type="checkbox" checked class="rounded border-gray-300 text-[#194642]" />
+            Inclus dans la paie mensuelle
+          </label>
+        </div>
+      </div>
+
+      <!-- Extra lines -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-xs font-medium text-gray-500 uppercase">Lignes supplémentaires (primes, avantages…)</label>
+          <button id="btn-add-line" class="text-xs font-semibold text-[#194642] hover:underline"><i class="fas fa-plus"></i> Ajouter</button>
+        </div>
+        <div id="extra-lines" class="space-y-2"></div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button data-close class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold">Cancel</button>
+        <button id="btn-save" class="px-4 py-2 rounded-lg bg-[#194642] text-white text-sm font-bold">Save</button>
+      </div>
+      <p id="modal-status" class="text-sm text-right mt-2 text-gray-500"></p>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from "../../../../lib/supabase";
+
+  const esc = (v: unknown) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(Math.round(n || 0));
+  const $ = (id: string) => document.getElementById(id) as any;
+
+  const partsSel = $('f-parts') as HTMLSelectElement;
+  for (let p = 1; p <= 5; p += 0.5) partsSel.add(new Option(p.toFixed(1), String(p)));
+
+  const modal = $('profile-modal');
+  const body = $('profiles-body');
+  let profiles: any[] = [];
+  let missing: any[] = [];
+
+  const empName = (e: any) => [e?.last_name, e?.first_name, e?.middle_name].filter(Boolean).join(' ');
+
+  async function load() {
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-profiles/');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      profiles = data.profiles || [];
+      missing = data.employees_without_profile || [];
+
+      const missingWrap = $('missing-wrap');
+      if (missing.length) {
+        missingWrap.classList.remove('hidden');
+        $('missing-list').innerHTML = missing.map((e: any) =>
+          `<button data-new="${e.id}" class="px-3 py-1.5 rounded-full bg-white border border-yellow-300 text-xs font-semibold text-yellow-800 hover:bg-yellow-100">
+            <i class="fas fa-plus mr-1"></i>${esc(empName(e))} — ${esc(e.job_title || '')}
+          </button>`).join('');
+      } else {
+        missingWrap.classList.add('hidden');
+      }
+
+      if (!profiles.length) {
+        body.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-400">No payroll profiles yet. Add one from the list above.</td></tr>';
+        return;
+      }
+      body.innerHTML = profiles.map((p: any) => `
+        <tr>
+          <td class="px-6 py-3 font-mono text-xs font-semibold">${esc(p.matricule)}</td>
+          <td class="px-6 py-3 font-medium text-gray-800">${esc(empName(p.employee))}<div class="text-xs text-gray-400">${esc(p.employee?.job_title || '')}</div></td>
+          <td class="px-6 py-3 text-right">${fmt(Number(p.base_salary))} F</td>
+          <td class="px-6 py-3 text-right">${fmt(Number(p.sursalaire))} F</td>
+          <td class="px-6 py-3 text-right">${fmt(Number(p.transport_allowance))} F</td>
+          <td class="px-6 py-3 text-center">${Number(p.parts_igr).toFixed(1)}</td>
+          <td class="px-6 py-3 text-center">${p.active ? '<i class="fas fa-check-circle text-green-500"></i>' : '<i class="fas fa-pause-circle text-gray-300"></i>'}</td>
+          <td class="px-6 py-3 text-right">
+            <button data-edit="${p.id}" class="text-[#194642] hover:underline text-xs font-semibold"><i class="fas fa-pen"></i> Edit</button>
+          </td>
+        </tr>`).join('');
+    } catch (e: any) {
+      body.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-red-500">${esc(e.message || 'Error')}</td></tr>`;
+    }
+  }
+
+  function extraLineRow(line?: any) {
+    const div = document.createElement('div');
+    div.className = 'flex gap-2 items-center extra-line';
+    div.innerHTML = `
+      <input placeholder="Code" value="${esc(line?.code || '')}" class="w-20 rounded-lg border-gray-200 text-xs l-code" />
+      <input placeholder="Désignation" value="${esc(line?.label || '')}" class="flex-1 rounded-lg border-gray-200 text-xs l-label" />
+      <input placeholder="Montant" type="number" min="0" value="${line?.amount ?? ''}" class="w-28 rounded-lg border-gray-200 text-xs l-amount" />
+      <label class="inline-flex items-center gap-1 text-xs text-gray-600"><input type="checkbox" ${line?.taxable !== false ? 'checked' : ''} class="rounded border-gray-300 l-taxable" /> Imposable</label>
+      <button class="text-red-400 hover:text-red-600 l-remove"><i class="fas fa-times"></i></button>`;
+    div.querySelector('.l-remove')!.addEventListener('click', () => div.remove());
+    $('extra-lines').appendChild(div);
+  }
+
+  function openModal(profile: any | null, employee: any | null) {
+    $('f-id').value = profile?.id || '';
+    $('f-employee-id').value = profile?.employee_id || employee?.id || '';
+    $('f-employee-name').textContent = empName(profile?.employee || employee) + (employee?.worker_id || profile?.employee?.worker_id ? ` · ${employee?.worker_id || profile?.employee?.worker_id}` : '');
+    $('modal-title').textContent = profile ? 'Edit payroll profile' : 'New payroll profile';
+    $('f-matricule').value = profile?.matricule || '';
+    $('f-base').value = profile ? Number(profile.base_salary) : '';
+    $('f-sursalaire').value = profile ? Number(profile.sursalaire) : 0;
+    $('f-transport').value = profile ? Number(profile.transport_allowance) : 0;
+    partsSel.value = profile ? String(Number(profile.parts_igr)) : '1';
+    $('f-cmu').value = profile?.cmu_dependents ?? 0;
+    $('f-cnps').value = profile?.employee_cnps_number || '';
+    $('f-bank').value = profile?.bank_account || '';
+    $('f-category').value = profile?.category || '';
+    $('f-grade').value = profile?.grade || '';
+    $('f-seniority').value = profile?.seniority_date || (profile?.employee?.start_date || employee?.start_date || '');
+    $('f-salary-type').value = profile?.salary_type || 'Mensuel';
+    $('f-payment').value = profile?.payment_method || 'Virement';
+    $('f-active').checked = profile ? !!profile.active : true;
+    $('extra-lines').innerHTML = '';
+    (profile?.extra_lines || []).forEach((l: any) => extraLineRow(l));
+    $('modal-status').textContent = '';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+  modal.querySelectorAll('[data-close]').forEach((b: Element) => b.addEventListener('click', closeModal));
+  $('btn-add-line').addEventListener('click', () => extraLineRow());
+
+  $('btn-save').addEventListener('click', async () => {
+    const status = $('modal-status');
+    const extraLines = Array.from(document.querySelectorAll('#extra-lines .extra-line')).map((div: Element) => ({
+      code: (div.querySelector('.l-code') as HTMLInputElement).value.trim(),
+      label: (div.querySelector('.l-label') as HTMLInputElement).value.trim(),
+      amount: Number((div.querySelector('.l-amount') as HTMLInputElement).value || 0),
+      taxable: (div.querySelector('.l-taxable') as HTMLInputElement).checked,
+    })).filter((l) => l.code && l.label);
+
+    const payload: any = {
+      employee_id: $('f-employee-id').value,
+      matricule: $('f-matricule').value.trim(),
+      base_salary: Number($('f-base').value || 0),
+      sursalaire: Number($('f-sursalaire').value || 0),
+      transport_allowance: Number($('f-transport').value || 0),
+      parts_igr: Number(partsSel.value),
+      cmu_dependents: Number($('f-cmu').value || 0),
+      employee_cnps_number: $('f-cnps').value.trim() || null,
+      bank_account: $('f-bank').value.trim() || null,
+      category: $('f-category').value.trim() || null,
+      grade: $('f-grade').value.trim() || null,
+      salary_type: $('f-salary-type').value,
+      payment_method: $('f-payment').value,
+      seniority_date: $('f-seniority').value || null,
+      extra_lines: extraLines,
+      active: $('f-active').checked,
+    };
+    if ($('f-id').value) payload.id = $('f-id').value;
+    if (!payload.matricule) { status.textContent = '❌ Matricule requis'; return; }
+
+    status.textContent = 'Saving…';
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-profiles/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      status.textContent = '✅ Saved';
+      closeModal();
+      load();
+    } catch (e: any) {
+      status.textContent = `❌ ${e.message || 'Error'}`;
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button');
+    if (!btn) return;
+    const editId = btn.getAttribute('data-edit');
+    const newId = btn.getAttribute('data-new');
+    if (editId) openModal(profiles.find((p) => p.id === editId), null);
+    if (newId) openModal(null, missing.find((m) => m.id === newId));
+  });
+
+  load();
+</script>

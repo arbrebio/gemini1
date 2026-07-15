@@ -31,7 +31,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   </div>
 
   <!-- Quick Links -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <a href="/admin/careers/jobs/" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
       <div class="flex items-center gap-4">
         <div class="bg-[#194642]/10 rounded-xl p-3">
@@ -62,6 +62,17 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
         <div>
           <h3 class="font-bold text-gray-800 group-hover:text-green-600 transition-colors">Employees</h3>
           <p class="text-sm text-gray-500">Manage employee records & IDs</p>
+        </div>
+      </div>
+    </a>
+    <a href="/admin/careers/payroll/" class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow group">
+      <div class="flex items-center gap-4">
+        <div class="bg-amber-50 rounded-xl p-3">
+          <i class="fas fa-file-invoice-dollar text-amber-600 text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800 group-hover:text-amber-600 transition-colors">Payroll</h3>
+          <p class="text-sm text-gray-500">Generate bulletins de paie</p>
         </div>
       </div>
     </a>

@@ -69,6 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Fetch employee record if hired
     let employee = null;
+    let payslips: any[] = [];
     if (application.employee_id) {
       const { data: emp } = await supabase
         .from('career_employees')
@@ -76,6 +77,16 @@ export const POST: APIRoute = async ({ request }) => {
         .eq('id', application.employee_id)
         .single();
       employee = emp;
+
+      // Validated payslips only (drafts stay internal to the admin panel)
+      const { data: slips } = await supabase
+        .from('payroll_slips')
+        .select('id, period_year, period_month, payment_date, validated_at')
+        .eq('employee_id', application.employee_id)
+        .eq('status', 'validated')
+        .order('period_year', { ascending: false })
+        .order('period_month', { ascending: false });
+      payslips = slips || [];
     }
 
     return new Response(JSON.stringify({
@@ -84,6 +95,7 @@ export const POST: APIRoute = async ({ request }) => {
       timeline: timeline || [],
       documents: documents || [],
       employee,
+      payslips,
     }), {
       status: 200, headers: { 'Content-Type': 'application/json' },
     });

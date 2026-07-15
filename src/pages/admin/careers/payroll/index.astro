@@ -1,0 +1,262 @@
+---
+import AdminLayout from "../../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Payroll">
+  <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Payroll — Bulletins de paie</h1>
+      <p class="text-gray-500 text-sm mt-1">Generate monthly Ivorian payslips (SAGE-equivalent) for all employees</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="/admin/careers/payroll/profiles/" class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-semibold text-[#194642] hover:bg-gray-50">
+        <i class="fas fa-user-cog mr-1"></i> Payroll Profiles
+      </a>
+      <button id="btn-settings" class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-semibold text-[#194642] hover:bg-gray-50">
+        <i class="fas fa-sliders-h mr-1"></i> Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Period + actions -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 mb-6 flex items-end gap-4 flex-wrap">
+    <div>
+      <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="period-month">Month</label>
+      <select id="period-month" class="rounded-lg border-gray-200 text-sm"></select>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="period-year">Year</label>
+      <select id="period-year" class="rounded-lg border-gray-200 text-sm"></select>
+    </div>
+    <button id="btn-generate-all" class="px-5 py-2.5 rounded-lg bg-[#194642] text-white text-sm font-bold hover:bg-[#2a5e59]">
+      <i class="fas fa-cogs mr-1"></i> Générer tout
+    </button>
+    <button id="btn-validate-all" class="px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-bold hover:bg-green-700">
+      <i class="fas fa-check-double mr-1"></i> Valider les brouillons
+    </button>
+    <p id="run-status" class="text-sm text-gray-500"></p>
+  </div>
+
+  <!-- Slips for period -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-bold text-gray-800">Bulletins <span id="period-label" class="text-gray-400 font-normal"></span></h2>
+      <span id="slips-count" class="text-sm text-gray-400"></span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-left text-xs uppercase text-gray-500">
+          <tr>
+            <th class="px-6 py-3">Matricule</th>
+            <th class="px-6 py-3">Employee</th>
+            <th class="px-6 py-3 text-right">Brut</th>
+            <th class="px-6 py-3 text-right">Retenues</th>
+            <th class="px-6 py-3 text-right">Net à payer</th>
+            <th class="px-6 py-3">Status</th>
+            <th class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="slips-body" class="divide-y divide-gray-50">
+          <tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settings-modal" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-800">Payroll Settings</h3>
+        <button data-close-settings class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="set-cnps">N° CNPS Employeur</label>
+          <input id="set-cnps" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="set-ncc">N° Contribuable (complet, ex. "2305213 D")</label>
+          <input id="set-ncc" type="text" class="w-full rounded-lg border-gray-200 text-sm" />
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="set-rules">Règles légales (JSON — barème ITS, CNPS, CMU, FDFP)</label>
+        <textarea id="set-rules" rows="14" class="w-full rounded-lg border-gray-200 text-xs font-mono"></textarea>
+        <p class="text-xs text-gray-400 mt-1">Modifier uniquement en cas de changement de la loi ivoirienne. Les bulletins déjà générés conservent leurs règles d'origine.</p>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button data-close-settings class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold">Cancel</button>
+        <button id="btn-save-settings" class="px-4 py-2 rounded-lg bg-[#194642] text-white text-sm font-bold">Save</button>
+      </div>
+      <p id="settings-status" class="text-sm text-right mt-2 text-gray-500"></p>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from "../../../../lib/supabase";
+
+  const esc = (v: unknown) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(Math.round(n || 0));
+  const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+  const monthSel = document.getElementById('period-month') as HTMLSelectElement;
+  const yearSel = document.getElementById('period-year') as HTMLSelectElement;
+  const now = new Date();
+  MONTHS.forEach((m, i) => monthSel.add(new Option(m, String(i + 1), false, i + 1 === now.getMonth() + 1)));
+  for (let y = now.getFullYear() + 1; y >= 2024; y--) yearSel.add(new Option(String(y), String(y), false, y === now.getFullYear()));
+
+  const slipsBody = document.getElementById('slips-body')!;
+  const runStatus = document.getElementById('run-status')!;
+  let currentSlips: any[] = [];
+
+  function periodLabel() { return `${MONTHS[Number(monthSel.value) - 1]} ${yearSel.value}`; }
+
+  async function loadSlips() {
+    document.getElementById('period-label')!.textContent = `— ${periodLabel()}`;
+    slipsBody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Loading…</td></tr>';
+    try {
+      const res = await authFetch(`/api/admin/careers/payroll-slips/?year=${yearSel.value}&month=${monthSel.value}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      currentSlips = data.slips || [];
+      document.getElementById('slips-count')!.textContent = `${currentSlips.length} bulletin(s)`;
+      if (!currentSlips.length) {
+        slipsBody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Aucun bulletin pour cette période. Cliquez « Générer tout ».</td></tr>';
+        return;
+      }
+      slipsBody.innerHTML = currentSlips.map((s: any) => {
+        const p = s.profile_snapshot || {};
+        const t = s.totals || {};
+        const badge = s.status === 'validated'
+          ? '<span class="text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-700">Validé</span>'
+          : '<span class="text-xs px-2.5 py-1 rounded-full font-medium bg-yellow-100 text-yellow-700">Brouillon</span>';
+        return `<tr>
+          <td class="px-6 py-3 font-mono text-xs font-semibold">${esc(p.matricule)}</td>
+          <td class="px-6 py-3 font-medium text-gray-800">${esc(p.employee?.full_name)}</td>
+          <td class="px-6 py-3 text-right">${fmt(t.brut)} F</td>
+          <td class="px-6 py-3 text-right">${fmt(t.cotisationsSalariales)} F</td>
+          <td class="px-6 py-3 text-right font-bold text-[#194642]">${fmt(t.netAPayer)} F</td>
+          <td class="px-6 py-3">${badge}</td>
+          <td class="px-6 py-3 text-right whitespace-nowrap">
+            <a href="/admin/careers/payroll/slip/${s.id}/" class="text-[#194642] hover:underline text-xs font-semibold mr-3"><i class="fas fa-print"></i> Voir / Imprimer</a>
+            ${s.status === 'draft' ? `
+              <button data-validate="${s.id}" class="text-green-600 hover:underline text-xs font-semibold mr-3"><i class="fas fa-check"></i> Valider</button>
+              <button data-delete="${s.id}" class="text-red-500 hover:underline text-xs font-semibold"><i class="fas fa-trash"></i></button>` : ''}
+          </td>
+        </tr>`;
+      }).join('');
+    } catch (e: any) {
+      slipsBody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">${esc(e.message || 'Erreur')}</td></tr>`;
+    }
+  }
+
+  async function generate() {
+    runStatus.textContent = 'Génération en cours…';
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-slips/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'generate', year: Number(yearSel.value), month: Number(monthSel.value) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      const ok = (data.results || []).filter((r: any) => r.status === 'generated' || r.status === 'regenerated').length;
+      const skipped = (data.results || []).filter((r: any) => r.status === 'skipped_validated').length;
+      const errors = (data.results || []).filter((r: any) => r.status === 'error');
+      runStatus.textContent = `✅ ${ok} généré(s)${skipped ? `, ${skipped} déjà validé(s)` : ''}${errors.length ? `, ${errors.length} erreur(s)` : ''}`;
+      if (errors.length) console.error('Payroll generation errors:', errors);
+    } catch (e: any) {
+      runStatus.textContent = `❌ ${e.message || 'Erreur'}`;
+    }
+    loadSlips();
+  }
+
+  async function validateSlips(ids: string[]) {
+    if (!ids.length) { runStatus.textContent = 'Aucun brouillon à valider.'; return; }
+    if (!confirm(`Valider ${ids.length} bulletin(s) ? Un bulletin validé devient immuable et est notifié à l'employé par email.`)) return;
+    runStatus.textContent = 'Validation en cours…';
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-slips/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'validate', slip_ids: ids }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      const ok = (data.results || []).filter((r: any) => r.status === 'validated').length;
+      runStatus.textContent = `✅ ${ok} bulletin(s) validé(s) — emails envoyés`;
+    } catch (e: any) {
+      runStatus.textContent = `❌ ${e.message || 'Erreur'}`;
+    }
+    loadSlips();
+  }
+
+  document.getElementById('btn-generate-all')!.addEventListener('click', generate);
+  document.getElementById('btn-validate-all')!.addEventListener('click', () =>
+    validateSlips(currentSlips.filter((s) => s.status === 'draft').map((s) => s.id)));
+  monthSel.addEventListener('change', loadSlips);
+  yearSel.addEventListener('change', loadSlips);
+
+  slipsBody.addEventListener('click', async (e) => {
+    const target = (e.target as HTMLElement).closest('button');
+    if (!target) return;
+    const validateId = target.getAttribute('data-validate');
+    const deleteId = target.getAttribute('data-delete');
+    if (validateId) validateSlips([validateId]);
+    if (deleteId && confirm('Supprimer ce brouillon ?')) {
+      await authFetch('/api/admin/careers/payroll-slips/', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deleteId }),
+      });
+      loadSlips();
+    }
+  });
+
+  // ── Settings modal ──
+  const settingsModal = document.getElementById('settings-modal')!;
+  document.getElementById('btn-settings')!.addEventListener('click', async () => {
+    settingsModal.classList.remove('hidden');
+    settingsModal.classList.add('flex');
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-settings/');
+      const data = await res.json();
+      if (data.settings) {
+        (document.getElementById('set-cnps') as HTMLInputElement).value = data.settings.company_cnps_number || '';
+        (document.getElementById('set-ncc') as HTMLInputElement).value = data.settings.company_contribuable_number || '';
+        (document.getElementById('set-rules') as HTMLTextAreaElement).value = JSON.stringify(data.settings.rules, null, 2);
+      }
+    } catch { /* leave blank */ }
+  });
+  settingsModal.querySelectorAll('[data-close-settings]').forEach((b) =>
+    b.addEventListener('click', () => { settingsModal.classList.add('hidden'); settingsModal.classList.remove('flex'); }));
+
+  document.getElementById('btn-save-settings')!.addEventListener('click', async () => {
+    const status = document.getElementById('settings-status')!;
+    let rules;
+    try {
+      rules = JSON.parse((document.getElementById('set-rules') as HTMLTextAreaElement).value);
+    } catch { status.textContent = '❌ JSON des règles invalide'; return; }
+    status.textContent = 'Enregistrement…';
+    try {
+      const res = await authFetch('/api/admin/careers/payroll-settings/', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_cnps_number: (document.getElementById('set-cnps') as HTMLInputElement).value,
+          company_contribuable_number: (document.getElementById('set-ncc') as HTMLInputElement).value,
+          rules,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      status.textContent = '✅ Enregistré';
+    } catch (e: any) {
+      status.textContent = `❌ ${e.message || 'Erreur'}`;
+    }
+  });
+
+  loadSlips();
+</script>
