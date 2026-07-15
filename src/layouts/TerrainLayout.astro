@@ -131,8 +131,7 @@ const profileHref = role === 'super_admin' ? '/terrain/admin/profile/' : '/terra
 
   document.getElementById('btn-logout')?.addEventListener('click', () => {
     terrainLogout();
-    const depth = window.location.pathname.split('/').filter(Boolean).length;
-    window.location.href = depth > 2 ? '../login/' : 'login/';
+    window.location.href = '/terrain/login/';
   });
 </script>
 </body>

@@ -43,9 +43,10 @@ export function terrainLogout() {
 }
 
 function loginPath(): string {
-  // Terrain pages live at /terrain/, /terrain/admin/, /terrain/portal/
-  const depth = window.location.pathname.split('/').filter(Boolean).length;
-  return depth > 2 ? '../login/' : 'login/';
+  // Always absolute — relative-path math here previously broke on nested
+  // pages (e.g. /terrain/admin/dashboard/ resolved '../login/' to
+  // /terrain/admin/login/, a 404, instead of /terrain/login/).
+  return '/terrain/login/';
 }
 
 /**
