@@ -50,6 +50,37 @@ const { title, activeTab = 'dashboard' } = Astro.props;
       .agent-header-actions { display: flex; align-items: center; gap: 0.75rem; }
       .lang-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; cursor: pointer; }
       .logout-btn { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem; cursor: pointer; }
+      /* Notifications */
+      .notif-wrap { position: relative; }
+      .notif-btn {
+        position: relative; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+        color: white; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; cursor: pointer;
+      }
+      .notif-badge {
+        position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 3px;
+        background: #ef4444; color: white; border-radius: 9999px; font-size: 9px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; border: 2px solid #194642;
+      }
+      .notif-badge.hidden { display: none; }
+      .notif-dropdown {
+        position: fixed; left: 0.75rem; right: 0.75rem; top: 62px; max-width: 360px; margin-left: auto;
+        background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        z-index: 90; overflow: hidden; color: #111827;
+      }
+      .notif-dropdown.hidden { display: none; }
+      .notif-dropdown-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6;
+      }
+      .notif-dropdown-header p { font-weight: 700; font-size: 0.85rem; color: #111827; }
+      .notif-dropdown-header button { background: none; border: none; color: #194642; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+      .notif-list { max-height: 320px; overflow-y: auto; }
+      .notif-item { padding: 0.75rem 1rem; border-bottom: 1px solid #f9fafb; font-size: 0.8rem; cursor: pointer; }
+      .notif-item.unread { background: #f0fdf9; }
+      .notif-item p.msg { color: #374151; line-height: 1.35; }
+      .notif-item p.time { color: #9ca3af; font-size: 0.68rem; margin-top: 2px; }
+      .notif-empty { text-align: center; color: #9ca3af; font-size: 0.78rem; padding: 1.5rem 0; }
       .agent-main { padding-top: 56px; padding-bottom: 72px; min-height: 100vh; }
       /* Bottom navigation */
       .bottom-nav {
@@ -106,9 +137,25 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <header class="agent-header">
       <div class="agent-header-logo">
         <img src="/logo.png" alt="Arbre Bio Africa" />
-        <span>Sales Agent</span>
+        <span id="agent-header-name">Sales Agent</span>
       </div>
       <div class="agent-header-actions">
+        <!-- Notifications -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button class="notif-btn" id="agent-notif-btn" title="Notifications">
+            <i class="fas fa-bell"></i>
+            <span id="agent-notif-badge" class="notif-badge hidden">0</span>
+          </button>
+          <div id="agent-notif-dropdown" class="notif-dropdown hidden">
+            <div class="notif-dropdown-header">
+              <p data-i18n="notifications">Notifications</p>
+              <button id="agent-notif-mark-all" data-i18n="markAllRead">Tout marquer lu</button>
+            </div>
+            <div id="agent-notif-list" class="notif-list">
+              <p class="notif-empty" data-i18n="loading">Chargement…</p>
+            </div>
+          </div>
+        </div>
         <button class="lang-btn" id="lang-toggle-btn" title="Change language">
           <i class="fas fa-globe"></i> <span id="lang-label">FR</span>
         </button>
@@ -170,16 +217,22 @@ const { title, activeTab = 'dashboard' } = Astro.props;
     <script>
       // ── Translations (embedded for offline use) ──────────────────────────
       const TRANSLATIONS = {
-        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',documents:'Documents',account:'Account',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome' },
-        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',documents:'Documents',account:'Compte',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour' },
-        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',documents:'Documentos',account:'Cuenta',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido' },
-        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',documents:'Dokumente',account:'Rekening',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom' },
+        en: { dashboard:'Dashboard',sales:'Sales',inventory:'Inventory',customers:'Customers',categories:'Categories',documents:'Documents',account:'Account',logout:'Logout',selectLanguage:'Select your language',offline:'You are offline',offlineMsg:'Sales will be queued and submitted when you reconnect.',loading:'Loading…',error:'An error occurred.',welcome:'Welcome',notifications:'Notifications',markAllRead:'Mark all read',noNotifications:'No notifications yet' },
+        fr: { dashboard:'Tableau de bord',sales:'Ventes',inventory:'Inventaire',customers:'Clients',categories:'Catégories',documents:'Documents',account:'Compte',logout:'Déconnexion',selectLanguage:'Choisissez votre langue',offline:'Vous êtes hors ligne',offlineMsg:'Les ventes seront synchronisées à la reconnexion.',loading:'Chargement…',error:'Une erreur s\'est produite.',welcome:'Bonjour',notifications:'Notifications',markAllRead:'Tout marquer lu',noNotifications:'Aucune notification pour le moment' },
+        es: { dashboard:'Panel',sales:'Ventas',inventory:'Inventario',customers:'Clientes',categories:'Categorías',documents:'Documentos',account:'Cuenta',logout:'Cerrar sesión',selectLanguage:'Seleccione su idioma',offline:'Estás sin conexión',offlineMsg:'Las ventas se sincronizarán al reconectarse.',loading:'Cargando…',error:'Se produjo un error.',welcome:'Bienvenido',notifications:'Notificaciones',markAllRead:'Marcar todo leído',noNotifications:'Sin notificaciones por ahora' },
+        af: { dashboard:'Paneelbord',sales:'Verkope',inventory:'Voorraad',customers:'Kliënte',categories:'Kategorieë',documents:'Dokumente',account:'Rekening',logout:'Meld af',selectLanguage:'Kies jou taal',offline:'Jy is vanlyn',offlineMsg:'Verkope sal gesinkroniseer word wanneer jy herverbind.',loading:'Laai tans…',error:'\'n Fout het voorgekom.',welcome:'Welkom',notifications:'Kennisgewings',markAllRead:'Merk alles gelees',noNotifications:'Nog geen kennisgewings nie' },
       };
 
       const LANG_LABELS = { en: 'EN', fr: 'FR', es: 'ES', af: 'AF' };
 
       function getLang() {
         return localStorage.getItem('agentLang') || 'fr';
+      }
+
+      function t(key: string): string {
+        const lang = getLang();
+        const T = (TRANSLATIONS as any)[lang] || TRANSLATIONS['fr'];
+        return T[key] ?? key;
       }
 
       function applyTranslations() {
@@ -237,6 +290,18 @@ const { title, activeTab = 'dashboard' } = Astro.props;
         window.location.href = '/sales-agent/login/';
       });
 
+      // ── Header name ───────────────────────────────────────────────────────
+      function applyHeaderName(profile: any) {
+        const nameEl = document.getElementById('agent-header-name');
+        if (nameEl && profile?.full_name) nameEl.textContent = profile.full_name;
+      }
+
+      // Show cached name immediately (before the network round-trip resolves)
+      try {
+        const cachedProfile = JSON.parse(localStorage.getItem('agentProfile') || 'null');
+        applyHeaderName(cachedProfile);
+      } catch {}
+
       // ── Auth check ────────────────────────────────────────────────────────
       async function checkAgentAuth() {
         const token = localStorage.getItem('agentToken');
@@ -261,6 +326,7 @@ const { title, activeTab = 'dashboard' } = Astro.props;
           }
           // Cache profile for offline use
           localStorage.setItem('agentProfile', JSON.stringify(data.profile));
+          applyHeaderName(data.profile);
           // Show red dot on Account nav item if password change is required
           if (data.profile.must_change_password) {
             const navAccount = document.getElementById('nav-account');
@@ -310,6 +376,132 @@ const { title, activeTab = 'dashboard' } = Astro.props;
           } catch {}
         }
       }
+
+      // ── Notifications ─────────────────────────────────────────────────────
+      let notifOpen = false;
+      let agentUnreadCount = 0;
+
+      const notifBtn      = document.getElementById('agent-notif-btn');
+      const notifDropdown = document.getElementById('agent-notif-dropdown');
+      const notifBadge    = document.getElementById('agent-notif-badge');
+      const notifList     = document.getElementById('agent-notif-list');
+      const markAllBtn    = document.getElementById('agent-notif-mark-all');
+
+      function agentEscHtml(str: string): string {
+        return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function notifTimeAgo(dateStr: string): string {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1) return 'à l\'instant';
+        if (mins < 60) return `${mins} min`;
+        const hrs = Math.floor(mins / 60);
+        if (hrs < 24) return `${hrs} h`;
+        return `${Math.floor(hrs / 24)} j`;
+      }
+
+      function updateNotifBadge() {
+        if (!notifBadge) return;
+        if (agentUnreadCount > 0) {
+          notifBadge.textContent = agentUnreadCount > 99 ? '99+' : String(agentUnreadCount);
+          notifBadge.classList.remove('hidden');
+        } else {
+          notifBadge.classList.add('hidden');
+        }
+      }
+
+      async function pollAgentNotifCount() {
+        const token = localStorage.getItem('agentToken');
+        if (!token) return;
+        try {
+          const res = await fetch('/api/sales-agent/notifications/?count_only=true', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          agentUnreadCount = data.unread_count ?? 0;
+          updateNotifBadge();
+        } catch {}
+      }
+
+      async function loadAgentNotifications() {
+        const token = localStorage.getItem('agentToken');
+        if (!token || !notifList) return;
+        notifList.innerHTML = `<p class="notif-empty">${t('loading')}</p>`;
+        try {
+          const res = await fetch('/api/sales-agent/notifications/?limit=15', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          const notifications: any[] = data.notifications ?? [];
+          agentUnreadCount = data.unread_count ?? 0;
+          updateNotifBadge();
+
+          if (!notifications.length) {
+            notifList.innerHTML = `<p class="notif-empty">${t('noNotifications')}</p>`;
+            return;
+          }
+
+          notifList.innerHTML = notifications.map(n => `
+            <div class="notif-item ${!n.is_read ? 'unread' : ''}" data-notif-id="${n.id}">
+              <p class="msg">${agentEscHtml(n.message)}</p>
+              <p class="time">${notifTimeAgo(n.created_at)}</p>
+            </div>
+          `).join('');
+
+          notifList.querySelectorAll('[data-notif-id]').forEach(el => {
+            el.addEventListener('click', async () => {
+              const id = (el as HTMLElement).dataset.notifId;
+              if (!id) return;
+              el.classList.remove('unread');
+              if (agentUnreadCount > 0) { agentUnreadCount--; updateNotifBadge(); }
+              try {
+                await fetch('/api/sales-agent/notifications/', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                  body: JSON.stringify({ id, is_read: true }),
+                });
+              } catch {}
+              window.location.href = '/sales-agent/sales/';
+            });
+          });
+        } catch {
+          notifList.innerHTML = `<p class="notif-empty">${t('error')}</p>`;
+        }
+      }
+
+      notifBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifOpen = !notifOpen;
+        notifDropdown?.classList.toggle('hidden', !notifOpen);
+        if (notifOpen) loadAgentNotifications();
+      });
+
+      document.addEventListener('click', (e) => {
+        const wrap = document.getElementById('notif-wrap');
+        if (notifOpen && wrap && !wrap.contains(e.target as Node)) {
+          notifOpen = false;
+          notifDropdown?.classList.add('hidden');
+        }
+      });
+
+      markAllBtn?.addEventListener('click', async () => {
+        const token = localStorage.getItem('agentToken');
+        if (!token) return;
+        try {
+          await fetch('/api/sales-agent/notifications/', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ mark_all_read: true }),
+          });
+          agentUnreadCount = 0;
+          updateNotifBadge();
+          loadAgentNotifications();
+        } catch {}
+      });
+
+      pollAgentNotifCount();
+      setInterval(pollAgentNotifCount, 30000);
 
       // ── PWA Service Worker registration ──────────────────────────────────
       if ('serviceWorker' in navigator) {

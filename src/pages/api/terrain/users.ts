@@ -177,6 +177,9 @@ export const PUT: APIRoute = async ({ request }) => {
     const allowed = ['full_name', 'role', 'phone'];
     const safe: Record<string, any> = {};
     for (const k of allowed) if (k in body) safe[k] = body[k];
+    if ('role' in safe && !['engineer', 'technician'].includes(safe.role)) {
+      return json({ error: 'role must be engineer or technician' }, 400);
+    }
     if (Object.keys(safe).length === 0) return json({ error: 'No updatable fields provided' }, 400);
 
     const { data: profile, error } = await supabase

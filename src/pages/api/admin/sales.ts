@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminAuth } from '../../../lib/adminAuth';
-import { createNotification } from '../../../lib/notify';
+import { createNotification, createAgentNotification } from '../../../lib/notify';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -207,6 +207,19 @@ export const PUT: APIRoute = async ({ request }) => {
     createNotification({
       type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
       message: `${statusLabel} — ${agentName} • ${sale.client_name} • ${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA`,
+      entity_id: id,
+      entity_type: 'sale',
+    }).catch(() => {});
+
+    // Notify the agent themselves so it shows up in their portal bell.
+    const agentMessage = action === 'validate'
+      ? `Votre vente à ${sale.client_name} (${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA) a été validée.`
+      : `Votre vente à ${sale.client_name} a été rejetée${sale.rejection_reason ? ` : ${sale.rejection_reason}` : '.'}`;
+
+    createAgentNotification({
+      agent_id: sale.agent_id,
+      type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
+      message: agentMessage,
       entity_id: id,
       entity_type: 'sale',
     }).catch(() => {});

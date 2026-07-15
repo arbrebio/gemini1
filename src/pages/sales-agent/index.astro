@@ -55,11 +55,23 @@ import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
       <div class="bg-white rounded-xl p-4 border border-gray-100 text-center text-gray-400 text-sm" data-i18n="loading">Chargement…</div>
     </div>
   </div>
+
+  <!-- Sale detail modal -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/50" style="padding-bottom:72px">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[75vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white">
+        <h2 class="font-bold text-gray-800">Détail de la vente</h2>
+        <button id="close-detail" class="text-gray-400 text-xl p-1"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div id="detail-content" class="p-4 text-sm text-gray-700 space-y-2"></div>
+    </div>
+  </div>
 </SalesAgentLayout>
 
 <script is:inline>
   (function() {
     var PAYMENT_SHORT = { wire_transfer:'Wire', orange_money:'Orange', mtn_money:'MTN', moov_money:'Moov', wave:'WAVE', cash:'Cash' };
+    var PAYMENT_LABELS = { wire_transfer:'Virement', orange_money:'Orange Money', mtn_money:'MTN Money', moov_money:'Moov Money', wave:'WAVE', cash:'Espèces' };
     var STATUS_COLOR = { pending:'text-yellow-600 bg-yellow-50', validated:'text-green-600 bg-green-50', rejected:'text-red-600 bg-red-50' };
     var STATUS_LABEL = {
       fr: { pending:'En attente', validated:'Validée', rejected:'Rejetée' },
@@ -114,7 +126,7 @@ import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
         recentEl.innerHTML = sales.map(function(s) {
           var sc = STATUS_COLOR[s.status] || 'text-gray-600 bg-gray-50';
           var d = new Date(s.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
-          return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex items-center gap-3">' +
+          return '<div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex items-center gap-3" data-sale-id="' + s.id + '" style="cursor:pointer">' +
             '<div class="flex-1 min-w-0">' +
               '<p class="font-medium text-gray-800 text-sm truncate">' + (s.client_name || '') + '</p>' +
               '<p class="text-xs text-gray-400 truncate">' + (s.product_name || '') + ' · ' + d + '</p>' +
@@ -125,11 +137,50 @@ import SalesAgentLayout from "../../layouts/SalesAgentLayout.astro";
             '</div>' +
           '</div>';
         }).join('');
+
+        recentEl.querySelectorAll('[data-sale-id]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            var id = el.getAttribute('data-sale-id');
+            var sale = sales.find(function(s) { return s.id === id; });
+            if (sale) showSaleDetail(sale);
+          });
+        });
       } catch (err) {
         // Offline — show cached data
         console.warn('Dashboard load failed (possibly offline):', err);
       }
     }
+
+    function showSaleDetail(s) {
+      var d = new Date(s.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+      var sc = STATUS_COLOR[s.status] || 'bg-gray-50 text-gray-600';
+      var sl = STATUS_LABEL[lang] || STATUS_LABEL['fr'];
+      document.getElementById('detail-content').innerHTML =
+        '<div class="grid grid-cols-2 gap-y-2 gap-x-4">' +
+          '<p class="text-gray-400 text-xs">Statut</p><p><span class="text-xs px-1.5 py-0.5 rounded-full ' + sc + '">' + (sl[s.status] || s.status) + '</span></p>' +
+          '<p class="text-gray-400 text-xs">Date</p><p class="text-xs">' + d + '</p>' +
+          '<p class="text-gray-400 text-xs">Client</p><p class="text-xs font-semibold">' + (s.client_name || '') + '</p>' +
+          '<p class="text-gray-400 text-xs">Produit</p><p class="text-xs">' + (s.product_name || '') + '</p>' +
+          '<p class="text-gray-400 text-xs">Quantité</p><p class="text-xs">' + s.quantity + '</p>' +
+          '<p class="text-gray-400 text-xs">Prix unitaire</p><p class="text-xs">' + new Intl.NumberFormat('fr-FR').format(Number(s.unit_price)) + ' FCFA</p>' +
+          '<p class="text-gray-400 text-xs">Total</p><p class="text-sm font-bold text-[#194642]">' + new Intl.NumberFormat('fr-FR').format(Number(s.total_amount)) + ' FCFA</p>' +
+          '<p class="text-gray-400 text-xs">Paiement</p><p class="text-xs">' + (PAYMENT_LABELS[s.payment_method] || s.payment_method) + '</p>' +
+          '<p class="text-gray-400 text-xs">Référence</p><p class="text-xs">' + (s.transaction_reference || '—') + '</p>' +
+          '<p class="text-gray-400 text-xs">Commission</p><p class="text-xs font-semibold text-green-600">' + s.commission_rate + '% = ' + new Intl.NumberFormat('fr-FR').format(Number(s.commission_amount)) + ' FCFA</p>' +
+          (s.notes ? '<p class="text-gray-400 text-xs">Notes</p><p class="text-xs">' + s.notes + '</p>' : '') +
+          (s.rejection_reason ? '<p class="text-gray-400 text-xs col-span-2">Motif de rejet:</p><p class="text-xs col-span-2 bg-red-50 text-red-600 rounded-lg p-2">' + s.rejection_reason + '</p>' : '') +
+        '</div>' +
+        (s.proof_url ? '<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-xs font-semibold text-gray-500 mb-2">Preuve de paiement:</p><a href="' + s.proof_url + '" target="_blank" class="text-blue-600 text-xs underline"><i class="fas fa-external-link-alt mr-1"></i>Voir la preuve</a></div>' : '') +
+        (s.status === 'validated' ? '<div class="mt-3 pt-3 border-t border-gray-100"><a href="/sales-agent/invoice/' + s.id + '/" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#194642"><i class="fas fa-file-invoice"></i>📄 Télécharger la Facture</a></div>' : '');
+      document.getElementById('detail-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('close-detail').addEventListener('click', function() {
+      document.getElementById('detail-modal').classList.add('hidden');
+    });
+    document.getElementById('detail-modal').addEventListener('click', function(e) {
+      if (e.target === e.currentTarget) document.getElementById('detail-modal').classList.add('hidden');
+    });
 
     loadDashboard();
   })();

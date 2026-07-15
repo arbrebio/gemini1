@@ -90,6 +90,7 @@ export const GET: APIRoute = async ({ request }) => {
         email: profile.email,
         worker_id: profile.worker_id,
         phone: profile.phone,
+        avatar_url: profile.avatar_url ?? null,
         is_active: profile.is_active,
         must_change_password: profile.must_change_password ?? false,
         hired_at: profile.career_employees?.hired_at ?? null,

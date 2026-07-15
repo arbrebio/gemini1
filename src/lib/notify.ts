@@ -44,6 +44,35 @@ export async function createNotification(input: NotificationInput) {
   return data;
 }
 
+export interface AgentNotificationInput {
+  agent_id: string;
+  type?: string;
+  message: string;
+  entity_id?: string | null;
+  entity_type?: string | null;
+}
+
+/** Insert a sales-agent notification row (shows in that agent's portal bell). */
+export async function createAgentNotification(input: AgentNotificationInput) {
+  if (!input?.agent_id) throw new Error('agent_id is required');
+  if (!input?.message) throw new Error('message is required');
+  const supabase = getServiceClient();
+  const { data, error } = await supabase
+    .from('agent_notifications')
+    .insert({
+      agent_id: input.agent_id,
+      type: input.type ?? 'default',
+      message: input.message,
+      entity_id: input.entity_id ?? null,
+      entity_type: input.entity_type ?? null,
+      is_read: false,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export interface WhatsAppInput {
   to: string;
   task_title: string;
