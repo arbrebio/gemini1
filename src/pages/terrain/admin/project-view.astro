@@ -20,11 +20,12 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
   import { requireTerrainAuth, terrainFetch, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
 
   const me = requireTerrainAuth();
-  if (me) init();
 
   const params = new URLSearchParams(window.location.search);
   const visitId = params.get('visitId');
   const projectId = params.get('projectId');
+
+  if (me) init();
 
   async function init() {
     if (visitId) return renderVisit(visitId);

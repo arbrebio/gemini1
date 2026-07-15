@@ -38,12 +38,13 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
   import { requireTerrainAuth, terrainFetch, formatDate, esc, projectTypeLabels } from '../../../lib/terrainClient';
 
   const me = requireTerrainAuth(['super_admin']);
+  let debounce: any;
+
   if (me) load();
 
   document.getElementById('search-projects')!.addEventListener('input', load);
   document.getElementById('filter-type')!.addEventListener('change', load);
 
-  let debounce: any;
   async function load() {
     clearTimeout(debounce);
     debounce = setTimeout(async () => {
