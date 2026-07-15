@@ -88,6 +88,22 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ avatar_url });
   } catch (e: any) {
     console.error('API error:', e);
+    if (isMissingSchema(e)) {
+      return json({ error: 'Photo upload is not configured yet — the storage bucket or avatar_url column is missing. Ask an admin to run the pending Supabase migrations.' }, 503);
+    }
     return json({ error: 'Internal server error' }, 500);
   }
 };
+
+// Bucket-not-found (storage) or column-not-found (Postgres 42703 / PostgREST
+// PGRST204) — both mean the migration that provisions this feature hasn't
+// been applied yet, which is a much clearer signal than a bare 500.
+function isMissingSchema(e: any): boolean {
+  const msg = String(e?.message || '');
+  return (
+    e?.code === '42703' ||
+    e?.code === 'PGRST204' ||
+    /bucket not found/i.test(msg) ||
+    /column .* does not exist/i.test(msg)
+  );
+}

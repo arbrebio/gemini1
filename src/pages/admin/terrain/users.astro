@@ -1,0 +1,451 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Terrain Team">
+  <!-- Toast -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Create User Modal -->
+  <div id="create-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <h2 class="text-lg font-bold text-gray-800">Nouvel utilisateur Terrain</h2>
+        <button id="close-create-modal" class="text-gray-400 hover:text-gray-600 text-xl"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div id="create-form" class="p-5 space-y-4">
+        <div id="create-error" class="hidden bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2"></div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet <span class="text-red-500">*</span></label>
+          <input id="cf-name" type="text" required placeholder="Kouassi Jean-Marie"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email professionnel <span class="text-red-500">*</span></label>
+          <input id="cf-email" type="email" required placeholder="jean@arbrebio.com"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+          <input id="cf-phone" type="tel" placeholder="+225 00 00 00 00 00"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rôle <span class="text-red-500">*</span></label>
+          <select id="cf-role" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="">— Sélectionner —</option>
+            <option value="engineer">Ingénieur Agronome</option>
+            <option value="technician">Technicien Terrain</option>
+          </select>
+        </div>
+        <p class="text-xs text-gray-400">Un mot de passe temporaire sera généré automatiquement et envoyé par e-mail. L'utilisateur devra le changer à sa première connexion.</p>
+      </div>
+      <!-- Credentials display after creation -->
+      <div id="credentials-display" class="hidden p-5 border-t border-gray-100">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+          <p class="text-sm font-semibold text-green-800 mb-1"><i class="fas fa-check-circle mr-1"></i> Utilisateur créé avec succès !</p>
+          <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
+            <i class="fas fa-envelope text-blue-500 text-xs"></i>
+            <p class="text-xs text-blue-700">Les identifiants ont été envoyés automatiquement par email à <strong id="cred-email-notice">—</strong>.</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border border-green-100 text-sm space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Email</span>
+              <span id="cred-email" class="font-mono text-gray-800">—</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Mot de passe</span>
+              <span id="cred-password" class="font-mono font-bold text-gray-800">—</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide w-20">Portail</span>
+              <span class="font-mono text-[#194642] text-xs">arbrebio.com/terrain/login</span>
+            </div>
+          </div>
+          <button id="copy-creds" class="mt-3 px-3 py-1.5 text-xs font-medium bg-green-700 text-white rounded-lg hover:opacity-90">
+            <i class="fas fa-copy mr-1"></i> Copier les identifiants
+          </button>
+        </div>
+      </div>
+      <div id="create-footer" class="flex items-center justify-end gap-3 p-5 border-t border-gray-100">
+        <button type="button" id="cancel-create" class="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Annuler</button>
+        <button type="button" id="submit-create" class="px-5 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90" style="background:#194642">
+          <i class="fas fa-plus mr-1"></i> Créer l'utilisateur
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <h2 class="text-lg font-bold text-gray-800">Modifier l'utilisateur</h2>
+        <button id="close-edit-modal" class="text-gray-400 hover:text-gray-600 text-xl"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="p-5 space-y-4">
+        <input type="hidden" id="eu-id" />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet <span class="text-red-500">*</span></label>
+          <input id="eu-name" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input id="eu-email" type="email" disabled class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+          <input id="eu-phone" type="tel" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rôle <span class="text-red-500">*</span></label>
+          <select id="eu-role" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]">
+            <option value="engineer">Ingénieur Agronome</option>
+            <option value="technician">Technicien Terrain</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex items-center justify-between gap-3 p-5 border-t border-gray-100">
+        <button id="btn-reset-pw" class="px-4 py-2 text-sm border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50"><i class="fas fa-key mr-1"></i>Réinitialiser le mot de passe</button>
+        <button id="btn-save-edit" class="px-5 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90" style="background:#194642">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Temp password reveal modal -->
+  <div id="temp-pw-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <h2 class="text-lg font-bold text-gray-800">Identifiants générés</h2>
+        <button id="close-temp-pw" class="text-gray-400 hover:text-gray-600 text-xl"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="p-5 space-y-3">
+        <p class="text-sm text-gray-600">Un e-mail avec ces identifiants a été envoyé (si l'envoi d'e-mail est configuré). Vous pouvez aussi les communiquer directement :</p>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Email</label>
+          <input id="temp-pw-email" readonly class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm font-mono" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Mot de passe temporaire</label>
+          <input id="temp-pw-value" readonly class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm font-mono" />
+        </div>
+      </div>
+      <div class="flex justify-end p-5 border-t border-gray-100">
+        <button id="close-temp-pw-2" class="px-4 py-2 text-sm font-medium text-white rounded-lg hover:opacity-90" style="background:#194642">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Équipe Terrain</h1>
+      <p class="text-gray-500 text-sm mt-0.5">Ingénieurs agronomes et techniciens — comptes gérés depuis ce panneau, aucun compte super-admin séparé n'est nécessaire.</p>
+    </div>
+    <button id="btn-create-user" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity" style="background:#194642">
+      <i class="fas fa-plus text-xs"></i> Nouvel utilisateur
+    </button>
+  </div>
+
+  <!-- Pending reset requests -->
+  <div id="reset-banner" class="hidden bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+    <p class="text-sm font-semibold text-amber-800 mb-2"><i class="fas fa-key mr-1"></i>Demandes de réinitialisation de mot de passe</p>
+    <div id="reset-list" class="space-y-2"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Total</p>
+      <p id="stat-total" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Ingénieurs</p>
+      <p id="stat-engineers" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Techniciens</p>
+      <p id="stat-technicians" class="text-2xl font-bold text-gray-800">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+      <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Actifs</p>
+      <p id="stat-active" class="text-2xl font-bold text-green-600">—</p>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-gray-100">
+      <input id="search-users" placeholder="Rechercher…" class="w-full sm:w-64 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-100">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Créé le</th>
+            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut</th>
+            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-table-body" class="divide-y divide-gray-50">
+          <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from "../../../lib/supabase";
+
+  function esc(v: unknown) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function roleLabel(role: string) { return ({ engineer: 'Ingénieur Agronome', technician: 'Technicien' } as Record<string,string>)[role] || role; }
+  function formatDateTime(iso: string | null) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  let allUsers: any[] = [];
+  let editingId: string | null = null;
+
+  async function loadUsers() {
+    const res = await authFetch('/api/admin/terrain-users/');
+    const data = await res.json();
+    allUsers = data.users || [];
+    renderStats();
+    renderUsers();
+    renderResetBanner();
+  }
+  loadUsers();
+
+  function renderStats() {
+    document.getElementById('stat-total')!.textContent = String(allUsers.length);
+    document.getElementById('stat-engineers')!.textContent = String(allUsers.filter(u => u.role === 'engineer').length);
+    document.getElementById('stat-technicians')!.textContent = String(allUsers.filter(u => u.role === 'technician').length);
+    document.getElementById('stat-active')!.textContent = String(allUsers.filter(u => u.active).length);
+  }
+
+  function renderResetBanner() {
+    const pending = allUsers.filter(u => u.pending_reset_at);
+    const banner = document.getElementById('reset-banner')!;
+    const list = document.getElementById('reset-list')!;
+    if (!pending.length) { banner.classList.add('hidden'); return; }
+    banner.classList.remove('hidden');
+    list.innerHTML = pending.map(u => `
+      <div class="flex items-center justify-between gap-3 bg-white rounded-lg border border-amber-100 px-3 py-2">
+        <div>
+          <div class="font-medium text-gray-800 text-sm">${esc(u.full_name)}</div>
+          <div class="text-xs text-gray-500">${esc(u.email)} · demandé le ${formatDateTime(u.pending_reset_at)}</div>
+        </div>
+        <button class="btn-reset-from-banner px-3 py-1.5 text-xs font-medium text-white rounded-lg hover:opacity-90" style="background:#194642" data-id="${u.id}">Réinitialiser</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('.btn-reset-from-banner').forEach(btn => {
+      btn.addEventListener('click', () => resetPassword((btn as HTMLElement).dataset.id!));
+    });
+  }
+
+  function renderUsers() {
+    const q = ((document.getElementById('search-users') as HTMLInputElement).value || '').toLowerCase();
+    const users = allUsers.filter(u => !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    const tbody = document.getElementById('users-table-body')!;
+
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Aucun utilisateur. Cliquez sur "Nouvel utilisateur" pour commencer.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = users.map(u => `
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-full bg-[#194642]/10 flex items-center justify-center text-[#194642] font-semibold text-xs flex-shrink-0 overflow-hidden">
+              ${u.avatar_url ? `<img src="${esc(u.avatar_url)}" class="h-full w-full object-cover" />` : esc(u.full_name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2))}
+            </div>
+            <span class="font-medium text-gray-800">${esc(u.full_name)}</span>
+          </div>
+        </td>
+        <td class="px-4 py-3 text-gray-600">${esc(u.email)}${u.phone ? `<div class="text-xs text-gray-400">${esc(u.phone)}</div>` : ''}</td>
+        <td class="px-4 py-3 text-gray-600">${roleLabel(u.role)}</td>
+        <td class="px-4 py-3 text-gray-500 text-xs">${formatDateTime(u.created_at)}</td>
+        <td class="px-4 py-3 text-center">
+          <span class="px-2 py-0.5 rounded-full text-xs font-medium ${u.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+            ${u.active ? 'Actif' : 'Inactif'}
+          </span>
+          ${u.pending_reset_at ? '<div class="text-xs text-amber-600 mt-0.5"><i class="fas fa-key mr-1"></i>Réinit. demandée</div>' : ''}
+          ${u.must_change_password ? '<div class="text-xs text-gray-400 mt-0.5">1ère connexion en attente</div>' : ''}
+        </td>
+        <td class="px-4 py-3 text-center">
+          <div class="flex items-center justify-center gap-2 flex-wrap">
+            <button class="btn-edit px-2 py-1 text-xs font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50" data-id="${u.id}">Modifier</button>
+            <button class="btn-toggle px-2 py-1 text-xs font-medium border ${u.active ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-green-200 text-green-600 hover:bg-green-50'} rounded-lg" data-id="${u.id}">
+              ${u.active ? 'Désactiver' : 'Activer'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', () => openEdit((btn as HTMLElement).dataset.id!));
+    });
+    tbody.querySelectorAll('.btn-toggle').forEach(btn => {
+      btn.addEventListener('click', () => toggleActive((btn as HTMLElement).dataset.id!));
+    });
+  }
+
+  document.getElementById('search-users')?.addEventListener('input', renderUsers);
+
+  // ── Create ───────────────────────────────────────────────────────────────
+  const createModal = document.getElementById('create-modal')!;
+  document.getElementById('btn-create-user')?.addEventListener('click', () => {
+    (document.getElementById('cf-name') as HTMLInputElement).value = '';
+    (document.getElementById('cf-email') as HTMLInputElement).value = '';
+    (document.getElementById('cf-phone') as HTMLInputElement).value = '';
+    (document.getElementById('cf-role') as HTMLSelectElement).value = '';
+    document.getElementById('create-error')!.classList.add('hidden');
+    document.getElementById('credentials-display')!.classList.add('hidden');
+    document.getElementById('create-form')!.classList.remove('hidden');
+    document.getElementById('create-footer')!.classList.remove('hidden');
+    createModal.classList.remove('hidden');
+  });
+
+  function closeCreateModal() { createModal.classList.add('hidden'); loadUsers(); }
+  document.getElementById('close-create-modal')?.addEventListener('click', closeCreateModal);
+  document.getElementById('cancel-create')?.addEventListener('click', closeCreateModal);
+
+  document.getElementById('submit-create')?.addEventListener('click', async () => {
+    const full_name = (document.getElementById('cf-name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('cf-email') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('cf-phone') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('cf-role') as HTMLSelectElement).value;
+    const errEl = document.getElementById('create-error')!;
+
+    if (!full_name || !email || !role) {
+      errEl.textContent = 'Tous les champs requis doivent être remplis.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    const btn = document.getElementById('submit-create') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Création…';
+
+    try {
+      const res = await authFetch('/api/admin/terrain-users/', {
+        method: 'POST',
+        body: JSON.stringify({ full_name, email, phone, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Échec de la création');
+
+      document.getElementById('cred-email')!.textContent = email;
+      document.getElementById('cred-email-notice')!.textContent = email;
+      document.getElementById('cred-password')!.textContent = data.temp_password;
+      document.getElementById('credentials-display')!.classList.remove('hidden');
+      document.getElementById('create-form')!.classList.add('hidden');
+      document.getElementById('create-footer')!.classList.add('hidden');
+      showToast(`Utilisateur ${full_name} créé.`, 'success');
+    } catch (e: any) {
+      errEl.textContent = e.message;
+      errEl.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-plus mr-1"></i> Créer l\'utilisateur';
+    }
+  });
+
+  document.getElementById('copy-creds')?.addEventListener('click', () => {
+    const email = document.getElementById('cred-email')!.textContent || '';
+    const pw = document.getElementById('cred-password')!.textContent || '';
+    navigator.clipboard.writeText(`Email: ${email}\nMot de passe: ${pw}\nPortail: https://arbrebio.com/terrain/login`)
+      .then(() => showToast('Identifiants copiés !', 'success'));
+  });
+
+  // ── Edit ─────────────────────────────────────────────────────────────────
+  const editModal = document.getElementById('edit-modal')!;
+  function openEdit(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    editingId = id;
+    (document.getElementById('eu-id') as HTMLInputElement).value = u.id;
+    (document.getElementById('eu-name') as HTMLInputElement).value = u.full_name;
+    (document.getElementById('eu-email') as HTMLInputElement).value = u.email;
+    (document.getElementById('eu-phone') as HTMLInputElement).value = u.phone || '';
+    (document.getElementById('eu-role') as HTMLSelectElement).value = u.role;
+    editModal.classList.remove('hidden');
+  }
+  document.getElementById('close-edit-modal')?.addEventListener('click', () => editModal.classList.add('hidden'));
+
+  document.getElementById('btn-save-edit')?.addEventListener('click', async () => {
+    if (!editingId) return;
+    const full_name = (document.getElementById('eu-name') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('eu-phone') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('eu-role') as HTMLSelectElement).value;
+    if (!full_name) { showToast('Le nom est requis.', 'error'); return; }
+
+    const res = await authFetch('/api/admin/terrain-users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id: editingId, full_name, phone, role }),
+    });
+    if (!res.ok) { showToast('Échec de la mise à jour.', 'error'); return; }
+    editModal.classList.add('hidden');
+    await loadUsers();
+    showToast('Utilisateur mis à jour.', 'success');
+  });
+
+  document.getElementById('btn-reset-pw')?.addEventListener('click', () => {
+    if (editingId) resetPassword(editingId);
+  });
+
+  async function resetPassword(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    if (!confirm(`Réinitialiser le mot de passe de ${u.full_name} ?`)) return;
+
+    const res = await authFetch('/api/admin/terrain-users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id, action: 'reset-password' }),
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Échec de la réinitialisation.', 'error'); return; }
+
+    editModal.classList.add('hidden');
+    await loadUsers();
+    (document.getElementById('temp-pw-email') as HTMLInputElement).value = u.email;
+    (document.getElementById('temp-pw-value') as HTMLInputElement).value = data.temp_password;
+    document.getElementById('temp-pw-modal')!.classList.remove('hidden');
+  }
+  document.getElementById('close-temp-pw')?.addEventListener('click', () => document.getElementById('temp-pw-modal')!.classList.add('hidden'));
+  document.getElementById('close-temp-pw-2')?.addEventListener('click', () => document.getElementById('temp-pw-modal')!.classList.add('hidden'));
+
+  async function toggleActive(id: string) {
+    const u = allUsers.find(x => x.id === id);
+    if (!u) return;
+    const action = u.active ? 'désactiver' : 'activer';
+    if (!confirm(`Voulez-vous ${action} ${u.full_name} ?`)) return;
+
+    const res = await authFetch('/api/admin/terrain-users/', {
+      method: 'PUT',
+      body: JSON.stringify({ id, action: 'toggle-active' }),
+    });
+    if (!res.ok) { showToast("Échec de l'opération.", 'error'); return; }
+    await loadUsers();
+    showToast(`Compte ${action === 'désactiver' ? 'désactivé' : 'activé'}.`, 'success');
+  }
+
+  // ── Toast ──────────────────────────────────────────────────────────────
+  function showToast(msg: string, type: 'success' | 'error' = 'success') {
+    const c = document.getElementById('toast-container')!;
+    const t = document.createElement('div');
+    const color = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+    t.className = `pointer-events-auto ${color} text-white px-4 py-3 rounded-lg shadow-lg text-sm flex items-center gap-2 max-w-sm`;
+    t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>${esc(msg)}`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+  }
+</script>

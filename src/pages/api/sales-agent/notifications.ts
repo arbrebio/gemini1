@@ -23,6 +23,10 @@ function extractToken(request: Request): string | null {
   return auth.slice(7).trim();
 }
 
+function isMissingTable(e: any): boolean {
+  return e?.code === '42P01' || e?.code === 'PGRST205' || /could not find the table/i.test(String(e?.message || ''));
+}
+
 async function authenticate(request: Request) {
   const token = extractToken(request);
   if (!token) return { ok: false as const, response: json({ error: 'Missing token' }, 401) };
@@ -74,7 +78,12 @@ export const GET: APIRoute = async ({ request, url }) => {
       .eq('agent_id', agentId)
       .order('created_at', { ascending: false })
       .limit(limit);
-    if (error) throw error;
+    if (error) {
+      // Table not created yet (migration pending) — degrade gracefully
+      // instead of breaking the whole portal header over a missing feature.
+      if (isMissingTable(error)) return json({ notifications: [], unread_count: 0 });
+      throw error;
+    }
 
     const { count: unreadCount } = await supabase
       .from('agent_notifications')
