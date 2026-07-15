@@ -56,7 +56,7 @@ export const PUT: APIRoute = async ({ request }) => {
       .from('sales_agent_profiles')
       .update({ full_name })
       .eq('id', user.id)
-      .select('id, full_name, email, worker_id, phone, avatar_url')
+      .select('*')
       .single();
 
     if (error) throw error;
