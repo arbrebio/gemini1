@@ -5,3 +5,4 @@ export * from './seniority';
 export * from './engine';
 export * from './cumuls';
 export * from './format';
+export * from './conges';

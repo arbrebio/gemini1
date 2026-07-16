@@ -158,9 +158,8 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
           <td class="px-6 py-3">${badge}</td>
           <td class="px-6 py-3 text-right whitespace-nowrap">
             <a href="/admin/careers/payroll/slip/${s.id}/" class="text-[#194642] hover:underline text-xs font-semibold mr-3"><i class="fas fa-print"></i> Voir / Imprimer</a>
-            ${s.status === 'draft' ? `
-              <button data-validate="${s.id}" class="text-green-600 hover:underline text-xs font-semibold mr-3"><i class="fas fa-check"></i> Valider</button>
-              <button data-delete="${s.id}" class="text-red-500 hover:underline text-xs font-semibold"><i class="fas fa-trash"></i></button>` : ''}
+            ${s.status === 'draft' ? `<button data-validate="${s.id}" class="text-green-600 hover:underline text-xs font-semibold mr-3"><i class="fas fa-check"></i> Valider</button>` : ''}
+            <button data-delete="${s.id}" data-status="${s.status}" class="text-red-500 hover:underline text-xs font-semibold" title="Supprimer${s.status === 'validated' ? ' (bulletin validé)' : ''}"><i class="fas fa-trash"></i></button>
           </td>
         </tr>`;
       }).join('');
@@ -222,12 +221,25 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     const validateId = target.getAttribute('data-validate');
     const deleteId = target.getAttribute('data-delete');
     if (validateId) validateSlips([validateId]);
-    if (deleteId && confirm('Supprimer ce brouillon ?')) {
-      await authFetch('/api/admin/careers/payroll-slips/', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: deleteId }),
-      });
+    if (deleteId) {
+      const isValidated = target.getAttribute('data-status') === 'validated';
+      const message = isValidated
+        ? "⚠️ Ce bulletin est VALIDÉ et a déjà été envoyé à l'employé par email. Le supprimer le retire immédiatement de son espace portail (« Mes bulletins de paie »). Cette action est irréversible — vous pourrez ensuite le régénérer avec « Générer tout ». Continuer ?"
+        : 'Supprimer ce brouillon ?';
+      if (!confirm(message)) return;
+      runStatus.textContent = 'Suppression…';
+      try {
+        const res = await authFetch('/api/admin/careers/payroll-slips/', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: deleteId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        runStatus.textContent = '✅ Bulletin supprimé';
+      } catch (e: any) {
+        runStatus.textContent = `❌ ${e.message || 'Erreur'}`;
+      }
       loadSlips();
     }
   });

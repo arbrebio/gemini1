@@ -40,6 +40,9 @@ const profileSchema = z.object({
   seniority_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
   extra_lines: z.array(extraLineSchema).default([]),
   active: z.boolean().default(true),
+  leave_days_taken: z.number().min(0).default(0),
+  leave_last_start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  leave_last_end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
 });
 
 // GET — list payroll profiles joined with employee identity (or single via ?employee_id=)

@@ -118,6 +118,25 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
         </div>
       </div>
 
+      <!-- Congés payés -->
+      <div class="mb-4 p-4 rounded-lg bg-gray-50 border border-gray-100">
+        <label class="block text-xs font-medium text-gray-500 uppercase mb-3">Congés payés (acquisition auto. 2,2 j/mois depuis la date d'ancienneté)</label>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-leave-taken">Jours de congé pris (cumul)</label>
+            <input id="f-leave-taken" type="number" min="0" step="0.5" value="0" class="w-full rounded-lg border-gray-200 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-leave-start">Dernier congé — départ</label>
+            <input id="f-leave-start" type="date" class="w-full rounded-lg border-gray-200 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase mb-1" for="f-leave-end">Dernier congé — reprise</label>
+            <input id="f-leave-end" type="date" class="w-full rounded-lg border-gray-200 text-sm" />
+          </div>
+        </div>
+      </div>
+
       <!-- Extra lines -->
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
@@ -226,6 +245,9 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     $('f-salary-type').value = profile?.salary_type || 'Mensuel';
     $('f-payment').value = profile?.payment_method || 'Virement';
     $('f-active').checked = profile ? !!profile.active : true;
+    $('f-leave-taken').value = profile?.leave_days_taken ?? 0;
+    $('f-leave-start').value = profile?.leave_last_start_date || '';
+    $('f-leave-end').value = profile?.leave_last_end_date || '';
     $('extra-lines').innerHTML = '';
     (profile?.extra_lines || []).forEach((l: any) => extraLineRow(l));
     $('modal-status').textContent = '';
@@ -263,6 +285,9 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
       seniority_date: $('f-seniority').value || null,
       extra_lines: extraLines,
       active: $('f-active').checked,
+      leave_days_taken: Number($('f-leave-taken').value || 0),
+      leave_last_start_date: $('f-leave-start').value || null,
+      leave_last_end_date: $('f-leave-end').value || null,
     };
     if ($('f-id').value) payload.id = $('f-id').value;
     if (!payload.matricule) { status.textContent = '❌ Matricule requis'; return; }

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { requireAdminAuth } from '../../../../lib/adminAuth';
 import {
   computeAnciennete,
+  computeConges,
   computeCumuls,
   computePayslip,
   monthNameFr,
@@ -176,6 +177,19 @@ async function handleGenerate(
       ? computeAnciennete(new Date(`${seniorityDate}T00:00:00`), new Date(`${end}T00:00:00`))
       : null;
 
+    const dailyRate = Math.round(computed.totals.brut / 26);
+    const conges = seniorityDate
+      ? computeConges({
+          seniorityDate: new Date(`${seniorityDate}T00:00:00`),
+          periodStart: new Date(`${start}T00:00:00`),
+          periodEnd: new Date(`${end}T00:00:00`),
+          leaveDaysTaken: Number(profile.leave_days_taken || 0),
+          leaveLastStartDate: profile.leave_last_start_date ? new Date(`${profile.leave_last_start_date}T00:00:00`) : null,
+          leaveLastEndDate: profile.leave_last_end_date ? new Date(`${profile.leave_last_end_date}T00:00:00`) : null,
+          dailyRate,
+        })
+      : null;
+
     const profileSnapshot = {
       matricule: profile.matricule,
       base_salary: Number(profile.base_salary),
@@ -221,7 +235,7 @@ async function handleGenerate(
       lines: computed.lines,
       totals: computed.totals,
       cumuls,
-      conges: {},
+      conges: conges || {},
       status: 'draft',
       created_by: userId,
     };
@@ -339,7 +353,10 @@ async function sendPayslipEmail(
   });
 }
 
-// DELETE — drafts only (DB trigger also guards validated slips)
+// DELETE — admin-only. Drafts and validated slips can both be deleted (e.g. to
+// fix a mistake and regenerate); the DB trigger still blocks any UPDATE of a
+// validated slip, only DELETE is allowed. Deleting removes the slip from the
+// employee's payroll portal immediately (it's read live from this table).
 export const DELETE: APIRoute = async ({ request }) => {
   const auth = await requireAdminAuth(request);
   if (!auth.ok) return auth.response;
@@ -347,9 +364,10 @@ export const DELETE: APIRoute = async ({ request }) => {
     const supabase = getSupabase();
     const { id } = await request.json();
     if (!id) return json({ error: 'id required' }, 400);
-    const { error } = await supabase.from('payroll_slips').delete().eq('id', id).eq('status', 'draft');
+    const { data, error } = await supabase.from('payroll_slips').delete().eq('id', id).select('id, status').maybeSingle();
     if (error) throw error;
-    return json({ success: true });
+    if (!data) return json({ error: 'Bulletin introuvable' }, 404);
+    return json({ success: true, status: data.status });
   } catch (e) {
     console.error('API error:', e);
     return json({ error: 'Internal server error' }, 500);
