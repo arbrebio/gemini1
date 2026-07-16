@@ -39,6 +39,20 @@ const validateSchema = z.object({
   slip_ids: z.array(z.string().uuid()).min(1),
 });
 
+const congesDateRangeSchema = z.object({
+  du: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  au: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+const updateCongesSchema = z.object({
+  action: z.literal('update_conges'),
+  slip_id: z.string().uuid(),
+  jours_pris: z.number().min(0),
+  jours_acquis_manuel: z.number().default(0),
+  jours_fiscaux_seed: z.number().nullable().optional(),
+  dates: z.array(congesDateRangeSchema).max(3).default([]),
+});
+
 async function loadSettings(supabase: SupabaseClient) {
   const { data, error } = await supabase
     .from('payroll_settings')
@@ -103,6 +117,11 @@ export const POST: APIRoute = async ({ request }) => {
       if (!parsed.success) return json({ error: 'Invalid payload', details: parsed.error.flatten().fieldErrors }, 400);
       return await handleValidate(supabase, parsed.data.slip_ids);
     }
+    if (body?.action === 'update_conges') {
+      const parsed = updateCongesSchema.safeParse(body);
+      if (!parsed.success) return json({ error: 'Invalid payload', details: parsed.error.flatten().fieldErrors }, 400);
+      return await handleUpdateConges(supabase, parsed.data);
+    }
     return json({ error: 'Unknown action' }, 400);
   } catch (e) {
     console.error('API error:', e);
@@ -139,7 +158,7 @@ async function handleGenerate(
     // A validated slip for this period is immutable — skip it.
     const { data: existing } = await supabase
       .from('payroll_slips')
-      .select('id, status')
+      .select('id, status, conges')
       .eq('employee_id', profile.employee_id)
       .eq('period_year', input.year)
       .eq('period_month', input.month)
@@ -177,18 +196,48 @@ async function handleGenerate(
       ? computeAnciennete(new Date(`${seniorityDate}T00:00:00`), new Date(`${end}T00:00:00`))
       : null;
 
-    const dailyRate = Math.round(computed.totals.brut / 26);
-    const conges = seniorityDate
-      ? computeConges({
-          seniorityDate: new Date(`${seniorityDate}T00:00:00`),
-          periodStart: new Date(`${start}T00:00:00`),
-          periodEnd: new Date(`${end}T00:00:00`),
-          leaveDaysTaken: Number(profile.leave_days_taken || 0),
-          leaveLastStartDate: profile.leave_last_start_date ? new Date(`${profile.leave_last_start_date}T00:00:00`) : null,
-          leaveLastEndDate: profile.leave_last_end_date ? new Date(`${profile.leave_last_end_date}T00:00:00`) : null,
-          dailyRate,
-        })
-      : null;
+    // Congé taken this period is admin-entered on the slip itself (see the
+    // "Congés" editor on the slip view) — preserve it across regeneration of
+    // a draft rather than resetting it to zero. `_conge_pris_periode` and
+    // `_jours_fiscaux_seed` are internal bookkeeping (raw admin input),
+    // distinct from the displayed cumulative `conge_pris` / `jours_fiscaux`.
+    const existingConges = (existing as any)?.conges as
+      | { _conge_pris_periode?: number; _jours_fiscaux_seed?: number | null; jours_acquis?: number; dates?: { du: string; au: string }[] }
+      | undefined;
+
+    // Balance/cumuls/jours-fiscaux carry forward from the last VALIDATED
+    // slip of this employee (any prior period), the same way the Année
+    // cumuls carry forward.
+    const { data: lastValidated, error: lastValidatedErr } = await supabase
+      .from('payroll_slips')
+      .select('conges, period_year, period_month')
+      .eq('employee_id', profile.employee_id)
+      .eq('status', 'validated')
+      .or(`period_year.lt.${input.year},and(period_year.eq.${input.year},period_month.lt.${input.month})`)
+      .order('period_year', { ascending: false })
+      .order('period_month', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (lastValidatedErr) throw lastValidatedErr;
+    const previousSolde = Number((lastValidated?.conges as any)?.solde || 0);
+    const previousCongePris = Number((lastValidated?.conges as any)?.conge_pris || 0);
+    const previousJoursFiscaux = (lastValidated?.conges as any)?.jours_fiscaux ?? null;
+
+    const joursPrisPeriode = Number(existingConges?._conge_pris_periode || 0);
+    const joursFiscauxSeed = existingConges?._jours_fiscaux_seed ?? null;
+
+    const conges: any = computeConges({
+      previousSolde,
+      previousCongePris,
+      previousJoursFiscaux,
+      joursPrisPeriode,
+      joursAcquisManuel: Number(existingConges?.jours_acquis || 0),
+      dates: existingConges?.dates || [],
+      prorata: 1,
+      seedJoursFiscaux: joursFiscauxSeed,
+    });
+    conges._conge_pris_periode = joursPrisPeriode;
+    conges._jours_fiscaux_seed = joursFiscauxSeed;
 
     const profileSnapshot = {
       matricule: profile.matricule,
@@ -235,7 +284,7 @@ async function handleGenerate(
       lines: computed.lines,
       totals: computed.totals,
       cumuls,
-      conges: conges || {},
+      conges,
       status: 'draft',
       created_by: userId,
     };
@@ -293,6 +342,51 @@ async function handleValidate(supabase: SupabaseClient, slipIds: string[]) {
   }
 
   return json({ results });
+}
+
+// Update the admin-entered "congé pris" / dates on a DRAFT slip and
+// recompute the balance. Validated slips are immutable (DB trigger blocks
+// it too) — regenerate the period after deleting the slip if it's wrong.
+async function handleUpdateConges(supabase: SupabaseClient, input: z.infer<typeof updateCongesSchema>) {
+  const { data: slip, error: readErr } = await supabase
+    .from('payroll_slips')
+    .select('id, status, employee_id, period_year, period_month')
+    .eq('id', input.slip_id)
+    .single();
+  if (readErr || !slip) return json({ error: 'Bulletin introuvable' }, 404);
+  if (slip.status === 'validated') return json({ error: 'Un bulletin validé est immuable' }, 409);
+
+  const { data: lastValidated, error: lastValidatedErr } = await supabase
+    .from('payroll_slips')
+    .select('conges')
+    .eq('employee_id', slip.employee_id)
+    .eq('status', 'validated')
+    .or(`period_year.lt.${slip.period_year},and(period_year.eq.${slip.period_year},period_month.lt.${slip.period_month})`)
+    .order('period_year', { ascending: false })
+    .order('period_month', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (lastValidatedErr) throw lastValidatedErr;
+  const previousSolde = Number((lastValidated?.conges as any)?.solde || 0);
+  const previousCongePris = Number((lastValidated?.conges as any)?.conge_pris || 0);
+  const previousJoursFiscaux = (lastValidated?.conges as any)?.jours_fiscaux ?? null;
+
+  const conges: any = computeConges({
+    previousSolde,
+    previousCongePris,
+    previousJoursFiscaux,
+    joursPrisPeriode: input.jours_pris,
+    joursAcquisManuel: input.jours_acquis_manuel,
+    dates: input.dates,
+    prorata: 1,
+    seedJoursFiscaux: input.jours_fiscaux_seed ?? null,
+  });
+  conges._conge_pris_periode = input.jours_pris;
+  conges._jours_fiscaux_seed = input.jours_fiscaux_seed ?? null;
+
+  const { error: updateErr } = await supabase.from('payroll_slips').update({ conges }).eq('id', input.slip_id);
+  if (updateErr) throw updateErr;
+  return json({ success: true, conges });
 }
 
 async function sendPayslipEmail(

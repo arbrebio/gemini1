@@ -31,6 +31,17 @@ export const prerender = false;
       #page-wrap { padding: 72px 20px 48px; max-width: 840px; margin: 0 auto; }
       #loading { text-align: center; padding: 80px 20px; color: #555; font-size: 15px; }
       #error-msg { display: none; text-align: center; padding: 60px 20px; color: #c00; font-size: 15px; }
+      #conges-editor {
+        display: none; background: #fff; border: 1px solid #c8d5c0; border-radius: 8px;
+        padding: 16px 20px; margin: 0 auto 16px; max-width: 800px; font-size: 12.5px;
+      }
+      #conges-editor h2 { font-size: 13px; color: #194642; margin-bottom: 10px; }
+      #conges-editor .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px; }
+      #conges-editor label { display: block; font-size: 10.5px; color: #5b6f66; text-transform: uppercase; margin-bottom: 3px; }
+      #conges-editor input { border: 1px solid #c8d5c0; border-radius: 5px; padding: 5px 8px; font-size: 12.5px; }
+      #conges-editor .date-pair { display: flex; gap: 6px; align-items: center; }
+      #conges-status { font-size: 11.5px; color: #5b6f66; margin-left: 8px; }
+      @media print { #conges-editor { display: none !important; } }
     </style>
   </head>
   <body>
@@ -49,6 +60,34 @@ export const prerender = false;
     <div id="page-wrap">
       <div id="loading">⏳ Chargement du bulletin…</div>
       <div id="error-msg">❌ <span id="error-text">Erreur de chargement</span></div>
+
+      <div id="conges-editor">
+        <h2><i class="fas fa-umbrella-beach"></i> Congés pris pendant cette période (brouillon uniquement)</h2>
+        <div class="row">
+          <div>
+            <label for="cg-jours">Jours de congé pris (ce mois)</label>
+            <input id="cg-jours" type="number" min="0" step="0.5" value="0" style="width:100px" />
+          </div>
+          <div class="date-pair"><label>Congé 1</label> Du <input id="cg-du-0" type="date" /> Au <input id="cg-au-0" type="date" /></div>
+          <div class="date-pair"><label>Congé 2</label> Du <input id="cg-du-1" type="date" /> Au <input id="cg-au-1" type="date" /></div>
+          <div class="date-pair"><label>Congé 3</label> Du <input id="cg-du-2" type="date" /> Au <input id="cg-au-2" type="date" /></div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="cg-acquis-manuel">Jours acquis — correction manuelle</label>
+            <input id="cg-acquis-manuel" type="number" step="0.1" value="0" style="width:120px" />
+          </div>
+          <div>
+            <label for="cg-fiscaux-seed">Jours fiscaux — initialiser/corriger (depuis un vrai bulletin SAGE)</label>
+            <input id="cg-fiscaux-seed" type="number" step="1" placeholder="laisser vide = auto +30/mois" style="width:260px" />
+          </div>
+          <button id="btn-save-conges" class="btn btn-white" style="background:#194642;color:#fff">
+            <i class="fas fa-save"></i> Enregistrer
+          </button>
+          <span id="conges-status"></span>
+        </div>
+      </div>
+
       <div id="bulletin-content" style="display:none;"></div>
     </div>
 
@@ -64,6 +103,9 @@ export const prerender = false;
       const errorMsg = document.getElementById('error-msg')!;
       const errorText = document.getElementById('error-text')!;
       const content = document.getElementById('bulletin-content')!;
+      const congesEditor = document.getElementById('conges-editor')!;
+      const congesStatus = document.getElementById('conges-status')!;
+      const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
 
       function showError(message: string) {
         loading.style.display = 'none';
@@ -71,15 +113,17 @@ export const prerender = false;
         errorMsg.style.display = 'block';
       }
 
+      let slipId = '';
+
       async function load() {
-        const slipId = window.location.pathname.split('/').filter(Boolean).pop();
+        slipId = window.location.pathname.split('/').filter(Boolean).pop() || '';
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           window.location.href = '/admin/login/';
           return;
         }
         try {
-          const res = await fetch(`/api/admin/careers/payroll-slips?id=${encodeURIComponent(slipId || '')}`, {
+          const res = await fetch(`/api/admin/careers/payroll-slips?id=${encodeURIComponent(slipId)}`, {
             headers: { Authorization: `Bearer ${session.access_token}` },
           });
           const data = await res.json();
@@ -89,10 +133,51 @@ export const prerender = false;
           content.style.display = 'block';
           const emp = data.slip.profile_snapshot?.employee?.full_name || '';
           document.title = `Bulletin de paie ${data.slip.profile_snapshot?.matricule || ''} — ${emp}`;
+
+          if (data.slip.status === 'draft') {
+            const conges = data.slip.conges || {};
+            $('cg-jours').value = conges._conge_pris_periode ?? 0;
+            $('cg-acquis-manuel').value = conges.jours_acquis ?? 0;
+            $('cg-fiscaux-seed').value = conges._jours_fiscaux_seed ?? '';
+            (conges.dates || []).slice(0, 3).forEach((d: any, i: number) => {
+              $(`cg-du-${i}`).value = d.du || '';
+              $(`cg-au-${i}`).value = d.au || '';
+            });
+            congesEditor.style.display = 'block';
+          }
         } catch (e: any) {
           showError(e.message || 'Erreur de chargement');
         }
       }
+
+      document.getElementById('btn-save-conges')!.addEventListener('click', async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+        const dates = [0, 1, 2]
+          .map((i) => ({ du: $(`cg-du-${i}`).value, au: $(`cg-au-${i}`).value }))
+          .filter((d) => d.du && d.au);
+        congesStatus.textContent = 'Enregistrement…';
+        try {
+          const res = await fetch('/api/admin/careers/payroll-slips', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update_conges',
+              slip_id: slipId,
+              jours_pris: Number($('cg-jours').value || 0),
+              jours_acquis_manuel: Number($('cg-acquis-manuel').value || 0),
+              jours_fiscaux_seed: $('cg-fiscaux-seed').value === '' ? null : Number($('cg-fiscaux-seed').value),
+              dates,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error);
+          congesStatus.textContent = '✅ Enregistré';
+          await load();
+        } catch (e: any) {
+          congesStatus.textContent = `❌ ${e.message || 'Erreur'}`;
+        }
+      });
 
       load();
     </script>

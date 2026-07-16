@@ -218,15 +218,19 @@ export function renderBulletin(slip: SlipRow): string {
   <!-- ═══ CONGÉS ═══ -->
   <div class="b-conges">
     <div class="conges-col">
+      <div>Jours fiscaux&nbsp;: <strong>${conges.jours_fiscaux != null ? nb(Number(conges.jours_fiscaux)) : '—'}</strong></div>
+      <div>Jours depuis dernier congé&nbsp;: <strong>${conges.jours_depuis_conge != null ? nb(Number(conges.jours_depuis_conge)) : '—'}</strong></div>
       <div>Jours congé acquis Anc &amp; Déco&nbsp;: <strong>${conges.jours_acquis != null ? nb(Number(conges.jours_acquis)) : '—'}</strong></div>
-      <div>Congé pris&nbsp;: <strong>${conges.conge_pris != null ? nb(Number(conges.conge_pris)) : '—'}</strong></div>
       <div>Solde Congés reste à prendre&nbsp;: <strong>${conges.solde != null ? nb(Number(conges.solde)) : '—'}</strong></div>
       <div>Total Brut Congé&nbsp;: <strong>${conges.total_brut_conge != null ? money(Number(conges.total_brut_conge)) : '—'}</strong></div>
     </div>
     <div class="conges-col">
-      <div>Jours fiscaux&nbsp;: <strong>${conges.jours_fiscaux != null ? nb(Number(conges.jours_fiscaux)) : '—'}</strong></div>
-      <div>Jours depuis dernier congé&nbsp;: <strong>${conges.jours_depuis_conge != null ? nb(Number(conges.jours_depuis_conge)) : '—'}</strong></div>
-      <div>Dates de congés&nbsp;: Du ${conges.conge_du ? formatDateShort(String(conges.conge_du)) : '______'} Au ${conges.conge_au ? formatDateShort(String(conges.conge_au)) : '______'}</div>
+      <div>Dates de congés&nbsp;:</div>
+      ${[0, 1, 2].map((i) => {
+        const d = (conges.dates as Array<{ du?: string; au?: string }> | undefined)?.[i];
+        return `<div>Du ${d?.du ? formatDateShort(String(d.du)) : '______'} &nbsp; Au ${d?.au ? formatDateShort(String(d.au)) : '______'}</div>`;
+      }).join('')}
+      <div>Congé pris&nbsp;: <strong>${conges.conge_pris != null ? nb(Number(conges.conge_pris)) : '—'}</strong></div>
     </div>
   </div>
 
