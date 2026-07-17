@@ -1,4 +1,5 @@
 import { config } from './config';
+import { newsletterUnsubscribeToken } from './securityHeaders';
 
 // Email template utility functions
 export async function loadEmailTemplate(templateName: string): Promise<string> {
@@ -59,7 +60,7 @@ export function getEmailVariables(type: 'contact' | 'newsletter', data: any = {}
       fullName: data.full_name || 'there',
       email: data.email || '',
       confirmationUrl: `${baseVariables.baseUrl}/newsletter/confirm?token=${data.confirmation_token}`,
-      unsubscribeUrl: `${baseVariables.baseUrl}/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}`
+      unsubscribeUrl: `${baseVariables.baseUrl}/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}&token=${newsletterUnsubscribeToken(data.email)}`
     };
   }
 

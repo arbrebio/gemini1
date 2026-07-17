@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import { config } from '../../../lib/config';
+import { newsletterUnsubscribeToken } from '../../../lib/securityHeaders';
 
 const ADMIN_EMAIL = config.contact.adminEmail;
 const SENDER_NAME = config.contact.senderName;
@@ -84,7 +85,7 @@ export const GET: APIRoute = async ({ request }) => {
                   <p>This email was sent to ${data.email}</p>
                   <p>Arbre Bio Africa | Cocody Riviera 3, Jacque Prevert 2 | Abidjan, Côte d'Ivoire</p>
                   <p>
-                    <a href="https://arbrebio.com/newsletter/unsubscribe/?email=${encodeURIComponent(data.email)}&token=${token}" style="color: #666;">Unsubscribe</a> |
+                    <a href="https://arbrebio.com/newsletter/unsubscribe/?email=${encodeURIComponent(data.email)}&token=${newsletterUnsubscribeToken(data.email)}" style="color: #666;">Unsubscribe</a> |
                     <a href="https://arbrebio.com/privacy/" style="color: #666;">Privacy Policy</a>
                   </p>
                 </footer>

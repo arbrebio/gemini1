@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireTerrainAuth } from '../../../lib/terrainAuth';
+import { randomBytes, randomInt } from 'node:crypto';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
 
@@ -44,7 +45,11 @@ function credentialsEmailHtml(full_name: string, email: string, temp_password: s
 }
 
 function genTempPassword(): string {
-  return 'AB' + Math.random().toString(36).slice(2, 8) + Math.floor(Math.random() * 90 + 10);
+  // Use a CSPRNG (not Math.random, which is predictable) so temporary
+  // credentials can't be guessed from timing/seed. Same 'AB' + chars + digits
+  // shape the onboarding UI expects, with real entropy.
+  const chars = randomBytes(12).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 8);
+  return 'AB' + chars + randomInt(10, 100);
 }
 
 /**

@@ -1,45 +1,10 @@
-// Security headers configuration
-export const securityHeaders = {
-  // Enforce HTTPS
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  
-  // Prevent MIME type sniffing
-  'X-Content-Type-Options': 'nosniff',
-  
-  // Prevent clickjacking
-  'X-Frame-Options': 'SAMEORIGIN',
-  
-  // Control referrer information
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  
-  // Permissions policy
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
-  
-  // Content Security Policy
-  'Content-Security-Policy': [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://challenges.cloudflare.com",
-    "style-src 'self' 'unsafe-inline' https://rsms.me https://fonts.googleapis.com",
-    "img-src 'self' data: https: blob:",
-    "font-src 'self' data: https://rsms.me https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com https://challenges.cloudflare.com",
-    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com",
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "upgrade-insecure-requests"
-  ].join('; ')
-};
+import { createHmac, timingSafeEqual } from 'node:crypto';
 
-/**
- * Apply security headers to response
- */
-export function applySecurityHeaders(headers: Headers): void {
-  Object.entries(securityHeaders).forEach(([key, value]) => {
-    headers.set(key, value);
-  });
-}
+// NOTE: The live security headers (CSP, HSTS, etc.) are served by Vercel via
+// vercel.json for every route. A duplicate header object used to live here but
+// was dead code and drifted out of sync with vercel.json, so it was removed to
+// keep a single source of truth. This module now only holds request-time
+// security utilities (escaping, rate limiting, IP extraction, Turnstile).
 
 /**
  * Escape HTML special characters so user-supplied text can be safely
@@ -72,13 +37,28 @@ export function sanitizeInput(input: string, maxLength: number = 1000): string {
 }
 
 /**
- * Extract the client IP for rate limiting. x-forwarded-for may contain a
- * comma-separated chain — only the first (client) hop is meaningful.
+ * Extract the trustworthy client IP for rate limiting.
+ *
+ * A client can send an arbitrary `x-forwarded-for` header, so trusting the
+ * FIRST value lets an attacker evade every IP rate limiter (rotate the header)
+ * and poison another IP's bucket. On Vercel, prefer the headers our own edge
+ * sets and cannot be spoofed by the client: `x-vercel-forwarded-for` and
+ * `x-real-ip`. Only if neither is present do we fall back to the LAST hop of
+ * `x-forwarded-for` (the value appended closest to us), never the first.
  */
 export function getClientIp(request: Request): string {
+  const vercel = request.headers.get('x-vercel-forwarded-for')?.split(',')[0].trim();
+  if (vercel) return vercel;
+
+  const realIp = request.headers.get('x-real-ip')?.trim();
+  if (realIp) return realIp;
+
   const xff = request.headers.get('x-forwarded-for');
-  if (xff) return xff.split(',')[0].trim();
-  return request.headers.get('x-real-ip')?.trim() || 'unknown';
+  if (xff) {
+    const hops = xff.split(',').map(h => h.trim()).filter(Boolean);
+    if (hops.length) return hops[hops.length - 1];
+  }
+  return 'unknown';
 }
 
 /**
@@ -168,8 +148,16 @@ export function isDisposableEmail(email: string): boolean {
 export async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
-    console.warn('Turnstile secret key is not configured');
-    return true; // fail open only when the feature isn't configured at all
+    // Fail CLOSED in production: a missing secret in a deployed build is a
+    // misconfiguration, and silently returning true would disable bot
+    // protection on the contact/quote/newsletter forms without any signal.
+    // In local dev (no secret configured) we allow through for convenience.
+    if (import.meta.env.PROD) {
+      console.error('Turnstile secret key is not configured in production — rejecting request');
+      return false;
+    }
+    console.warn('Turnstile secret key is not configured (dev) — allowing request');
+    return true;
   }
   if (!token) return false;
 
@@ -185,4 +173,34 @@ export async function verifyTurnstile(token: string | undefined, remoteIp: strin
     console.error('Turnstile verification error:', error);
     return false;
   }
+}
+
+/**
+ * Stateless, signed unsubscribe token for newsletter links.
+ *
+ * Derived as HMAC-SHA256(email, secret) so it does NOT depend on any DB column
+ * (the one-time `confirmation_token` is nulled at confirmation, so it can't be
+ * reused for unsubscribe). Every link built with this stays valid forever and
+ * can't be forged without the server secret — which is what stops anyone from
+ * unsubscribing arbitrary addresses. Falls back to the service-role key so it
+ * works without extra env config; set NEWSLETTER_UNSUBSCRIBE_SECRET to pin it.
+ */
+export function newsletterUnsubscribeToken(email: string): string {
+  const secret =
+    import.meta.env.NEWSLETTER_UNSUBSCRIBE_SECRET ||
+    import.meta.env.SUPABASE_SERVICE_ROLE_KEY ||
+    'insecure-dev-secret';
+  return createHmac('sha256', secret).update(email.toLowerCase().trim()).digest('hex');
+}
+
+/**
+ * Constant-time verification of a newsletter unsubscribe token against the
+ * email it should sign. Returns false on any mismatch or missing token.
+ */
+export function verifyUnsubscribeToken(email: string, token: string | null | undefined): boolean {
+  if (!token || !email) return false;
+  const expected = Buffer.from(newsletterUnsubscribeToken(email));
+  const provided = Buffer.from(token);
+  if (expected.length !== provided.length) return false;
+  return timingSafeEqual(expected, provided);
 }

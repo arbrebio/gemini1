@@ -159,14 +159,20 @@ export const PUT: APIRoute = async ({ request }) => {
       }
     }
 
+    // Object-level authorization: an agent may only modify customers they
+    // created. Scoping the UPDATE by created_by (not just id) means a request
+    // for someone else's customer id simply matches no row. Admins edit any
+    // customer through the separate service-role admin API.
     const { data, error } = await supabase
       .from('admin_customers')
       .update(safe)
       .eq('id', id)
+      .eq('created_by', user.id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
+    if (!data) return json({ error: 'Not found or not permitted' }, 403);
     return json({ customer: data });
   } catch (e: any) {
     console.error("API error:", e);
@@ -185,12 +191,18 @@ export const DELETE: APIRoute = async ({ request }) => {
     const body = await request.json();
     if (!body.id) return json({ error: 'id is required' }, 400);
 
-    const { error } = await supabase
+    // Object-level authorization: only the agent who created the customer may
+    // delete it. Scoping by created_by makes another agent's id match no row;
+    // .select() lets us tell "deleted" from "not yours / not found".
+    const { data, error } = await supabase
       .from('admin_customers')
       .delete()
-      .eq('id', body.id);
+      .eq('id', body.id)
+      .eq('created_by', user.id)
+      .select('id');
 
     if (error) throw error;
+    if (!data || data.length === 0) return json({ error: 'Not found or not permitted' }, 403);
     return json({ success: true });
   } catch (e: any) {
     console.error("API error:", e);

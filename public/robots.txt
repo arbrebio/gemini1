@@ -19,6 +19,8 @@ Disallow: /*/500/
 # Disallow admin and internal portal areas
 Disallow: /admin/
 Disallow: /sales-agent/
+Disallow: /terrain/
+Disallow: /*/terrain/
 
 # Disallow temporary files
 Disallow: /*.tmp

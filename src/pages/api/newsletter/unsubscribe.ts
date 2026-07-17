@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
-import { globalRateLimiter, getClientIp, escapeHtml } from '../../../lib/securityHeaders';
+import { globalRateLimiter, getClientIp, escapeHtml, verifyUnsubscribeToken } from '../../../lib/securityHeaders';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const SENDER_NAME = 'Arbre Bio Africa';
@@ -19,6 +19,7 @@ export const GET: APIRoute = async ({ request }) => {
 
     const url = new URL(request.url);
     const email = url.searchParams.get('email');
+    const token = url.searchParams.get('token');
 
     if (!email || email.length > 120) {
       return new Response(JSON.stringify({
@@ -26,6 +27,20 @@ export const GET: APIRoute = async ({ request }) => {
         message: 'Invalid unsubscribe link'
       }), {
         status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Require a valid signed token so a caller can only unsubscribe the address
+    // the link was actually issued for — not any address they can guess. A bad
+    // token returns the SAME generic success as a valid one below, so this
+    // endpoint never reveals whether an address is subscribed (no enumeration).
+    if (!verifyUnsubscribeToken(email, token)) {
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'If this address was subscribed, it has been unsubscribed.'
+      }), {
+        status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
     }
@@ -39,12 +54,13 @@ export const GET: APIRoute = async ({ request }) => {
 
     if (error) throw error;
 
+    // Generic response whether or not the address existed — no enumeration oracle.
     if (!data) {
       return new Response(JSON.stringify({
-        success: false,
-        message: 'Invalid unsubscribe request'
+        success: true,
+        message: 'If this address was subscribed, it has been unsubscribed.'
       }), {
-        status: 400,
+        status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
     }
