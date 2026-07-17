@@ -25,7 +25,8 @@ const { class: className } = Astro.props;
     <label for="footer-website">Website</label>
     <input type="text" id="footer-website" name="website" tabindex="-1" autocomplete="off" />
   </div>
-  <button 
+  <div id="footer-newsletter-turnstile"></div>
+  <button
     type="submit"
     class="w-full px-4 py-2 bg-white text-primary rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
   >
@@ -42,7 +43,12 @@ const { class: className } = Astro.props;
 </form>
 
 <script>
+  import { mountTurnstile } from '../scripts/turnstile';
+
+  const formLoadedAt = Date.now();
   const form = document.getElementById('footer-newsletter-form') as HTMLFormElement | null;
+  const turnstileContainer = document.getElementById('footer-newsletter-turnstile');
+  const turnstile = turnstileContainer ? mountTurnstile(turnstileContainer) : null;
   const successMessage = form?.querySelector('.success-message');
   const errorMessage = form?.querySelector('.error-message');
   const loadingSpinner = form?.querySelector('.loading-spinner');
@@ -80,7 +86,9 @@ const { class: className } = Astro.props;
             email,
             source: 'footer',
             consent: true,
-            website
+            website,
+            formLoadedAt,
+            turnstileToken: turnstile?.getToken() ?? ''
           }),
         });
 

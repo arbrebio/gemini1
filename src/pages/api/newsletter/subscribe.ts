@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import { z } from 'zod';
-import { sanitizeInput, newsletterRateLimiter, getClientIp, isDisposableEmail } from '../../../lib/securityHeaders';
+import { sanitizeInput, newsletterRateLimiter, getClientIp, isDisposableEmail, verifyTurnstile } from '../../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../../lib/errorHandling';
 
 // Email configuration
@@ -28,8 +28,14 @@ const subscribeSchema = z.object({
   }),
   // Honeypot: a field real users never see or fill in. Bots that auto-fill
   // every input will populate it, letting us silently drop the submission.
-  website: z.string().max(200).optional()
+  website: z.string().max(200).optional(),
+  // Timestamp (ms) the form was rendered, set client-side. Bots that submit
+  // faster than a human could plausibly fill this form get silently dropped.
+  formLoadedAt: z.number().optional(),
+  turnstileToken: z.string().optional()
 });
+
+const MIN_FILL_TIME_MS = 2000;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -61,6 +67,21 @@ export const POST: APIRoute = async ({ request }) => {
         null,
         'Please check your email to confirm your subscription'
       );
+    }
+
+    // Submitted implausibly fast: almost certainly a bot. Pretend success
+    // without touching the database or sending any email.
+    if (typeof validatedData.formLoadedAt === 'number' && Date.now() - validatedData.formLoadedAt < MIN_FILL_TIME_MS) {
+      return createSuccessResponse(
+        null,
+        'Please check your email to confirm your subscription'
+      );
+    }
+
+    // Primary bot-blocking layer: reject if Cloudflare Turnstile didn't
+    // verify the submission as coming from a real browser/human.
+    if (!(await verifyTurnstile(validatedData.turnstileToken, clientIP))) {
+      return createErrorResponse('Verification failed. Please try again.', 400, 'TURNSTILE_FAILED');
     }
 
     // Reject known disposable/temporary email providers

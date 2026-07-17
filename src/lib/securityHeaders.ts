@@ -18,12 +18,12 @@ export const securityHeaders = {
   // Content Security Policy
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://challenges.cloudflare.com",
     "style-src 'self' 'unsafe-inline' https://rsms.me https://fonts.googleapis.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data: https://rsms.me https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com",
-    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://www.facebook.com https://challenges.cloudflare.com",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com",
     "frame-ancestors 'none'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -130,6 +130,12 @@ export const globalRateLimiter = new RateLimiter(50, 60000); // 50 requests per 
 // Tighter limiter for low-traffic, bot-targeted forms like newsletter signup
 export const newsletterRateLimiter = new RateLimiter(5, 60000); // 5 requests per minute
 
+// Tighter limiter for the contact form, matching newsletter's bot-targeted profile
+export const contactRateLimiter = new RateLimiter(8, 60000); // 8 requests per minute
+
+// Tighter limiter for the quote request form, same bot-targeted profile
+export const quoteRateLimiter = new RateLimiter(8, 60000); // 8 requests per minute
+
 // Common disposable/temporary email domains used by bots and spam signups
 const DISPOSABLE_EMAIL_DOMAINS = new Set([
   'mailinator.com', 'guerrillamail.com', 'guerrillamail.info', 'guerrillamail.biz',
@@ -151,4 +157,32 @@ export function isDisposableEmail(email: string): boolean {
   const domain = email.split('@')[1]?.toLowerCase().trim();
   if (!domain) return false;
   return DISPOSABLE_EMAIL_DOMAINS.has(domain);
+}
+
+/**
+ * Verifies a Cloudflare Turnstile token server-side. This is the real
+ * bot-blocking layer — honeypot/timing checks only catch unsophisticated
+ * bots, but a missing/invalid/reused Turnstile token means Cloudflare's
+ * challenge was never solved by a legitimate browser.
+ */
+export async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<boolean> {
+  const secret = import.meta.env.TURNSTILE_SECRET_KEY;
+  if (!secret) {
+    console.warn('Turnstile secret key is not configured');
+    return true; // fail open only when the feature isn't configured at all
+  }
+  if (!token) return false;
+
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret, response: token, remoteip: remoteIp }),
+    });
+    const data = await res.json();
+    return data.success === true;
+  } catch (error) {
+    console.error('Turnstile verification error:', error);
+    return false;
+  }
 }

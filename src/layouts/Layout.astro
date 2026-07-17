@@ -154,6 +154,10 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
       <meta name="google-site-verification" content={import.meta.env.PUBLIC_GSC_VERIFICATION} />
     )}
 
+    <!-- Cloudflare Turnstile — loaded on every page since the newsletter form
+         (which needs it) is embedded in the footer of every page. -->
+    <script async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+
     <!-- Google Analytics 4 -->
     {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
       <>

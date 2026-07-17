@@ -140,6 +140,15 @@ const offices = config.contact.offices;
               ></textarea>
             </div>
 
+            <!-- Honeypot: hidden from real users, left empty. Bots that auto-fill
+                 every input tend to fill this in, letting the API silently drop it. -->
+            <div class="absolute left-[-9999px] w-px h-px overflow-hidden" aria-hidden="true">
+              <label for="website">Website</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <div id="contact-turnstile"></div>
+
             <button
               type="submit"
               class="w-full bg-primary text-white px-8 py-3 rounded-md hover:bg-primary-600 transition-colors duration-300 flex items-center justify-center"
@@ -262,10 +271,16 @@ const offices = config.contact.offices;
 
   <script>
     import { handleFormSubmission } from "../lib/errorHandling";
+    import { mountTurnstile } from "../scripts/turnstile";
+
+    const formLoadedAt = Date.now();
 
     const form = document.getElementById(
       "contact-form",
     ) as HTMLFormElement | null;
+
+    const turnstileContainer = document.getElementById("contact-turnstile");
+    const turnstile = turnstileContainer ? mountTurnstile(turnstileContainer) : null;
     const successMessage = form ? form.querySelector(".success-message") : null;
     const errorMessage = form ? form.querySelector(".error-message") : null;
     const loadingSpinner = form ? form.querySelector(".loading-spinner") : null;
@@ -301,6 +316,9 @@ const offices = config.contact.offices;
             interest: formData.get("interest"),
             message: formData.get("message"),
             lang: ['fr','es','af'].includes(pathLang) ? pathLang : 'en',
+            website: formData.get("website"),
+            formLoadedAt,
+            turnstileToken: turnstile?.getToken() ?? "",
           };
 
           const result = await handleFormSubmission("/api/contact", data, {

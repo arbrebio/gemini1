@@ -1,8 +1,39 @@
+import { mountTurnstile } from './turnstile';
+
 export function initQuoteForm(formId: string = 'quote-form-element') {
   const quoteForm = document.getElementById(formId);
   const successMessage = quoteForm?.querySelector('.success-message');
   const errorMessage = quoteForm?.querySelector('.error-message');
-  
+  const loadedAt = Date.now();
+
+  // Honeypot: injected via JS rather than markup so it's identical across every
+  // page that embeds a quote form. Real users never see it; bots that auto-fill
+  // every input on the page tend to fill it in, letting the API silently drop it.
+  let honeypot: HTMLInputElement | null = null;
+  if (quoteForm) {
+    honeypot = document.createElement('input');
+    honeypot.type = 'text';
+    honeypot.name = 'website';
+    honeypot.autocomplete = 'off';
+    honeypot.tabIndex = -1;
+    honeypot.setAttribute('aria-hidden', 'true');
+    honeypot.style.position = 'absolute';
+    honeypot.style.left = '-9999px';
+    honeypot.style.width = '1px';
+    honeypot.style.height = '1px';
+    honeypot.style.overflow = 'hidden';
+    quoteForm.appendChild(honeypot);
+  }
+
+  // Turnstile: real bot-blocking layer, injected via JS so every quote form
+  // across the site gets it without editing each page's markup.
+  let turnstile: { getToken: () => string } | null = null;
+  if (quoteForm) {
+    const turnstileContainer = document.createElement('div');
+    quoteForm.insertBefore(turnstileContainer, quoteForm.querySelector('button[type="submit"]'));
+    turnstile = mountTurnstile(turnstileContainer);
+  }
+
   if (quoteForm) {
     quoteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -24,6 +55,7 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
         const data: Record<string, string> = {};
         for (const [key, value] of Object.entries(rawData)) {
           if (!value) continue;
+          if (key === 'website') continue; // honeypot: never forwarded as content
           if (knownKeys.includes(key)) {
             data[key] = value;
           } else {
@@ -54,6 +86,9 @@ export function initQuoteForm(formId: string = 'quote-form-element') {
         const payload: Record<string, unknown> = { ...data };
         if (data.size) payload.size = Number(data.size);
         if (data.quantity) payload.quantity = Number(data.quantity);
+        payload.website = honeypot?.value ?? '';
+        payload.formLoadedAt = loadedAt;
+        payload.turnstileToken = turnstile?.getToken() ?? '';
 
         // Send data to quote API endpoint
         const response = await fetch('/api/quote/', {

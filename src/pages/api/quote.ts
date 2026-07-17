@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { config } from '../../lib/config';
-import { escapeHtml, globalRateLimiter, getClientIp } from '../../lib/securityHeaders';
+import { escapeHtml, quoteRateLimiter, getClientIp, verifyTurnstile } from '../../lib/securityHeaders';
 
 const ADMIN_EMAIL = config.contact.adminEmail;
 const SENDER_NAME = config.contact.senderName;
@@ -73,7 +73,16 @@ const quoteSchema = z.object({
   quantity: z.number().min(1, 'Quantity must be at least 1').optional(),
   quoteType: z.enum(['greenhouse', 'irrigation', 'substrate', 'general']).default('general'),
   lang: z.enum(['en', 'fr', 'es', 'af']).default('en'),
+  // Honeypot: a field real users never see or fill in. Bots that auto-fill
+  // every input will populate it, letting us silently drop the submission.
+  website: z.string().max(200).optional(),
+  // Timestamp (ms) the form was rendered, set client-side. Bots that submit
+  // faster than a human could plausibly fill this form get silently dropped.
+  formLoadedAt: z.number().optional(),
+  turnstileToken: z.string().optional(),
 });
+
+const MIN_FILL_TIME_MS = 3000;
 
 async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
   const resendKey = import.meta.env.RESEND_API_KEY;
@@ -108,7 +117,9 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    const clientIP = getClientIp(request);
+
+    if (!quoteRateLimiter.isAllowed(clientIP)) {
       return new Response(JSON.stringify({ success: false, message: 'Too many requests. Please try again later.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' }
@@ -126,9 +137,37 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    const raw = validationResult.data;
+
+    // Honeypot triggered: pretend success so the bot doesn't adapt, but
+    // never send any email.
+    if (raw.website && raw.website.trim() !== '') {
+      return new Response(JSON.stringify({ success: true, message: 'Quote request sent successfully' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Submitted implausibly fast for a multi-field form: almost certainly a
+    // bot. Pretend success without sending anything.
+    if (typeof raw.formLoadedAt === 'number' && Date.now() - raw.formLoadedAt < MIN_FILL_TIME_MS) {
+      return new Response(JSON.stringify({ success: true, message: 'Quote request sent successfully' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Primary bot-blocking layer: reject if Cloudflare Turnstile didn't
+    // verify the submission as coming from a real browser/human.
+    if (!(await verifyTurnstile(raw.turnstileToken, clientIP))) {
+      return new Response(JSON.stringify({ success: false, message: 'Verification failed. Please try again.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // HTML-escape every user-supplied string before interpolating into email
     // markup (prevents HTML/phishing injection into admin + client emails).
-    const raw = validationResult.data;
     const v = {
       ...raw,
       firstName: escapeHtml(raw.firstName),

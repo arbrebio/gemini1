@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import { sanitizeInput, escapeHtml, globalRateLimiter, getClientIp } from '../../lib/securityHeaders';
+import { sanitizeInput, escapeHtml, contactRateLimiter, getClientIp, verifyTurnstile } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
 import { sendContactEvent, parseFacebookCookies } from '../../lib/metaConversions';
 
@@ -79,7 +79,16 @@ const contactSchema = z.object({
     .min(10, 'Message must be at least 10 characters')
     .max(1000, 'Message too long'),
   lang: z.enum(['en', 'fr', 'es', 'af']).default('en'),
+  // Honeypot: a field real users never see or fill in. Bots that auto-fill
+  // every input will populate it, letting us silently drop the submission.
+  website: z.string().max(200).optional(),
+  // Timestamp (ms) the form was rendered, set client-side. Bots that submit
+  // faster than a human could plausibly fill six fields get silently dropped.
+  formLoadedAt: z.number().optional(),
+  turnstileToken: z.string().optional(),
 });
+
+const MIN_FILL_TIME_MS = 3000;
 
 async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
   const resendKey = import.meta.env.RESEND_API_KEY;
@@ -116,7 +125,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const clientIP = getClientIp(request);
 
-    if (!globalRateLimiter.isAllowed(clientIP)) {
+    if (!contactRateLimiter.isAllowed(clientIP)) {
       return createErrorResponse('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');
     }
 
@@ -128,7 +137,25 @@ export const POST: APIRoute = async ({ request }) => {
       return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
     }
 
-    const { firstName, lastName, email, phone, interest, message, lang } = validationResult.data;
+    const { firstName, lastName, email, phone, interest, message, lang, website, formLoadedAt, turnstileToken } = validationResult.data;
+
+    // Honeypot triggered: pretend success so the bot doesn't adapt, but
+    // never send any email.
+    if (website && website.trim() !== '') {
+      return createSuccessResponse(null, 'Message sent successfully');
+    }
+
+    // Submitted implausibly fast for a six-field form: almost certainly a
+    // bot. Pretend success without sending anything.
+    if (typeof formLoadedAt === 'number' && Date.now() - formLoadedAt < MIN_FILL_TIME_MS) {
+      return createSuccessResponse(null, 'Message sent successfully');
+    }
+
+    // Primary bot-blocking layer: reject if Cloudflare Turnstile didn't
+    // verify the submission as coming from a real browser/human.
+    if (!(await verifyTurnstile(turnstileToken, clientIP))) {
+      return createErrorResponse('Verification failed. Please try again.', 400, 'TURNSTILE_FAILED');
+    }
 
     // Two-stage hardening: strip dangerous patterns, THEN HTML-escape every
     // field before it is interpolated into the email markup below. Escaping is
