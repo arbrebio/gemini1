@@ -20,11 +20,11 @@ body.lg-site {
   --lg-deep: 15 42 40;           /* #0f2a28 */
   --lg-leaf: 74 171 110;         /* fresh green accent */
   --lg-sun: 233 196 106;         /* warm accent */
-  --lg-blur: 18px;
+  --lg-blur: 22px;
   --lg-radius: 1.1rem;
-  --lg-edge: rgba(255, 255, 255, 0.72);
-  --lg-surface: rgba(255, 255, 255, 0.58);
-  --lg-surface-strong: rgba(255, 255, 255, 0.82);
+  --lg-edge: rgba(255, 255, 255, 0.78);
+  --lg-surface: rgba(255, 255, 255, 0.30);
+  --lg-surface-strong: rgba(255, 255, 255, 0.62);
   --lg-shadow: 0 1px 1px rgba(15, 42, 40, 0.04), 0 12px 32px -8px rgba(15, 42, 40, 0.16);
   --lg-shadow-hover: 0 2px 2px rgba(15, 42, 40, 0.05), 0 24px 48px -12px rgba(15, 42, 40, 0.26);
   --lg-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -56,9 +56,9 @@ body.lg-site main section.bg-white::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(38rem 26rem at 12% 18%, rgb(var(--lg-leaf) / 0.20), transparent 62%),
-    radial-gradient(34rem 24rem at 88% 78%, rgb(var(--lg-green) / 0.16), transparent 60%),
-    radial-gradient(26rem 20rem at 70% 12%, rgb(var(--lg-sun) / 0.16), transparent 62%);
+    radial-gradient(38rem 26rem at 12% 18%, rgb(var(--lg-leaf) / 0.30), transparent 62%),
+    radial-gradient(34rem 24rem at 88% 78%, rgb(var(--lg-green) / 0.24), transparent 60%),
+    radial-gradient(26rem 20rem at 70% 12%, rgb(var(--lg-sun) / 0.26), transparent 62%);
   background-size: 140% 140%;
   animation: lg-drift 26s ease-in-out infinite alternate;
 }
@@ -96,8 +96,8 @@ body.lg-site footer.bg-primary {
 /* ── Navigation ──────────────────────────────────────────────────────────── */
 
 body.lg-site nav.fixed.top-0 {
-  background-color: rgb(var(--lg-deep) / 0.55);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02));
+  background-color: rgb(var(--lg-deep) / 0.34);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
   -webkit-backdrop-filter: blur(22px) saturate(180%);
   backdrop-filter: blur(22px) saturate(180%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
@@ -106,7 +106,7 @@ body.lg-site nav.fixed.top-0 {
 
 /* Dropdown menus */
 body.lg-site nav.fixed.top-0 .group > .absolute {
-  background-color: rgb(var(--lg-deep) / 0.72);
+  background-color: rgb(var(--lg-deep) / 0.55);
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03));
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);
@@ -129,7 +129,7 @@ body.lg-site nav.fixed.top-0 .bg-white\/10.rounded-full {
 
 /* Mobile menu panel and the floating back button */
 body.lg-site #mobile-nav-menu {
-  background-color: rgb(var(--lg-deep) / 0.78);
+  background-color: rgb(var(--lg-deep) / 0.62);
   background-image: linear-gradient(200deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 45%);
   -webkit-backdrop-filter: blur(26px) saturate(180%);
   backdrop-filter: blur(26px) saturate(180%);
@@ -137,7 +137,7 @@ body.lg-site #mobile-nav-menu {
 }
 
 body.lg-site #back-button {
-  background-color: rgba(255, 255, 255, 0.62);
+  background-color: rgba(255, 255, 255, 0.38);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid var(--lg-edge);
@@ -164,8 +164,8 @@ body.lg-site main .lg-glass {
   --my: 0%;
   background-color: var(--lg-surface);
   background-image:
-    radial-gradient(22rem 16rem at var(--mx) var(--my), rgba(255, 255, 255, 0.75), transparent 65%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.12) 60%);
+    radial-gradient(22rem 16rem at var(--mx) var(--my), rgba(255, 255, 255, 0.45), transparent 65%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.04) 60%);
   -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(170%);
   backdrop-filter: blur(var(--lg-blur)) saturate(170%);
   border: 1px solid var(--lg-edge);
@@ -222,13 +222,20 @@ body.lg-site :is(a, button):is(.bg-primary, [class*='bg-green-'], [class*='bg-[#
 
 body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-full'],
 body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-md'] {
-  background-color: rgba(255, 255, 255, 0.72);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.25));
+  background-color: rgba(255, 255, 255, 0.46);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.12));
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 10px 24px -10px rgba(15, 42, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
   transition: transform 0.35s var(--lg-ease), box-shadow 0.35s var(--lg-ease), background-color 0.3s ease, color 0.3s ease;
+}
+
+/* On a coloured panel a see-through white button would lose its text
+   contrast, so it stays close to solid there. */
+body.lg-site main :is(.bg-primary, [class*='bg-green-'], [class*='bg-[#25']) :is(a, button).bg-white[class*='px-'][class*='rounded'] {
+  background-color: rgba(255, 255, 255, 0.9);
+  background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.6));
 }
 
 @media (hover: hover) {
@@ -268,14 +275,14 @@ body.lg-site section[aria-label='Hero section'] p {
 
 /* Hero buttons are true glass over the footage. */
 body.lg-site section[aria-label='Hero section'] a.bg-primary {
-  background-color: rgb(var(--lg-green) / 0.72);
+  background-color: rgb(var(--lg-green) / 0.52);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   backdrop-filter: blur(14px) saturate(180%);
 }
 
 body.lg-site section[aria-label='Hero section'] a.bg-white {
-  background-color: rgba(255, 255, 255, 0.8);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.35));
+  background-color: rgba(255, 255, 255, 0.58);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
@@ -283,8 +290,8 @@ body.lg-site section[aria-label='Hero section'] a.bg-white {
 /* ── Form fields ─────────────────────────────────────────────────────────── */
 
 body.lg-site main :is(input:not([type='checkbox'], [type='radio'], [type='file'], [type='hidden'], [type='submit']), select, textarea) {
-  background-color: rgba(255, 255, 255, 0.74);
-  border-color: rgb(var(--lg-green) / 0.18);
+  background-color: rgba(255, 255, 255, 0.55);
+  border-color: rgb(var(--lg-green) / 0.22);
   box-shadow: inset 0 1px 2px rgba(15, 42, 40, 0.06), 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
@@ -353,8 +360,8 @@ html.lg-anim body.lg-site [data-lg-reveal].is-settled {
 /* Phones: lighter blur, no drifting backgrounds — keeps scrolling smooth. */
 @media (max-width: 767px) {
   body.lg-site {
-    --lg-blur: 10px;
-    --lg-surface: rgba(255, 255, 255, 0.72);
+    --lg-blur: 12px;
+    --lg-surface: rgba(255, 255, 255, 0.46);
   }
   body.lg-site main section::before,
   body.lg-site main section.bg-primary,
