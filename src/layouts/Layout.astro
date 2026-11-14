@@ -38,7 +38,7 @@ const lp = lang && lang !== 'en' ? `/${lang}` : '';
 
 // Optimize meta content
 const optimizedTitle = generateMetaTitle(title);
-const optimizedDescription = generateMetaDescription(description);
+const optimizedDescription = generateMetaDescription(description, lang);
 const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com');
 
 // Generate structured data
