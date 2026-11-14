@@ -139,7 +139,7 @@ const clips = [
       // The first panel is the clock: when its clip ends, every panel moves on
       // together, so the wall changes as one.
       const advance = () => {
-        if (!alive || stopped) return;
+        if (!alive || stopped || !started) return;
         for (const panel of panels) {
           const next = panel.upcoming, previous = panel.current;
           next.currentTime = 0;
@@ -151,32 +151,57 @@ const clips = [
             panel.upcoming = previous;
             panel.index += 1;
             window.setTimeout(() => { if (alive && !stopped) load(panel.upcoming, panel.index + 1); }, 1000);
-          }).catch(() => { if (alive) stop(); });
+          }).catch((e) => { if (alive && !interrupted(e)) stop(); });
         }
       };
       const onEnded = (e: Event) => { if (e.target === panels[0].current) advance(); };
       root!.addEventListener('ended', onEnded, true);
 
+      // play() is rejected with AbortError when a pause() interrupts it (tab in
+      // the background, hero scrolled away). That is not a failure: just try
+      // again when the hero is visible. Anything else (autoplay refused, bad
+      // file) falls back to the still image.
+      const interrupted = (e: unknown) => (e as DOMException)?.name === 'AbortError';
+      const visible = () => inView && !document.hidden;
+      let started = false;
+      let starting = false;
+
+      // Start every panel together once each has its first clip ready.
+      const tryStart = () => {
+        if (!alive || stopped || started || starting || !visible()) return;
+        starting = true;
+        Promise.all(panels.map((p) => p.current.play())).then(() => {
+          starting = false;
+          if (!alive) return;
+          started = true;
+          for (const panel of panels) {
+            panel.current.currentTime = 0;
+            panel.current.classList.add('is-visible');
+            load(panel.upcoming, panel.index + 1);
+          }
+          root!.classList.add('is-playing');
+          if (!visible()) sync();
+        }).catch((e) => {
+          starting = false;
+          if (alive && !interrupted(e)) stop();
+        });
+      };
+
       const sync = () => {
         if (!alive || stopped) return;
+        if (!started) {
+          if (visible()) tryStart();
+          else for (const panel of panels) panel.current.pause();
+          return;
+        }
         for (const panel of panels) {
-          if (inView && !document.hidden) panel.current.play().catch(() => {});
+          if (visible()) panel.current.play().catch((e) => { if (alive && !interrupted(e)) stop(); });
           else panel.current.pause();
         }
       };
       document.addEventListener('visibilitychange', sync);
       (build as any).sync = sync;
-
-      // Start every panel together once each has its first clip ready.
-      Promise.all(panels.map((p) => p.current.play())).then(() => {
-        if (!alive) return;
-        for (const panel of panels) {
-          panel.current.currentTime = 0;
-          panel.current.classList.add('is-visible');
-          load(panel.upcoming, panel.index + 1);
-        }
-        root!.classList.add('is-playing');
-      }).catch(() => { if (alive) stop(); });
+      tryStart();
 
       teardown = () => {
         alive = false;
