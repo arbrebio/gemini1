@@ -728,6 +728,14 @@
       480
     ]
   },
+  "/images/content/mariam-ouattara.jpg": {
+    "width": 960,
+    "height": 960,
+    "variants": [
+      480,
+      960
+    ]
+  },
   "/images/content/mzATBKP.jpg": {
     "width": 1280,
     "height": 960,
