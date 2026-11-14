@@ -17,14 +17,16 @@
  * To change the line-up, replace the files in public/videos/hero/ (720x1280,
  * 6 seconds, no audio) and edit the list below.
  */
+// Order matters for start-up speed: with three panels the first clips on
+// screen are items 1, 3 and 5 of this list, so those are the lightest files.
 const clips = [
-  '01-greenhouse',
-  '02-harvest',
-  '03-hightech',
-  '04-cropcare',
-  '05-peppers',
-  '06-packhouse',
-  '07-irrigation',
+  'harvest',
+  'greenhouse',
+  'hightech',
+  'cropcare',
+  'peppers',
+  'packhouse',
+  'irrigation',
 ];
 ---
 
@@ -35,12 +37,10 @@ const clips = [
     position: absolute;
     inset: 0;
     display: flex;
-    gap: 3px;
     overflow: hidden;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.9s ease-in-out;
-    background: #0f2a28;
   }
   .hero-video.is-playing {
     opacity: 1;
@@ -63,6 +63,15 @@ const clips = [
   .hero-video__panel video.is-visible {
     opacity: 1;
   }
+  /* Thin divider between panels, drawn above the video. A panel that is
+     still loading stays transparent, so the still image shows through. */
+  .hero-video__panel + .hero-video__panel::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: rgba(15, 42, 40, 0.85);
+  }
 </style>
 
 <script>
@@ -82,7 +91,8 @@ const clips = [
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = (navigator as any).connection?.saveData === true;
-    if (reducedMotion || saveData) return; // keep the still image
+    const verySlow = /(^|-)2g$/.test((navigator as any).connection?.effectiveType || '');
+    if (reducedMotion || saveData || verySlow) return; // keep the still image
 
     const clips = (root.dataset.clips || '').split(',').filter(Boolean);
     if (clips.length === 0) return;
@@ -107,7 +117,7 @@ const clips = [
 
       // Spread the panels across the list so no two show the same clip.
       const spacing = Math.max(1, Math.floor(clips.length / count));
-      type Panel = { current: HTMLVideoElement; upcoming: HTMLVideoElement; index: number };
+      type Panel = { current: HTMLVideoElement; upcoming: HTMLVideoElement; index: number; started: boolean };
       const panels: Panel[] = [];
       let alive = true;
 
@@ -129,7 +139,7 @@ const clips = [
       for (let k = 0; k < count; k++) {
         const el = document.createElement('div');
         el.className = 'hero-video__panel';
-        const panel: Panel = { current: makeVideo(), upcoming: makeVideo(), index: k * spacing };
+        const panel: Panel = { current: makeVideo(), upcoming: makeVideo(), index: k * spacing, started: false };
         el.append(panel.current, panel.upcoming);
         root!.append(el);
         panels.push(panel);
@@ -141,6 +151,7 @@ const clips = [
       const advance = () => {
         if (!alive || stopped || !started) return;
         for (const panel of panels) {
+          if (!panel.started) continue; // still loading its first clip
           const next = panel.upcoming, previous = panel.current;
           next.currentTime = 0;
           next.play().then(() => {
@@ -154,7 +165,10 @@ const clips = [
           }).catch((e) => { if (alive && !interrupted(e)) stop(); });
         }
       };
-      const onEnded = (e: Event) => { if (e.target === panels[0].current) advance(); };
+      const onEnded = (e: Event) => {
+        const clock = panels.find((p) => p.started);
+        if (clock && e.target === clock.current) advance();
+      };
       root!.addEventListener('ended', onEnded, true);
 
       // play() is rejected with AbortError when a pause() interrupts it (tab in
@@ -166,35 +180,35 @@ const clips = [
       let started = false;
       let starting = false;
 
-      // Start every panel together once each has its first clip ready.
+      // Each panel appears as soon as its own first clip can play, so a slow
+      // connection shows video panel by panel instead of waiting for all of
+      // them. They fall into step at the first change-over.
       const tryStart = () => {
-        if (!alive || stopped || started || starting || !visible()) return;
+        if (!alive || stopped || starting || !visible()) return;
+        const waiting = panels.filter((p) => !p.started);
+        if (waiting.length === 0) return;
         starting = true;
-        Promise.all(panels.map((p) => p.current.play())).then(() => {
-          starting = false;
-          if (!alive) return;
-          started = true;
-          for (const panel of panels) {
-            panel.current.currentTime = 0;
+        let pending = waiting.length;
+        for (const panel of waiting) {
+          panel.current.play().then(() => {
+            if (!alive) return;
+            panel.started = true;
+            started = true;
             panel.current.classList.add('is-visible');
             load(panel.upcoming, panel.index + 1);
-          }
-          root!.classList.add('is-playing');
-          if (!visible()) sync();
-        }).catch((e) => {
-          starting = false;
-          if (alive && !interrupted(e)) stop();
-        });
+            root!.classList.add('is-playing');
+            if (!visible()) panel.current.pause();
+          }).catch((e) => {
+            if (alive && !interrupted(e)) stop();
+          }).finally(() => { if (--pending === 0) starting = false; });
+        }
       };
 
       const sync = () => {
         if (!alive || stopped) return;
-        if (!started) {
-          if (visible()) tryStart();
-          else for (const panel of panels) panel.current.pause();
-          return;
-        }
+        if (visible()) tryStart();
         for (const panel of panels) {
+          if (!panel.started) { if (!visible()) panel.current.pause(); continue; }
           if (visible()) panel.current.play().catch((e) => { if (alive && !interrupted(e)) stop(); });
           else panel.current.pause();
         }
