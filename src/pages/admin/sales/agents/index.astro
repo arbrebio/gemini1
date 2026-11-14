@@ -324,13 +324,11 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
     tbody.innerHTML = agents.map(a => {
       const ytd = a.sales_ytd || {};
       const emp = a.career_employees;
-      // Password column: show temp password if still set, otherwise show status
-      const pwCell = a.temp_password
-        ? `<div class="flex items-center gap-1">
-             <span class="font-mono text-xs bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded select-all" id="pw-${a.id}">${a.temp_password}</span>
-             <button class="btn-copy-pw text-gray-400 hover:text-gray-600" data-pw="${esc(a.temp_password)}" title="Copy"><i class="fas fa-copy text-xs"></i></button>
-           </div>
-           <div class="text-xs text-amber-600 mt-0.5 flex items-center gap-1"><i class="fas fa-clock text-xs"></i> En attente de changement</div>`
+      // Password column. Temporary passwords are no longer stored or shown
+      // here — the agent receives theirs by e-mail; use "reset password" if lost.
+      const pwCell = a.must_change_password
+        ? `<div class="text-xs text-amber-600 flex items-center gap-1"><i class="fas fa-clock text-xs"></i> En attente de changement</div>
+           <div class="text-xs text-gray-400 mt-0.5">Mot de passe temporaire envoyé par e-mail</div>`
         : `<div class="flex items-center gap-1 text-xs text-green-600"><i class="fas fa-check-circle"></i> Modifié par l'agent</div>`;
 
       return `<tr class="hover:bg-gray-50 transition-colors" data-id="${a.id}">
@@ -463,7 +461,7 @@ import AdminLayout from "../../../../layouts/AdminLayout.astro";
   });
 
   document.getElementById('copy-creds')?.addEventListener('click', () => {
-    const text = `Email: ${lastCreatedEmail}\nMot de passe: ${lastCreatedPassword}\nPortail: https://arbrebio.com/sales-agent/login`;
+    const text = `Email: ${lastCreatedEmail}\nMot de passe: ${lastCreatedPassword}\nPortail: https://www.arbrebio.com/sales-agent/login`;
     navigator.clipboard.writeText(text).then(() => showToast('Credentials copied!', 'success'));
   });
 

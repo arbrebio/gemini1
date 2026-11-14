@@ -49,7 +49,7 @@ export const GET: APIRoute = async ({ request }) => {
       .select(`
         id, full_name, email, worker_id, phone, is_active,
         suspended_at, suspended_reason, created_at,
-        must_change_password, temp_password,
+        must_change_password,
         career_employees(first_name, last_name, job_title, department, hired_at)
       `)
       .order('created_at', { ascending: false });
@@ -143,7 +143,6 @@ export const POST: APIRoute = async ({ request }) => {
         worker_id,
         is_active: true,
         must_change_password: true,
-        temp_password: password, // stored until agent sets their own password
       })
       .select()
       .single();
@@ -154,8 +153,9 @@ export const POST: APIRoute = async ({ request }) => {
       throw profileErr;
     }
 
-    // Send welcome email with credentials (non-blocking)
-    sendWelcomeEmail({
+    // Send welcome email with credentials. Awaited (a serverless function can
+    // be frozen once the response is sent) but a mail failure never fails the request.
+    await sendWelcomeEmail({
       to: email.trim().toLowerCase(),
       full_name: full_name.trim(),
       temp_password: password,
@@ -215,17 +215,18 @@ export const PUT: APIRoute = async ({ request }) => {
       });
       if (pwErr) throw pwErr;
 
-      // Store temp_password + flag must_change_password
+      // Flag must_change_password. The temporary password itself is never
+      // stored — it is e-mailed to the agent and the admin already knows it.
       const { data, error: profileErr } = await supabase
         .from('sales_agent_profiles')
-        .update({ must_change_password: true, temp_password: new_password })
+        .update({ must_change_password: true, temp_password: null })
         .eq('id', id)
         .select('email, full_name')
         .single();
       if (profileErr) throw profileErr;
 
       // Email agent their new credentials
-      sendPasswordResetEmail({
+      await sendPasswordResetEmail({
         to: data.email,
         full_name: data.full_name,
         temp_password: new_password,

@@ -33,6 +33,12 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       }
     }
 
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function render(cats) {
       var el = document.getElementById('categories-list');
       if (!cats.length) {
@@ -42,11 +48,11 @@ import SalesAgentLayout from "../../../layouts/SalesAgentLayout.astro";
       el.innerHTML = cats.map(function(c) {
         return '<div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">' +
           '<div class="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold shrink-0" style="background:#194642">' +
-            (c.name ? c.name.charAt(0).toUpperCase() : '?') +
+            esc(c.name ? String(c.name).charAt(0).toUpperCase() : '?') +
           '</div>' +
           '<div>' +
-            '<p class="font-semibold text-gray-800 text-sm">' + (c.name || '') + '</p>' +
-            (c.description ? '<p class="text-xs text-gray-400 mt-0.5">' + c.description + '</p>' : '') +
+            '<p class="font-semibold text-gray-800 text-sm">' + esc(c.name) + '</p>' +
+            (c.description ? '<p class="text-xs text-gray-400 mt-0.5">' + esc(c.description) + '</p>' : '') +
           '</div>' +
         '</div>';
       }).join('');

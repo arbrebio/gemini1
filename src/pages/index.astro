@@ -5,6 +5,7 @@ import AccessibilityEnhancements from "../components/AccessibilityEnhancements.a
 import { useTranslations, defaultLang } from "../lib/i18n";
 import { config } from "../lib/config";
 import EmojiIcon from '../components/EmojiIcon.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 
 const lang = defaultLang;
 const t = useTranslations(lang);
@@ -160,12 +161,11 @@ const partners = [
     class="relative h-screen flex items-center justify-center overflow-hidden"
     aria-label="Hero section"
   >
-    <img
+    <OptimizedImage
       src="/images/content/Aab6e6c.jpg"
       alt="Precision farming in Africa — greenhouse and irrigation solutions"
       class="absolute inset-0 w-full h-full object-cover"
-      width="1920"
-      height="1080"
+      sizes="100vw"
       loading="eager"
       fetchpriority="high"
       decoding="sync"
@@ -348,13 +348,14 @@ const partners = [
                 aria-label={`Visit ${partner.name} website`}
               >
                 <div class="partner-logo-container">
-                  <img
+                  <OptimizedImage
                     src={partner.logo}
                     alt={`${partner.name} logo`}
                     class="partner-logo"
+                    sizes="200px"
                     loading="lazy"
-                    width="200"
-                    height="120"
+                    width={200}
+                    height={120}
                   />
                 </div>
               </a>
@@ -372,13 +373,14 @@ const partners = [
                 class="partner-card"
               >
                 <div class="partner-logo-container">
-                  <img
+                  <OptimizedImage
                     src={partner.logo}
                     alt=""
                     class="partner-logo"
+                    sizes="200px"
                     loading="lazy"
-                    width="200"
-                    height="120"
+                    width={200}
+                    height={120}
                   />
                 </div>
               </a>

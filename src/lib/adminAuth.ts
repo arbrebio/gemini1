@@ -58,16 +58,13 @@ export async function requireAdminAuth(
 ): Promise<{ ok: true; userId: string; email: string | null } | { ok: false; response: Response }> {
   // Extract Bearer token from Authorization header
   const authHeader = request.headers.get('Authorization') || '';
-  let token: string | null = authHeader.startsWith('Bearer ')
+  // Bearer header ONLY. Cookies are sent automatically by the browser on
+  // cross-site requests, and Astro's origin check is disabled (see
+  // astro.config.mjs), so accepting a cookie here would open the admin API to
+  // CSRF. Nothing in the app sets such a cookie.
+  const token: string | null = authHeader.startsWith('Bearer ')
     ? authHeader.slice(7).trim()
     : null;
-
-  // Fall back to a Supabase access-token cookie if present
-  if (!token) {
-    const cookie = request.headers.get('cookie') || '';
-    const match = cookie.match(/sb-access-token=([^;]+)/);
-    if (match) token = decodeURIComponent(match[1]);
-  }
 
   if (!token) return { ok: false, response: unauthorizedJson('Missing auth token') };
 

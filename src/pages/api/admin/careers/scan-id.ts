@@ -96,9 +96,12 @@ Return ONLY the raw JSON object, no markdown, no explanation.`
 }
 Return ONLY the raw JSON object, no markdown, no explanation.`;
 
+    // Thinking is always on for this model and counts toward max_tokens, so the
+    // cap leaves room for it; `effort: low` keeps this simple extraction quick.
     const message = await anthropic.messages.create({
-      model: 'claude-opus-4-5',
-      max_tokens: 512,
+      model: 'claude-opus-5-5',
+      max_tokens: 16000,
+      output_config: { effort: 'low' },
       messages: [
         {
           role: 'user',
@@ -118,7 +121,14 @@ Return ONLY the raw JSON object, no markdown, no explanation.`;
     });
 
     // 4. Parse Claude's response
-    const rawText = message.content[0].type === 'text' ? message.content[0].text.trim() : '';
+    // The response can start with a thinking block, so find the text block
+    // rather than assuming it is first. A refusal or truncated reply simply
+    // yields no fields — the uploaded image URL is still returned.
+    if (message.stop_reason === 'refusal' || message.stop_reason === 'max_tokens') {
+      console.warn(`[scan-id] model stopped with ${message.stop_reason}; returning no extracted fields`);
+    }
+    const textBlock = message.content.find((block) => block.type === 'text');
+    const rawText = textBlock && textBlock.type === 'text' ? textBlock.text.trim() : '';
     let fields: Record<string, any> = {};
     try {
       // Strip any accidental markdown code fences

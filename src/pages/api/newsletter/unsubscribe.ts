@@ -10,7 +10,7 @@ const SENDER_NAME = 'Arbre Bio Africa';
 export const GET: APIRoute = async ({ request }) => {
   try {
     // Rate limit: prevents bulk unsubscribe abuse / subscriber enumeration.
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    if (!(await globalRateLimiter.check(getClientIp(request)))) {
       return new Response(JSON.stringify({ success: false, message: 'Too many requests' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' }

@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { escapeHtml, globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+import { escapeHtml, applyRateLimiter, getClientIp, verifyTurnstile } from '../../../lib/securityHeaders';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
@@ -67,7 +67,8 @@ async function uploadFile(supabase: any, file: File, folder: string): Promise<st
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    const clientIp = getClientIp(request);
+    if (!(await applyRateLimiter.check(clientIp))) {
       return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
         status: 429, headers: { 'Content-Type': 'application/json' },
       });
@@ -90,6 +91,22 @@ export const POST: APIRoute = async ({ request }) => {
     const city = str('city', 80);
     const address = str('address', 200);
     const coverLetter = str('cover_letter', 5000);
+
+    // Honeypot filled in: pretend success so the bot doesn't adapt, store nothing.
+    if (str('website', 200) !== '') {
+      return new Response(JSON.stringify({ success: true, portalToken: '' }), {
+        status: 200, headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Bot check BEFORE anything is stored: this endpoint accepts file uploads
+    // and sends e-mail to a caller-supplied address.
+    const turnstileToken = String(formData.get('cf-turnstile-response') || '') || undefined;
+    if (!(await verifyTurnstile(turnstileToken, clientIp))) {
+      return new Response(JSON.stringify({ error: 'Verification failed. Please complete the security check and try again.' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     if (!firstName || !lastName || !email || !jobId) {
       return new Response(JSON.stringify({ error: 'Missing required fields.' }), {
@@ -229,7 +246,7 @@ export const POST: APIRoute = async ({ request }) => {
             <p style="margin:0 0 8px"><strong>Your Reference Token:</strong></p>
             <p style="font-family:monospace;font-size:18px;color:#194642;margin:0">${portalToken}</p>
           </div>
-          <p>Use this token to track your application status at our <a href="https://arbrebio.com/careers/portal/" style="color:#194642">Applicant Portal</a>.</p>
+          <p>Use this token to track your application status at our <a href="https://www.arbrebio.com/careers/portal/" style="color:#194642">Applicant Portal</a>.</p>
           <p>Our team will review your application and contact you soon.</p>
           <p>Best regards,<br>The Arbre Bio Africa HR Team</p>
         </div>
@@ -248,7 +265,7 @@ export const POST: APIRoute = async ({ request }) => {
           <p><strong>Phone:</strong> ${e.phone || 'N/A'}</p>
           <p><strong>City:</strong> ${e.city || 'N/A'}</p>
           <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-          <p><a href="https://arbrebio.com/admin/careers/applications/" style="background:#194642;color:white;padding:10px 20px;border-radius:6px;text-decoration:none">View in Admin</a></p>
+          <p><a href="https://www.arbrebio.com/admin/careers/applications/" style="background:#194642;color:white;padding:10px 20px;border-radius:6px;text-decoration:none">View in Admin</a></p>
         </div>
       </body></html>`
     );

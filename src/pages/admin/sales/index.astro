@@ -390,8 +390,10 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     const proofPreview = document.getElementById('proof-preview')!;
     if (sale.proof_url) {
       proofContainer.classList.remove('hidden');
-      const isImage = /\.(jpg|jpeg|png|webp)$/i.test(sale.proof_url) || sale.proof_url.includes('image');
-      const isPdf = /\.pdf$/i.test(sale.proof_url) || sale.proof_url.includes('pdf');
+      // Signed URLs carry a ?token=… query, so match the extension before it.
+      const proofPath = String(sale.proof_url).split('?')[0];
+      const isImage = /\.(jpg|jpeg|png|webp)$/i.test(proofPath);
+      const isPdf = /\.pdf$/i.test(proofPath);
       if (isImage) {
         proofPreview.innerHTML = `<img src="${esc(sale.proof_url)}" alt="Proof" class="max-h-64 mx-auto rounded object-contain" />`;
       } else if (isPdf) {

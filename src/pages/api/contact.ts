@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { sanitizeInput, escapeHtml, contactRateLimiter, getClientIp, verifyTurnstile } from '../../lib/securityHeaders';
 import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
 import { sendContactEvent, parseFacebookCookies } from '../../lib/metaConversions';
+import { storeLead, markLeadEmailed } from '../../lib/leads';
 
 const ADMIN_EMAIL = 'farms@arbrebio.com';
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
@@ -90,11 +91,12 @@ const contactSchema = z.object({
 
 const MIN_FILL_TIME_MS = 3000;
 
-async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
+/** Sends an e-mail through Resend. Returns true only if it was accepted. */
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<boolean> {
   const resendKey = import.meta.env.RESEND_API_KEY;
   if (!resendKey) {
     console.warn('Resend API key is not configured');
-    return;
+    return false;
   }
 
   const body: Record<string, unknown> = {
@@ -106,18 +108,25 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 
   if (replyTo) body.reply_to = replyTo;
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
 
-  if (!res.ok) {
-    const text = await res.text();
-    console.error('Resend error:', res.status, text);
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('Resend error:', res.status, text);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('Resend request failed:', e);
+    return false;
   }
 }
 
@@ -125,7 +134,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const clientIP = getClientIp(request);
 
-    if (!contactRateLimiter.isAllowed(clientIP)) {
+    if (!(await contactRateLimiter.check(clientIP))) {
       return createErrorResponse('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');
     }
 
@@ -133,7 +142,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const validationResult = contactSchema.safeParse(data);
     if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0];
+      const firstError = validationResult.error.issues[0];
       return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
     }
 
@@ -169,8 +178,18 @@ export const POST: APIRoute = async ({ request }) => {
       message: escapeHtml(sanitizeInput(message, 1000))
     };
 
+    // Store the lead BEFORE e-mailing, so a mail-provider failure cannot lose it.
+    const leadId = await storeLead({
+      kind: 'contact',
+      name: `${firstName} ${lastName}`,
+      email,
+      phone,
+      lang,
+      payload: { interest, message },
+    });
+
     // Email to admin
-    await sendEmail(
+    const adminNotified = await sendEmail(
       ADMIN_EMAIL,
       `New Contact Form Submission: ${d.interest}`,
       `
@@ -199,6 +218,17 @@ export const POST: APIRoute = async ({ request }) => {
       `,
       d.email
     );
+
+    if (adminNotified) {
+      await markLeadEmailed(leadId);
+    } else if (!leadId) {
+      // Neither stored nor e-mailed: do not tell the visitor it worked.
+      return createErrorResponse(
+        'We could not send your message right now. Please try again, or contact us by phone or WhatsApp.',
+        502,
+        'DELIVERY_FAILED'
+      );
+    }
 
     // Auto-reply to client (in their language)
     const t = emailT[lang] ?? emailT.en;
@@ -240,7 +270,7 @@ export const POST: APIRoute = async ({ request }) => {
       userAgent: request.headers.get('user-agent'),
       fbc,
       fbp,
-      sourceUrl: request.headers.get('referer') || import.meta.env.SITE || 'https://arbrebio.com',
+      sourceUrl: request.headers.get('referer') || import.meta.env.SITE || 'https://www.arbrebio.com',
     }).catch(() => {});
 
     return createSuccessResponse(null, 'Message sent successfully');

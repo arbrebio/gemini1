@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import EmojiIcon from '../../../components/EmojiIcon.astro';
 import { getAllLangPaths } from "../../../lib/langPaths";
 import type { Language } from "../../../lib/i18n";
@@ -287,7 +288,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="/images/content/qDUP4Vf.jpg" alt="Professional Greenhouse Components" class="w-full h-full object-cover" />
+      <OptimizedImage src="/images/content/qDUP4Vf.jpg" alt="Professional Greenhouse Components" class="w-full h-full object-cover" sizes="100vw" loading="eager" fetchpriority="high" />
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
@@ -326,7 +327,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
             {category.items.map((item) => (
               <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="aspect-w-16 aspect-h-9">
-                  <img src={item.image} alt={item.name} class="w-full h-full object-cover" loading="lazy" />
+                  <OptimizedImage src={item.image} alt={item.name} class="w-full h-full object-cover" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
                 </div>
                 <div class="p-6">
                   <h4 class="text-xl font-bold mb-4">{item.name}</h4>
@@ -363,7 +364,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
             {category.items.map((item) => (
               <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="aspect-w-16 aspect-h-9">
-                  <img src={item.image} alt={item.name} class="w-full h-full object-cover" loading="lazy" />
+                  <OptimizedImage src={item.image} alt={item.name} class="w-full h-full object-cover" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
                 </div>
                 <div class="p-6">
                   <h4 class="text-xl font-bold mb-4">{item.name}</h4>
@@ -404,7 +405,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
             {category.items.map((item) => (
               <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="aspect-w-16 aspect-h-9">
-                  <img src={item.image} alt={item.name} class="w-full h-full object-cover" loading="lazy" />
+                  <OptimizedImage src={item.image} alt={item.name} class="w-full h-full object-cover" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
                 </div>
                 <div class="p-6">
                   <h4 class="text-xl font-bold mb-4">{item.name}</h4>
@@ -441,7 +442,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
             {category.items.map((item) => (
               <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="aspect-w-16 aspect-h-9">
-                  <img src={item.image} alt={item.name} class="w-full h-full object-cover" loading="lazy" />
+                  <OptimizedImage src={item.image} alt={item.name} class="w-full h-full object-cover" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" loading="lazy" />
                 </div>
                 <div class="p-6">
                   <h4 class="text-xl font-bold mb-4">{item.name}</h4>
@@ -561,7 +562,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   "name": "Arbre Bio Greenhouse Components",
   "description": "Professional-grade greenhouse components and accessories including structural elements, fasteners, coverage materials, and growing systems.",
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
-  "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
+  "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://www.arbrebio.com" },
   "image": ["https://www.arbrebio.com/images/content/Fn2AVYj.jpg","https://www.arbrebio.com/images/content/v1WwRzr.jpg","https://www.arbrebio.com/images/content/U8pORSQ.jpg"]
 }
 </script>

@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { sanitizeSearchTerm } from '../../../lib/salesStock';
 import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createClient } from '@supabase/supabase-js';
 
@@ -48,7 +49,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   try {
     const supabase = sb();
     const id        = url.searchParams.get('id');
-    const search    = url.searchParams.get('search') ?? '';
+    const search    = sanitizeSearchTerm(url.searchParams.get('search'));
     const status    = url.searchParams.get('status') ?? '';
     const from_date = url.searchParams.get('from_date') ?? '';
     const to_date   = url.searchParams.get('to_date') ?? '';

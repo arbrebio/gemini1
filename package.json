@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx astro dev",
     "start": "npx astro dev",
-    "build": "rm -rf .astro && astro check && astro build",
+    "build": "node scripts/generate-image-variants.mjs && rm -rf .astro && astro check && astro build",
+    "images:generate": "node scripts/generate-image-variants.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -18,7 +19,6 @@
     "@astrojs/sitemap": "^3.4.1",
     "@astrojs/tailwind": "^6.0.2",
     "@astrojs/vercel": "^8.2.11",
-    "@sendgrid/mail": "^8.1.1",
     "@supabase/supabase-js": "^2.56.1",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
@@ -27,12 +27,12 @@
     "intersection-observer": "^0.12.2",
     "resend": "^6.11.0",
     "tailwindcss": "^3.4.19",
-    "zod": "^3.22.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.5.9",
     "lightningcss": "^1.30.2",
-    "pg": "^8.20.0",
+    "sharp": "^0.35.5",
     "terser": "^5.44.0",
     "typescript": "^5.5.3",
     "vitest": "^4.1.10"

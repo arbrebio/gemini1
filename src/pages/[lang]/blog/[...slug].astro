@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from "../../../layouts/Layout.astro";
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
@@ -94,7 +95,7 @@ const formatDate = (date: Date) =>
   <!-- Hero -->
   <section class="relative h-[45vh] flex items-end pb-12">
     <div class="absolute inset-0 z-0">
-      <img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover"/>
+      <OptimizedImage src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" sizes="100vw" loading="eager" fetchpriority="high" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">

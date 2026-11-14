@@ -1,5 +1,6 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import { getAllLangPaths } from "../../../lib/langPaths";
 import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
@@ -111,19 +112,19 @@ const jsonLdData = scriptOpen + JSON.stringify({
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">{T.ourLeadership}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
         <div class="text-center">
-          <img src="/images/content/LAiwg8o.jpg" alt={T.ceoName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <OptimizedImage src="/images/content/LAiwg8o.jpg" alt={T.ceoName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg" sizes="160px" />
           <h3 class="text-xl font-bold mb-1">{T.ceoName}</h3>
           <p class="text-primary font-semibold mb-3">{T.ceoTitle}</p>
           <p class="text-gray-600 text-sm leading-relaxed">{T.ceoBio}</p>
         </div>
         <div class="text-center">
-          <img src="/images/content/LD5JZto.jpg" alt={T.cooName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <OptimizedImage src="/images/content/LD5JZto.jpg" alt={T.cooName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg" sizes="160px" />
           <h3 class="text-xl font-bold mb-1">{T.cooName}</h3>
           <p class="text-primary font-semibold mb-3">{T.cooTitle}</p>
           <p class="text-gray-600 text-sm leading-relaxed">{T.cooBio}</p>
         </div>
         <div class="text-center">
-          <img src="/images/content/NU06wJT.png" alt={T.marketingName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg"/>
+          <OptimizedImage src="/images/content/NU06wJT.png" alt={T.marketingName} class="w-40 h-40 rounded-full object-cover mx-auto mb-4 shadow-lg" sizes="160px" />
           <h3 class="text-xl font-bold mb-1">{T.marketingName}</h3>
           <p class="text-primary font-semibold mb-3">{T.marketingTitle}</p>
           <p class="text-gray-600 text-sm leading-relaxed">{T.marketingBio}</p>

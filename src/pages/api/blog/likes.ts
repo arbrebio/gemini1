@@ -5,16 +5,19 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+import { blogInteractionRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Service role: likes/comments are written only through this rate-limited,
+// validated endpoint. (With the anon key, "unlike" silently did nothing —
+// there is no anonymous DELETE policy — and anyone could bypass this API and
+// insert rows straight into the tables.)
 function getSupabase() {
-  return createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  );
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const key = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('Supabase not configured');
+  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
 function json(body: unknown, status = 200) {
@@ -39,7 +42,7 @@ export const GET: APIRoute = async ({ request }) => {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    if (!(await blogInteractionRateLimiter.check(getClientIp(request)))) {
       return json({ error: 'Too many requests. Please try again later.' }, 429);
     }
 
@@ -59,12 +62,15 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (existing) {
       // Unlike
-      await sb.from('blog_post_likes').delete().eq('id', existing.id);
+      const { error: delErr } = await sb.from('blog_post_likes').delete().eq('id', existing.id);
+      if (delErr) return json({ error: 'Failed to update like' }, 500);
       const { count } = await sb.from('blog_post_likes').select('*', { count: 'exact', head: true }).eq('post_id', post_id);
       return json({ liked: false, count: count ?? 0 });
     } else {
       // Like
-      await sb.from('blog_post_likes').insert({ post_id, fingerprint });
+      // 23505 = unique violation: a concurrent request already liked it.
+      const { error: insErr } = await sb.from('blog_post_likes').insert({ post_id, fingerprint });
+      if (insErr && insErr.code !== '23505') return json({ error: 'Failed to update like' }, 500);
       const { count } = await sb.from('blog_post_likes').select('*', { count: 'exact', head: true }).eq('post_id', post_id);
       return json({ liked: true, count: count ?? 0 });
     }

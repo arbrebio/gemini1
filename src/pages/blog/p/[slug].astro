@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import { createClient } from '@supabase/supabase-js';
 
 const { slug } = Astro.params;
@@ -292,10 +293,11 @@ const articleJsonLd = scriptOpen + JSON.stringify({
     <!-- Background: image or gradient fallback -->
     <div class="absolute inset-0 z-0">
       {post.image_url ? (
-        <img
+        <OptimizedImage
           src={post.image_url}
           alt={title}
           class="w-full h-full object-cover"
+          sizes="100vw"
           loading="eager"
         />
       ) : (

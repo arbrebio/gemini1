@@ -279,7 +279,7 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
             <!-- STEP 9 — Photos -->
             <div class="step-section" data-step="9">
               <div class="step-section-title">9. Photos du site</div>
-              <p class="text-xs text-muted" style="margin-bottom:12px">Ajoutez jusqu'à 20 photos (max 8 Mo chacune).</p>
+              <p class="text-xs text-muted" style="margin-bottom:12px">Ajoutez jusqu'à 20 photos (max 4 Mo chacune).</p>
               <input type="file" id="v-photo-input" accept="image/*" multiple style="display:none">
               <button type="button" class="btn btn-secondary" id="btn-add-photos">📷 Ajouter des photos</button>
               <div class="photo-grid" id="photo-grid" style="margin-top:16px"></div>
@@ -315,6 +315,7 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
 
 <script>
   import { requireTerrainAuth, terrainFetch } from '../../../lib/terrainClient';
+  import { shrinkImage, MAX_UPLOAD_BYTES } from '../../../scripts/shrinkImage';
 
   // Guard the page — redirects if not authenticated as engineer/technician.
   requireTerrainAuth(['engineer', 'technician']);
@@ -422,8 +423,9 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
       (window as any).UI?.toast('Maximum 20 photos.', 'error');
       return;
     }
-    for (const file of files) {
-      if (file.size > 8 * 1024 * 1024) { (window as any).UI?.toast(`${file.name} dépasse 8 Mo.`, 'error'); continue; }
+    for (const original of files) {
+      const file = await shrinkImage(original);
+      if (file.size > MAX_UPLOAD_BYTES) { (window as any).UI?.toast(`${original.name} dépasse 4 Mo.`, 'error'); continue; }
       const fd = new FormData();
       fd.append('file', file);
       fd.append('folder', 'visits');

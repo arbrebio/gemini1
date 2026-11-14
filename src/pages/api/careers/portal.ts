@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+import { portalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -14,7 +14,7 @@ function getSupabase() {
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limit token lookups to block brute-force guessing.
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    if (!(await portalRateLimiter.check(getClientIp(request)))) {
       return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
         status: 429, headers: { 'Content-Type': 'application/json' },
       });

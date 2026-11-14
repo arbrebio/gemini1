@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import OptimizedImage from '../../components/OptimizedImage.astro';
 
 const greenhouseTypes = [
   {
@@ -159,10 +160,13 @@ const certifications = [
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img 
+      <OptimizedImage
         src="/images/content/HBS7ARL.jpg"
-        alt="High-Tech Greenhouse Solutions" 
+        alt="High-Tech Greenhouse Solutions"
         class="w-full h-full object-cover"
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
       />
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
@@ -271,10 +275,11 @@ const certifications = [
             </div>
           </div>
           <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
-            <img 
+            <OptimizedImage
               src={type.image}
               alt={type.name}
               class="w-full h-[500px] object-cover rounded-lg shadow-lg"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               loading="lazy"
             />
           </div>
@@ -467,7 +472,7 @@ const certifications = [
   "manufacturer": {
     "@type": "Organization",
     "name": "Arbre Bio Africa",
-    "url": "https://arbrebio.com"
+    "url": "https://www.arbrebio.com"
   },
   "image": [
     "https://www.arbrebio.com/images/content/HBS7ARL.jpg",

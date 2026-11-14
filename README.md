@@ -1,54 +1,43 @@
-# Astro Starter Kit: Basics
+# Arbre Bio website
+
+Public marketing site plus four internal tools, built with Astro and Supabase and deployed on Vercel.
+
+| Area | Path | Who signs in |
+| --- | --- | --- |
+| Public site (EN/FR/ES/AF), blog, careers | `/`, `/[lang]/…` | nobody |
+| Admin panel (orders, inventory, sales validation, blog, HR, payroll) | `/admin/` | rows in `admin_profiles` |
+| Sales-agent portal (PWA) | `/sales-agent/` | rows in `sales_agent_profiles` |
+| Terrain field-operations platform | `/terrain/` | rows in `terrain_profiles` |
+| Applicant / employee portal | `/careers/portal/` | e-mail + reference token |
+
+## Commands
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
+npm run dev      # local dev server on :4321
+npm run check    # type check
+npm test         # unit tests (vitest)
+npm run build    # type check + production build
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Configuration
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Copy `.env.example` to `.env` and fill it in. The same variables must be set in Vercel.
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## Database
 
-## 🚀 Project Structure
+SQL migrations live in `supabase/migrations/` and are applied by pasting them into the Supabase SQL editor, in file-name order. They are written to be safe to re-run.
 
-Inside of your Astro project, you'll see the following folders and files:
+How access is enforced:
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+- Every `/api/**` route runs server-side with the service-role key and checks the caller itself (`requireAdminAuth`, `requireTerrainAuth`, or the agent token check). Authentication is by `Authorization: Bearer <Supabase access token>` only — never cookies.
+- Row-level security is the second line of defence for anyone calling Supabase directly with the public anon key. Admin tables are restricted with `is_admin()`; Terrain tables are service-role only.
+- A new table needs RLS enabled and an explicit policy. `USING (true)` for `authenticated` means "every sales agent and field technician", not "admins".
+
+## Deploying
+
+```sh
+npx vercel deploy --prod
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Deploy code first, then apply any new migration: the API code is written to work both before and after its migration is applied.

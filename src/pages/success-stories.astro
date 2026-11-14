@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 
 interface CaseStudy {
   title: string;
@@ -184,10 +185,11 @@ const testimonials = [
             <div>
               <h2 class="text-3xl font-bold mb-4">{study.title}</h2>
               <div class="flex items-center mb-6">
-                <img 
-                  src={study.clientImage} 
+                <OptimizedImage
+                  src={study.clientImage}
                   alt={study.client}
                   class="w-16 h-16 rounded-full object-cover mr-4"
+                  sizes="64px"
                 />
                 <div>
                   <h3 class="font-bold">{study.client}</h3>
@@ -208,18 +210,20 @@ const testimonials = [
               <div class="grid grid-cols-1 gap-4">
                 <div>
                   <p class="font-semibold mb-2">Before Implementation:</p>
-                  <img 
-                    src={study.beforeImage} 
+                  <OptimizedImage
+                    src={study.beforeImage}
                     alt="Before implementation"
                     class="w-full h-48 object-cover rounded-lg"
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   />
                 </div>
                 <div>
                   <p class="font-semibold mb-2">After Implementation:</p>
-                  <img 
-                    src={study.afterImage} 
+                  <OptimizedImage
+                    src={study.afterImage}
                     alt="After implementation"
                     class="w-full h-48 object-cover rounded-lg"
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   />
                 </div>
               </div>
@@ -258,10 +262,11 @@ const testimonials = [
         {testimonials.map((testimonial) => (
           <div class="bg-white p-6 rounded-lg shadow-lg">
             <div class="flex items-center mb-4">
-              <img 
-                src={testimonial.image} 
+              <OptimizedImage
+                src={testimonial.image}
                 alt={testimonial.name}
                 class="w-16 h-16 rounded-full object-cover mr-4"
+                sizes="64px"
               />
               <div>
                 <h3 class="font-bold">{testimonial.name}</h3>

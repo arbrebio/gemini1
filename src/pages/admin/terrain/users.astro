@@ -362,7 +362,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
   document.getElementById('copy-creds')?.addEventListener('click', () => {
     const email = document.getElementById('cred-email')!.textContent || '';
     const pw = document.getElementById('cred-password')!.textContent || '';
-    navigator.clipboard.writeText(`Email: ${email}\nMot de passe: ${pw}\nPortail: https://arbrebio.com/terrain/login`)
+    navigator.clipboard.writeText(`Email: ${email}\nMot de passe: ${pw}\nPortail: https://www.arbrebio.com/terrain/login`)
       .then(() => showToast('Identifiants copiés !', 'success'));
   });
 

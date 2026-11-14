@@ -100,8 +100,8 @@ export const POST: APIRoute = async ({ request }) => {
       .update({ must_change_password: false, temp_password: null })
       .eq('id', user.id);
 
-    // ── 6. Send confirmation email (non-blocking — don't fail if email errors) ─
-    sendPasswordChangedEmail({
+    // ── 6. Send confirmation email (awaited, but never fails the request) ─
+    await sendPasswordChangedEmail({
       to: profile.email,
       full_name: profile.full_name,
     }).catch((e) => console.error('[agentEmail] confirmation email failed:', e));

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import EmojiIcon from '../../../components/EmojiIcon.astro';
 import { getAllLangPaths } from "../../../lib/langPaths";
 import type { Language } from "../../../lib/i18n";
@@ -213,7 +214,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   <!-- Hero Section -->
   <section class="relative h-[60vh] flex items-center">
     <div class="absolute inset-0 z-0">
-      <img src="/images/content/HBS7ARL.jpg" alt="High-Tech Greenhouse Solutions" class="w-full h-full object-cover" />
+      <OptimizedImage src="/images/content/HBS7ARL.jpg" alt="High-Tech Greenhouse Solutions" class="w-full h-full object-cover" sizes="100vw" loading="eager" fetchpriority="high" />
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">
@@ -293,7 +294,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
             </div>
           </div>
           <div class={index % 2 === 0 ? 'order-2' : 'order-2 lg:order-1'}>
-            <img src={type.image} alt={type.name} class="w-full h-[500px] object-cover rounded-lg shadow-lg" loading="lazy" />
+            <OptimizedImage src={type.image} alt={type.name} class="w-full h-[500px] object-cover rounded-lg shadow-lg" sizes="(min-width: 1024px) 50vw, 100vw" loading="lazy" />
           </div>
         </div>
       </div>
@@ -395,7 +396,7 @@ const certifications = certsByLang[lang] ?? certsByLang.en;
   "name": "Arbre Bio High-Tech Greenhouses",
   "description": "Advanced greenhouse structures engineered for African climate conditions, featuring climate control and optimal growing environments.",
   "brand": { "@type": "Brand", "name": "Arbre Bio Africa" },
-  "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://arbrebio.com" },
+  "manufacturer": { "@type": "Organization", "name": "Arbre Bio Africa", "url": "https://www.arbrebio.com" },
   "image": ["https://www.arbrebio.com/images/content/HBS7ARL.jpg","https://www.arbrebio.com/images/content/dORTVaM.jpg","https://www.arbrebio.com/images/content/6r1b5oY.jpg","https://www.arbrebio.com/images/content/2r7ziKF.jpg"]
 }
 </script>

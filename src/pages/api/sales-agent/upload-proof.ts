@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { MAX_PROOF_BYTES, PROOF_URL_TTL_SECONDS } from '../../../lib/saleProofs';
 
 function getSupabaseAdmin() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -23,10 +24,15 @@ function extractToken(request: Request): string | null {
   return auth.slice(7).trim();
 }
 
-const ALLOWED_TYPES = [
-  'image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf',
-];
-const MAX_SIZE = 15 * 1024 * 1024; // 15 MB
+// MIME type → the extension we store the file under. The stored extension is
+// derived from the validated type, never from the client's file name.
+const TYPE_EXTENSION: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'application/pdf': 'pdf',
+};
 
 /**
  * POST /api/sales-agent/upload-proof
@@ -36,7 +42,7 @@ const MAX_SIZE = 15 * 1024 * 1024; // 15 MB
  *   Authorization: Bearer <access_token>
  *
  * FormData:
- *   file — the file to upload (image or PDF, max 15 MB)
+ *   file — the file to upload (image or PDF, max 4 MB)
  *
  * Returns: { url, signed_url, file_name }
  */
@@ -64,15 +70,14 @@ export const POST: APIRoute = async ({ request }) => {
     const file = formData.get('file') as File | null;
 
     if (!file || file.size === 0) return json({ error: 'No file provided' }, 400);
-    if (file.size > MAX_SIZE) return json({ error: 'File too large (max 15 MB)' }, 400);
+    if (file.size > MAX_PROOF_BYTES) return json({ error: 'File too large (max 4 MB)' }, 400);
 
     const fileType = file.type.toLowerCase();
-    if (!ALLOWED_TYPES.includes(fileType)) {
+    const ext = TYPE_EXTENSION[fileType];
+    if (!ext) {
       return json({ error: 'Only PDF, JPG, PNG, and WEBP files are allowed' }, 400);
     }
 
-    // Sanitize file name
-    const ext = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '');
     const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const filePath = `proofs/${user.id}/${stamp}.${ext}`;
 
@@ -81,14 +86,15 @@ export const POST: APIRoute = async ({ request }) => {
 
     const { error: uploadErr } = await supabase.storage
       .from('sale-proofs')
-      .upload(filePath, buffer, { contentType: file.type, upsert: false });
+      .upload(filePath, buffer, { contentType: fileType, upsert: false });
 
     if (uploadErr) throw uploadErr;
 
-    // Generate a long-lived signed URL (7 years = 220752000 seconds)
+    // Short-lived signed URL, only for the immediate preview in the form. The
+    // sale stores the storage path; a fresh URL is signed whenever it is read.
     const { data: signedData, error: signErr } = await supabase.storage
       .from('sale-proofs')
-      .createSignedUrl(filePath, 220752000);
+      .createSignedUrl(filePath, PROOF_URL_TTL_SECONDS);
 
     if (signErr || !signedData) throw signErr || new Error('Failed to generate signed URL');
 

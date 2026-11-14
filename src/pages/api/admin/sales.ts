@@ -4,6 +4,8 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminAuth } from '../../../lib/adminAuth';
 import { createNotification, createAgentNotification } from '../../../lib/notify';
+import { computeStockDeductions } from '../../../lib/salesStock';
+import { attachSignedProofUrls } from '../../../lib/saleProofs';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -17,6 +19,37 @@ function json(body: any, status = 200) {
     status,
     headers: { 'Content-Type': 'application/json' },
   });
+}
+
+/**
+ * Deduct stock for one product. Uses the atomic `decrement_product_stock`
+ * database function; if that function has not been created yet (migration
+ * 20261114000000 not applied), falls back to read-then-write.
+ */
+async function deductStock(supabase: ReturnType<typeof getSupabase>, productId: string, quantity: number) {
+  const { error: rpcErr } = await supabase.rpc('decrement_product_stock', {
+    p_product_id: productId,
+    p_quantity: quantity,
+  });
+  if (!rpcErr) return;
+
+  const fnMissing = rpcErr.code === 'PGRST202' || rpcErr.code === '42883';
+  if (!fnMissing) throw rpcErr;
+
+  const { data: product, error: readErr } = await supabase
+    .from('admin_products')
+    .select('stock_quantity')
+    .eq('id', productId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!product) return; // product was deleted — nothing to deduct
+
+  const newStock = Math.max(0, Number(product.stock_quantity) - Math.ceil(quantity));
+  const { error: writeErr } = await supabase
+    .from('admin_products')
+    .update({ stock_quantity: newStock })
+    .eq('id', productId);
+  if (writeErr) throw writeErr;
 }
 
 /**
@@ -123,7 +156,7 @@ export const GET: APIRoute = async ({ url, request }) => {
     ]);
 
     return json({
-      sales: sales ?? [],
+      sales: await attachSignedProofUrls(supabase, sales ?? []),
       counts: {
         pending: pendingCount ?? 0,
         validated: validatedCount ?? 0,
@@ -170,59 +203,85 @@ export const PUT: APIRoute = async ({ request }) => {
       update.invoice_number = `AB-${year}-${ts}${rnd}`;
     }
 
+    // Only a PENDING sale can be validated or rejected. The status filter makes
+    // the transition atomic: a double click, a retry, or two admins acting at
+    // once can match the row only once, so stock is never deducted twice and
+    // an already-issued invoice number is never replaced.
     const { data: sale, error } = await supabase
       .from('sales_records')
       .update(update)
       .eq('id', id)
+      .eq('status', 'pending')
       .select('*, sales_agent_profiles(full_name, worker_id)')
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
+    if (!sale) {
+      const { data: existing } = await supabase
+        .from('sales_records')
+        .select('status')
+        .eq('id', id)
+        .maybeSingle();
+      if (!existing) return json({ error: 'Sale not found' }, 404);
+      return json({ error: `Sale has already been ${existing.status}` }, 409);
+    }
 
-    // Deduct inventory when validating sale
-    if (action === 'validate' && sale.product_id) {
-      const quantity = Number(sale.quantity) || 0;
-      if (quantity > 0) {
-        // Get current stock and deduct
-        const { data: product } = await supabase
-          .from('admin_products')
-          .select('stock_quantity')
-          .eq('id', sale.product_id)
-          .single();
+    // Deduct inventory when validating — per line item, so every product in a
+    // multi-product sale is deducted by its own quantity.
+    const stockWarnings: string[] = [];
+    if (action === 'validate') {
+      const { data: lineItems, error: lineErr } = await supabase
+        .from('sales_line_items')
+        .select('product_id, quantity')
+        .eq('sale_id', id);
+      if (lineErr) console.error('[admin sales] could not load line items:', lineErr);
 
-        if (product) {
-          const newStock = Math.max(0, Number(product.stock_quantity) - quantity);
-          await supabase
-            .from('admin_products')
-            .update({ stock_quantity: newStock })
-            .eq('id', sale.product_id);
+      const deductions = computeStockDeductions(sale, lineErr ? null : lineItems);
+      for (const [productId, quantity] of deductions) {
+        try {
+          await deductStock(supabase, productId, quantity);
+        } catch (e) {
+          console.error(`[admin sales] stock deduction failed for product ${productId}:`, e);
+          stockWarnings.push(productId);
         }
       }
     }
 
-    // Update the admin notification for this sale
+    // Notifications are awaited (in parallel): on serverless the function can
+    // be frozen as soon as the response is returned, which silently dropped
+    // fire-and-forget notifications. Failures are logged, never fatal.
     const statusLabel = action === 'validate' ? '✅ Vente validée' : '❌ Vente rejetée';
     const agentName = (sale.sales_agent_profiles as any)?.full_name || 'Agent';
+    const amount = new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount));
 
-    createNotification({
-      type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
-      message: `${statusLabel} — ${agentName} • ${sale.client_name} • ${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA`,
-      entity_id: id,
-      entity_type: 'sale',
-    }).catch(() => {});
-
-    // Notify the agent themselves so it shows up in their portal bell.
     const agentMessage = action === 'validate'
-      ? `Votre vente à ${sale.client_name} (${new Intl.NumberFormat('fr-FR').format(Number(sale.total_amount))} FCFA) a été validée.`
+      ? `Votre vente à ${sale.client_name} (${amount} FCFA) a été validée.`
       : `Votre vente à ${sale.client_name} a été rejetée${sale.rejection_reason ? ` : ${sale.rejection_reason}` : '.'}`;
 
-    createAgentNotification({
-      agent_id: sale.agent_id,
-      type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
-      message: agentMessage,
-      entity_id: id,
-      entity_type: 'sale',
-    }).catch(() => {});
+    const results = await Promise.allSettled([
+      createNotification({
+        type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
+        message: `${statusLabel} — ${agentName} • ${sale.client_name} • ${amount} FCFA`,
+        entity_id: id,
+        entity_type: 'sale',
+      }),
+      createAgentNotification({
+        agent_id: sale.agent_id,
+        type: action === 'validate' ? 'sale_validated' : 'sale_rejected',
+        message: agentMessage,
+        entity_id: id,
+        entity_type: 'sale',
+      }),
+    ]);
+    for (const r of results) {
+      if (r.status === 'rejected') console.error('[admin sales] notification failed:', r.reason);
+    }
+
+    await attachSignedProofUrls(supabase, [sale]);
+
+    if (stockWarnings.length) {
+      return json({ sale, warning: 'Sale validated, but stock could not be updated for some products.', stock_failed_product_ids: stockWarnings });
+    }
 
     return json({ sale });
   } catch (e: any) {
