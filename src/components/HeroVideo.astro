@@ -2,22 +2,20 @@
 /**
  * Background video montage for the home page hero.
  *
- * Seven 6-second clips play one after another and loop, with a short
- * cross-fade between them. The clips have no audio track. It sits on top of
- * the hero's still image, which stays as the instant first paint and as the
- * fallback whenever video is not appropriate:
- *   - the visitor asked for reduced motion or data saving,
- *   - the browser refuses to autoplay (e.g. iOS Low Power Mode),
- *   - a clip fails to load.
+ * The footage is vertical (9:16), so instead of cropping one clip to fill a
+ * wide screen, the hero is split into side-by-side vertical panels, each
+ * showing a whole clip: three panels on a typical computer screen, two on a
+ * landscape tablet, one on a phone. Every 6 seconds each panel cross-fades to
+ * its next clip; the panels are offset so they never show the same clip.
  *
- * Only one clip is downloaded at a time (the next one is fetched while the
- * current one plays), and nothing is requested until the page has loaded, so
- * the video never competes with the page's own content.
+ * The clips have no audio track. The hero's still image stays underneath as
+ * the instant first paint and as the fallback whenever video is not
+ * appropriate (reduced motion, data saver, autoplay refused, load error).
+ * Nothing is requested until the page has loaded, each panel fetches one clip
+ * ahead, and playback pauses when the hero is off screen or the tab is hidden.
  *
- * Each clip exists in two crops made from the same vertical footage:
- * "-wide" (1920x1080) for landscape screens and "-tall" (720x1280) for phones.
- * To change the line-up, replace the files in public/videos/hero/ and edit
- * the list below.
+ * To change the line-up, replace the files in public/videos/hero/ (720x1280,
+ * 6 seconds, no audio) and edit the list below.
  */
 const clips = [
   '01-greenhouse',
@@ -30,109 +28,184 @@ const clips = [
 ];
 ---
 
-<div id="hero-video" class="hero-video" data-clips={clips.join(',')} aria-hidden="true">
-  <video muted playsinline preload="none" tabindex="-1" disablepictureinpicture></video>
-  <video muted playsinline preload="none" tabindex="-1" disablepictureinpicture></video>
-</div>
+<div id="hero-video" class="hero-video" data-clips={clips.join(',')} aria-hidden="true"></div>
 
-<style>
-  .hero-video,
-  .hero-video video {
+<style is:global>
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    gap: 3px;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.9s ease-in-out;
+    background: #0f2a28;
+  }
+  .hero-video.is-playing {
+    opacity: 1;
+  }
+  .hero-video__panel {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .hero-video__panel video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-  }
-  .hero-video {
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .hero-video video {
     object-fit: cover;
     opacity: 0;
     transition: opacity 0.9s ease-in-out;
   }
-  .hero-video video.is-visible {
+  .hero-video__panel video.is-visible {
     opacity: 1;
   }
 </style>
 
 <script>
+  const CLIP_ASPECT = 9 / 16;
+  const MAX_PANELS = 4;
+
+  /** How many whole vertical clips fit side by side in the hero. */
+  function panelCountFor(el: HTMLElement): number {
+    const { width, height } = el.getBoundingClientRect();
+    if (!width || !height) return 1;
+    return Math.min(MAX_PANELS, Math.max(1, Math.round(width / height / CLIP_ASPECT)));
+  }
+
   function initHeroVideo() {
     const root = document.getElementById('hero-video');
-    if (!root || root.dataset.started) return;
+    if (!root) return;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = (navigator as any).connection?.saveData === true;
     if (reducedMotion || saveData) return; // keep the still image
 
     const clips = (root.dataset.clips || '').split(',').filter(Boolean);
-    const videos = Array.from(root.querySelectorAll('video'));
-    if (clips.length === 0 || videos.length < 2) return;
-    root.dataset.started = 'true';
+    if (clips.length === 0) return;
+    const urlFor = (i: number) => `/videos/hero/${clips[((i % clips.length) + clips.length) % clips.length]}.mp4`;
 
-    // Phones held upright get the vertical crop; everything else the wide one.
-    const variant = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches ? 'tall' : 'wide';
-    const urlFor = (index: number) => `/videos/hero/${clips[index % clips.length]}-${variant}.mp4`;
-
-    let index = 0;
-    let current = videos[0];
-    let upcoming = videos[1];
+    const hero = (root.closest('section') as HTMLElement | null) ?? root;
     let stopped = false;
+    let inView = true;
+    let teardown: (() => void) | null = null;
 
     const stop = () => {
       // Any failure: fade back to the still image and stop trying.
       stopped = true;
-      videos.forEach((v) => { v.classList.remove('is-visible'); v.pause(); });
+      root.classList.remove('is-playing');
+      teardown?.();
     };
 
-    const load = (video: HTMLVideoElement, clipIndex: number) => {
-      video.preload = 'auto';
-      video.src = urlFor(clipIndex);
-      video.load();
-    };
+    function build(count: number) {
+      teardown?.();
+      root!.innerHTML = '';
+      root!.dataset.panels = String(count);
 
-    const showNext = () => {
-      if (stopped) return;
-      const next = upcoming;
-      const previous = current;
-      next.currentTime = 0;
-      next.play().then(() => {
-        next.classList.add('is-visible');
-        previous.classList.remove('is-visible');
-        current = next;
-        upcoming = previous;
-        index += 1;
-        // Once the cross-fade is over, fetch the clip after this one.
-        window.setTimeout(() => { if (!stopped) load(upcoming, index + 1); }, 1000);
-      }).catch(stop);
-    };
+      // Spread the panels across the list so no two show the same clip.
+      const spacing = Math.max(1, Math.floor(clips.length / count));
+      type Panel = { current: HTMLVideoElement; upcoming: HTMLVideoElement; index: number };
+      const panels: Panel[] = [];
+      let alive = true;
 
-    videos.forEach((video) => {
-      video.muted = true; // belt and braces: required for autoplay
-      video.addEventListener('ended', () => { if (video === current) showNext(); });
-      video.addEventListener('error', stop);
-    });
+      const makeVideo = () => {
+        const v = document.createElement('video');
+        v.muted = true;
+        v.defaultMuted = true;
+        v.playsInline = true;
+        v.setAttribute('muted', '');
+        v.setAttribute('playsinline', '');
+        v.setAttribute('disablepictureinpicture', '');
+        v.tabIndex = -1;
+        v.preload = 'auto';
+        v.addEventListener('error', () => { if (alive && v.getAttribute('src')) stop(); });
+        return v;
+      };
+      const load = (v: HTMLVideoElement, clipIndex: number) => { v.src = urlFor(clipIndex); v.load(); };
+
+      for (let k = 0; k < count; k++) {
+        const el = document.createElement('div');
+        el.className = 'hero-video__panel';
+        const panel: Panel = { current: makeVideo(), upcoming: makeVideo(), index: k * spacing };
+        el.append(panel.current, panel.upcoming);
+        root!.append(el);
+        panels.push(panel);
+        load(panel.current, panel.index);
+      }
+
+      // The first panel is the clock: when its clip ends, every panel moves on
+      // together, so the wall changes as one.
+      const advance = () => {
+        if (!alive || stopped) return;
+        for (const panel of panels) {
+          const next = panel.upcoming, previous = panel.current;
+          next.currentTime = 0;
+          next.play().then(() => {
+            if (!alive) return;
+            next.classList.add('is-visible');
+            previous.classList.remove('is-visible');
+            panel.current = next;
+            panel.upcoming = previous;
+            panel.index += 1;
+            window.setTimeout(() => { if (alive && !stopped) load(panel.upcoming, panel.index + 1); }, 1000);
+          }).catch(() => { if (alive) stop(); });
+        }
+      };
+      const onEnded = (e: Event) => { if (e.target === panels[0].current) advance(); };
+      root!.addEventListener('ended', onEnded, true);
+
+      const sync = () => {
+        if (!alive || stopped) return;
+        for (const panel of panels) {
+          if (inView && !document.hidden) panel.current.play().catch(() => {});
+          else panel.current.pause();
+        }
+      };
+      document.addEventListener('visibilitychange', sync);
+      (build as any).sync = sync;
+
+      // Start every panel together once each has its first clip ready.
+      Promise.all(panels.map((p) => p.current.play())).then(() => {
+        if (!alive) return;
+        for (const panel of panels) {
+          panel.current.currentTime = 0;
+          panel.current.classList.add('is-visible');
+          load(panel.upcoming, panel.index + 1);
+        }
+        root!.classList.add('is-playing');
+      }).catch(() => { if (alive) stop(); });
+
+      teardown = () => {
+        alive = false;
+        root!.removeEventListener('ended', onEnded, true);
+        document.removeEventListener('visibilitychange', sync);
+        for (const panel of panels) for (const v of [panel.current, panel.upcoming]) { v.pause(); v.removeAttribute('src'); v.load(); }
+        teardown = null;
+      };
+    }
+
+    let count = panelCountFor(hero);
+    build(count);
 
     // Don't burn data or battery when the hero isn't being looked at.
-    const hero = root.closest('section') ?? root;
-    let inView = true;
-    const sync = () => {
-      if (stopped) return;
-      if (inView && !document.hidden) current.play().catch(() => {});
-      else current.pause();
-    };
     new IntersectionObserver((entries) => {
       inView = entries[0].isIntersecting;
-      sync();
+      (build as any).sync?.();
     }, { threshold: 0.05 }).observe(hero);
-    document.addEventListener('visibilitychange', sync);
 
-    load(current, 0);
-    current.play().then(() => {
-      current.classList.add('is-visible');
-      load(upcoming, 1);
-    }).catch(stop);
+    // Rotating a phone or resizing the window can change how many panels fit.
+    let resizeTimer = 0;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (stopped) return;
+        const next = panelCountFor(hero);
+        if (next !== count) { count = next; root.classList.remove('is-playing'); build(count); }
+      }, 300);
+    });
   }
 
   // Wait for the page itself to finish loading first.
