@@ -5,6 +5,7 @@ import { SEO } from 'astro-seo';
 import { useTranslations, defaultLang } from '../lib/i18n';
 import { generateMetaTitle, generateMetaDescription, generateCanonicalUrl, generateBreadcrumbSchema } from '../lib/seoOptimization';
 import { getImageEntry, getWebPSrcSet } from '../lib/imageOptimization';
+import '../styles/liquid-glass.css';
 
 interface Props {
   title: string;
@@ -308,7 +309,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
   <!-- Page-specific head content (e.g. Article JSON-LD) -->
   <slot name="head" />
 </head>
-  <body class="bg-white antialiased">
+  <body class="bg-white antialiased lg-site">
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50">
       Skip to main content
@@ -329,6 +330,12 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
       </button>
     )}
     
+    <script>
+      import { initLiquidGlass } from '../scripts/liquidGlass';
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initLiquidGlass, { once: true });
+      else initLiquidGlass();
+    </script>
+
     <main id="main-content">
       <slot />
     </main>
