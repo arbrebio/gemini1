@@ -67,6 +67,11 @@ self.addEventListener('fetch', (event) => {
 
   if (request.method !== 'GET') return;
 
+  // Video is streamed with Range requests. Answering those from a cached full
+  // response breaks playback in Safari, and the clips are far too large for
+  // the offline cache anyway — let the browser fetch them directly.
+  if (url.pathname.startsWith('/videos/') || request.headers.has('range')) return;
+
   // Don't cache API calls, auth endpoints, or Supabase
   if (
     url.pathname.startsWith('/api/') ||

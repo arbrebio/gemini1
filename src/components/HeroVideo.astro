@@ -1,0 +1,141 @@
+---
+/**
+ * Background video montage for the home page hero.
+ *
+ * Seven 6-second clips play one after another and loop, with a short
+ * cross-fade between them. The clips have no audio track. It sits on top of
+ * the hero's still image, which stays as the instant first paint and as the
+ * fallback whenever video is not appropriate:
+ *   - the visitor asked for reduced motion or data saving,
+ *   - the browser refuses to autoplay (e.g. iOS Low Power Mode),
+ *   - a clip fails to load.
+ *
+ * Only one clip is downloaded at a time (the next one is fetched while the
+ * current one plays), and nothing is requested until the page has loaded, so
+ * the video never competes with the page's own content.
+ *
+ * Each clip exists in two crops made from the same vertical footage:
+ * "-wide" (1920x1080) for landscape screens and "-tall" (720x1280) for phones.
+ * To change the line-up, replace the files in public/videos/hero/ and edit
+ * the list below.
+ */
+const clips = [
+  '01-greenhouse',
+  '02-harvest',
+  '03-hightech',
+  '04-cropcare',
+  '05-peppers',
+  '06-packhouse',
+  '07-irrigation',
+];
+---
+
+<div id="hero-video" class="hero-video" data-clips={clips.join(',')} aria-hidden="true">
+  <video muted playsinline preload="none" tabindex="-1" disablepictureinpicture></video>
+  <video muted playsinline preload="none" tabindex="-1" disablepictureinpicture></video>
+</div>
+
+<style>
+  .hero-video,
+  .hero-video video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-video {
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .hero-video video {
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.9s ease-in-out;
+  }
+  .hero-video video.is-visible {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  function initHeroVideo() {
+    const root = document.getElementById('hero-video');
+    if (!root || root.dataset.started) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as any).connection?.saveData === true;
+    if (reducedMotion || saveData) return; // keep the still image
+
+    const clips = (root.dataset.clips || '').split(',').filter(Boolean);
+    const videos = Array.from(root.querySelectorAll('video'));
+    if (clips.length === 0 || videos.length < 2) return;
+    root.dataset.started = 'true';
+
+    // Phones held upright get the vertical crop; everything else the wide one.
+    const variant = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches ? 'tall' : 'wide';
+    const urlFor = (index: number) => `/videos/hero/${clips[index % clips.length]}-${variant}.mp4`;
+
+    let index = 0;
+    let current = videos[0];
+    let upcoming = videos[1];
+    let stopped = false;
+
+    const stop = () => {
+      // Any failure: fade back to the still image and stop trying.
+      stopped = true;
+      videos.forEach((v) => { v.classList.remove('is-visible'); v.pause(); });
+    };
+
+    const load = (video: HTMLVideoElement, clipIndex: number) => {
+      video.preload = 'auto';
+      video.src = urlFor(clipIndex);
+      video.load();
+    };
+
+    const showNext = () => {
+      if (stopped) return;
+      const next = upcoming;
+      const previous = current;
+      next.currentTime = 0;
+      next.play().then(() => {
+        next.classList.add('is-visible');
+        previous.classList.remove('is-visible');
+        current = next;
+        upcoming = previous;
+        index += 1;
+        // Once the cross-fade is over, fetch the clip after this one.
+        window.setTimeout(() => { if (!stopped) load(upcoming, index + 1); }, 1000);
+      }).catch(stop);
+    };
+
+    videos.forEach((video) => {
+      video.muted = true; // belt and braces: required for autoplay
+      video.addEventListener('ended', () => { if (video === current) showNext(); });
+      video.addEventListener('error', stop);
+    });
+
+    // Don't burn data or battery when the hero isn't being looked at.
+    const hero = root.closest('section') ?? root;
+    let inView = true;
+    const sync = () => {
+      if (stopped) return;
+      if (inView && !document.hidden) current.play().catch(() => {});
+      else current.pause();
+    };
+    new IntersectionObserver((entries) => {
+      inView = entries[0].isIntersecting;
+      sync();
+    }, { threshold: 0.05 }).observe(hero);
+    document.addEventListener('visibilitychange', sync);
+
+    load(current, 0);
+    current.play().then(() => {
+      current.classList.add('is-visible');
+      load(upcoming, 1);
+    }).catch(stop);
+  }
+
+  // Wait for the page itself to finish loading first.
+  if (document.readyState === 'complete') initHeroVideo();
+  else window.addEventListener('load', initHeroVideo, { once: true });
+</script>
