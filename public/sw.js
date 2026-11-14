@@ -1,4 +1,6 @@
-const CACHE_VERSION = 'v7';
+// Bump on every release that changes pages or styling: activation deletes
+// the caches of older versions, so returning visitors get the new site.
+const CACHE_VERSION = 'v8';
 const CACHE_NAME = `arbre-bio-${CACHE_VERSION}`;
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
@@ -131,7 +133,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-while-revalidate for main site
+  // Pages (navigations): network first, so a new release is seen on the very
+  // next visit. The cached copy is only used when the network fails (offline).
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request, { ignoreVary: true }).then(cached => cached || caches.match('/')))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate for the main site's other same-origin assets
   event.respondWith(
     caches.match(request, { ignoreVary: true })
       .then(cachedResponse => {
