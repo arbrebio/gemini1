@@ -59,15 +59,15 @@ type UnifiedPost = {
 
 // ── MDX posts (Content Collections) ───────────────────────────────────────────
 const allMdx = await getCollection('blog');
-const langMdx = allMdx.filter(p => p.slug.startsWith(`${currentLang}/`));
-const enMdx   = allMdx.filter(p => p.slug.startsWith('en/'));
+const langMdx = allMdx.filter(p => p.id.startsWith(`${currentLang}/`));
+const enMdx   = allMdx.filter(p => p.id.startsWith('en/'));
 
 const baseMap = new Map<string, (typeof allMdx)[number]>();
-enMdx.forEach(post => baseMap.set(post.slug.replace(/^en\//, ''), post));
-langMdx.forEach(post => baseMap.set(post.slug.replace(new RegExp(`^${currentLang}/`), ''), post));
+enMdx.forEach(post => baseMap.set(post.id.replace(/^en\//, ''), post));
+langMdx.forEach(post => baseMap.set(post.id.replace(new RegExp(`^${currentLang}/`), ''), post));
 
 const urlSlug = (post: (typeof allMdx)[number]) =>
-  post.slug.replace(/^(en|fr|es|af)\//, '');
+  post.id.replace(/^(en|fr|es|af)\//, '');
 
 const mdxPosts: UnifiedPost[] = [...baseMap.values()].map(post => ({
   source:      'mdx',

@@ -1,12 +1,22 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
-import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
+// Injects the Tailwind layers into every page, as @astrojs/tailwind used to.
+// Tailwind itself runs through PostCSS (postcss.config.mjs).
+const tailwindBase = {
+  name: 'tailwind-base',
+  hooks: {
+    'astro:config:setup': ({ injectScript }) => {
+      injectScript('page-ssr', `import '/src/styles/tailwind.css';`);
+    },
+  },
+};
+
 export default defineConfig({
   integrations: [
-    tailwind(),
+    tailwindBase,
     mdx(),
     sitemap({
       i18n: {

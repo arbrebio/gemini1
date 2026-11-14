@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // ── MDX posts from Content Collections ────────────────────────────────────────
 const allCollectionPosts = await getCollection('blog');
-const mdxRaw = allCollectionPosts.filter(post => post.slug.startsWith('en/'));
+const mdxRaw = allCollectionPosts.filter(post => post.id.startsWith('en/'));
 
 // ── DB posts from Supabase (published only) ────────────────────────────────────
 type UnifiedPost = {
@@ -62,7 +62,7 @@ const mdxPosts: UnifiedPost[] = mdxRaw.map(post => ({
   category:    post.data.category,
   featured:    post.data.featured ?? false,
   author:      post.data.author,
-  href:        `/blog/${urlSlug(post.slug)}`,
+  href:        `/blog/${urlSlug(post.id)}`,
 }));
 
 const allPosts = [...mdxPosts, ...dbPosts]
