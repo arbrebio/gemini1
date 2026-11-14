@@ -1,0 +1,408 @@
+/*
+ * Liquid glass theme for the public website.
+ *
+ * Everything here is scoped to `body.lg-site` (set in layouts/Layout.astro),
+ * so the admin panel and the agent / terrain portals are not affected.
+ *
+ * The theme restyles the site's existing building blocks instead of adding
+ * new markup: the fixed navigation, buttons, white cards, section
+ * backgrounds, form fields and the footer. The look is translucent surfaces
+ * that blur and brighten what is behind them, a thin light edge, a soft
+ * highlight that follows the pointer, and slow-moving colour in the
+ * background so the glass has something to refract.
+ *
+ * Motion and transparency both have opt-outs at the bottom of the file
+ * (prefers-reduced-motion, prefers-reduced-transparency, no backdrop-filter).
+ */
+
+body.lg-site {
+  --lg-green: 25 70 66;          /* brand primary #194642 */
+  --lg-deep: 15 42 40;           /* #0f2a28 */
+  --lg-leaf: 74 171 110;         /* fresh green accent */
+  --lg-sun: 233 196 106;         /* warm accent */
+  --lg-blur: 22px;
+  --lg-radius: 1.1rem;
+  --lg-edge: rgba(255, 255, 255, 0.78);
+  --lg-surface: rgba(255, 255, 255, 0.30);
+  --lg-surface-strong: rgba(255, 255, 255, 0.62);
+  --lg-shadow: 0 1px 1px rgba(15, 42, 40, 0.04), 0 12px 32px -8px rgba(15, 42, 40, 0.16);
+  --lg-shadow-hover: 0 2px 2px rgba(15, 42, 40, 0.05), 0 24px 48px -12px rgba(15, 42, 40, 0.26);
+  --lg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  background: #f3f7f5;
+}
+
+/* ── Section backgrounds: slow colour behind the glass ───────────────────── */
+
+body.lg-site main section.bg-gray-50,
+body.lg-site main section.bg-white {
+  position: relative;
+  isolation: isolate;
+  background-color: transparent;
+}
+
+body.lg-site main section.bg-gray-50 {
+  background-image: linear-gradient(180deg, #eef5f1 0%, #f5f8f6 100%);
+}
+
+body.lg-site main section.bg-white {
+  background-image: linear-gradient(180deg, #fbfdfc 0%, #f3f8f5 100%);
+}
+
+body.lg-site main section.bg-gray-50::before,
+body.lg-site main section.bg-white::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 26rem at 12% 18%, rgb(var(--lg-leaf) / 0.30), transparent 62%),
+    radial-gradient(34rem 24rem at 88% 78%, rgb(var(--lg-green) / 0.24), transparent 60%),
+    radial-gradient(26rem 20rem at 70% 12%, rgb(var(--lg-sun) / 0.26), transparent 62%);
+  background-size: 140% 140%;
+  animation: lg-drift 26s ease-in-out infinite alternate;
+}
+
+body.lg-site main section.bg-white::before {
+  animation-duration: 32s;
+  animation-direction: alternate-reverse;
+  opacity: 0.8;
+}
+
+@keyframes lg-drift {
+  0%   { background-position: 0% 0%, 100% 100%, 60% 0%; }
+  50%  { background-position: 40% 30%, 60% 70%, 20% 40%; }
+  100% { background-position: 100% 60%, 0% 20%, 80% 80%; }
+}
+
+/* Brand-green sections become deep glass with moving light. */
+body.lg-site main section.bg-primary,
+body.lg-site footer.bg-primary {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(42rem 24rem at 15% 0%, rgb(var(--lg-leaf) / 0.34), transparent 60%),
+    radial-gradient(36rem 26rem at 90% 100%, rgb(var(--lg-sun) / 0.16), transparent 60%),
+    linear-gradient(160deg, #1d524d 0%, #194642 45%, #0f2a28 100%);
+  background-size: 160% 160%, 160% 160%, 100% 100%;
+  animation: lg-drift 30s ease-in-out infinite alternate;
+}
+
+body.lg-site footer.bg-primary {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ── Navigation ──────────────────────────────────────────────────────────── */
+
+body.lg-site nav.fixed.top-0 {
+  background-color: rgb(var(--lg-deep) / 0.34);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 30px -12px rgba(15, 42, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* Dropdown menus */
+body.lg-site nav.fixed.top-0 .group > .absolute {
+  background-color: rgb(var(--lg-deep) / 0.55);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03));
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1rem;
+  box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+
+body.lg-site nav.fixed.top-0 .group > .absolute a:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Language switcher pill */
+body.lg-site nav.fixed.top-0 .bg-white\/10.rounded-full {
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Mobile menu panel and the floating back button */
+body.lg-site #mobile-nav-menu {
+  background-color: rgb(var(--lg-deep) / 0.62);
+  background-image: linear-gradient(200deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 45%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  backdrop-filter: blur(26px) saturate(180%);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+body.lg-site #back-button {
+  background-color: rgba(255, 255, 255, 0.38);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.lg-site #back-button:hover {
+  background-color: rgb(var(--lg-green) / 0.92);
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+
+body.lg-site main .bg-white.rounded-lg.shadow-lg,
+body.lg-site main .bg-white.rounded-lg.shadow-md,
+body.lg-site main .bg-white.rounded-lg.shadow-sm,
+body.lg-site main .bg-white.rounded-xl.shadow-lg,
+body.lg-site main .bg-white.rounded-xl.shadow-md,
+body.lg-site main .bg-white.rounded-xl.shadow-sm,
+body.lg-site main .bg-white.rounded-2xl.shadow-lg,
+body.lg-site main .bg-white.rounded-2xl.shadow-md,
+body.lg-site main .bg-white.rounded-2xl.shadow-sm,
+body.lg-site main .lg-glass {
+  --mx: 50%;
+  --my: 0%;
+  background-color: var(--lg-surface);
+  background-image:
+    radial-gradient(22rem 16rem at var(--mx) var(--my), rgba(255, 255, 255, 0.45), transparent 65%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.04) 60%);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(170%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(170%);
+  border: 1px solid var(--lg-edge);
+  border-radius: var(--lg-radius);
+  box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.5s var(--lg-ease), box-shadow 0.5s var(--lg-ease), background-color 0.3s ease;
+}
+
+@media (hover: hover) {
+  body.lg-site main .bg-white.rounded-lg.shadow-lg:hover,
+  body.lg-site main .bg-white.rounded-lg.shadow-md:hover,
+  body.lg-site main .bg-white.rounded-xl.shadow-lg:hover,
+  body.lg-site main .bg-white.rounded-xl.shadow-md:hover,
+  body.lg-site main .bg-white.rounded-xl.shadow-sm:hover,
+  body.lg-site main .bg-white.rounded-2xl.shadow-sm:hover,
+  body.lg-site main .lg-glass:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--lg-shadow-hover), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  /* Photos inside cards breathe a little on hover. */
+  body.lg-site main .overflow-hidden > img,
+  body.lg-site main .overflow-hidden > picture > img {
+    transition: transform 0.9s var(--lg-ease);
+  }
+  body.lg-site main .overflow-hidden:hover > img,
+  body.lg-site main .overflow-hidden:hover > picture > img {
+    transform: scale(1.045);
+  }
+}
+
+/* Large forms (contact, application, portal) must stay still while typing. */
+body.lg-site main form.bg-white:hover,
+body.lg-site main .bg-white:has(form):hover,
+body.lg-site main .bg-white:has(input, textarea, select):hover {
+  transform: none;
+}
+
+/* Cards that sit on a brand-green section read as frosted white. */
+body.lg-site main section.bg-primary .bg-white.rounded-lg,
+body.lg-site main section.bg-primary .bg-white.rounded-xl,
+body.lg-site main section.bg-primary .bg-white.rounded-2xl {
+  background-color: var(--lg-surface-strong);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+body.lg-site :is(a, button):is(.bg-primary, [class*='bg-green-'], [class*='bg-[#25']):not(.sr-only)[class*='px-'][class*='rounded'] {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 48%, rgba(0, 0, 0, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 10px 24px -8px rgb(var(--lg-green) / 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  transition: transform 0.35s var(--lg-ease), box-shadow 0.35s var(--lg-ease), background-color 0.3s ease, color 0.3s ease;
+}
+
+body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-full'],
+body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-md'] {
+  background-color: rgba(255, 255, 255, 0.46);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.12));
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 24px -10px rgba(15, 42, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
+  transition: transform 0.35s var(--lg-ease), box-shadow 0.35s var(--lg-ease), background-color 0.3s ease, color 0.3s ease;
+}
+
+/* On a coloured panel a see-through white button would lose its text
+   contrast, so it stays close to solid there. */
+body.lg-site main :is(.bg-primary, [class*='bg-green-'], [class*='bg-[#25']) :is(a, button).bg-white[class*='px-'][class*='rounded'] {
+  background-color: rgba(255, 255, 255, 0.9);
+  background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.6));
+}
+
+@media (hover: hover) {
+  body.lg-site :is(a, button):is(.bg-primary, [class*='bg-green-'], [class*='bg-[#25']):not(.sr-only)[class*='px-'][class*='rounded']:hover,
+  body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-full']:hover,
+  body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded-md']:hover {
+    transform: translateY(-2px);
+  }
+  body.lg-site :is(a, button).bg-primary[class*='px-'][class*='rounded']:hover {
+    box-shadow: 0 16px 32px -10px rgb(var(--lg-green) / 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+body.lg-site :is(a, button):is(.bg-primary, [class*='bg-green-'], [class*='bg-[#25']):not(.sr-only)[class*='px-'][class*='rounded']:active,
+body.lg-site main :is(a, button).bg-white[class*='px-'][class*='rounded']:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.12s;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+
+/* A lighter, graded veil so the background video stays visible. */
+body.lg-site section[aria-label='Hero section'] > .bg-black.bg-opacity-50 {
+  background-color: transparent;
+  background-image:
+    radial-gradient(60rem 30rem at 50% 45%, rgba(8, 24, 22, 0.55), rgba(8, 24, 22, 0.18) 70%),
+    linear-gradient(180deg, rgba(8, 24, 22, 0.45) 0%, rgba(8, 24, 22, 0.12) 35%, rgba(8, 24, 22, 0.5) 100%);
+}
+
+body.lg-site section[aria-label='Hero section'] h1 {
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+}
+
+body.lg-site section[aria-label='Hero section'] p {
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* Hero buttons are true glass over the footage. */
+body.lg-site section[aria-label='Hero section'] a.bg-primary {
+  background-color: rgb(var(--lg-green) / 0.52);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+}
+
+body.lg-site section[aria-label='Hero section'] a.bg-white {
+  background-color: rgba(255, 255, 255, 0.58);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* ── Form fields ─────────────────────────────────────────────────────────── */
+
+body.lg-site main :is(input:not([type='checkbox'], [type='radio'], [type='file'], [type='hidden'], [type='submit']), select, textarea) {
+  background-color: rgba(255, 255, 255, 0.55);
+  border-color: rgb(var(--lg-green) / 0.22);
+  box-shadow: inset 0 1px 2px rgba(15, 42, 40, 0.06), 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+body.lg-site main :is(input:not([type='checkbox'], [type='radio'], [type='file'], [type='hidden'], [type='submit']), select, textarea):focus {
+  background-color: #fff;
+  border-color: rgb(var(--lg-green) / 0.55);
+  box-shadow: 0 0 0 4px rgb(var(--lg-leaf) / 0.22), inset 0 1px 2px rgba(15, 42, 40, 0.05);
+  outline: none;
+}
+
+/* Newsletter field in the dark footer */
+body.lg-site footer :is(input[type='email'], input[type='text']) {
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* ── Scroll reveal ───────────────────────────────────────────────────────── */
+/* Only active once the script has confirmed it can reveal things again
+   (html.lg-anim); without JavaScript everything is simply visible. */
+
+html.lg-anim body.lg-site [data-lg-reveal] {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--lg-ease) var(--lg-delay, 0ms),
+    transform 0.9s var(--lg-ease) var(--lg-delay, 0ms),
+    filter 0.9s var(--lg-ease) var(--lg-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+html.lg-anim body.lg-site [data-lg-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Once revealed, hand hover transitions back to the card rules above. */
+html.lg-anim body.lg-site [data-lg-reveal].is-settled {
+  transition: transform 0.5s var(--lg-ease), box-shadow 0.5s var(--lg-ease), background-color 0.3s ease;
+  will-change: auto;
+}
+
+/* ── Opt-outs and fallbacks ──────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  body.lg-site main section::before,
+  body.lg-site main section.bg-primary,
+  body.lg-site footer.bg-primary {
+    animation: none;
+  }
+  body.lg-site * {
+    transition-duration: 0.01ms !important;
+  }
+  html.lg-anim body.lg-site [data-lg-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Phones: lighter blur, no drifting backgrounds — keeps scrolling smooth. */
+@media (max-width: 767px) {
+  body.lg-site {
+    --lg-blur: 12px;
+    --lg-surface: rgba(255, 255, 255, 0.46);
+  }
+  body.lg-site main section::before,
+  body.lg-site main section.bg-primary,
+  body.lg-site footer.bg-primary {
+    animation: none;
+  }
+  html.lg-anim body.lg-site [data-lg-reveal] {
+    filter: none;
+  }
+}
+
+/* Visitors who asked for less transparency, and browsers without
+   backdrop-filter, get solid surfaces with the same shape and shadow. */
+@media (prefers-reduced-transparency: reduce) {
+  body.lg-site {
+    --lg-surface: rgba(255, 255, 255, 0.96);
+    --lg-surface-strong: #fff;
+  }
+  body.lg-site nav.fixed.top-0,
+  body.lg-site #mobile-nav-menu,
+  body.lg-site nav.fixed.top-0 .group > .absolute {
+    background-color: rgb(var(--lg-deep) / 0.97);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body.lg-site {
+    --lg-surface: rgba(255, 255, 255, 0.94);
+    --lg-surface-strong: #fff;
+  }
+  body.lg-site nav.fixed.top-0,
+  body.lg-site #mobile-nav-menu,
+  body.lg-site nav.fixed.top-0 .group > .absolute {
+    background-color: rgb(var(--lg-deep) / 0.96);
+  }
+  body.lg-site #back-button {
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+@media print {
+  body.lg-site main section::before { display: none; }
+  html.lg-anim body.lg-site [data-lg-reveal] { opacity: 1; transform: none; filter: none; }
+}

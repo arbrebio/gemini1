@@ -4,6 +4,8 @@ import StructuredData from '../components/StructuredData.astro';
 import { SEO } from 'astro-seo';
 import { useTranslations, defaultLang } from '../lib/i18n';
 import { generateMetaTitle, generateMetaDescription, generateCanonicalUrl, generateBreadcrumbSchema } from '../lib/seoOptimization';
+import { getImageEntry, getWebPSrcSet } from '../lib/imageOptimization';
+import '../styles/liquid-glass.css';
 
 interface Props {
   title: string;
@@ -36,7 +38,7 @@ const lp = lang && lang !== 'en' ? `/${lang}` : '';
 
 // Optimize meta content
 const optimizedTitle = generateMetaTitle(title);
-const optimizedDescription = generateMetaDescription(description);
+const optimizedDescription = generateMetaDescription(description, lang);
 const canonicalURL = generateCanonicalUrl(Astro.url.pathname, Astro.site?.toString() || 'https://www.arbrebio.com');
 
 // Generate structured data
@@ -126,8 +128,15 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
     <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://rsms.me" crossorigin />
 
-    <!-- Preload critical images -->
-    {image && <link rel="preload" as="image" href={image} fetchpriority="high" crossorigin />}
+    <!-- Preload critical images. When WebP variants exist (image-manifest),
+         preload via imagesrcset so the browser fetches the same WebP the
+         hero <picture> will render — never the heavier original. -->
+    {image && (() => {
+      const entry = getImageEntry(image);
+      return entry
+        ? <link rel="preload" as="image" imagesrcset={getWebPSrcSet(image, entry)} imagesizes="100vw" fetchpriority="high" />
+        : <link rel="preload" as="image" href={image} fetchpriority="high" />;
+    })()}
 
     <!-- Preload Inter font (non-blocking) -->
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -300,7 +309,7 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
   <!-- Page-specific head content (e.g. Article JSON-LD) -->
   <slot name="head" />
 </head>
-  <body class="bg-white antialiased">
+  <body class="bg-white antialiased lg-site">
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-md z-50">
       Skip to main content
@@ -321,6 +330,12 @@ const jsonLdWebsite = scriptOpen + JSON.stringify({
       </button>
     )}
     
+    <script>
+      import { initLiquidGlass } from '../scripts/liquidGlass';
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initLiquidGlass, { once: true });
+      else initLiquidGlass();
+    </script>
+
     <main id="main-content">
       <slot />
     </main>

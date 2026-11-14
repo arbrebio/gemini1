@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 // NOTE: The live security headers (CSP, HSTS, etc.) are served by Vercel via
 // vercel.json for every route. A duplicate header object used to live here but
@@ -64,13 +65,58 @@ export function getClientIp(request: Request): string {
 /**
  * Rate limiting utility
  */
+let sharedClient: SupabaseClient<any, any, any> | null = null;
+let sharedLimiterWarned = false;
+
 export class RateLimiter {
   private requests: Map<string, number[]> = new Map();
   
   constructor(
     private maxRequests: number = 10,
-    private windowMs: number = 60000 // 1 minute
+    private windowMs: number = 60000, // 1 minute
+    /** Namespace for the shared (database-backed) counter. */
+    private name: string = 'default'
   ) {}
+
+  /**
+   * Rate-limit check that holds across serverless instances.
+   *
+   * `isAllowed` only counts requests seen by ONE function instance; on a
+   * serverless host each instance has its own memory, so a caller spread
+   * over several instances (or cold starts) was barely limited at all. This
+   * first applies the cheap in-memory check, then the shared counter kept in
+   * Postgres (`check_rate_limit`, migration 20261114000000).
+   *
+   * If the shared counter is unavailable (migration not applied yet, database
+   * unreachable) the in-memory result stands — a limiter outage must not take
+   * the public forms down.
+   */
+  async check(identifier: string): Promise<boolean> {
+    if (!this.isAllowed(identifier)) return false;
+
+    const url = import.meta.env.PUBLIC_SUPABASE_URL;
+    const key = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) return true;
+
+    try {
+      sharedClient ??= createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+      const { data, error } = await sharedClient.rpc('check_rate_limit', {
+        p_key: `${this.name}:${identifier}`.slice(0, 200),
+        p_max: this.maxRequests,
+        p_window_seconds: Math.ceil(this.windowMs / 1000),
+      });
+      if (error) {
+        if (!sharedLimiterWarned) {
+          sharedLimiterWarned = true;
+          console.warn('Shared rate limiter unavailable, using in-memory limits only:', error.message);
+        }
+        return true;
+      }
+      return data !== false;
+    } catch {
+      return true;
+    }
+  }
   
   isAllowed(identifier: string): boolean {
     const now = Date.now();
@@ -105,16 +151,23 @@ export class RateLimiter {
 }
 
 // Global rate limiter instance
-export const globalRateLimiter = new RateLimiter(50, 60000); // 50 requests per minute
+export const globalRateLimiter = new RateLimiter(50, 60000, 'global'); // 50 requests per minute
 
 // Tighter limiter for low-traffic, bot-targeted forms like newsletter signup
-export const newsletterRateLimiter = new RateLimiter(5, 60000); // 5 requests per minute
+export const newsletterRateLimiter = new RateLimiter(5, 60000, 'newsletter'); // 5 requests per minute
 
 // Tighter limiter for the contact form, matching newsletter's bot-targeted profile
-export const contactRateLimiter = new RateLimiter(8, 60000); // 8 requests per minute
+export const contactRateLimiter = new RateLimiter(8, 60000, 'contact'); // 8 requests per minute
 
 // Tighter limiter for the quote request form, same bot-targeted profile
-export const quoteRateLimiter = new RateLimiter(8, 60000); // 8 requests per minute
+// Credential-style lookups (applicant portal token, payslips) and the
+// file-accepting application form get far tighter budgets than the default.
+export const portalRateLimiter = new RateLimiter(10, 60000, 'portal'); // 10 requests per minute
+export const applyRateLimiter = new RateLimiter(5, 600000, 'apply'); // 5 applications per 10 minutes
+export const passwordResetRateLimiter = new RateLimiter(5, 600000, 'pwreset'); // 5 requests per 10 minutes
+export const blogInteractionRateLimiter = new RateLimiter(20, 60000, 'blog'); // 20 likes/comments per minute
+
+export const quoteRateLimiter = new RateLimiter(8, 60000, 'quote'); // 8 requests per minute
 
 // Common disposable/temporary email domains used by bots and spam signups
 const DISPOSABLE_EMAIL_DOMAINS = new Set([

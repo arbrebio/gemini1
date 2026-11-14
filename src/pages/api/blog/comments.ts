@@ -5,16 +5,19 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { globalRateLimiter, getClientIp } from '../../../lib/securityHeaders';
+import { blogInteractionRateLimiter, getClientIp } from '../../../lib/securityHeaders';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Service role: likes/comments are written only through this rate-limited,
+// validated endpoint. (With the anon key, "unlike" silently did nothing —
+// there is no anonymous DELETE policy — and anyone could bypass this API and
+// insert rows straight into the tables.)
 function getSupabase() {
-  return createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  );
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const key = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('Supabase not configured');
+  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
 function json(body: unknown, status = 200) {
@@ -40,7 +43,7 @@ export const GET: APIRoute = async ({ request }) => {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!globalRateLimiter.isAllowed(getClientIp(request))) {
+    if (!(await blogInteractionRateLimiter.check(getClientIp(request)))) {
       return json({ error: 'Too many requests. Please try again later.' }, 429);
     }
 
@@ -54,7 +57,11 @@ export const POST: APIRoute = async ({ request }) => {
     if (typeof content !== 'string' || !content.trim()) return json({ error: 'Comment cannot be empty' }, 400);
     if (content.trim().length < 5)         return json({ error: 'Comment too short' }, 400);
     if (content.trim().length > 2000)      return json({ error: 'Comment too long (max 2000 chars)' }, 400);
-    if (author_email != null && (typeof author_email !== 'string' || author_email.length > 120)) {
+    if (author_email != null && author_email !== '' && (
+      typeof author_email !== 'string' ||
+      author_email.length > 120 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(author_email.trim())
+    )) {
       return json({ error: 'Invalid email' }, 400);
     }
 

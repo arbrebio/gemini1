@@ -18,7 +18,9 @@ function json(body: any, status = 200) {
 const EXTENSION_MIME: Record<string, string> = {
   jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heic: 'image/heic',
 };
-const MAX_BYTES = 8 * 1024 * 1024;
+// Hosting platform caps request bodies at ~4.5 MB, so 4 MB is the real limit.
+// (The portal downsizes photos in the browser before uploading.)
+const MAX_BYTES = 4 * 1024 * 1024;
 
 /**
  * POST /api/terrain/upload
@@ -34,7 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
     const folder = (formData.get('folder') as string) || 'misc';
 
     if (!file || file.size === 0) return json({ error: 'No file provided' }, 400);
-    if (file.size > MAX_BYTES) return json({ error: 'File exceeds the 8 MB limit.' }, 400);
+    if (file.size > MAX_BYTES) return json({ error: 'File exceeds the 4 MB limit.' }, 400);
 
     const ext = (file.name.split('.').pop() || '').toLowerCase();
     const contentType = EXTENSION_MIME[ext];

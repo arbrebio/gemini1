@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { sanitizeSearchTerm } from '../../../lib/salesStock';
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabaseAdmin() {
@@ -50,7 +51,7 @@ export const GET: APIRoute = async ({ request, url }) => {
       .single();
     if (!profile?.is_active) return json({ error: 'Account suspended' }, 403);
 
-    const search = url.searchParams.get('search') || '';
+    const search = sanitizeSearchTerm(url.searchParams.get('search'));
     const categoryId = url.searchParams.get('category_id') || '';
     const inStockOnly = url.searchParams.get('in_stock') === 'true';
     const limit = Math.min(200, Math.max(1, parseInt(url.searchParams.get('limit') ?? '50')));

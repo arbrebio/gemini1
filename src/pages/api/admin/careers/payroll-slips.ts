@@ -15,7 +15,7 @@ import {
 } from '../../../../lib/payroll';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
-const SITE_URL = 'https://arbrebio.com';
+const SITE_URL = 'https://www.arbrebio.com';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -31,12 +31,12 @@ const generateSchema = z.object({
   action: z.literal('generate'),
   year: z.number().int().min(2020).max(2100),
   month: z.number().int().min(1).max(12),
-  employee_ids: z.array(z.string().uuid()).optional(),
+  employee_ids: z.array(z.guid()).optional(),
 });
 
 const validateSchema = z.object({
   action: z.literal('validate'),
-  slip_ids: z.array(z.string().uuid()).min(1),
+  slip_ids: z.array(z.guid()).min(1),
 });
 
 const congesDateRangeSchema = z.object({
@@ -46,7 +46,7 @@ const congesDateRangeSchema = z.object({
 
 const updateCongesSchema = z.object({
   action: z.literal('update_conges'),
-  slip_id: z.string().uuid(),
+  slip_id: z.guid(),
   jours_pris: z.number().min(0),
   jours_acquis_manuel: z.number().default(0),
   jours_fiscaux_seed: z.number().nullable().optional(),

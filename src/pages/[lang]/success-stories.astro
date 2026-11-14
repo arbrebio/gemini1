@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import OptimizedImage from '../../components/OptimizedImage.astro';
 import { getAllLangPaths } from "../../lib/langPaths";
 import { useT } from "../../lib/translations";
 import type { Language } from "../../lib/i18n";
@@ -430,17 +431,17 @@ const faqs = faqByLang[lang] ?? faqByLang.fr;
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div>
               <p class="text-sm font-semibold text-gray-500 mb-2">{T.beforeLabel}</p>
-              <img src={study.beforeImage} alt={T.beforeLabel} class="w-full h-48 object-cover rounded-lg shadow"/>
+              <OptimizedImage src={study.beforeImage} alt={T.beforeLabel} class="w-full h-48 object-cover rounded-lg shadow" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
             </div>
             <div>
               <p class="text-sm font-semibold text-gray-500 mb-2">{T.afterLabel}</p>
-              <img src={study.afterImage} alt={T.afterLabel} class="w-full h-48 object-cover rounded-lg shadow"/>
+              <OptimizedImage src={study.afterImage} alt={T.afterLabel} class="w-full h-48 object-cover rounded-lg shadow" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
             </div>
           </div>
           <blockquote class="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg">
             <p class="text-gray-700 italic mb-4">"{study.testimonial}"</p>
             <div class="flex items-center gap-3">
-              <img src={study.clientImage} alt={study.client} class="w-10 h-10 rounded-full object-cover"/>
+              <OptimizedImage src={study.clientImage} alt={study.client} class="w-10 h-10 rounded-full object-cover" sizes="40px" />
               <span class="font-semibold text-primary">{study.client}</span>
             </div>
           </blockquote>
@@ -457,7 +458,7 @@ const faqs = faqByLang[lang] ?? faqByLang.fr;
         {testimonials.map((t) => (
           <div class="bg-white p-6 rounded-lg shadow-lg">
             <div class="flex items-center mb-4">
-              <img src={t.image} alt={t.name} class="w-16 h-16 rounded-full object-cover mr-4"/>
+              <OptimizedImage src={t.image} alt={t.name} class="w-16 h-16 rounded-full object-cover mr-4" sizes="64px" />
               <div>
                 <h3 class="font-bold">{t.name}</h3>
                 <p class="text-gray-600">{t.role}</p>

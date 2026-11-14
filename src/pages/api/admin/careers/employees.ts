@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { requireAdminAuth } from '../../../../lib/adminAuth';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
-const SITE_URL = 'https://arbrebio.com';
+const SITE_URL = 'https://www.arbrebio.com';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;

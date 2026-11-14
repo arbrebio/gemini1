@@ -61,7 +61,9 @@ export const GET: APIRoute = async ({ request, url }) => {
     const { data: clientRecord } = await supabase
       .from('admin_customers')
       .select('full_name, email, phone, address, city, country, company_name')
-      .ilike('full_name', sale.client_name)
+      // Escape LIKE wildcards: a client name of "%" must not match (and leak)
+      // an arbitrary customer's contact details.
+      .ilike('full_name', String(sale.client_name ?? '').replace(/[\\%_]/g, '\\$&'))
       .limit(1)
       .maybeSingle();
 

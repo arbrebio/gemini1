@@ -101,7 +101,7 @@ export class FormValidator {
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        error.errors.forEach(err => {
+        error.issues.forEach(err => {
           this.addError(field, err.message);
         });
       }

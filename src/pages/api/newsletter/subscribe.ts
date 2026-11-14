@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 import { supabaseAdmin as supabase } from '../../../lib/supabase';
 import { z } from 'zod';
 import { sanitizeInput, newsletterRateLimiter, getClientIp, isDisposableEmail, verifyTurnstile } from '../../../lib/securityHeaders';
-import { createErrorResponse, createSuccessResponse, handleApiError } from '../../../lib/errorHandling';
+import { createErrorResponse, createSuccessResponse, handleApiError, validationMessage } from '../../../lib/errorHandling';
 
 // Email configuration
 const ADMIN_EMAIL = 'farms@arbrebio.com';
@@ -42,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Rate limiting
     const clientIP = getClientIp(request);
 
-    if (!newsletterRateLimiter.isAllowed(clientIP)) {
+    if (!(await newsletterRateLimiter.check(clientIP))) {
       return createErrorResponse(
         'Too many requests. Please try again later.',
         429,
@@ -55,8 +55,8 @@ export const POST: APIRoute = async ({ request }) => {
     // Validate input data
     const validationResult = subscribeSchema.safeParse(data);
     if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0];
-      return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
+      const firstError = validationResult.error.issues[0];
+      return createErrorResponse(validationMessage(firstError), 400, 'VALIDATION_ERROR');
     }
     const validatedData = validationResult.data;
 
@@ -200,7 +200,7 @@ async function sendEmail(to: string | string[], subject: string, html: string): 
 }
 
 async function sendConfirmationEmail(user: any) {
-  const confirmationUrl = `https://arbrebio.com/newsletter/confirm/?token=${user.confirmation_token}`;
+  const confirmationUrl = `https://www.arbrebio.com/newsletter/confirm/?token=${user.confirmation_token}`;
 
   await sendEmail(
     user.email,

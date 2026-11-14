@@ -154,3 +154,19 @@ export async function handleFormSubmission<T = unknown>(
     return { success: false, message: errorMsg };
   }
 }
+/**
+ * Human-readable message for the first validation issue.
+ *
+ * Schemas give their own messages for format/length rules, but a field that
+ * is missing altogether (or has the wrong type) falls back to the validator's
+ * generic "Invalid input: expected string, received undefined". Turn that
+ * into "<Field> is required" instead.
+ */
+export function validationMessage(issue: { code?: string; message: string; path?: PropertyKey[] } | undefined): string {
+  if (!issue) return 'Invalid request';
+  if (issue.code === 'invalid_type' && issue.message.startsWith('Invalid input')) {
+    const field = String(issue.path?.[0] ?? '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ').toLowerCase();
+    return field ? `${field.charAt(0).toUpperCase()}${field.slice(1)} is required` : 'A required field is missing';
+  }
+  return issue.message;
+}

@@ -23,8 +23,8 @@ const extraLineSchema = z.object({
 });
 
 const profileSchema = z.object({
-  id: z.string().uuid().optional(),
-  employee_id: z.string().uuid(),
+  id: z.guid().optional(),
+  employee_id: z.guid(),
   matricule: z.string().min(1).max(30),
   base_salary: z.number().min(0),
   sursalaire: z.number().min(0).default(0),

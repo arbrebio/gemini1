@@ -34,17 +34,34 @@ export function generateMetaTitle(title: string, siteName: string = 'Arbre Bio A
 /**
  * Generate optimized meta description
  */
-export function generateMetaDescription(description: string): string {
+// Appended to descriptions that are too short to be useful in search results
+// (several pages reuse a one-line hero subtitle as their description).
+const DESCRIPTION_SUFFIX: Record<string, string> = {
+  en: 'Arbre Bio Africa: greenhouses, irrigation and substrates for farms across Africa.',
+  fr: 'Arbre Bio Africa : serres, irrigation et substrats pour les exploitations agricoles en Afrique.',
+  es: 'Arbre Bio Africa: invernaderos, riego y sustratos para explotaciones agrícolas en África.',
+  af: 'Arbre Bio Africa: kweekhuise, besproeiing en substrate vir plase regoor Afrika.',
+};
+const MIN_DESCRIPTION_LENGTH = 70;
+
+export function generateMetaDescription(description: string, lang: string = 'en'): string {
   const maxLength = 160;
-  
-  if (description.length <= maxLength) {
-    return description;
+
+  let text = description.trim();
+  if (text.length > 0 && text.length < MIN_DESCRIPTION_LENGTH) {
+    const suffix = DESCRIPTION_SUFFIX[lang] ?? DESCRIPTION_SUFFIX.en;
+    const separator = /[.!?]$/.test(text) ? ' ' : '. ';
+    if ((text + separator + suffix).length <= maxLength) text = text + separator + suffix;
   }
-  
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
   // Truncate at word boundary
-  const truncated = description.substring(0, maxLength);
+  const truncated = text.substring(0, maxLength);
   const lastSpace = truncated.lastIndexOf(' ');
-  
+
   return truncated.substring(0, lastSpace) + '...';
 }
 

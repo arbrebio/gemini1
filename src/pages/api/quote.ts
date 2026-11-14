@@ -84,11 +84,12 @@ const quoteSchema = z.object({
 
 const MIN_FILL_TIME_MS = 3000;
 
-async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<void> {
+/** Sends an e-mail through Resend. Returns true only if it was accepted. */
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string): Promise<boolean> {
   const resendKey = import.meta.env.RESEND_API_KEY;
   if (!resendKey) {
     console.warn('Resend API key is not configured');
-    return;
+    return false;
   }
 
   const body: Record<string, unknown> = {
@@ -100,26 +101,36 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 
   if (replyTo) body.reply_to = replyTo;
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
 
-  if (!res.ok) {
-    const text = await res.text();
-    console.error('Resend error:', res.status, text);
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('Resend error:', res.status, text);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('Resend request failed:', e);
+    return false;
   }
 }
+
+import { storeLead, markLeadEmailed } from '../../lib/leads';
+import { validationMessage } from '../../lib/errorHandling';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const clientIP = getClientIp(request);
 
-    if (!quoteRateLimiter.isAllowed(clientIP)) {
+    if (!(await quoteRateLimiter.check(clientIP))) {
       return new Response(JSON.stringify({ success: false, message: 'Too many requests. Please try again later.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' }
@@ -130,8 +141,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     const validationResult = quoteSchema.safeParse(data);
     if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0];
-      return new Response(JSON.stringify({ success: false, message: firstError.message }), {
+      const firstError = validationResult.error.issues[0];
+      return new Response(JSON.stringify({ success: false, message: validationMessage(firstError) }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -228,8 +239,29 @@ export const POST: APIRoute = async ({ request }) => {
       </p>
     `;
 
+    // Store the lead BEFORE e-mailing, so a mail-provider failure cannot lose it.
+    const { website: _hp, formLoadedAt: _ts, turnstileToken: _tt, firstName: _fn, lastName: _ln, email: _em, phone: _ph, lang: _lg, ...details } = raw;
+    const leadId = await storeLead({
+      kind: 'quote',
+      name: `${raw.firstName} ${raw.lastName}`,
+      email: raw.email,
+      phone: raw.phone,
+      lang: raw.lang,
+      payload: details,
+    });
+
     // Email to admin
-    await sendEmail(ADMIN_EMAIL, emailSubject, emailContent, v.email);
+    const adminNotified = await sendEmail(ADMIN_EMAIL, emailSubject, emailContent, v.email);
+
+    if (adminNotified) {
+      await markLeadEmailed(leadId);
+    } else if (!leadId) {
+      // Neither stored nor e-mailed: do not tell the visitor it worked.
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'We could not send your request right now. Please try again, or contact us by phone or WhatsApp.'
+      }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+    }
 
     // Auto-reply to client (in their language)
     const t = quoteT[v.lang] ?? quoteT.en;

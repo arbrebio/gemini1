@@ -12,7 +12,7 @@ import { Resend } from 'resend';
 const FROM_EMAIL  = 'noreply@newsletter.arbrebio.com';
 const FROM_NAME   = 'Arbre Bio Africa';
 const REPLY_TO    = 'farms@arbrebio.com';
-const SITE_URL    = (import.meta.env.SITE ?? 'https://arbrebio.com').replace(/\/$/, '');
+const SITE_URL    = (import.meta.env.SITE ?? 'https://www.arbrebio.com').replace(/\/$/, '');
 const PORTAL_URL  = `${SITE_URL}/sales-agent/login/`;
 
 function getResendClient(): Resend {

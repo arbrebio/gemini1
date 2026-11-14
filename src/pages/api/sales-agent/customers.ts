@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { sanitizeSearchTerm } from '../../../lib/salesStock';
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabaseAdmin() {
@@ -54,7 +55,7 @@ export const GET: APIRoute = async ({ request, url }) => {
     const user = await verifyAgent(token, supabase);
     if (!user) return json({ error: 'Unauthorized' }, 401);
 
-    const search = url.searchParams.get('search') || '';
+    const search = sanitizeSearchTerm(url.searchParams.get('search'));
     const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') ?? '50')));
     const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0'));
 

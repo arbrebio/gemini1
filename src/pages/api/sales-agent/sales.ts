@@ -3,6 +3,8 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { createNotification, sendWhatsApp } from '../../../lib/notify';
+import { normalizeSaleItems } from '../../../lib/salesStock';
+import { attachSignedProofUrls, isOwnProofPath } from '../../../lib/saleProofs';
 
 function getSupabaseAdmin() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -88,7 +90,7 @@ export const GET: APIRoute = async ({ request, url }) => {
     const { data: sales, error } = await query;
     if (error) throw error;
 
-    return json({ sales: sales ?? [] });
+    return json({ sales: await attachSignedProofUrls(supabase, sales ?? []) });
   } catch (e: any) {
     console.error("API error:", e);
     return json({ error: "Internal server error" }, 500);
@@ -144,61 +146,53 @@ export const POST: APIRoute = async ({ request }) => {
     const { client_name, payment_method, transaction_reference, proof_url, proof_file_name, notes } = body;
 
     // Validation
-    if (!client_name?.trim()) return json({ error: 'client_name is required' }, 400);
+    if (typeof client_name !== 'string' || !client_name.trim()) return json({ error: 'client_name is required' }, 400);
+    if (client_name.length > 200) return json({ error: 'client_name is too long' }, 400);
     const VALID_METHODS = ['wire_transfer', 'orange_money', 'mtn_money', 'moov_money', 'wave', 'cash'];
     if (!VALID_METHODS.includes(payment_method)) return json({ error: 'Invalid payment_method' }, 400);
 
-    // Convert single-product format to items array (backward compatibility)
-    let items: Array<{ product_name: string; product_id?: string; quantity: number; unit_price: number }> = [];
-    let total = 0;
+    const optionalText = (value: unknown, max: number): string | null =>
+      typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : null;
 
-    if (body.items && Array.isArray(body.items) && body.items.length > 0) {
-      // New format: items array
-      items = body.items;
-      // Validate and calculate total
-      for (const item of items) {
-        if (!item.product_name?.trim()) return json({ error: 'Each item must have product_name' }, 400);
-        const qty = Number(item.quantity);
-        const uprice = Number(item.unit_price);
-        if (!qty || qty <= 0) return json({ error: 'Each item quantity must be > 0' }, 400);
-        if (isNaN(uprice) || uprice < 0) return json({ error: 'Each item unit_price must be >= 0' }, 400);
-        total += qty * uprice;
-      }
-    } else {
-      // Legacy format: single product fields
-      const { product_name, product_id, quantity, unit_price, total_amount } = body;
-      if (!product_name?.trim()) return json({ error: 'product_name is required' }, 400);
-      const qty = Number(quantity);
-      const uprice = Number(unit_price);
-      total = Number(total_amount);
-      if (!qty || qty <= 0) return json({ error: 'quantity must be > 0' }, 400);
-      if (isNaN(uprice) || uprice < 0) return json({ error: 'unit_price must be >= 0' }, 400);
-      if (isNaN(total) || total < 0) return json({ error: 'total_amount must be >= 0' }, 400);
-      items = [{ product_name, product_id, quantity: qty, unit_price: uprice }];
-    }
+    // Accept the items array, or the legacy single-product fields (converted
+    // to a one-item array). Either way every number is coerced and validated
+    // server-side and the total is ALWAYS recomputed from quantity × price —
+    // a client-supplied total_amount is never trusted, since it drives the
+    // commission.
+    const rawItems = Array.isArray(body.items) && body.items.length > 0
+      ? body.items
+      : [{
+          product_name: body.product_name,
+          product_id: body.product_id,
+          quantity: body.quantity,
+          unit_price: body.unit_price,
+        }];
+
+    const normalized = normalizeSaleItems(rawItems);
+    if (!normalized.ok) return json({ error: normalized.error }, 400);
+    const { items, total } = normalized;
 
     if (total <= 0) return json({ error: 'total_amount must be > 0' }, 400);
+
+    // The proof must be a file this agent uploaded. Without this check the
+    // service role would sign ANY path in the bucket, exposing other agents'
+    // payment proofs.
+    if (proof_url != null && proof_url !== '' && !isOwnProofPath(proof_url, user.id)) {
+      return json({ error: 'Invalid proof_url' }, 400);
+    }
+    const proofPath: string | null = proof_url || null;
 
     // Commission calculation — locked at creation time
     const hiredAt = (agent.career_employees as any)?.hired_at ?? null;
     const commission_rate = computeCommissionRate(hiredAt);
     const commission_amount = parseFloat(((total * commission_rate) / 100).toFixed(2));
 
-    // Build signed URL for proof if path provided
-    let fullProofUrl: string | null = null;
-    if (proof_url) {
-      const { data: signedData } = await supabase.storage
-        .from('sale-proofs')
-        .createSignedUrl(proof_url, 220752000);
-      fullProofUrl = signedData?.signedUrl ?? proof_url;
-    }
-
     // Build summary fields for backward-compat display in admin panel
     // (first item used as representative; line_items table holds full detail)
     const firstItem = items[0];
     const productNameSummary = items.length === 1
-      ? firstItem.product_name.trim()
-      : items.map(i => i.product_name.trim()).join(', ');
+      ? firstItem.product_name
+      : items.map(i => i.product_name).join(', ').slice(0, 1000);
 
     // Insert sale — keep legacy columns populated so admin panel renders correctly
     const { data: sale, error: insertErr } = await supabase
@@ -207,31 +201,32 @@ export const POST: APIRoute = async ({ request }) => {
         agent_id:             user.id,
         agent_name:           agent.full_name,
         worker_id:            agent.worker_id,
-        product_id:           firstItem.product_id || null,
+        product_id:           firstItem.product_id,
         product_name:         productNameSummary,
         quantity:             items.reduce((s, i) => s + i.quantity, 0),
         unit_price:           firstItem.unit_price,
         total_amount:         total,
         client_name:          client_name.trim(),
         payment_method,
-        transaction_reference: transaction_reference?.trim() || null,
-        proof_url:            fullProofUrl,
-        proof_file_name:      proof_file_name || null,
+        transaction_reference: optionalText(transaction_reference, 200),
+        proof_url:            proofPath, // storage path — signed on read
+        proof_file_name:      optionalText(proof_file_name, 255),
         commission_rate,
         commission_amount,
         status:               'pending',
-        notes:                notes?.trim() || null,
+        notes:                optionalText(notes, 2000),
       })
       .select()
       .single();
 
     if (insertErr) throw insertErr;
 
-    // Insert line items
+    // Insert line items. If this fails the sale row is removed again so the
+    // agent's retry does not create a duplicate sale with no line items.
     const lineItemsData = items.map((item) => ({
       sale_id: sale.id,
-      product_id: item.product_id || null,
-      product_name: item.product_name.trim(),
+      product_id: item.product_id,
+      product_name: item.product_name,
       quantity: item.quantity,
       unit_price: item.unit_price,
     }));
@@ -240,39 +235,52 @@ export const POST: APIRoute = async ({ request }) => {
       .from('sales_line_items')
       .insert(lineItemsData);
 
-    if (lineItemsErr) throw lineItemsErr;
+    if (lineItemsErr) {
+      const { error: rollbackErr } = await supabase.from('sales_records').delete().eq('id', sale.id);
+      if (rollbackErr) console.error('[sales] rollback of sale without line items failed:', rollbackErr);
+      throw lineItemsErr;
+    }
 
-    // ── Non-blocking side effects ─────────────────────────────────────────
+    // ── Side effects ──────────────────────────────────────────────────────
+    // Awaited (in parallel): on serverless the function can be frozen as soon
+    // as the response is returned, which silently dropped fire-and-forget
+    // notifications. Failures are logged and never fail the sale.
 
     const baseUrl = import.meta.env.SITE || 'https://www.arbrebio.com';
     const adminSalesUrl = `${baseUrl}/admin/sales/`;
     const amountFormatted = new Intl.NumberFormat('fr-FR').format(total);
     const commissionFormatted = new Intl.NumberFormat('fr-FR').format(commission_amount);
+    const clientName = client_name.trim();
 
-    // 1. Admin in-app notification (direct DB insert — no unauthenticated HTTP hop)
-    createNotification({
-      type: 'sale_pending',
-      message: `Nouvelle vente à valider — ${agent.full_name} • ${client_name} • ${amountFormatted} FCFA`,
-      entity_id: sale.id,
-      entity_type: 'sale',
-    }).catch(() => {});
-
-    // 2. WhatsApp notification to super admin (+225 05 00 55 25 25)
+    // WhatsApp notification to super admin (+225 05 00 55 25 25)
     const superAdminWhatsApp = '+2250500552525';
     const itemsText = items.map((item) => `  • ${item.product_name} (${item.quantity} × ${item.unit_price} FCFA)`).join('\n');
     const messageText =
       `🔔 *Nouvelle vente à valider*\n\n` +
       `👤 Agent: *${agent.full_name}* (${agent.worker_id || 'N/A'})\n` +
       `🛒 Articles:\n${itemsText}\n` +
-      `👨‍💼 Client: *${client_name}*\n` +
+      `👨‍💼 Client: *${clientName}*\n` +
       `💰 Montant: *${amountFormatted} FCFA*\n` +
       `💳 Paiement: ${PAYMENT_LABEL[payment_method] || payment_method}\n` +
-      `🔖 Réf: ${transaction_reference || 'N/A'}\n` +
+      `🔖 Réf: ${optionalText(transaction_reference, 200) || 'N/A'}\n` +
       `📊 Commission: ${commission_rate}% = ${commissionFormatted} FCFA\n\n` +
       `→ Validez sur: ${adminSalesUrl}`;
 
-    sendWhatsApp({ to: superAdminWhatsApp, task_title: messageText, raw: true }).catch(() => {});
+    const sideEffects = await Promise.allSettled([
+      // Admin in-app notification (direct DB insert — no unauthenticated HTTP hop)
+      createNotification({
+        type: 'sale_pending',
+        message: `Nouvelle vente à valider — ${agent.full_name} • ${clientName} • ${amountFormatted} FCFA`,
+        entity_id: sale.id,
+        entity_type: 'sale',
+      }),
+      sendWhatsApp({ to: superAdminWhatsApp, task_title: messageText, raw: true }),
+    ]);
+    for (const r of sideEffects) {
+      if (r.status === 'rejected') console.error('[sales] notification failed:', r.reason);
+    }
 
+    await attachSignedProofUrls(supabase, [sale]);
     return json({ sale, commission_rate, commission_amount }, 201);
   } catch (e: any) {
     console.error("API error:", e);

@@ -7,6 +7,7 @@ import type { Language } from "../../../../lib/i18n";
 
 const { lang, jobSlug } = Astro.params as { lang: Language; jobSlug: string };
 const T = useCareerT(lang);
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <Layout title={`${T.applicationForm} | Arbre Bio Africa`} description={T.applicationFormDesc}>
@@ -178,6 +179,17 @@ const T = useCareerT(lang);
           </div>
 
           <!-- Error display -->
+          <!-- Honeypot: hidden from real users, left empty. Bots that auto-fill
+               every input tend to fill this in, letting the API silently drop it. -->
+          <div class="absolute left-[-9999px] w-px h-px overflow-hidden" aria-hidden="true">
+            <label for="apply-website">Website</label>
+            <input type="text" id="apply-website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <!-- Cloudflare Turnstile (script loaded in Layout). Rendered implicitly; it
+               adds a hidden "cf-turnstile-response" field that is posted with the form. -->
+          {turnstileSiteKey && <div class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>}
+
           <div id="form-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm"></div>
 
           <!-- Submit -->
@@ -309,6 +321,8 @@ const T = useCareerT(lang);
 
     } catch (err) {
       errorDiv.textContent = err.message || 'An error occurred. Please try again.';
+      // A Turnstile token is single-use: get a fresh one for the retry.
+      if (window.turnstile) { try { window.turnstile.reset(); } catch (_) {} }
       errorDiv.classList.remove('hidden');
       submitBtn.disabled = false;
       submitText.classList.remove('hidden');

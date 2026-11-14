@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx astro dev",
     "start": "npx astro dev",
-    "build": "rm -rf .astro && astro check && astro build",
+    "build": "node scripts/generate-image-variants.mjs && rm -rf .astro && astro check && astro build",
+    "images:generate": "node scripts/generate-image-variants.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -14,27 +15,29 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.109.1",
-    "@astrojs/mdx": "^4.3.0",
-    "@astrojs/sitemap": "^3.4.1",
-    "@astrojs/tailwind": "^6.0.2",
-    "@astrojs/vercel": "^8.2.11",
-    "@sendgrid/mail": "^8.1.1",
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/sitemap": "^3.7.5",
+    "@astrojs/vercel": "^11.0.22",
     "@supabase/supabase-js": "^2.56.1",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
-    "astro": "^5.11.0",
+    "astro": "^7.4.12",
     "astro-seo": "^0.8.4",
     "intersection-observer": "^0.12.2",
     "resend": "^6.11.0",
     "tailwindcss": "^3.4.19",
-    "zod": "^3.22.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.5.9",
+    "@astrojs/check": "^0.9.12",
+    "autoprefixer": "^10.6.2",
     "lightningcss": "^1.30.2",
-    "pg": "^8.20.0",
+    "sharp": "^0.35.5",
     "terser": "^5.44.0",
-    "typescript": "^5.5.3",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=22.23.4"
   }
 }

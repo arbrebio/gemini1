@@ -1,6 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from "../../../layouts/Layout.astro";
+import OptimizedImage from '../../../components/OptimizedImage.astro';
 import { useT } from "../../../lib/translations";
 import type { Language } from "../../../lib/i18n";
 
@@ -13,14 +14,14 @@ export async function getStaticPaths() {
   // Build base-slug → English post map
   const enMap = new Map<string, (typeof allPosts)[number]>();
   allPosts
-    .filter(p => p.slug.startsWith('en/'))
-    .forEach(p => enMap.set(p.slug.replace(/^en\//, ''), p));
+    .filter(p => p.id.startsWith('en/'))
+    .forEach(p => enMap.set(p.id.replace(/^en\//, ''), p));
 
   // Build lang/base-slug → translated post map
   const transMap = new Map<string, (typeof allPosts)[number]>();
   allPosts
-    .filter(p => !p.slug.startsWith('en/'))
-    .forEach(p => transMap.set(p.slug, p));
+    .filter(p => !p.id.startsWith('en/'))
+    .forEach(p => transMap.set(p.id, p));
 
   const paths = [];
   for (const lang of langs) {
@@ -37,7 +38,7 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params as { lang: Language };
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 const T = useT(lang as any);
 const p = `/${lang}`;
 
@@ -94,7 +95,7 @@ const formatDate = (date: Date) =>
   <!-- Hero -->
   <section class="relative h-[45vh] flex items-end pb-12">
     <div class="absolute inset-0 z-0">
-      <img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover"/>
+      <OptimizedImage src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" sizes="100vw" loading="eager" fetchpriority="high" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10">

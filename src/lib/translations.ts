@@ -84,6 +84,9 @@ export interface SiteTranslations {
   ceoBio: string;
   cooBio: string;
   marketingBio: string;
+  salesName: string;
+  salesTitle: string;
+  salesBio: string;
   ourValues: string;
   value1Title: string;
   value1Desc: string;
@@ -330,6 +333,9 @@ const FR: SiteTranslations = {
   ceoBio: "Avec plus de 25 ans d'expérience en ingénierie agricole et spécialisé dans l'agriculture intensive, Lethabo dirige notre mission de transformation de l'agriculture africaine.",
   cooBio: "Sydney apporte une expertise opérationnelle approfondie dans la gestion de projets agricoles à grande échelle à travers l'Afrique.",
   marketingBio: "Formée en hôtellerie, maintenant dans le marketing digital et le produit — focalisée sur l'aide aux clients pour se connecter aux produits avec clarté, empathie et passion pour la durabilité.",
+  salesName: "Mariam Ouattara",
+  salesTitle: "Responsable Commerciale (MM & ENT)",
+  salesBio: "En tant que Responsable Commerciale (MM & ENT) chez Arbre Bio Africa, je pilote le développement commercial et la relation client en identifiant les opportunités d’affaires, en gérant les comptes clés et en proposant des solutions agricoles sur mesure. Mon objectif : bâtir des partenariats solides et accompagner l’essor d’une agriculture moderne, durable et de précision en Côte d’Ivoire et en Afrique de l’Ouest.",
   ourValues: "Nos Valeurs",
   value1Title: "Durabilité",
   value1Desc: "Engagés dans des pratiques agricoles respectueuses de l'environnement qui préservent les ressources naturelles pour les générations futures.",
@@ -575,6 +581,9 @@ const ES: SiteTranslations = {
   ceoBio: "Con más de 25 años de experiencia en ingeniería agrícola y especialización en agricultura intensiva, Lethabo lidera nuestra misión de transformar la agricultura africana.",
   cooBio: "Sydney aporta una amplia experiencia operativa en la gestión de proyectos agrícolas a gran escala en toda África.",
   marketingBio: "Formada en hospitalidad, ahora en marketing digital y producto — enfocada en ayudar a los clientes a conectarse con los productos con claridad, empatía y pasión por la sostenibilidad.",
+  salesName: "Mariam Ouattara",
+  salesTitle: "Gerente de Ventas (MM & ENT)",
+  salesBio: "Como Gerente de Ventas (MM & ENT) en Arbre Bio Africa, impulso el desarrollo comercial y las relaciones con los clientes identificando oportunidades de negocio, gestionando cuentas clave y ofreciendo soluciones agrícolas a medida. Mi enfoque es construir alianzas sólidas y apoyar el crecimiento de una agricultura moderna, sostenible y de precisión en Côte d’Ivoire y África Occidental.",
   ourValues: "Nuestros Valores",
   value1Title: "Sostenibilidad",
   value1Desc: "Comprometidos con prácticas agrícolas respetuosas con el medio ambiente que preservan los recursos naturales para las generaciones futuras.",
@@ -820,6 +829,9 @@ const AF: SiteTranslations = {
   ceoBio: "Met meer as 25 jaar ervaring in landbou-ingenieurswese en spesialisasie in intensiewe boerdery, lei Lethabo ons missie om Afrika se landbou te transformeer.",
   cooBio: "Sydney bring uitgebreide operasionele kundigheid in die bestuur van grootskaalse landbouprojekte regoor Afrika.",
   marketingBio: "Opgelei in gasvryheid, nou in digitale bemarking en produk — gefokus op die help van kliënte om met produkte te skakel deur duidelikheid, empatie en passie vir volhoubaarheid.",
+  salesName: "Mariam Ouattara",
+  salesTitle: "Verkoopsbestuurder (MM & ENT)",
+  salesBio: "As Verkoopsbestuurder (MM & ENT) by Arbre Bio Africa dryf ek kommersiële ontwikkeling en kliënteverhoudings deur sakegeleenthede te identifiseer, sleutelrekeninge te bestuur en pasgemaakte landbou-oplossings te lewer. My fokus is om sterk vennootskappe te bou en die groei van moderne, volhoubare en presisielandbou regoor Côte d’Ivoire en Wes-Afrika te ondersteun.",
   ourValues: "Ons Waardes",
   value1Title: "Volhoubaarheid",
   value1Desc: "Toegewyd aan omgewingsverantwoordelike boerderypraktyke wat natuurlike hulpbronne vir toekomstige geslagte bewaar.",

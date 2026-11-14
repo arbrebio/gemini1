@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { sanitizeSearchTerm } from '../../../lib/salesStock';
 import { createClient } from '@supabase/supabase-js';
 import { requireTerrainAuth } from '../../../lib/terrainAuth';
 
@@ -54,7 +55,7 @@ export const GET: APIRoute = async ({ url, request }) => {
       .order('created_at', { ascending: false });
     if (!isAdmin) query = query.eq('assigned_to', auth.profile.id);
 
-    const search = url.searchParams.get('search');
+    const search = sanitizeSearchTerm(url.searchParams.get('search'));
     if (search) query = query.or(`client_name.ilike.%${search}%,zone.ilike.%${search}%,location.ilike.%${search}%`);
     const type = url.searchParams.get('type');
     if (type) query = query.contains('project_types', [type]);

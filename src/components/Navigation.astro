@@ -62,17 +62,22 @@ const langOptions = [
   <div class="container mx-auto px-6">
     <div class="flex justify-between items-center h-20">
       <!-- Logo -->
-      <a href={`${prefix}/`} class="flex items-center" aria-label="Home">
+      <!-- shrink-0 + a fixed square box: without them the flex row squeezed the
+           logo's width (but not its height) whenever the menu labels were long,
+           e.g. on the English pages. -->
+      <a href={`${prefix}/`} class="flex items-center shrink-0" aria-label="Home">
         <img
           src={config.company.logo}
           alt={config.site.name}
-          class="h-24 w-auto transition-transform hover:scale-105 brightness-0 invert"
+          class="h-24 w-24 shrink-0 object-contain transition-transform hover:scale-105 brightness-0 invert"
           width="300" height="300" loading="eager" fetchpriority="high" decoding="sync"
         />
       </a>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center space-x-5">
+      <!-- The full menu needs ~1000px. Below lg (1024px) the hamburger menu is
+           used instead; previously the menu ran off the right edge on tablets. -->
+      <div class="hidden lg:flex items-center space-x-2 xl:space-x-5">
         {menuItems.map((item) => (
           <div class="relative group">
             <a
@@ -124,7 +129,7 @@ const langOptions = [
 
       <!-- Mobile Menu Button -->
       <button
-        class="md:hidden text-white hover:text-white/80 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+        class="lg:hidden text-white hover:text-white/80 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
         id="mobile-menu-button" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav-menu"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

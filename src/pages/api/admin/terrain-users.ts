@@ -47,7 +47,7 @@ function credentialsEmailHtml(full_name: string, email: string, temp_password: s
         <p style="margin:0 0 8px"><strong>E-mail :</strong> ${email}</p>
         <p style="margin:0"><strong>Mot de passe temporaire :</strong> <span style="font-family:monospace;font-size:16px;color:#194642">${temp_password}</span></p>
       </div>
-      <p>Connectez-vous sur <a href="https://arbrebio.com/terrain/login/" style="color:#194642">arbrebio.com/terrain/login/</a> — vous devrez choisir un nouveau mot de passe à la première connexion.</p>
+      <p>Connectez-vous sur <a href="https://www.arbrebio.com/terrain/login/" style="color:#194642">arbrebio.com/terrain/login/</a> — vous devrez choisir un nouveau mot de passe à la première connexion.</p>
       <p>Cordialement,<br>Arbre Bio Africa</p>
     </div>
   </body></html>`;
@@ -124,7 +124,7 @@ export const POST: APIRoute = async ({ request }) => {
       .insert({
         id: userId, full_name, email, role, phone,
         active: true, must_change_password: true,
-        temp_password, created_by: auth.userId,
+        created_by: auth.userId,
       })
       .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at')
       .single();
@@ -134,7 +134,9 @@ export const POST: APIRoute = async ({ request }) => {
       throw profileErr;
     }
 
-    sendEmail(email, 'Vos identifiants — Plateforme Terrain', credentialsEmailHtml(full_name, email, temp_password, false))
+    // Awaited: a serverless function can be frozen once the response is sent.
+
+    await sendEmail(email, 'Vos identifiants — Plateforme Terrain', credentialsEmailHtml(full_name, email, temp_password, false))
       .catch((e) => console.error('[terrain] welcome email failed:', e));
 
     return json({ user: profile, temp_password }, 201);
@@ -160,7 +162,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
       const { data: profile, error: profileErr } = await supabase
         .from('terrain_profiles')
-        .update({ must_change_password: true, temp_password })
+        .update({ must_change_password: true, temp_password: null })
         .eq('id', id)
         .select('email, full_name')
         .single();
@@ -169,7 +171,9 @@ export const PUT: APIRoute = async ({ request }) => {
       // Password reset resolves any pending self-service reset request.
       await supabase.from('terrain_password_reset_requests').delete().eq('user_id', id);
 
-      sendEmail(profile.email, 'Votre mot de passe a été réinitialisé — Plateforme Terrain', credentialsEmailHtml(profile.full_name, profile.email, temp_password, true))
+      // Awaited: a serverless function can be frozen once the response is sent.
+
+      await sendEmail(profile.email, 'Votre mot de passe a été réinitialisé — Plateforme Terrain', credentialsEmailHtml(profile.full_name, profile.email, temp_password, true))
         .catch((e) => console.error('[terrain] reset email failed:', e));
 
       return json({ success: true, temp_password });
