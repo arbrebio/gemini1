@@ -124,6 +124,7 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
 }
 
 import { storeLead, markLeadEmailed } from '../../lib/leads';
+import { validationMessage } from '../../lib/errorHandling';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -141,7 +142,7 @@ export const POST: APIRoute = async ({ request }) => {
     const validationResult = quoteSchema.safeParse(data);
     if (!validationResult.success) {
       const firstError = validationResult.error.issues[0];
-      return new Response(JSON.stringify({ success: false, message: firstError.message }), {
+      return new Response(JSON.stringify({ success: false, message: validationMessage(firstError) }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });

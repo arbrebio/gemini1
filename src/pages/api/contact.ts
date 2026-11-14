@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { sanitizeInput, escapeHtml, contactRateLimiter, getClientIp, verifyTurnstile } from '../../lib/securityHeaders';
-import { createErrorResponse, createSuccessResponse, handleApiError } from '../../lib/errorHandling';
+import { createErrorResponse, createSuccessResponse, handleApiError, validationMessage } from '../../lib/errorHandling';
 import { sendContactEvent, parseFacebookCookies } from '../../lib/metaConversions';
 import { storeLead, markLeadEmailed } from '../../lib/leads';
 
@@ -143,7 +143,7 @@ export const POST: APIRoute = async ({ request }) => {
     const validationResult = contactSchema.safeParse(data);
     if (!validationResult.success) {
       const firstError = validationResult.error.issues[0];
-      return createErrorResponse(firstError.message, 400, 'VALIDATION_ERROR');
+      return createErrorResponse(validationMessage(firstError), 400, 'VALIDATION_ERROR');
     }
 
     const { firstName, lastName, email, phone, interest, message, lang, website, formLoadedAt, turnstileToken } = validationResult.data;
