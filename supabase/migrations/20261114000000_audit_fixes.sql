@@ -92,6 +92,9 @@ BEGIN
   LOOP
     IF to_regclass('public.' || quote_ident(rec.tbl)) IS NOT NULL THEN
       EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', rec.tbl);
+      -- Production still had "<table>_auth_all" policies (any logged-in
+      -- user, including sales agents and terrain users, could read/write).
+      EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', rec.tbl || '_auth_all', rec.tbl);
       EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', rec.tbl || '_admin_only', rec.tbl);
       EXECUTE format(
         'CREATE POLICY %I ON public.%I FOR ALL TO authenticated USING (is_admin()) WITH CHECK (is_admin())',
