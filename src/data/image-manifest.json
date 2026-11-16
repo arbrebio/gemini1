@@ -800,6 +800,13 @@
       960
     ]
   },
+  "/images/content/sydney-abouna.jpg": {
+    "width": 800,
+    "height": 800,
+    "variants": [
+      480
+    ]
+  },
   "/images/content/tXiE4Aq.jpg": {
     "width": 1040,
     "height": 780,
@@ -897,6 +904,13 @@
       480,
       960,
       1440
+    ]
+  },
+  "/images/content/youambi-stephane.jpg": {
+    "width": 800,
+    "height": 800,
+    "variants": [
+      480
     ]
   },
   "/images/content/z1onyVl.jpg": {

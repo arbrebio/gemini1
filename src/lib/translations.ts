@@ -87,6 +87,9 @@ export interface SiteTranslations {
   salesName: string;
   salesTitle: string;
   salesBio: string;
+  waterName: string;
+  waterTitle: string;
+  waterBio: string;
   ourValues: string;
   value1Title: string;
   value1Desc: string;
@@ -336,6 +339,9 @@ const FR: SiteTranslations = {
   salesName: "Mariam Ouattara",
   salesTitle: "Responsable Commerciale (MM & ENT)",
   salesBio: "En tant que Responsable Commerciale (MM & ENT) chez Arbre Bio Africa, je pilote le développement commercial et la relation client en identifiant les opportunités d’affaires, en gérant les comptes clés et en proposant des solutions agricoles sur mesure. Mon objectif : bâtir des partenariats solides et accompagner l’essor d’une agriculture moderne, durable et de précision en Côte d’Ivoire et en Afrique de l’Ouest.",
+  waterName: "YOUAMBI Kouamé Stéphane",
+  waterTitle: "Ingénieur Eau, Assainissement et Aménagements Hydro-Agricoles",
+  waterBio: "Au sein du département Irrigation & Gestion de l’eau d’ABA, je conçois et supervise les projets d’irrigation, de drainage et d’assainissement des sites agricoles. Mon objectif : une utilisation efficiente de l’eau et des infrastructures fiables, des études de terrain jusqu’à la mise en service.",
   ourValues: "Nos Valeurs",
   value1Title: "Durabilité",
   value1Desc: "Engagés dans des pratiques agricoles respectueuses de l'environnement qui préservent les ressources naturelles pour les générations futures.",
@@ -584,6 +590,9 @@ const ES: SiteTranslations = {
   salesName: "Mariam Ouattara",
   salesTitle: "Gerente de Ventas (MM & ENT)",
   salesBio: "Como Gerente de Ventas (MM & ENT) en Arbre Bio Africa, impulso el desarrollo comercial y las relaciones con los clientes identificando oportunidades de negocio, gestionando cuentas clave y ofreciendo soluciones agrícolas a medida. Mi enfoque es construir alianzas sólidas y apoyar el crecimiento de una agricultura moderna, sostenible y de precisión en Côte d’Ivoire y África Occidental.",
+  waterName: "YOUAMBI Kouamé Stéphane",
+  waterTitle: "Ingeniero de Agua, Saneamiento y Desarrollo Hidroagrícola",
+  waterBio: "En el departamento de Riego y Gestión del Agua de ABA, diseño y superviso proyectos de riego, drenaje y saneamiento para sitios agrícolas. Mi objetivo es un uso eficiente del agua y una infraestructura fiable, desde los estudios de campo hasta la puesta en marcha.",
   ourValues: "Nuestros Valores",
   value1Title: "Sostenibilidad",
   value1Desc: "Comprometidos con prácticas agrícolas respetuosas con el medio ambiente que preservan los recursos naturales para las generaciones futuras.",
@@ -832,6 +841,9 @@ const AF: SiteTranslations = {
   salesName: "Mariam Ouattara",
   salesTitle: "Verkoopsbestuurder (MM & ENT)",
   salesBio: "As Verkoopsbestuurder (MM & ENT) by Arbre Bio Africa dryf ek kommersiële ontwikkeling en kliënteverhoudings deur sakegeleenthede te identifiseer, sleutelrekeninge te bestuur en pasgemaakte landbou-oplossings te lewer. My fokus is om sterk vennootskappe te bou en die groei van moderne, volhoubare en presisielandbou regoor Côte d’Ivoire en Wes-Afrika te ondersteun.",
+  waterName: "YOUAMBI Kouamé Stéphane",
+  waterTitle: "Ingenieur vir Water, Sanitasie en Hidro-landbou-ontwikkeling",
+  waterBio: "In ABA se departement Besproeiing en Waterbestuur ontwerp en bestuur ek besproeiings-, dreinerings- en sanitasieprojekte vir landbouterreine. My doel is doeltreffende watergebruik en betroubare infrastruktuur, van veldstudies tot inbedryfstelling.",
   ourValues: "Ons Waardes",
   value1Title: "Volhoubaarheid",
   value1Desc: "Toegewyd aan omgewingsverantwoordelike boerderypraktyke wat natuurlike hulpbronne vir toekomstige geslagte bewaar.",

@@ -3,12 +3,18 @@
     "name": "Sydney Abouna",
     "role": "Founder & CEO",
     "description": "Sydney is the visionary founder of Arbre Bio Africa, Arbre Bio Côte d'Ivoire and the Organic Tree Group. Driven by a passion for transforming African agriculture, Sydney leads every aspect of the company — from operations and project management to strategic partnerships and innovation. With hands-on expertise in precision agriculture, greenhouse technology and modern irrigation, Sydney is building the #1 agricultural innovation company in Africa.",
-    "image": "/images/content/LD5JZto.jpg"
+    "image": "/images/content/sydney-abouna.jpg"
   },
   {
     "name": "Mariam Ouattara",
     "role": "Sales Manager (MM & ENT)",
     "description": "As Sales Manager (MM & ENT) at Arbre Bio Africa, I drive commercial development and customer relationships by identifying business opportunities, managing key accounts, and delivering tailored agricultural solutions. My focus is on building strong partnerships and supporting the growth of modern, sustainable, and precision agriculture across Côte d’Ivoire and West Africa.",
     "image": "/images/content/mariam-ouattara.jpg"
+  },
+  {
+    "name": "YOUAMBI Kouamé Stéphane",
+    "role": "Water, Sanitation & Hydro-Agricultural Development Engineer",
+    "description": "In ABA’s Irrigation & Water Management department, I design and oversee irrigation, drainage and sanitation projects for agricultural sites. My goal is efficient water use and reliable infrastructure, from field studies through to commissioning.",
+    "image": "/images/content/youambi-stephane.jpg"
   }
 ]
