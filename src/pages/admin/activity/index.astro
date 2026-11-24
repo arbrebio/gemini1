@@ -1,0 +1,178 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Activity Log">
+  <div class="mb-6 flex items-start justify-between flex-wrap gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Activity Log</h1>
+      <p class="text-gray-500 text-sm mt-1">Who did what, and when, across the Admin, HR &amp; Payroll, Terrain and Sales platforms. Entries cannot be edited.</p>
+    </div>
+    <button id="export-csv" class="bg-white border border-gray-200 text-sm font-semibold text-[#194642] px-4 py-2 rounded-lg hover:bg-gray-50">
+      <i class="fas fa-file-csv mr-1.5"></i> Export page (CSV)
+    </button>
+  </div>
+
+  <form id="filters" class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-4 grid grid-cols-2 md:grid-cols-6 gap-3 text-sm">
+    <input id="f-q" type="search" placeholder="Search name, email, matricule, action…" class="col-span-2 rounded-lg border-gray-300 text-sm" />
+    <select id="f-portal" class="rounded-lg border-gray-300 text-sm">
+      <option value="">All platforms</option>
+      <option value="admin">Admin</option>
+      <option value="hr">HR &amp; Payroll</option>
+      <option value="terrain">Terrain</option>
+      <option value="sales">Sales</option>
+    </select>
+    <input id="f-from" type="date" class="rounded-lg border-gray-300 text-sm" title="From" />
+    <input id="f-to" type="date" class="rounded-lg border-gray-300 text-sm" title="To" />
+    <label class="inline-flex items-center gap-2 text-gray-600"><input id="f-denied" type="checkbox" class="rounded border-gray-300 text-red-600" /> Refused only</label>
+    <div id="f-person" class="hidden col-span-2 md:col-span-6 text-xs bg-[#194642]/5 text-[#194642] rounded-lg px-3 py-2 items-center justify-between">
+      <span id="f-person-label"></span>
+      <button type="button" id="f-person-clear" class="font-semibold hover:underline">Show everyone</button>
+    </div>
+  </form>
+
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">When</th>
+            <th class="px-4 py-3 text-left">Who</th>
+            <th class="px-4 py-3 text-left">Platform</th>
+            <th class="px-4 py-3 text-left">Action</th>
+            <th class="px-4 py-3 text-left">Details</th>
+          </tr>
+        </thead>
+        <tbody id="rows" class="divide-y divide-gray-50">
+          <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between text-sm">
+      <span id="page-info" class="text-gray-500"></span>
+      <div class="flex gap-2">
+        <button id="prev" class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40">Previous</button>
+        <button id="next" class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40">Next</button>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from "../../../lib/supabase";
+  import { readJsonSafe } from "../../../scripts/uploadHelpers";
+
+  const PAGE = 50;
+  const esc = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+  const PORTAL: Record<string, string> = {
+    admin: "bg-[#194642]/10 text-[#194642]", hr: "bg-purple-100 text-purple-700",
+    terrain: "bg-amber-100 text-amber-700", sales: "bg-blue-100 text-blue-700", system: "bg-gray-100 text-gray-600",
+  };
+  const PORTAL_NAME: Record<string, string> = { admin: "Admin", hr: "HR & Payroll", terrain: "Terrain", sales: "Sales", system: "System" };
+
+  const params = new URLSearchParams(location.search);
+  let actorId = params.get("actor_id") || "";
+  let employeeId = params.get("employee_id") || "";
+  let offset = 0;
+  let lastEntries: any[] = [];
+
+  function detailText(e: any): string {
+    const d = e.details || {};
+    const parts: string[] = [];
+    for (const [k, v] of Object.entries(d)) {
+      if (k === "action") continue;
+      parts.push(`${k}: ${Array.isArray(v) ? v.join(", ") : v}`);
+    }
+    return parts.join(" · ");
+  }
+
+  async function load() {
+    const q = new URLSearchParams({ limit: String(PAGE), offset: String(offset) });
+    const add = (k: string, v: string) => { if (v) q.set(k, v); };
+    add("q", $("f-q").value.trim());
+    add("portal", $<HTMLSelectElement>("f-portal").value);
+    add("from", $("f-from").value);
+    add("to", $("f-to").value);
+    if ($("f-denied").checked) q.set("denied", "1");
+    add("actor_id", actorId);
+    add("employee_id", employeeId);
+
+    const person = $("f-person");
+    if (actorId || employeeId) {
+      person.classList.remove("hidden"); person.classList.add("flex");
+    } else {
+      person.classList.add("hidden"); person.classList.remove("flex");
+    }
+
+    const res = await authFetch(`/api/admin/activity/?${q}`);
+    const data = await readJsonSafe(res);
+    const rows = $("rows");
+    if (!res.ok) { rows.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-red-500">${esc(data.error || "Could not load")}</td></tr>`; return; }
+
+    const entries = (lastEntries = data.entries || []);
+    if ((actorId || employeeId) && entries[0]) {
+      $("f-person-label").textContent = `Showing activity of ${entries[0].actor_name || entries[0].actor_email || "this person"}${entries[0].actor_matricule ? " (" + entries[0].actor_matricule + ")" : ""}`;
+    } else if (actorId || employeeId) {
+      $("f-person-label").textContent = "Showing activity of one person";
+    }
+
+    rows.innerHTML = entries.length ? entries.map((e: any) => `
+      <tr class="${e.status === 403 ? "bg-red-50/60" : ""}">
+        <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-500" title="${esc(e.occurred_at)}">${esc(new Date(e.occurred_at).toLocaleString())}</td>
+        <td class="px-4 py-3">
+          ${e.actor_id
+            ? `<a href="?actor_id=${encodeURIComponent(e.actor_id)}" class="font-medium text-gray-800 hover:text-[#194642]">${esc(e.actor_name || e.actor_email || "Unknown")}</a>`
+            : '<span class="text-gray-400">Anonymous</span>'}
+          <p class="text-xs text-gray-500">${e.actor_matricule ? `<span class="font-mono">${esc(e.actor_matricule)}</span> · ` : ""}${esc(e.actor_kind || "")}</p>
+        </td>
+        <td class="px-4 py-3"><span class="text-xs px-2 py-0.5 rounded-full font-medium ${PORTAL[e.portal] || PORTAL.system}">${esc(PORTAL_NAME[e.portal] || e.portal)}</span></td>
+        <td class="px-4 py-3">
+          <p class="font-medium ${e.status === 403 ? "text-red-600" : "text-gray-800"}">${esc(e.summary)}</p>
+          <p class="text-[11px] text-gray-400 font-mono">${esc(e.method || "")} ${esc(e.path || "")}</p>
+        </td>
+        <td class="px-4 py-3 text-xs text-gray-600 max-w-md">
+          <p class="break-words">${esc(detailText(e))}</p>
+          ${e.ip ? `<p class="text-[11px] text-gray-400 mt-0.5">IP ${esc(e.ip)}</p>` : ""}
+        </td>
+      </tr>`).join("") : '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">No activity matches these filters.</td></tr>';
+
+    const total = data.total || 0;
+    $("page-info").textContent = total ? `${offset + 1}–${Math.min(offset + PAGE, total)} of ${total}` : "0 entries";
+    $<HTMLButtonElement>("prev").disabled = offset === 0;
+    $<HTMLButtonElement>("next").disabled = offset + PAGE >= total;
+  }
+
+  let timer: number | undefined;
+  $<HTMLFormElement>("filters").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = window.setTimeout(() => { offset = 0; load(); }, 300);
+  });
+  $<HTMLFormElement>("filters").addEventListener("submit", (e) => e.preventDefault());
+  $("f-person-clear").addEventListener("click", () => {
+    actorId = ""; employeeId = ""; offset = 0;
+    history.replaceState(null, "", location.pathname);
+    load();
+  });
+  $("prev").addEventListener("click", () => { offset = Math.max(0, offset - PAGE); load(); });
+  $("next").addEventListener("click", () => { offset += PAGE; load(); });
+
+  $("export-csv").addEventListener("click", () => {
+    // Prefix values that spreadsheets would run as formulas (CSV injection).
+    const cell = (v: unknown) => {
+      let s = String(v ?? "");
+      if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+    const header = ["When", "Name", "Email", "Matricule", "Account", "Platform", "Action", "Method", "Path", "Status", "Details", "IP"];
+    const lines = lastEntries.map((e) => [e.occurred_at, e.actor_name, e.actor_email, e.actor_matricule, e.actor_kind, e.portal, e.summary, e.method, e.path, e.status, detailText(e), e.ip].map(cell).join(","));
+    const blob = new Blob(["﻿" + [header.map(cell).join(","), ...lines].join("\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `activity-log-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  load();
+</script>

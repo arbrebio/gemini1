@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -25,7 +25,8 @@ const extraLineSchema = z.object({
 const profileSchema = z.object({
   id: z.guid().optional(),
   employee_id: z.guid(),
-  matricule: z.string().min(1).max(30),
+  // Ignored: the matricule always comes from the employee record (DB trigger).
+  matricule: z.string().max(30).optional(),
   base_salary: z.number().min(0),
   sursalaire: z.number().min(0).default(0),
   transport_allowance: z.number().min(0).default(0),
@@ -44,7 +45,7 @@ const profileSchema = z.object({
 
 // GET — list payroll profiles joined with employee identity (or single via ?employee_id=)
 export const GET: APIRoute = async ({ request, url }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -52,7 +53,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     let query = supabase
       .from('employee_payroll_profiles')
-      .select('*, employee:career_employees(id, first_name, middle_name, last_name, email, address, city, photo_url, worker_id, job_title, department, start_date, contract_type, status)')
+      .select('*, employee:career_employees(id, matricule, first_name, middle_name, last_name, email, address, city, photo_url, worker_id, job_title, department, start_date, contract_type, status)')
       .order('matricule');
     if (employeeId) query = query.eq('employee_id', employeeId);
 
@@ -62,7 +63,7 @@ export const GET: APIRoute = async ({ request, url }) => {
     // Also return employees without a profile yet, so the UI can offer creation
     const { data: employees, error: empError } = await supabase
       .from('career_employees')
-      .select('id, first_name, middle_name, last_name, email, worker_id, job_title, department, start_date, contract_type, status')
+      .select('id, matricule, first_name, middle_name, last_name, email, worker_id, job_title, department, start_date, contract_type, status')
       .order('last_name');
     if (empError) throw empError;
 
@@ -78,7 +79,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 // POST — create or update (upsert by employee_id)
 export const POST: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -86,7 +87,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!parsed.success) {
       return json({ error: 'Invalid payload', details: parsed.error.flatten().fieldErrors }, 400);
     }
-    const { id, ...fields } = parsed.data;
+    const { id, matricule: _ignored, ...fields } = parsed.data;
 
     const { data: profile, error } = await supabase
       .from('employee_payroll_profiles')
@@ -106,7 +107,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 // DELETE — remove a payroll profile (does not touch the employee record)
 export const DELETE: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();

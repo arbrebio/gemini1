@@ -247,6 +247,15 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
             localStorage.setItem('agentToken', token);
             localStorage.setItem('agentProfile', JSON.stringify(profileData.profile));
+            // Record the sign-in in the company activity log (never blocks login).
+            try {
+              await fetch('/api/activity/session/', {
+                method: 'POST',
+                headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ portal: 'sales' }),
+                keepalive: true,
+              });
+            } catch (e) {}
             // First login: admin-generated password must be replaced
             if (profileData.profile.must_change_password) {
               window.location.href = '/sales-agent/change-password/';

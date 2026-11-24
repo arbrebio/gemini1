@@ -17,6 +17,11 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       <div id="create-form" class="p-5 space-y-4">
         <div id="create-error" class="hidden bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2"></div>
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Employé (matricule)</label>
+          <select id="cf-employee" class="employee-select w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]"><option value="">— Non lié à un employé —</option></select>
+          <p class="text-[11px] text-gray-400 mt-1">Lie le compte au matricule de l'employé : ses actions seront suivies sur toute la plateforme.</p>
+        </div>
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet <span class="text-red-500">*</span></label>
           <input id="cf-name" type="text" required placeholder="Kouassi Jean-Marie"
             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
@@ -86,6 +91,10 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       </div>
       <div class="p-5 space-y-4">
         <input type="hidden" id="eu-id" />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Employé (matricule)</label>
+          <select id="eu-employee" class="employee-select w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]"><option value="">— Non lié à un employé —</option></select>
+        </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet <span class="text-red-500">*</span></label>
           <input id="eu-name" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
@@ -183,6 +192,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
       <table class="w-full text-sm">
         <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matricule</th>
             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
@@ -192,7 +202,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
           </tr>
         </thead>
         <tbody id="users-table-body" class="divide-y divide-gray-50">
-          <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Chargement…</td></tr>
+          <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">Chargement…</td></tr>
         </tbody>
       </table>
     </div>
@@ -211,6 +221,27 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   let allUsers: any[] = [];
   let editingId: string | null = null;
+
+  let employees: any[] = [];
+  async function loadEmployees() {
+    const res = await authFetch('/api/admin/careers/employees/');
+    if (!res.ok) return;
+    employees = ((await res.json()).employees || []).filter((e: any) => e.status !== 'terminated');
+    const opts = '<option value="">— Non lié à un employé —</option>' + employees.map((e: any) =>
+      `<option value="${esc(e.id)}">${esc(e.matricule)} — ${esc(e.first_name)} ${esc(e.last_name)}${e.job_title ? ' · ' + esc(e.job_title) : ''}</option>`).join('');
+    document.querySelectorAll<HTMLSelectElement>('.employee-select').forEach((sel) => { const v = sel.value; sel.innerHTML = opts; sel.value = v; });
+  }
+  loadEmployees();
+  document.getElementById('cf-employee')?.addEventListener('change', (ev) => {
+    const emp = employees.find((x) => x.id === (ev.target as HTMLSelectElement).value);
+    if (!emp) return;
+    const name = document.getElementById('cf-name') as HTMLInputElement;
+    const email = document.getElementById('cf-email') as HTMLInputElement;
+    const phone = document.getElementById('cf-phone') as HTMLInputElement;
+    if (!name.value) name.value = `${emp.first_name} ${emp.last_name}`.trim();
+    if (!email.value) email.value = emp.email || '';
+    if (!phone.value && emp.phone) phone.value = emp.phone;
+  });
 
   async function loadUsers() {
     const res = await authFetch('/api/admin/terrain-users/');
@@ -251,16 +282,17 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
   function renderUsers() {
     const q = ((document.getElementById('search-users') as HTMLInputElement).value || '').toLowerCase();
-    const users = allUsers.filter(u => !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    const users = allUsers.filter(u => !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || String(u.employee?.matricule || '').toLowerCase().includes(q));
     const tbody = document.getElementById('users-table-body')!;
 
     if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Aucun utilisateur. Cliquez sur "Nouvel utilisateur" pour commencer.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">Aucun utilisateur. Cliquez sur "Nouvel utilisateur" pour commencer.</td></tr>';
       return;
     }
 
     tbody.innerHTML = users.map(u => `
       <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-4 py-3 font-mono text-xs ${u.employee?.matricule ? 'text-[#194642] font-semibold' : 'text-gray-400'}">${u.employee?.matricule ? esc(u.employee.matricule) : 'non lié'}</td>
         <td class="px-4 py-3">
           <div class="flex items-center gap-3">
             <div class="h-9 w-9 rounded-full bg-[#194642]/10 flex items-center justify-center text-[#194642] font-semibold text-xs flex-shrink-0 overflow-hidden">
@@ -307,6 +339,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     (document.getElementById('cf-email') as HTMLInputElement).value = '';
     (document.getElementById('cf-phone') as HTMLInputElement).value = '';
     (document.getElementById('cf-role') as HTMLSelectElement).value = '';
+    (document.getElementById('cf-employee') as HTMLSelectElement).value = '';
     document.getElementById('create-error')!.classList.add('hidden');
     document.getElementById('credentials-display')!.classList.add('hidden');
     document.getElementById('create-form')!.classList.remove('hidden');
@@ -338,7 +371,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     try {
       const res = await authFetch('/api/admin/terrain-users/', {
         method: 'POST',
-        body: JSON.stringify({ full_name, email, phone, role }),
+        body: JSON.stringify({ full_name, email, phone, role, employee_id: (document.getElementById('cf-employee') as HTMLSelectElement).value || null }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Échec de la création');
@@ -377,6 +410,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     (document.getElementById('eu-email') as HTMLInputElement).value = u.email;
     (document.getElementById('eu-phone') as HTMLInputElement).value = u.phone || '';
     (document.getElementById('eu-role') as HTMLSelectElement).value = u.role;
+    (document.getElementById('eu-employee') as HTMLSelectElement).value = u.employee_id || '';
     editModal.classList.remove('hidden');
   }
   document.getElementById('close-edit-modal')?.addEventListener('click', () => editModal.classList.add('hidden'));
@@ -390,7 +424,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
     const res = await authFetch('/api/admin/terrain-users/', {
       method: 'PUT',
-      body: JSON.stringify({ id: editingId, full_name, phone, role }),
+      body: JSON.stringify({ id: editingId, full_name, phone, role, employee_id: (document.getElementById('eu-employee') as HTMLSelectElement).value || null }),
     });
     if (!res.ok) { showToast('Échec de la mise à jour.', 'error'); return; }
     editModal.classList.add('hidden');

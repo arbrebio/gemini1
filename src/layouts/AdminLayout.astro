@@ -70,8 +70,18 @@ const { title } = Astro.props;
                     window.location.href = "/admin/login/";
                     return;
                 }
+                // A valid login is not enough: it must be an admin account.
+                // HR-only staff are sent to their own portal.
+                const { data: { session } } = await supabase.auth.getSession();
+                const headers = { Authorization: `Bearer ${session?.access_token ?? ""}` };
+                const check = await _originalFetch("/api/admin/notifications/?count_only=true", { headers });
+                if (check.status === 401 || check.status === 403) {
+                    const hr = await _originalFetch("/api/hr/me", { headers });
+                    if (hr.ok) { window.location.href = "/hr/"; return; }
+                    await supabase.auth.signOut();
+                    window.location.href = "/admin/login/";
+                }
             };
-            checkAuth();
 
             // Patch the global fetch so every call to /api/admin/* automatically
             // carries the Supabase access token. This avoids touching every page.
@@ -95,6 +105,8 @@ const { title } = Astro.props;
 
                 return _originalFetch(input, init);
             };
+
+            checkAuth();
 
             // Show Return button on all admin sub-pages (not on /admin dashboard)
             const backBar = document.getElementById('admin-back-bar');

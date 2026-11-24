@@ -12,9 +12,11 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminAuth } from '../../../lib/adminAuth';
+import { removePlatformAccount } from '../../../lib/staff';
 import { randomBytes, randomInt } from 'node:crypto';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -75,7 +77,7 @@ export const GET: APIRoute = async ({ request }) => {
     const supabase = getSupabase();
     const { data: users, error } = await supabase
       .from('terrain_profiles')
-      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at')
+      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at, employee_id, employee:career_employees(matricule, first_name, last_name)')
       .neq('role', 'super_admin')
       .order('created_at', { ascending: false });
     if (error) throw error;
@@ -104,6 +106,7 @@ export const POST: APIRoute = async ({ request }) => {
     const email = String(body.email || '').trim().toLowerCase();
     const role = body.role;
     const phone = body.phone ? String(body.phone).trim() : null;
+    const employee_id = typeof body.employee_id === 'string' && UUID_RE.test(body.employee_id) ? body.employee_id : null;
 
     if (!full_name) return json({ error: 'full_name is required' }, 400);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: 'A valid email is required' }, 400);
@@ -122,15 +125,16 @@ export const POST: APIRoute = async ({ request }) => {
     const { data: profile, error: profileErr } = await supabase
       .from('terrain_profiles')
       .insert({
-        id: userId, full_name, email, role, phone,
+        id: userId, full_name, email, role, phone, employee_id,
         active: true, must_change_password: true,
         created_by: auth.userId,
       })
-      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at')
+      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at, employee_id, employee:career_employees(matricule, first_name, last_name)')
       .single();
 
     if (profileErr) {
       await supabase.auth.admin.deleteUser(userId);
+      if ((profileErr as any).code === '23505') return json({ error: 'That employee already has a terrain account' }, 409);
       throw profileErr;
     }
 
@@ -185,7 +189,7 @@ export const PUT: APIRoute = async ({ request }) => {
         .from('terrain_profiles')
         .update({ active: !current?.active })
         .eq('id', id)
-        .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at')
+        .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at, employee_id, employee:career_employees(matricule, first_name, last_name)')
         .single();
       if (error) throw error;
       return json({ user: profile });
@@ -195,6 +199,9 @@ export const PUT: APIRoute = async ({ request }) => {
     const allowed = ['full_name', 'role', 'phone'];
     const safe: Record<string, any> = {};
     for (const k of allowed) if (k in body) safe[k] = body[k];
+    if ('employee_id' in body) {
+      safe.employee_id = typeof body.employee_id === 'string' && UUID_RE.test(body.employee_id) ? body.employee_id : null;
+    }
     if ('role' in safe && !['engineer', 'technician'].includes(safe.role)) {
       return json({ error: 'role must be engineer or technician' }, 400);
     }
@@ -204,7 +211,7 @@ export const PUT: APIRoute = async ({ request }) => {
       .from('terrain_profiles')
       .update(safe)
       .eq('id', id)
-      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at')
+      .select('id, full_name, email, role, phone, avatar_url, active, must_change_password, created_at, employee_id, employee:career_employees(matricule, first_name, last_name)')
       .single();
     if (error) throw error;
     return json({ user: profile });
@@ -222,10 +229,9 @@ export const DELETE: APIRoute = async ({ request }) => {
     const body = await request.json();
     if (!body.id) return json({ error: 'id is required' }, 400);
 
-    // Deleting the auth user cascades to terrain_profiles (ON DELETE CASCADE).
-    const { error } = await supabase.auth.admin.deleteUser(body.id);
-    if (error) throw error;
-    return json({ success: true });
+    // Keeps the login if the person also uses HR, sales or admin.
+    const { loginKept } = await removePlatformAccount(supabase, 'terrain_profiles', body.id);
+    return json({ success: true, login_kept: loginKept });
   } catch (e: any) {
     console.error('[admin terrain-users DELETE]', e);
     return json({ error: 'Internal server error' }, 500);

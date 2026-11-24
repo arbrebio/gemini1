@@ -6,7 +6,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -21,13 +21,14 @@ const json = (body: unknown, status = 200) =>
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp'];
 
 export const POST: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     if (!file || file.size === 0) return json({ error: 'No file provided' }, 400);
-    if (file.size > 5 * 1024 * 1024) return json({ error: 'File too large (max 5 MB)' }, 400);
+    // The hosting platform rejects bodies over ~4.5 MB, so 4 MB is the real limit.
+    if (file.size > 4 * 1024 * 1024) return json({ error: 'File too large (max 4 MB)' }, 400);
     if (!ALLOWED_TYPES.includes(file.type)) return json({ error: 'Format must be PNG, JPG, WEBP or SVG' }, 400);
 
     const supabase = getSupabase();

@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 import {
   computeAnciennete,
   computeConges,
@@ -67,7 +67,7 @@ async function loadSettings(supabase: SupabaseClient) {
 
 // GET — list slips (?year=&month=&employee_id=&id=)
 export const GET: APIRoute = async ({ request, url }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -101,7 +101,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 // POST — { action: 'generate' } or { action: 'validate' }
 export const POST: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -452,7 +452,7 @@ async function sendPayslipEmail(
 // validated slip, only DELETE is allowed. Deleting removes the slip from the
 // employee's payroll portal immediately (it's read live from this table).
 export const DELETE: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'payroll');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();

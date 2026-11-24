@@ -1,0 +1,226 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="HR Access">
+  <div class="mb-6 flex items-start justify-between flex-wrap gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">HR &amp; Payroll Access</h1>
+      <p class="text-gray-500 text-sm mt-1">Give HR staff their own login to the HR &amp; Payroll portal, limited to the areas they need. Everything they do is recorded in the Activity Log.</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex items-center gap-3 text-sm">
+      <i class="fas fa-link text-[#194642]"></i>
+      <span class="text-gray-500">Portal link:</span>
+      <a id="portal-link" href="/hr/login/" target="_blank" rel="noopener" class="font-mono text-[#194642] hover:underline">/hr/login/</a>
+      <button id="copy-link" class="text-gray-400 hover:text-[#194642]" title="Copy link"><i class="fas fa-copy"></i></button>
+    </div>
+  </div>
+
+  <!-- Grant access -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sm:p-6 mb-6">
+    <h2 class="font-bold text-gray-800 mb-4"><i class="fas fa-user-plus text-[#194642] mr-2"></i>Grant access</h2>
+    <form id="grant-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="md:col-span-2">
+        <label for="g-employee" class="block text-xs font-medium text-gray-500 uppercase mb-1">Employee</label>
+        <select id="g-employee" class="w-full rounded-lg border-gray-300 text-sm">
+          <option value="">— Not an employee record (enter name and email below) —</option>
+        </select>
+        <p class="text-[11px] text-gray-400 mt-1">Choosing an employee links the access to their matricule and fills in name and email.</p>
+      </div>
+      <div>
+        <label for="g-name" class="block text-xs font-medium text-gray-500 uppercase mb-1">Full name</label>
+        <input id="g-name" type="text" class="w-full rounded-lg border-gray-300 text-sm" />
+      </div>
+      <div>
+        <label for="g-email" class="block text-xs font-medium text-gray-500 uppercase mb-1">Email (login)</label>
+        <input id="g-email" type="email" class="w-full rounded-lg border-gray-300 text-sm" />
+      </div>
+      <fieldset class="md:col-span-2">
+        <legend class="block text-xs font-medium text-gray-500 uppercase mb-2">Areas</legend>
+        <div class="flex flex-wrap gap-4 text-sm">
+          <label class="inline-flex items-center gap-2"><input type="checkbox" name="g-perm" value="recruitment" checked class="rounded border-gray-300 text-[#194642]" /> Recruitment <span class="text-gray-400">(jobs, applications)</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" name="g-perm" value="employees" checked class="rounded border-gray-300 text-[#194642]" /> Employees <span class="text-gray-400">(records, contracts, ID cards)</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" name="g-perm" value="payroll" class="rounded border-gray-300 text-[#194642]" /> Payroll <span class="text-gray-400">(salaries, payslips)</span></label>
+        </div>
+      </fieldset>
+      <div class="md:col-span-2 flex items-center gap-3 flex-wrap">
+        <button type="submit" id="g-submit" class="bg-[#194642] text-white font-semibold px-5 py-2 rounded-lg hover:bg-[#2a5e59] text-sm disabled:opacity-60">
+          <i class="fas fa-key mr-1.5"></i> Create access &amp; email login
+        </button>
+        <p id="g-status" class="text-sm" role="status"></p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Current access -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-bold text-gray-800">People with HR access</h2>
+      <span id="staff-count" class="text-xs text-gray-400"></span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+          <tr>
+            <th class="px-6 py-3 text-left">Person</th>
+            <th class="px-6 py-3 text-left">Matricule</th>
+            <th class="px-6 py-3 text-left">Areas</th>
+            <th class="px-6 py-3 text-left">Status</th>
+            <th class="px-6 py-3 text-left">Last sign-in</th>
+            <th class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="staff-rows" class="divide-y divide-gray-50">
+          <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { authFetch } from "../../../lib/supabase";
+  import { readJsonSafe } from "../../../scripts/uploadHelpers";
+
+  const AREAS = ["recruitment", "employees", "payroll"];
+  const esc = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const fmt = (iso: string | null) => (iso ? new Date(iso).toLocaleString() : "Never");
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+
+  let employees: any[] = [];
+
+  // Portal link (absolute, for sharing)
+  const fullLink = `${window.location.origin}/hr/login/`;
+  $("portal-link").textContent = fullLink;
+  $("copy-link").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(fullLink); $("copy-link").innerHTML = '<i class="fas fa-check text-green-600"></i>'; } catch {}
+    setTimeout(() => { $("copy-link").innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
+  });
+
+  function status(msg: string, ok: boolean) {
+    const el = $("g-status");
+    el.textContent = msg;
+    el.className = `text-sm ${ok ? "text-green-700" : "text-red-600"}`;
+  }
+
+  async function load() {
+    const res = await authFetch("/api/admin/hr-staff/");
+    const data = await readJsonSafe(res);
+    const rows = $("staff-rows");
+    if (!res.ok) { rows.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">${esc(data.error || "Could not load")}</td></tr>`; return; }
+
+    employees = data.employees || [];
+    const sel = $<HTMLSelectElement>("g-employee");
+    const keep = sel.value;
+    sel.innerHTML = '<option value="">— Not an employee record (enter name and email below) —</option>' +
+      employees.map((e) => `<option value="${esc(e.id)}">${esc(e.matricule)} — ${esc(e.first_name)} ${esc(e.last_name)}${e.job_title ? " · " + esc(e.job_title) : ""}${e.status !== "active" ? " (" + esc(e.status) + ")" : ""}</option>`).join("");
+    sel.value = keep;
+
+    const staff = data.staff || [];
+    $("staff-count").textContent = `${staff.length} account${staff.length === 1 ? "" : "s"}`;
+    if (!staff.length) { rows.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nobody has HR access yet.</td></tr>'; return; }
+
+    rows.innerHTML = staff.map((s: any) => `
+      <tr data-id="${esc(s.id)}">
+        <td class="px-6 py-3">
+          <p class="font-medium text-gray-800">${esc(s.full_name)}</p>
+          <p class="text-xs text-gray-500">${esc(s.email)}${s.must_change_password ? ' · <span class="text-amber-600">temporary password</span>' : ""}</p>
+        </td>
+        <td class="px-6 py-3 font-mono text-xs">${s.employee?.matricule ? esc(s.employee.matricule) : '<span class="text-gray-400">not linked</span>'}</td>
+        <td class="px-6 py-3">
+          <div class="flex flex-wrap gap-3 text-xs">
+            ${AREAS.map((a) => `<label class="inline-flex items-center gap-1"><input type="checkbox" class="perm rounded border-gray-300 text-[#194642]" value="${a}" ${s.permissions?.includes(a) ? "checked" : ""}/> ${a}</label>`).join("")}
+          </div>
+        </td>
+        <td class="px-6 py-3">
+          <button class="toggle-active text-xs px-2.5 py-1 rounded-full font-medium ${s.active ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"}">${s.active ? "Active" : "Deactivated"}</button>
+        </td>
+        <td class="px-6 py-3 text-xs text-gray-500">${esc(fmt(s.last_login_at))}</td>
+        <td class="px-6 py-3 text-right whitespace-nowrap">
+          <a href="/admin/activity/?actor_id=${encodeURIComponent(s.id)}" class="text-gray-400 hover:text-[#194642] mr-3" title="View activity"><i class="fas fa-clock-rotate-left"></i></a>
+          <button class="reset-pw text-gray-400 hover:text-amber-600 mr-3" title="Reset password (emails a new temporary password)"><i class="fas fa-key"></i></button>
+          <button class="revoke text-gray-400 hover:text-red-600" title="Revoke access"><i class="fas fa-user-slash"></i></button>
+        </td>
+      </tr>`).join("");
+  }
+
+  async function update(id: string, body: Record<string, unknown>, method = "PUT") {
+    const res = await authFetch("/api/admin/hr-staff/", { method, body: JSON.stringify({ id, ...body }) });
+    const data = await readJsonSafe(res);
+    if (!res.ok) { alert(data.error || "Action failed"); return null; }
+    return data;
+  }
+
+  $("staff-rows").addEventListener("change", async (e) => {
+    const box = e.target as HTMLInputElement;
+    if (!box.classList.contains("perm")) return;
+    const row = box.closest("tr")!;
+    const perms = Array.from(row.querySelectorAll<HTMLInputElement>(".perm:checked")).map((b) => b.value);
+    if (!perms.length) { alert("Keep at least one area, or revoke the access instead."); box.checked = true; return; }
+    if (!(await update(row.dataset.id!, { permissions: perms }))) box.checked = !box.checked;
+  });
+
+  $("staff-rows").addEventListener("click", async (e) => {
+    const btn = (e.target as HTMLElement).closest("button");
+    if (!btn) return;
+    const row = btn.closest("tr")!;
+    const id = row.dataset.id!;
+    const name = row.querySelector("p")?.textContent || "this person";
+    if (btn.classList.contains("toggle-active")) {
+      const active = btn.textContent?.trim() !== "Active";
+      if (await update(id, { active })) load();
+    } else if (btn.classList.contains("reset-pw")) {
+      if (!confirm(`Reset the password of ${name}? A new temporary password will be emailed to them.`)) return;
+      const r = await update(id, { action: "reset-password" });
+      if (r) { alert(r.emailed ? "New temporary password emailed." : "Password reset, but the email could not be sent — reset again later."); load(); }
+    } else if (btn.classList.contains("revoke")) {
+      if (!confirm(`Revoke HR portal access for ${name}? Their other Arbre Bio accounts (terrain, sales…) are not affected.`)) return;
+      if (await update(id, {}, "DELETE")) load();
+    }
+  });
+
+  $<HTMLSelectElement>("g-employee").addEventListener("change", (e) => {
+    const emp = employees.find((x) => x.id === (e.target as HTMLSelectElement).value);
+    if (emp) {
+      $("g-name").value = `${emp.first_name} ${emp.last_name}`.trim();
+      $("g-email").value = emp.email || "";
+    }
+  });
+
+  $<HTMLFormElement>("grant-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const permissions = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="g-perm"]:checked')).map((b) => b.value);
+    if (!permissions.length) { status("Choose at least one area.", false); return; }
+    const payload = {
+      employee_id: $<HTMLSelectElement>("g-employee").value || null,
+      full_name: $("g-name").value.trim(),
+      email: $("g-email").value.trim(),
+      permissions,
+    };
+    if (!payload.full_name || !payload.email) { status("Name and email are required.", false); return; }
+    const btn = $<HTMLButtonElement>("g-submit");
+    btn.disabled = true;
+    status("Creating access…", true);
+    try {
+      const res = await authFetch("/api/admin/hr-staff/", { method: "POST", body: JSON.stringify(payload) });
+      const data = await readJsonSafe(res);
+      if (!res.ok) throw new Error(data.error || "Could not create access");
+      status(
+        data.reused_existing_login
+          ? `Access granted. ${payload.full_name} signs in with their existing Arbre Bio password${data.emailed ? " (notified by email)" : ""}.`
+          : data.emailed
+            ? `Access created. A temporary password was emailed to ${payload.email}.`
+            : "Access created, but the email could not be sent. Use “Reset password” to send a new one.",
+        true,
+      );
+      ($<HTMLFormElement>("grant-form")).reset();
+      load();
+    } catch (err) {
+      status(err instanceof Error ? err.message : "Could not create access", false);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  load();
+</script>

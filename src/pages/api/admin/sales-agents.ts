@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { requireAdminAuth } from '../../../lib/adminAuth';
+import { removePlatformAccount } from '../../../lib/staff';
 import { createClient } from '@supabase/supabase-js';
 import { sendWelcomeEmail, sendPasswordResetEmail } from '../../../lib/agentEmail';
 
@@ -50,7 +51,7 @@ export const GET: APIRoute = async ({ request }) => {
         id, full_name, email, worker_id, phone, is_active,
         suspended_at, suspended_reason, created_at,
         must_change_password,
-        career_employees(first_name, last_name, job_title, department, hired_at)
+        career_employees(matricule, first_name, last_name, job_title, department, hired_at)
       `)
       .order('created_at', { ascending: false });
 
@@ -269,11 +270,9 @@ export const DELETE: APIRoute = async ({ request }) => {
     const body = await request.json();
     if (!body.id) return json({ error: 'id is required' }, 400);
 
-    // Delete Supabase auth user — this cascades to sales_agent_profiles
-    const { error } = await supabase.auth.admin.deleteUser(body.id);
-    if (error) throw error;
-
-    return json({ success: true });
+    // Keeps the login if the person also uses HR, terrain or admin.
+    const { loginKept } = await removePlatformAccount(supabase, 'sales_agent_profiles', body.id);
+    return json({ success: true, login_kept: loginKept });
   } catch (e: any) {
     console.error("API error:", e);
     return json({ error: "Internal server error" }, 500);
