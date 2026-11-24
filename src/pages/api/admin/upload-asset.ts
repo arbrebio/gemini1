@@ -18,6 +18,8 @@ function json(body: any, status: number) {
   });
 }
 
+const ALLOWED_BUCKETS = ['product-images'];
+
 /**
  * POST /api/admin/upload-asset
  * FormData fields:
@@ -37,7 +39,12 @@ export const POST: APIRoute = async ({ request }) => {
     const pathPrefix = (formData.get('path') as string) || '';
 
     if (!file || file.size === 0) return json({ error: 'No file provided' }, 400);
-    if (file.size > 10 * 1024 * 1024) return json({ error: 'File too large (max 10 MB)' }, 400);
+    // Only product photos go through this endpoint; don't let callers write
+    // into other buckets (contracts, payroll, …) or outside a safe sub-path.
+    if (!ALLOWED_BUCKETS.includes(bucket)) return json({ error: 'Bucket not allowed' }, 400);
+    if (pathPrefix && !/^[a-z0-9][a-z0-9/_-]{0,100}$/i.test(pathPrefix)) return json({ error: 'Invalid path' }, 400);
+    // The hosting platform rejects bodies over ~4.5 MB; the page shrinks photos first.
+    if (file.size > 4 * 1024 * 1024) return json({ error: 'File too large (max 4 MB)' }, 400);
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {

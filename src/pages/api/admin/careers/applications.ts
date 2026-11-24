@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
 
@@ -52,7 +52,7 @@ const statusMessages: Record<string, { subject: string; body: string }> = {
 
 // GET — list applications
 export const GET: APIRoute = async ({ request, url }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'recruitment');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -102,7 +102,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 // PUT — update application status
 export const PUT: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'recruitment');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -160,7 +160,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
 // DELETE — delete application (cascades related records first to avoid FK errors)
 export const DELETE: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'recruitment');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();

@@ -1,0 +1,181 @@
+---
+/**
+ * HR & Payroll portal shell (/hr/…). Access is granted by an admin
+ * (Admin → HR Access) per area: recruitment, employees, payroll.
+ * Every page checks the session and the person's areas with /api/hr/me;
+ * the API enforces the same rules server-side.
+ */
+import "../styles/base.css";
+
+interface Props {
+  title: string;
+  /** Area this page belongs to; people without it see a "no access" notice. */
+  area?: 'recruitment' | 'employees' | 'payroll';
+}
+
+const { title, area } = Astro.props;
+const path = Astro.url.pathname;
+
+const nav = [
+  { name: "Dashboard", href: "/hr/", icon: "fa-gauge", area: null },
+  { name: "Job postings", href: "/hr/jobs/", icon: "fa-briefcase", area: "recruitment" },
+  { name: "Applications", href: "/hr/applications/", icon: "fa-file-alt", area: "recruitment" },
+  { name: "Employees", href: "/hr/employees/", icon: "fa-id-card", area: "employees" },
+  { name: "Payslips", href: "/hr/payroll/", icon: "fa-file-invoice-dollar", area: "payroll" },
+  { name: "Payroll profiles", href: "/hr/payroll/profiles/", icon: "fa-user-tie", area: "payroll" },
+];
+const isActive = (href: string) => href === "/hr/" ? path === "/hr/" || path === "/hr" : path.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
+    <title>{title} | HR & Payroll — Arbre Bio Africa</title>
+    <style is:global>
+      body.hr-pending #hr-main { visibility: hidden; }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans text-gray-900 hr-pending" data-hr-page-area={area ?? ""}>
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside id="hr-sidebar" class="bg-[#123532] text-white w-64 min-h-screen flex-col fixed lg:static inset-y-0 left-0 z-40 hidden lg:flex">
+        <div class="p-5 border-b border-white/10 flex flex-col items-center gap-2">
+          <a href="/hr/" class="flex flex-col items-center gap-2">
+            <img src="/logo.png" alt="Arbre Bio Africa" class="h-12 w-auto rounded-lg bg-white/10 p-1" />
+            <span class="font-semibold text-sm tracking-wide text-white/80">HR &amp; Payroll</span>
+          </a>
+        </div>
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+          {nav.map((item) => (
+            <a
+              href={item.href}
+              data-hr-area={item.area ?? undefined}
+              class:list={[
+                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200",
+                isActive(item.href) ? "bg-white/15 text-white shadow" : "text-gray-300 hover:bg-white/10 hover:text-white",
+              ]}
+            >
+              <i class={`fas ${item.icon} w-5 text-center ${isActive(item.href) ? "text-[#4ade80]" : "text-gray-400"}`}></i>
+              <span class="font-medium">{item.name}</span>
+            </a>
+          ))}
+        </nav>
+        <div class="p-4 border-t border-white/10 space-y-1">
+          <a href="/hr/change-password/" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white text-sm">
+            <i class="fas fa-key w-5 text-center text-gray-400"></i> Change password
+          </a>
+          <button id="hr-logout" class="flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-300 hover:bg-red-900/20 rounded-lg text-sm">
+            <i class="fas fa-sign-out-alt w-5 text-center"></i> Sign out
+          </button>
+        </div>
+      </aside>
+      <div id="hr-overlay" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"></div>
+
+      <div class="flex-1 flex flex-col min-w-0">
+        <header class="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-20">
+          <div class="flex items-center gap-3 min-w-0">
+            <button id="hr-menu" class="lg:hidden text-gray-600 p-2 -ml-2" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+            <h1 class="font-semibold text-gray-800 truncate">{title}</h1>
+          </div>
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="text-right min-w-0">
+              <p id="hr-user-name" class="text-sm font-semibold text-gray-800 truncate">…</p>
+              <p id="hr-user-meta" class="text-xs text-gray-500 truncate"></p>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#194642] text-white flex items-center justify-center text-sm font-bold shrink-0" id="hr-user-initial">·</div>
+          </div>
+        </header>
+
+        <main id="hr-main" class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div id="hr-no-access" class="hidden max-w-lg mx-auto mt-16 bg-white border border-gray-100 rounded-xl shadow-sm p-8 text-center">
+            <i class="fas fa-lock text-3xl text-gray-300 mb-3"></i>
+            <h2 class="text-lg font-bold text-gray-800">No access to this section</h2>
+            <p class="text-sm text-gray-500 mt-2">Your HR access does not include this area. Ask an administrator if you need it.</p>
+            <a href="/hr/" class="inline-block mt-5 text-sm font-semibold text-[#194642] hover:underline">Back to dashboard</a>
+          </div>
+          <div id="hr-content">
+            <slot />
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      import { supabase } from "../lib/supabase";
+
+      const LOGIN = "/hr/login/";
+      const CHANGE_PW = "/hr/change-password/";
+
+      // Attach the HR user's token to careers/HR API calls made with plain fetch.
+      const _fetch = window.fetch.bind(window);
+      window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : (input as Request).url;
+        if (url.startsWith("/api/admin/careers/") || url.startsWith("/api/hr/")) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            const headers = new Headers(init?.headers as HeadersInit | undefined);
+            if (!headers.has("Authorization")) headers.set("Authorization", `Bearer ${session.access_token}`);
+            init = { ...(init ?? {}), headers };
+          }
+        }
+        return _fetch(input, init);
+      };
+
+      async function guard() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { window.location.href = LOGIN; return; }
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await _fetch("/api/hr/me", { headers: { Authorization: `Bearer ${session?.access_token ?? ""}` } });
+        if (!res.ok) {
+          await supabase.auth.signOut();
+          window.location.href = `${LOGIN}?denied=1`;
+          return;
+        }
+        const me = await res.json();
+        if (me.must_change_password && window.location.pathname !== CHANGE_PW) {
+          window.location.href = CHANGE_PW;
+          return;
+        }
+
+        const perms: string[] = me.permissions || [];
+        document.querySelectorAll<HTMLElement>("[data-hr-area]").forEach((el) => {
+          if (!perms.includes(el.dataset.hrArea || "")) el.style.display = "none";
+        });
+        const pageArea = document.body.dataset.hrPageArea;
+        if (pageArea && !perms.includes(pageArea)) {
+          document.getElementById("hr-content")!.style.display = "none";
+          document.getElementById("hr-no-access")!.classList.remove("hidden");
+        }
+
+        const name = me.name || me.email || "User";
+        document.getElementById("hr-user-name")!.textContent = name;
+        document.getElementById("hr-user-meta")!.textContent =
+          [me.kind === "admin" ? "Administrator" : "HR", me.matricule].filter(Boolean).join(" · ");
+        document.getElementById("hr-user-initial")!.textContent = String(name).trim().charAt(0).toUpperCase();
+        document.body.classList.remove("hr-pending");
+      }
+      guard().catch(() => { window.location.href = LOGIN; });
+
+      document.getElementById("hr-logout")?.addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        window.location.href = LOGIN;
+      });
+
+      // Mobile menu
+      const sidebar = document.getElementById("hr-sidebar")!;
+      const overlay = document.getElementById("hr-overlay")!;
+      const toggle = (open: boolean) => {
+        sidebar.classList.toggle("hidden", !open);
+        sidebar.classList.toggle("flex", open);
+        overlay.classList.toggle("hidden", !open);
+      };
+      document.getElementById("hr-menu")?.addEventListener("click", () => toggle(true));
+      overlay.addEventListener("click", () => toggle(false));
+    </script>
+  </body>
+</html>

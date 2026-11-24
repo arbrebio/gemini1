@@ -1,0 +1,108 @@
+---
+import "../../styles/base.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
+    <title>HR &amp; Payroll Sign in | Arbre Bio Africa</title>
+  </head>
+  <body class="bg-gray-100 font-sans text-gray-900">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4">
+      <div class="max-w-md w-full bg-white p-8 sm:p-10 rounded-xl shadow-lg">
+        <div class="text-center">
+          <img class="mx-auto h-16 w-auto" src="/logo.png" alt="Arbre Bio Africa" />
+          <h1 class="mt-6 text-2xl font-extrabold text-gray-900">HR &amp; Payroll Portal</h1>
+          <p class="mt-2 text-sm text-gray-600">Sign in with the access an administrator created for you</p>
+        </div>
+
+        <form class="mt-8 space-y-4" id="hr-login-form">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required
+              class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required
+              class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#194642]" />
+          </div>
+          <div class="flex justify-end">
+            <button type="button" id="forgot-btn" class="text-sm font-medium text-[#194642] hover:underline">Forgot your password?</button>
+          </div>
+          <button type="submit" id="submit-btn"
+            class="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-[#194642] hover:bg-[#2a5e59] disabled:opacity-60">
+            <i class="fas fa-lock"></i> Sign in
+          </button>
+          <div id="error-message" class="hidden text-red-600 text-sm text-center bg-red-50 p-2 rounded" role="alert"></div>
+          <div id="success-message" class="hidden text-green-700 text-sm text-center bg-green-50 p-2 rounded"></div>
+          <p class="text-xs text-gray-400 text-center pt-2">All activity on this portal is recorded.</p>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      import { supabase } from "../../lib/supabase";
+
+      const form = document.getElementById("hr-login-form") as HTMLFormElement;
+      const errorEl = document.getElementById("error-message")!;
+      const okEl = document.getElementById("success-message")!;
+      const submit = document.getElementById("submit-btn") as HTMLButtonElement;
+      const show = (el: HTMLElement, msg: string) => { el.textContent = msg; el.classList.remove("hidden"); };
+
+      if (new URLSearchParams(location.search).get("denied")) {
+        show(errorEl, "This account does not have access to the HR portal, or the access was deactivated.");
+      }
+
+      document.getElementById("forgot-btn")!.addEventListener("click", async () => {
+        errorEl.classList.add("hidden"); okEl.classList.add("hidden");
+        const email = (document.getElementById("email") as HTMLInputElement).value.trim();
+        if (!email) { show(errorEl, "Enter your email first."); return; }
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/admin/reset-password/`,
+        });
+        if (error) show(errorEl, error.message);
+        else show(okEl, "If an account exists for that email, a reset link has been sent. You can also ask an administrator to reset it.");
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorEl.classList.add("hidden"); okEl.classList.add("hidden");
+        submit.disabled = true;
+        try {
+          const email = (document.getElementById("email") as HTMLInputElement).value.trim();
+          const password = (document.getElementById("password") as HTMLInputElement).value;
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw new Error("Incorrect email or password.");
+          const token = data.session?.access_token;
+
+          const meRes = await fetch("/api/hr/me", { headers: { Authorization: `Bearer ${token}` } });
+          const me = await meRes.json().catch(() => ({}));
+          if (!meRes.ok) {
+            await supabase.auth.signOut();
+            throw new Error(me.error || "This account does not have HR portal access.");
+          }
+
+          // Record the sign-in in the activity log (does not block on failure).
+          await fetch("/api/activity/session/", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ portal: "hr" }),
+            keepalive: true,
+          }).catch(() => {});
+
+          window.location.href = me.must_change_password ? "/hr/change-password/" : "/hr/";
+        } catch (err) {
+          show(errorEl, err instanceof Error ? err.message : "Sign-in failed");
+        } finally {
+          submit.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

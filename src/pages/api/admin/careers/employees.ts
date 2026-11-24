@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
 const SITE_URL = 'https://www.arbrebio.com';
@@ -25,6 +25,7 @@ async function sendWorkerIdEmail(employee: {
   last_name: string;
   email: string;
   worker_id: string;
+  matricule?: string | null;
   job_title: string;
   department?: string | null;
   start_date?: string | null;
@@ -87,6 +88,7 @@ async function sendWorkerIdEmail(employee: {
       <div style="background:#f0f9f0;border:2px solid #c6e8c6;border-radius:10px;padding:20px 24px;text-align:center;margin:0 0 24px">
         <p style="color:#194642;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px">Your Worker ID</p>
         <p style="color:#194642;font-size:28px;font-weight:700;font-family:monospace;letter-spacing:3px;margin:0">${employee.worker_id}</p>
+        ${employee.matricule ? `<p style="color:#194642;font-size:13px;margin:10px 0 0">Matricule : <strong style="font-family:monospace">${employee.matricule}</strong></p>` : ''}
       </div>
 
       ${contractSection}
@@ -142,9 +144,53 @@ async function sendWorkerIdEmail(employee: {
   });
 }
 
-// GET — list employees
+// Columns HR/admin may change on an employee. Everything else (portal_token,
+// worker_id, application_id, created_by, timestamps) is server-managed.
+const EDITABLE_FIELDS = [
+  'first_name', 'middle_name', 'last_name', 'email', 'phone', 'birth_date', 'nationality',
+  'whatsapp_number', 'address', 'city', 'country', 'photo_url', 'job_title', 'department', 'start_date',
+  'contract_type', 'contract_url', 'status', 'matricule', 'gender', 'id_number',
+  'id_card_expiry', 'id_card_front_url', 'id_card_back_url',
+] as const;
+
+// The employee portal token is a login secret: never send it to the browser.
+function publicEmployee<T extends Record<string, any> | null>(e: T): T {
+  if (!e) return e;
+  const { portal_token: _secret, ...rest } = e as Record<string, any>;
+  return rest as T;
+}
+
+/** Platform accounts (admin / HR / terrain / sales) linked to an employee. */
+async function linkedAccounts(supabase: ReturnType<typeof getSupabase>, employeeId: string) {
+  const [admin, hr, terrain, sales] = await Promise.all([
+    supabase.from('admin_profiles').select('id, full_name, role').eq('employee_id', employeeId),
+    supabase.from('hr_staff').select('id, full_name, email, permissions, active').eq('employee_id', employeeId),
+    supabase.from('terrain_profiles').select('id, full_name, email, role, active').eq('employee_id', employeeId),
+    supabase.from('sales_agent_profiles').select('id, full_name, email, is_active').eq('employee_id', employeeId),
+  ]);
+  return [
+    ...(admin.data || []).map((a: any) => ({ platform: 'admin', id: a.id, name: a.full_name, role: a.role, active: true })),
+    ...(hr.data || []).map((a: any) => ({ platform: 'hr', id: a.id, name: a.full_name, email: a.email, role: (a.permissions || []).join(', '), active: a.active })),
+    ...(terrain.data || []).map((a: any) => ({ platform: 'terrain', id: a.id, name: a.full_name, email: a.email, role: a.role, active: a.active })),
+    ...(sales.data || []).map((a: any) => ({ platform: 'sales', id: a.id, name: a.full_name, email: a.email, role: 'sales agent', active: a.is_active })),
+  ];
+}
+
+function dbError(error: any): Response {
+  const headers = { 'Content-Type': 'application/json' };
+  if (error?.code === '23505') {
+    const msg = String(error.message || '').includes('matricule')
+      ? 'This matricule is already used by another employee'
+      : 'An employee with this email already exists';
+    return new Response(JSON.stringify({ error: msg }), { status: 409, headers });
+  }
+  console.error('API error:', error);
+  return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500, headers });
+}
+
+// GET — list employees (or one, with its linked platform accounts)
 export const GET: APIRoute = async ({ request, url }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'employees');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -154,13 +200,14 @@ export const GET: APIRoute = async ({ request, url }) => {
       const { data: employee, error } = await supabase
         .from('career_employees').select('*').eq('id', id).single();
       if (error) throw error;
-      return new Response(JSON.stringify({ employee }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      const accounts = await linkedAccounts(supabase, id).catch(() => []);
+      return new Response(JSON.stringify({ employee: publicEmployee(employee), accounts }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     }
 
     const { data: employees, error } = await supabase
       .from('career_employees').select('*').order('hired_at', { ascending: false });
     if (error) throw error;
-    return new Response(JSON.stringify({ employees: employees || [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ employees: (employees || []).map(publicEmployee) }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     console.error("API error:", e);
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
@@ -169,7 +216,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 // POST — create employee (from application OR directly)
 export const POST: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, ['employees', 'recruitment']);
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
@@ -204,13 +251,16 @@ export const POST: APIRoute = async ({ request }) => {
           id_number: (body.id_number) || null,
           id_card_expiry: (body.id_card_expiry) || null,
           gender: (body.gender) || null,
+          // Blank → the database uses the Worker ID as matricule.
+          matricule: typeof body.matricule === 'string' && body.matricule.trim() ? body.matricule.trim() : null,
+          created_by: auth.userId,
           status: 'active',
         })
         .select().single();
-      if (error) throw error;
+      if (error) return dbError(error);
       // Send welcome email with Worker ID
       await sendWorkerIdEmail(employee).catch(() => {/* non-fatal */});
-      return new Response(JSON.stringify({ employee }), { status: 201, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ employee: publicEmployee(employee) }), { status: 201, headers: { 'Content-Type': 'application/json' } });
     }
 
     // From application
@@ -236,18 +286,19 @@ export const POST: APIRoute = async ({ request }) => {
         worker_id: workerId,
         contract_url: contract_url || null,
         photo_url: photo_url || null,
+        created_by: auth.userId,
         status: 'active',
       })
       .select().single();
-    if (error) throw error;
+    if (error) return dbError(error);
 
     await supabase.from('career_applications').update({ employee_id: employee.id, status: 'hired' }).eq('id', application_id);
-    await supabase.from('career_application_timeline').insert({ application_id, status: 'hired', note: `Employee record created. Worker ID: ${workerId}` });
+    await supabase.from('career_application_timeline').insert({ application_id, status: 'hired', note: `Employee record created. Worker ID: ${workerId} · Matricule: ${employee.matricule}` });
 
     // Send welcome email with Worker ID
     await sendWorkerIdEmail(employee).catch(() => {/* non-fatal */});
 
-    return new Response(JSON.stringify({ employee }), { status: 201, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ employee: publicEmployee(employee) }), { status: 201, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     console.error("API error:", e);
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
@@ -256,18 +307,23 @@ export const POST: APIRoute = async ({ request }) => {
 
 // PUT — update employee
 export const PUT: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'employees');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();
     const body = await request.json();
-    const { id, ...updates } = body;
+    const id = body?.id;
     if (!id) return new Response(JSON.stringify({ error: 'id required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+
+    const updates: Record<string, unknown> = {};
+    for (const k of EDITABLE_FIELDS) if (k in body) updates[k] = body[k] === '' ? null : body[k];
+    if ('matricule' in updates && !updates.matricule) delete updates.matricule; // never blank it
+    if (Object.keys(updates).length === 0) return new Response(JSON.stringify({ error: 'Nothing to update' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
 
     const { data: employee, error } = await supabase
       .from('career_employees').update(updates).eq('id', id).select().single();
-    if (error) throw error;
-    return new Response(JSON.stringify({ employee }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    if (error) return dbError(error);
+    return new Response(JSON.stringify({ employee: publicEmployee(employee) }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     console.error("API error:", e);
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { "Content-Type": "application/json" } });
@@ -276,7 +332,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
 // DELETE — remove employee
 export const DELETE: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'employees');
   if (!auth.ok) return auth.response;
   try {
     const supabase = getSupabase();

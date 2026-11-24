@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
-import { requireAdminAuth } from '../../../../lib/adminAuth';
+import { requireHrAccess } from '../../../../lib/staff';
 
 function getSupabase() {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
@@ -20,7 +20,7 @@ function getAnthropicClient() {
 
 // POST — upload ID card image + extract fields via Claude vision
 export const POST: APIRoute = async ({ request }) => {
-  const auth = await requireAdminAuth(request);
+  const auth = await requireHrAccess(request, 'employees');
   if (!auth.ok) return auth.response;
   try {
     const formData = await request.formData();
@@ -31,8 +31,9 @@ export const POST: APIRoute = async ({ request }) => {
     if (!file || file.size === 0) {
       return json({ error: 'No image provided' }, 400);
     }
-    if (file.size > 10 * 1024 * 1024) {
-      return json({ error: 'Image too large (max 10 MB)' }, 400);
+    // The hosting platform rejects bodies over ~4.5 MB; the page shrinks photos first.
+    if (file.size > 4 * 1024 * 1024) {
+      return json({ error: 'Image too large (max 4 MB)' }, 400);
     }
 
     // 1. Convert to buffer + base64

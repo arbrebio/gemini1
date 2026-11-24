@@ -44,6 +44,8 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
 
 <script>
   import { requireTerrainAuth, terrainFetch, roleLabel, setTerrainSession, getTerrainToken } from '../../../lib/terrainClient';
+  import { shrinkImage, MAX_UPLOAD_BYTES } from '../../../scripts/shrinkImage';
+  import { readJsonSafe } from '../../../scripts/uploadHelpers';
 
   const me = requireTerrainAuth(['engineer', 'technician']);
   if (me) {
@@ -66,14 +68,17 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
   document.getElementById('p-avatar-input')!.addEventListener('change', async (e) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (!file || !me) return;
-    if (file.size > 3 * 1024 * 1024) { (window as any).UI?.toast('Photo trop volumineuse (max 3 Mo).', 'error'); return; }
+    // Phone photos are shrunk in the browser to fit the 4 MB server limit.
+    const photo = await shrinkImage(file, 800, 0.85);
+    if (photo.size > MAX_UPLOAD_BYTES) { (window as any).UI?.toast('Photo trop volumineuse (max 4 Mo).', 'error'); return; }
 
     const fd = new FormData();
-    fd.append('file', file);
+    fd.append('file', photo);
     fd.append('folder', 'avatars');
-    const uploadRes = await terrainFetch('/api/terrain/upload/', { method: 'POST', body: fd });
-    const uploadData = await uploadRes.json();
-    if (!uploadRes.ok) { (window as any).UI?.toast(uploadData.error || 'Échec du téléversement.', 'error'); return; }
+    const uploadRes = await terrainFetch('/api/terrain/upload/', { method: 'POST', body: fd }).catch(() => null);
+    if (!uploadRes) { (window as any).UI?.toast('Erreur réseau, réessayez.', 'error'); return; }
+    const uploadData = await readJsonSafe(uploadRes);
+    if (!uploadRes.ok || !uploadData.url) { (window as any).UI?.toast(uploadData.error || 'Échec du téléversement.', 'error'); return; }
 
     const res = await terrainFetch('/api/terrain/profile/', {
       method: 'PUT', body: JSON.stringify({ avatar_url: uploadData.url }),

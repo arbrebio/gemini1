@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { requireTerrainAuth } from '../../../lib/terrainAuth';
+import { removePlatformAccount } from '../../../lib/staff';
 import { randomBytes, randomInt } from 'node:crypto';
 
 const FROM_ADDRESS = 'Arbre Bio Africa <farms@newsletter.arbrebio.com>';
@@ -213,10 +214,9 @@ export const DELETE: APIRoute = async ({ request }) => {
     const body = await request.json();
     if (!body.id) return json({ error: 'id is required' }, 400);
 
-    // Deleting the auth user cascades to terrain_profiles (ON DELETE CASCADE).
-    const { error } = await supabase.auth.admin.deleteUser(body.id);
-    if (error) throw error;
-    return json({ success: true });
+    // Keeps the login if the person also uses HR, sales or admin.
+    const { loginKept } = await removePlatformAccount(supabase, 'terrain_profiles', body.id);
+    return json({ success: true, login_kept: loginKept });
   } catch (e: any) {
     console.error('[terrain users DELETE]', e);
     return json({ error: 'Internal server error' }, 500);

@@ -204,6 +204,14 @@ import "../../styles/base.css";
                     );
                 }
 
+                // Record the sign-in in the activity log (never blocks login).
+                await fetch("/api/activity/session/", {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ portal: "admin" }),
+                    keepalive: true,
+                }).catch(() => {});
+
                 window.location.href = "/admin/";
             } catch (error) {
                 if (errorMsg) {
