@@ -82,6 +82,7 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
 <script>
   import { requireTerrainAuth, terrainFetch, formatDate, formatDateTime, esc, taskStatusLabels, taskPriorityLabels } from '../../../lib/terrainClient';
   import { shrinkImage, MAX_UPLOAD_BYTES } from '../../../scripts/shrinkImage';
+  import { readJsonSafe } from '../../../scripts/uploadHelpers';
 
   const me = requireTerrainAuth();
   const params = new URLSearchParams(window.location.search);
@@ -297,9 +298,10 @@ import TerrainLayout from '../../../layouts/TerrainLayout.astro';
       const file = await shrinkImage(original);
       if (file.size > MAX_UPLOAD_BYTES) { (window as any).UI?.toast('Photo trop volumineuse (max 4 Mo).', 'error'); return; }
       const fd = new FormData(); fd.append('file', file); fd.append('folder', 'tasks');
-      const upRes = await terrainFetch('/api/terrain/upload/', { method: 'POST', body: fd });
-      const upData = await upRes.json();
-      if (!upRes.ok) { (window as any).UI?.toast(upData.error || 'Échec.', 'error'); return; }
+      const upRes = await terrainFetch('/api/terrain/upload/', { method: 'POST', body: fd }).catch(() => null);
+      if (!upRes) { (window as any).UI?.toast('Erreur réseau, réessayez.', 'error'); return; }
+      const upData = await readJsonSafe(upRes);
+      if (!upRes.ok || !upData.url) { (window as any).UI?.toast(upData.error || 'Échec.', 'error'); return; }
       await terrainFetch('/api/terrain/task-photos/', { method: 'POST', body: JSON.stringify({ task_id: id, photo_url: upData.url }) });
       await loadTasks();
       openDetail(id);
